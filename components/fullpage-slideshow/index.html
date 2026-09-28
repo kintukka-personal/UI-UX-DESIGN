@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Full-page Slideshow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="../header-search/style.css">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ---- Demo page only: placeholder "photography" and footer ---- */
+  :root { color-scheme: light; }
+  body { margin: 0; background: #111111; color: #FFFFFF; font-family: "Work Sans", "Helvetica Neue", Arial, sans-serif; }
+
+  .art { position: absolute; inset: 0; }
+  .art::after {
+    /* film grain */
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.22;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* 1. Record shelves */
+  .art--shelves {
+    background:
+      linear-gradient(180deg, rgba(20, 12, 6, 0.55) 0%, rgba(20, 12, 6, 0.25) 40%, rgba(20, 12, 6, 0.65) 100%),
+      repeating-linear-gradient(180deg, transparent 0 230px, #2A1A0E 230px 246px),
+      repeating-linear-gradient(90deg,
+        #5B3B24 0 7px, #7A5536 7px 11px, #3E2817 11px 19px, #8C6A4A 19px 22px,
+        #4A3020 22px 31px, #A48262 31px 33px, #2F1F14 33px 40px, #6B4A2F 40px 46px),
+      #4A3020;
+  }
+  /* 2. Studio grey with a burgundy bag on a camel coat */
+  .art--studio {
+    background: radial-gradient(ellipse 80% 70% at 50% 45%, #EEEFEE 0%, #DCDEDC 60%, #CFD2D0 100%);
+  }
+  .art--studio::before {
+    /* coat */
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    width: min(440px, 70vw);
+    height: 52%;
+    transform: translateX(-50%) rotate(-8deg);
+    border-radius: 42% 48% 40% 46%;
+    background: radial-gradient(ellipse at 40% 35%, #C9A986, #A98A68 70%);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+  }
+  .art--studio > i {
+    /* bag body + handle */
+    position: absolute;
+    left: 50%;
+    top: 42%;
+    width: min(300px, 52vw);
+    height: min(200px, 34vw);
+    transform: translateX(-50%) rotate(-12deg);
+    border-radius: 18px 18px 26px 26px;
+    background: linear-gradient(160deg, #6E2530, #4A1820 70%);
+    box-shadow: 0 24px 40px rgba(40, 10, 15, 0.35);
+  }
+  .art--studio > i::before {
+    content: "";
+    position: absolute;
+    left: 22%;
+    right: 22%;
+    top: -38%;
+    height: 60%;
+    border: 7px solid #5A1F28;
+    border-bottom: 0;
+    border-radius: 999px 999px 0 0;
+  }
+  /* 3. Rust plaster */
+  .art--rust {
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 40%, #A4553A 0%, #8C4430 55%, #6E3322 100%);
+  }
+  .art--rust::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: min(360px, 60vw);
+    height: 72%;
+    transform: translateX(-50%);
+    border-radius: 48% 48% 0 0 / 22% 22% 0 0;
+    background: repeating-linear-gradient(180deg, #D8C08A 0 9px, #8A5A3A 9px 12px, #D8C08A 12px 18px, #5C3A28 18px 20px);
+    opacity: 0.9;
+  }
+  /* 4. Night car park */
+  .art--night {
+    background:
+      radial-gradient(circle at 18% 28%, rgba(190, 225, 255, 0.95) 0 6px, rgba(120, 180, 255, 0.35) 7px 40px, transparent 90px),
+      radial-gradient(circle at 70% 26%, rgba(210, 235, 255, 0.95) 0 5px, rgba(120, 180, 255, 0.3) 6px 36px, transparent 80px),
+      radial-gradient(circle at 88% 22%, rgba(230, 240, 255, 0.9) 0 7px, rgba(140, 190, 255, 0.3) 8px 44px, transparent 96px),
+      radial-gradient(circle at 34% 42%, rgba(255, 200, 190, 0.8) 0 4px, transparent 30px),
+      linear-gradient(180deg, #050A14 0%, #0B1A2C 45%, #1E3E58 70%, #0E2234 100%);
+  }
+  /* 5. Ivory tailoring */
+  .art--ivory {
+    background:
+      linear-gradient(100deg, transparent 0 44%, #2C2B29 44% 56%, transparent 56%) center 78% / 100% 64% no-repeat,
+      radial-gradient(ellipse 70% 70% at 50% 40%, #F4F1EC 0%, #E7E2DA 70%, #DDD6CB 100%);
+  }
+  /* 6. Olive */
+  .art--olive {
+    background:
+      radial-gradient(ellipse 30% 40% at 50% 60%, rgba(214, 196, 150, 0.55) 0%, transparent 70%),
+      radial-gradient(ellipse 80% 80% at 50% 40%, #4E5638 0%, #3A4129 60%, #2A301D 100%);
+  }
+
+  .demo-footer {
+    padding: 72px 24px 120px;
+    background: #111111;
+    color: #EDEBE6;
+    display: grid;
+    gap: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  }
+  .demo-footer h3 { margin: 0 0 16px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; }
+  .demo-footer ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; font-size: 13px; font-weight: 300; color: #A9A7A2; }
+  .demo-footer p { margin: 0; font-size: 13px; font-weight: 300; color: #A9A7A2; max-width: 36ch; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<header class="ui-fp-header" data-ui-fp-header data-ui-fp-bg="dark">
+  <div class="ui-fp-header__bar">
+    <div class="ui-fp-header__group">
+      <button class="ui-fp-header__textbtn" type="button" data-ui-fp-menu-toggle aria-expanded="false" aria-controls="ui-fp-menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg><span class="ui-fp-header__label">Menu</span>
+      </button>
+
+      <div class="ui-hsearch" data-ui-hsearch>
+        <button class="ui-hsearch__trigger" type="button" aria-expanded="false" aria-controls="ui-hsearch-layer">
+          <svg class="ui-hsearch__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
+          <span class="ui-hsearch__trigger-label">Search</span>
+        </button>
+        <div class="ui-hsearch__layer" id="ui-hsearch-layer">
+          <form class="ui-hsearch__form" role="search" action="/search" method="get">
+            <button class="ui-hsearch__close" type="button" aria-label="Close search">
+              <svg class="ui-hsearch__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
+            </button>
+            <label class="ui-hsearch__sr" for="ui-hsearch-input">Search</label>
+            <input class="ui-hsearch__input" id="ui-hsearch-input" type="search" name="q" placeholder="Search" autocomplete="off">
+          </form>
+          <nav class="ui-hsearch__links" aria-label="Quick links">
+            <div class="ui-hsearch__group">
+              <p class="ui-hsearch__heading">Highlights</p>
+              <ul class="ui-hsearch__list">
+                <li><a href="#new">New in</a></li>
+                <li><a href="#bags">Bags</a></li>
+                <li><a href="#shoes">Shoes</a></li>
+                <li><a href="#rtw">Ready to wear</a></li>
+              </ul>
+            </div>
+            <div class="ui-hsearch__group">
+              <p class="ui-hsearch__heading">What's trending</p>
+              <ul class="ui-hsearch__list">
+                <li><a href="#layering">Soft layering</a></li>
+                <li><a href="#winter">Winter escape</a></li>
+                <li><a href="#loafers">Loafers, reworked</a></li>
+                <li><a href="#basics">Back to basics</a></li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+        <div class="ui-hsearch__scrim" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="ui-fp-header__group ui-fp-header__group--end">
+      <a class="ui-fp-header__textbtn ui-fp-hide-md" href="#contact">Contact us</a>
+      <a class="ui-fp-header__iconbtn ui-fp-hide-sm" href="#account" aria-label="Account">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+      </a>
+      <a class="ui-fp-header__iconbtn ui-fp-hide-sm" href="#wishlist" aria-label="Wishlist">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+      </a>
+      <a class="ui-fp-header__iconbtn" href="#bag" aria-label="Bag">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 13H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <a class="ui-fp-logo" href="#top" aria-label="Nord home">
+    <svg viewBox="0 0 420 100" aria-hidden="true">
+      <text x="225" y="86" text-anchor="middle" font-family="Work Sans, Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="118" letter-spacing="30" fill="currentColor">NORD</text>
+    </svg>
+  </a>
+</header>
+
+<div class="ui-fp-menu" data-ui-fp-menu>
+  <nav class="ui-fp-menu__panel" id="ui-fp-menu" aria-label="Main menu">
+    <div class="ui-fp-menu__top">
+      <button class="ui-fp-menu__close" type="button" data-ui-fp-menu-close>Close</button>
+    </div>
+    <ul class="ui-fp-menu__list">
+      <li><a href="#new">New in</a></li>
+      <li><a href="#bags">Bags</a></li>
+      <li><a href="#shoes">Shoes</a></li>
+      <li><a href="#rtw">Ready to wear</a></li>
+      <li><a href="#accessories">Accessories</a></li>
+      <li><a href="#gifts">Gifts</a></li>
+    </ul>
+    <ul class="ui-fp-menu__minor">
+      <li><a href="#account">Account</a></li>
+      <li><a href="#stores">Stores</a></li>
+      <li><a href="#contact">Contact us</a></li>
+    </ul>
+  </nav>
+  <div class="ui-fp-menu__scrim" aria-hidden="true"></div>
+</div>
+
+<main class="ui-fp" data-ui-fp id="top">
+  <section class="ui-fp-slide ui-fp-slide--intro" data-ui-fp-slide data-ui-fp-bg="dark">
+    <div class="ui-fp-slide__media"><div class="art art--shelves"></div></div>
+    <div class="ui-fp-slide__caption">
+      <h2 class="ui-fp-slide__title">The Listening Room</h2>
+      <p class="ui-fp-slide__text">A music-inspired capsule, in store now</p>
+      <a class="ui-fp-slide__link" href="#shop-1">Shop</a>
+    </div>
+    <form class="ui-fp-slide__search" role="search" action="/search" method="get">
+      <label class="ui-hsearch__sr" for="ui-fp-search">Search</label>
+      <input id="ui-fp-search" type="search" name="q" placeholder="Search" autocomplete="off">
+      <button type="submit" aria-label="Submit search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
+      </button>
+    </form>
+  </section>
+
+  <section class="ui-fp-slide" data-ui-fp-slide data-ui-fp-bg="light">
+    <div class="ui-fp-slide__media"><div class="art art--studio"><i></i></div></div>
+    <div class="ui-fp-slide__caption">
+      <h2 class="ui-fp-slide__title">Winter Escape</h2>
+      <p class="ui-fp-slide__text">A selection for the new season</p>
+      <a class="ui-fp-slide__link" href="#shop-2">Shop</a>
+    </div>
+  </section>
+
+  <section class="ui-fp-slide" data-ui-fp-slide data-ui-fp-bg="dark">
+    <div class="ui-fp-slide__media"><div class="art art--rust"></div></div>
+    <div class="ui-fp-slide__caption">
+      <h2 class="ui-fp-slide__title">Back to Basics</h2>
+      <p class="ui-fp-slide__text">The essential codes of the wardrobe</p>
+      <a class="ui-fp-slide__link" href="#shop-3">Shop</a>
+    </div>
+  </section>
+
+  <section class="ui-fp-slide" data-ui-fp-slide data-ui-fp-bg="dark">
+    <div class="ui-fp-slide__media"><div class="art art--night"></div></div>
+    <div class="ui-fp-slide__caption">
+      <h2 class="ui-fp-slide__title">Night Shift</h2>
+      <p class="ui-fp-slide__text">The autumn–winter collection</p>
+      <a class="ui-fp-slide__link" href="#shop-4">Shop</a>
+    </div>
+  </section>
+
+  <section class="ui-fp-slide" data-ui-fp-slide data-ui-fp-bg="light">
+    <div class="ui-fp-slide__media"><div class="art art--ivory"></div></div>
+    <div class="ui-fp-slide__caption">
+      <h2 class="ui-fp-slide__title">Soft Tailoring</h2>
+      <p class="ui-fp-slide__text">Structure, loosened</p>
+      <a class="ui-fp-slide__link" href="#shop-5">Shop</a>
+    </div>
+  </section>
+
+  <section class="ui-fp-slide" data-ui-fp-slide data-ui-fp-bg="dark">
+    <div class="ui-fp-slide__media"><div class="art art--olive"></div></div>
+    <div class="ui-fp-slide__caption">
+      <h2 class="ui-fp-slide__title">The Gift Edit</h2>
+      <p class="ui-fp-slide__text">Considered pieces to give</p>
+      <a class="ui-fp-slide__link" href="#shop-6">Shop</a>
+    </div>
+  </section>
+</main>
+
+<div class="ui-fp-indicator" data-ui-fp-indicator data-ui-fp-bg="dark" aria-hidden="true">
+  <span data-ui-fp-indicator-label>Scroll to explore</span>
+</div>
+
+<footer class="demo-footer" data-ui-fp-bg="dark" id="contact">
+  <div>
+    <h3>Client services</h3>
+    <ul><li>Contact us</li><li>Shipping</li><li>Returns</li><li>Care guide</li></ul>
+  </div>
+  <div>
+    <h3>The house</h3>
+    <ul><li>Our story</li><li>Stores</li><li>Careers</li></ul>
+  </div>
+  <div>
+    <h3>Newsletter</h3>
+    <p>This footer scrolls normally. The slideshow only takes over scrolling while a slide is on screen.</p>
+  </div>
+</footer>
+
+<script src="../header-search/script.js"></script>
+<script src="script.js"></script>
+<script>
+  // Demo only: keep search forms on the page.
+  document.querySelectorAll("form[role=search]").forEach(function (f) {
+    f.addEventListener("submit", function (e) { e.preventDefault(); });
+  });
+</script>
+</body>
+</html>

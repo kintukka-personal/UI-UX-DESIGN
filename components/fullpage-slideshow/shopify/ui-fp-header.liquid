@@ -1,0 +1,145 @@
+{%- comment -%}
+  UI Full-page Header — sections/ui-fp-header.liquid
+  Needs these theme assets: ui-fp.css, ui-fp.js, ui-hsearch.css, ui-hsearch.js
+  - Homepage: transparent over the slideshow, large logo shrinks on first scroll,
+    colours follow the slide behind it.
+  - Every other page: solid white header with the compact logo.
+{%- endcomment -%}
+
+{{ 'ui-hsearch.css' | asset_url | stylesheet_tag }}
+{{ 'ui-fp.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign is_home = false
+  if template.name == 'index'
+    assign is_home = true
+  endif
+  assign main_menu = linklists[section.settings.menu]
+  assign highlights = linklists[section.settings.search_menu_1]
+  assign trending = linklists[section.settings.search_menu_2]
+-%}
+
+<header
+  class="ui-fp-header{% unless is_home %} ui-fp-header--solid is-compact{% endunless %}"
+  data-ui-fp-header
+  data-ui-fp-bg="{% if is_home %}{{ section.settings.first_bg }}{% else %}light{% endif %}"
+>
+  <div class="ui-fp-header__bar">
+    <div class="ui-fp-header__group">
+      <button class="ui-fp-header__textbtn" type="button" data-ui-fp-menu-toggle aria-expanded="false" aria-controls="ui-fp-menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg><span class="ui-fp-header__label">Menu</span>
+      </button>
+
+      <div class="ui-hsearch" data-ui-hsearch>
+        <button class="ui-hsearch__trigger" type="button" aria-expanded="false" aria-controls="ui-hsearch-layer">
+          <svg class="ui-hsearch__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
+          <span class="ui-hsearch__trigger-label">Search</span>
+        </button>
+        <div class="ui-hsearch__layer" id="ui-hsearch-layer">
+          <form class="ui-hsearch__form" role="search" action="{{ routes.search_url }}" method="get">
+            <button class="ui-hsearch__close" type="button" aria-label="Close search">
+              <svg class="ui-hsearch__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
+            </button>
+            <label class="ui-hsearch__sr" for="ui-hsearch-input">Search</label>
+            <input class="ui-hsearch__input" id="ui-hsearch-input" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search" autocomplete="off">
+            <input type="hidden" name="options[prefix]" value="last">
+          </form>
+          <nav class="ui-hsearch__links" aria-label="Quick links">
+            {%- for menu in (1..2) -%}
+              {%- if forloop.index == 1 -%}{%- assign list = highlights -%}{%- else -%}{%- assign list = trending -%}{%- endif -%}
+              {%- if list.links.size > 0 -%}
+                <div class="ui-hsearch__group">
+                  <p class="ui-hsearch__heading">{{ list.title }}</p>
+                  <ul class="ui-hsearch__list">
+                    {%- for link in list.links -%}
+                      <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </nav>
+        </div>
+        <div class="ui-hsearch__scrim" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="ui-fp-header__group ui-fp-header__group--end">
+      {%- if section.settings.contact_url != blank -%}
+        <a class="ui-fp-header__textbtn ui-fp-hide-md" href="{{ section.settings.contact_url }}">Contact us</a>
+      {%- endif -%}
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="ui-fp-header__iconbtn ui-fp-hide-sm" href="{{ routes.account_url }}" aria-label="Account">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+        </a>
+      {%- endif -%}
+      {%- if section.settings.wishlist_url != blank -%}
+        <a class="ui-fp-header__iconbtn ui-fp-hide-sm" href="{{ section.settings.wishlist_url }}" aria-label="Wishlist">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>
+        </a>
+      {%- endif -%}
+      <a class="ui-fp-header__iconbtn" href="{{ routes.cart_url }}" aria-label="Bag ({{ cart.item_count }})">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 13H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <a class="ui-fp-logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }} home">
+    {%- if section.settings.logo_on_dark != blank -%}
+      {{ section.settings.logo_on_dark | image_url: width: 1200 | image_tag: class: 'ui-fp-logo__img--on-dark', alt: '', loading: 'eager' }}
+      {%- assign light_logo = section.settings.logo_on_light | default: section.settings.logo_on_dark -%}
+      {{ light_logo | image_url: width: 1200 | image_tag: class: 'ui-fp-logo__img--on-light', alt: '', loading: 'eager' }}
+    {%- else -%}
+      <svg viewBox="0 0 420 100" aria-hidden="true">
+        <text x="225" y="86" text-anchor="middle" font-family="Work Sans, Helvetica Neue, Arial, sans-serif" font-weight="600" font-size="118" letter-spacing="30" fill="currentColor">{{ shop.name | upcase | truncate: 8, '' }}</text>
+      </svg>
+    {%- endif -%}
+  </a>
+</header>
+
+{%- unless is_home -%}<div class="ui-fp-header-spacer"></div>{%- endunless -%}
+
+<div class="ui-fp-menu" data-ui-fp-menu>
+  <nav class="ui-fp-menu__panel" id="ui-fp-menu" aria-label="Main menu">
+    <div class="ui-fp-menu__top">
+      <button class="ui-fp-menu__close" type="button" data-ui-fp-menu-close>Close</button>
+    </div>
+    <ul class="ui-fp-menu__list">
+      {%- for link in main_menu.links -%}
+        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+      {%- endfor -%}
+    </ul>
+    <ul class="ui-fp-menu__minor">
+      {%- if shop.customer_accounts_enabled -%}<li><a href="{{ routes.account_url }}">Account</a></li>{%- endif -%}
+      {%- if section.settings.contact_url != blank -%}<li><a href="{{ section.settings.contact_url }}">Contact us</a></li>{%- endif -%}
+    </ul>
+  </nav>
+  <div class="ui-fp-menu__scrim" aria-hidden="true"></div>
+</div>
+
+<div class="ui-fp-indicator{% unless is_home %} is-hidden{% endunless %}" data-ui-fp-indicator data-ui-fp-bg="{{ section.settings.first_bg }}" aria-hidden="true">
+  <span data-ui-fp-indicator-label>Scroll to explore</span>
+</div>
+
+<script src="{{ 'ui-hsearch.js' | asset_url }}" defer></script>
+<script src="{{ 'ui-fp.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "UI full-page header",
+  "class": "ui-fp-header-section",
+  "settings": [
+    { "type": "image_picker", "id": "logo_on_dark", "label": "Logo for dark backgrounds (usually white)", "info": "Leave empty to use the store name as a text logo." },
+    { "type": "image_picker", "id": "logo_on_light", "label": "Logo for light backgrounds (usually black)" },
+    { "type": "link_list", "id": "menu", "label": "Menu drawer links", "default": "main-menu" },
+    { "type": "link_list", "id": "search_menu_1", "label": "Search panel: first column" },
+    { "type": "link_list", "id": "search_menu_2", "label": "Search panel: second column" },
+    { "type": "url", "id": "contact_url", "label": "Contact us link" },
+    { "type": "url", "id": "wishlist_url", "label": "Wishlist link", "info": "Leave empty to hide the heart icon." },
+    {
+      "type": "select", "id": "first_bg", "label": "Homepage: first slide background", "default": "dark",
+      "options": [ { "value": "dark", "label": "Dark (white header)" }, { "value": "light", "label": "Light (black header)" } ]
+    }
+  ]
+}
+{% endschema %}
