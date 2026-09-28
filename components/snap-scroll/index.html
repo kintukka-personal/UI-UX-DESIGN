@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Snap Scroll</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ---- Demo page only ---- */
+  :root { color-scheme: light; }
+  body { margin: 0; background: #F2F1EE; color: #161616; font: 300 15px/1.6 "Work Sans", "Helvetica Neue", Arial, sans-serif; }
+
+  .intro, .outro { padding: 72px 24px; max-width: 64ch; margin: 0 auto; }
+  .intro p, .outro p { margin: 0 0 12px; color: #5E5D59; }
+  .kicker { margin: 0 0 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #8A8984; }
+  h1 { margin: 0 0 14px; font-size: clamp(28px, 5vw, 40px); font-weight: 300; line-height: 1.1; }
+  kbd { font: 500 12px/1 "Work Sans", sans-serif; padding: 3px 7px; border: 1px solid #CFCDC7; border-radius: 4px; background: #FFF; }
+
+  .panel { display: grid; place-items: center; text-align: center; }
+  .panel__inner { display: grid; gap: 8px; }
+  .panel__num { font-size: clamp(72px, 16vw, 180px); font-weight: 300; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .panel__label { font-size: 12px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; }
+  .panel--a { background: #1C1B19; color: #F2F1EE; }
+  .panel--b { background: #D9D4CA; color: #1C1B19; }
+  .panel--c { background: #7C3A2A; color: #F6EDE6; }
+  .panel--d { background: #22303A; color: #E8EEF2; }
+  .panel--e { background: #EDEAE3; color: #1C1B19; }
+
+  .panel__inner { transition: opacity 700ms ease 300ms, translate 900ms cubic-bezier(0.22, 1, 0.36, 1) 300ms; }
+  .ui-snap-ready [data-ui-snap-panel]:not(.is-active) .panel__inner { opacity: 0; translate: 0 24px; transition-delay: 0s; }
+
+  .dots {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    z-index: 10;
+    display: grid;
+    gap: 10px;
+    transform: translateY(-50%);
+    mix-blend-mode: difference;
+  }
+  .dots button { width: 8px; height: 8px; padding: 0; border: 1px solid #FFF; border-radius: 50%; background: transparent; cursor: pointer; transition: background-color 300ms ease; }
+  .dots button[aria-current="true"] { background: #FFF; }
+  .dots button:focus-visible { outline: 1px solid #FFF; outline-offset: 3px; }
+</style>
+</head>
+<body>
+
+<section class="intro">
+  <p class="kicker">Component · Snap scroll</p>
+  <h1>One scroll, one screen</h1>
+  <p>This text scrolls normally. Keep scrolling and the five panels below take over: one wheel flick, swipe, <kbd>↓</kbd> or <kbd>Page Down</kbd> moves exactly one full screen. After the last panel, the page scrolls normally again.</p>
+</section>
+
+<section class="panel panel--a" data-ui-snap-panel><div class="panel__inner"><span class="panel__num">01</span><span class="panel__label">First panel</span></div></section>
+<section class="panel panel--b" data-ui-snap-panel><div class="panel__inner"><span class="panel__num">02</span><span class="panel__label">Second panel</span></div></section>
+<section class="panel panel--c" data-ui-snap-panel><div class="panel__inner"><span class="panel__num">03</span><span class="panel__label">Third panel</span></div></section>
+<section class="panel panel--d" data-ui-snap-panel><div class="panel__inner"><span class="panel__num">04</span><span class="panel__label">Fourth panel</span></div></section>
+<section class="panel panel--e" data-ui-snap-panel><div class="panel__inner"><span class="panel__num">05</span><span class="panel__label">Fifth panel</span></div></section>
+
+<section class="outro">
+  <p class="kicker">Back to normal</p>
+  <p>Below the panels, the page scrolls freely. Scroll back up and it snaps into the last panel again.</p>
+  <p>The dots on the right are an optional extra built with the <code>ui-snap:change</code> event and <code>uiSnap.goTo()</code>.</p>
+</section>
+
+<nav class="dots" aria-label="Panels"></nav>
+
+<script src="script.js"></script>
+<script>
+  // Demo only: dot navigation driven by the public API.
+  document.addEventListener("DOMContentLoaded", function () {
+    if (!window.uiSnap) return;
+    var nav = document.querySelector(".dots");
+    var dots = window.uiSnap.panels.map(function (p, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("aria-label", "Go to panel " + (i + 1));
+      b.addEventListener("click", function () { window.uiSnap.goTo(i); });
+      nav.appendChild(b);
+      return b;
+    });
+    window.addEventListener("ui-snap:change", function (e) {
+      dots.forEach(function (d, i) { d.setAttribute("aria-current", i === e.detail.index ? "true" : "false"); });
+      nav.style.opacity = e.detail.index < 0 ? "0" : "1";
+    });
+    nav.style.opacity = "0";
+    nav.style.transition = "opacity 300ms ease";
+  });
+</script>
+</body>
+</html>
