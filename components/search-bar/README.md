@@ -1,8 +1,8 @@
 # Expanding Search Bar
 
-A minimal search control. At rest it's a hairline circle with a magnifier. Click it and the circle stretches into a pill, the text field fades in, and a close mark appears.
+A minimal search control. At rest it's a hairline circle with a magnifier. Click it and the circle stretches into a pill and the text field fades in. Click the magnifier again, click anywhere outside, or press Escape to close it. There's no × button.
 
-- Plain HTML, CSS and about 50 lines of vanilla JS. No dependencies.
+- Plain HTML, CSS and about 40 lines of vanilla JS. No dependencies.
 - All classes are prefixed with `ui-search`, so the styles won't clash with a theme.
 - Themed through CSS custom properties.
 - Keyboard accessible, and respects `prefers-reduced-motion`.
@@ -21,13 +21,10 @@ Open `index.html` to see both demo variants.
 ```html
 <form class="ui-search" data-ui-search role="search" action="/search" method="get">
   <label class="ui-search__label" for="ui-search-1">Search</label>
-  <button class="ui-search__toggle" type="submit" aria-label="Open search" aria-expanded="false" aria-controls="ui-search-1">
+  <button class="ui-search__toggle" type="button" aria-label="Open search" aria-expanded="false" aria-controls="ui-search-1">
     <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
   </button>
   <input class="ui-search__input" id="ui-search-1" type="search" name="q" placeholder="Search the collection" autocomplete="off">
-  <button class="ui-search__close" type="button" aria-label="Clear and close search">
-    <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
-  </button>
 </form>
 ```
 
@@ -42,14 +39,11 @@ Open `index.html` to see both demo variants.
    {{ 'ui-search.css' | asset_url | stylesheet_tag }}
    <form class="ui-search" data-ui-search role="search" action="{{ routes.search_url }}" method="get">
      <label class="ui-search__label" for="{{ sid }}">Search</label>
-     <button class="ui-search__toggle" type="submit" aria-label="Open search" aria-expanded="false" aria-controls="{{ sid }}">
+     <button class="ui-search__toggle" type="button" aria-label="Open search" aria-expanded="false" aria-controls="{{ sid }}">
        <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
      </button>
      <input class="ui-search__input" id="{{ sid }}" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search the collection" autocomplete="off">
      <input type="hidden" name="options[prefix]" value="last">
-     <button class="ui-search__close" type="button" aria-label="Clear and close search">
-       <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
-     </button>
    </form>
    <script src="{{ 'ui-search.js' | asset_url }}" defer></script>
    ```
@@ -61,10 +55,10 @@ Open `index.html` to see both demo variants.
 | Action | Result |
 | --- | --- |
 | Click the magnifier (closed) | Opens and focuses the input |
-| Click the magnifier (open, with text) / Enter | Submits the form |
+| Click the magnifier (open) | Closes |
+| Enter | Submits the form |
 | Escape | Closes and returns focus to the magnifier |
-| × button | Clears the text and closes |
-| Click or tab away | Closes, but only if the field is empty |
+| Click or tab away | Closes (typed text is kept) |
 
 ## Tokens
 
