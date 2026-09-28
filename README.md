@@ -8,3 +8,4 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | --- | --- |
 | [Search bar](components/search-bar/) | A magnifier that expands into a minimal pill search field |
 | [Header search](components/header-search/) | A full-width search bar that sweeps down over the header, with a quick-links panel |
+| [Full-page slideshow](components/fullpage-slideshow/) | Editorial homepage: one-scroll-per-slide, shrinking logo, header colours that follow each slide |
