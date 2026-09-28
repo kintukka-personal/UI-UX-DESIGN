@@ -2,6 +2,7 @@
    UI Search — expanding search bar
    Collapsed: a hairline circle with a magnifier.
    Open: the circle stretches into a pill and the input fades in.
+   Close: click the magnifier again, click anywhere outside, or press Escape.
    ========================================================================== */
 
 .ui-search {
@@ -55,15 +56,14 @@
 }
 
 /* Keyboard focus ring on the whole control */
-.ui-search:has(.ui-search__toggle:focus-visible, .ui-search__close:focus-visible) {
+.ui-search:has(.ui-search__toggle:focus-visible) {
   outline: 1px solid var(--ui-search-focus);
   outline-offset: 4px;
 }
 
-/* ---- Buttons (magnifier + close) -------------------------------------- */
+/* ---- Magnifier button ------------------------------------------------- */
 
-.ui-search__toggle,
-.ui-search__close {
+.ui-search__toggle {
   position: absolute;
   top: 0;
   display: grid;
@@ -80,10 +80,8 @@
 }
 
 .ui-search__toggle { left: 0; }
-.ui-search__close  { right: 0; }
 
 .ui-search__toggle:focus,
-.ui-search__close:focus,
 .ui-search__input:focus { outline: none; }
 
 .ui-search__icon {
@@ -104,18 +102,13 @@
   transform: rotate(-8deg) scale(0.94);
 }
 
-.ui-search__close .ui-search__icon {
-  width: 12px;
-  height: 12px;
-}
-
 /* ---- Input ------------------------------------------------------------ */
 
 .ui-search__input {
   position: absolute;
   top: 0;
   left: calc(var(--ui-search-size) - 6px);
-  right: calc(var(--ui-search-size) - 8px);
+  right: 20px;
   box-sizing: border-box;
   height: 100%;
   margin: 0;
@@ -140,9 +133,8 @@
   appearance: none;
 }
 
-/* Input and close button: hidden (and unfocusable) while collapsed */
-.ui-search__input,
-.ui-search__close {
+/* Input: hidden (and unfocusable) while collapsed */
+.ui-search__input {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -153,10 +145,8 @@
 }
 
 .ui-search__input { transform: translateX(10px); }
-.ui-search__close { transform: scale(0.6) rotate(-45deg); }
 
-.ui-search.is-open .ui-search__input,
-.ui-search.is-open .ui-search__close {
+.ui-search.is-open .ui-search__input {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -165,14 +155,6 @@
     opacity calc(var(--ui-search-duration) * 0.7) ease calc(var(--ui-search-duration) * 0.3),
     transform var(--ui-search-duration) var(--ui-search-ease) calc(var(--ui-search-duration) * 0.3),
     visibility 0s;
-}
-
-.ui-search.is-open .ui-search__close {
-  transition-delay: calc(var(--ui-search-duration) * 0.45), calc(var(--ui-search-duration) * 0.45), 0s;
-}
-
-.ui-search__close:hover .ui-search__icon {
-  transform: rotate(90deg);
 }
 
 /* Visually hidden label for screen readers */

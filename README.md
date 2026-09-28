@@ -6,4 +6,5 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 
 | Component | Description |
 | --- | --- |
-| [Search bar](components/search-bar/) | A magnifier that expands into a minimal search field |
+| [Search bar](components/search-bar/) | A magnifier that expands into a minimal pill search field |
+| [Header search](components/header-search/) | A full-width search bar that sweeps down over the header, with a quick-links panel |

@@ -1,0 +1,283 @@
+/* ==========================================================================
+   UI Header Search — full-width search takeover for a site header
+   Rest:  magnifier + "Search" label, with an underline that draws in on hover.
+   Open:  a search bar covers the header and a quick-links panel drops below.
+   Close: click the magnifier again, click anywhere outside, or press Escape.
+
+   The takeover layer is positioned against the nearest positioned ancestor,
+   so give your header `position: relative` (or use .ui-header below).
+   ========================================================================== */
+
+.ui-hsearch {
+  --ui-hsearch-font: "Work Sans", "Helvetica Neue", Arial, sans-serif;
+  --ui-hsearch-fg: #111111;
+  --ui-hsearch-muted: #767676;
+  --ui-hsearch-bg: #FFFFFF;
+  --ui-hsearch-line: rgba(17, 17, 17, 0.14);
+  --ui-hsearch-scrim: rgba(12, 10, 8, 0.32);
+  --ui-hsearch-bar-height: 72px;
+  --ui-hsearch-gutter: 24px;
+  --ui-hsearch-stroke: 1.25;
+  --ui-hsearch-duration: 600ms;
+  --ui-hsearch-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  display: contents;
+  font-family: var(--ui-hsearch-font);
+}
+
+/* ---- Trigger (in the header) ----------------------------------------- */
+
+.ui-hsearch__trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: 400 13px/1 var(--ui-hsearch-font);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ui-hsearch__trigger::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform calc(var(--ui-hsearch-duration) * 0.7) var(--ui-hsearch-ease);
+}
+
+.ui-hsearch__trigger:hover::after,
+.ui-hsearch__trigger:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.ui-hsearch__trigger:focus { outline: none; }
+.ui-hsearch__trigger:focus-visible { outline: 1px solid currentColor; outline-offset: 6px; }
+
+.ui-hsearch__icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--ui-hsearch-stroke);
+  stroke-linecap: round;
+}
+
+/* ---- Takeover layer --------------------------------------------------- */
+
+.ui-hsearch__layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: var(--ui-hsearch-bg);
+  color: var(--ui-hsearch-fg);
+  font-family: var(--ui-hsearch-font);
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+  transition:
+    clip-path calc(var(--ui-hsearch-duration) * 0.7) var(--ui-hsearch-ease),
+    visibility 0s linear calc(var(--ui-hsearch-duration) * 0.7);
+}
+
+.ui-hsearch.is-open .ui-hsearch__layer {
+  clip-path: inset(0 0 0 0);
+  visibility: visible;
+  transition:
+    clip-path var(--ui-hsearch-duration) var(--ui-hsearch-ease),
+    visibility 0s;
+}
+
+/* The bar */
+.ui-hsearch__form {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: var(--ui-hsearch-bar-height);
+  margin: 0;
+  padding: 0 var(--ui-hsearch-gutter);
+  border-bottom: 1px solid var(--ui-hsearch-line);
+}
+
+.ui-hsearch__close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  margin: 0 0 0 -9px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 200ms ease;
+}
+
+.ui-hsearch__close:hover { background: var(--ui-hsearch-line); }
+.ui-hsearch__close:focus { outline: none; }
+.ui-hsearch__close:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
+
+.ui-hsearch__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: 300 17px/1 var(--ui-hsearch-font);
+  letter-spacing: 0.03em;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ui-hsearch__input:focus { outline: none; }
+.ui-hsearch__input::placeholder { color: var(--ui-hsearch-muted); opacity: 1; }
+.ui-hsearch__input::-webkit-search-cancel-button,
+.ui-hsearch__input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; }
+
+/* Quick links panel */
+.ui-hsearch__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 96px;
+  padding: 28px var(--ui-hsearch-gutter) 36px;
+}
+
+.ui-hsearch__group { min-width: 140px; }
+
+.ui-hsearch__heading {
+  margin: 0 0 18px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ui-hsearch__list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-hsearch__list a {
+  position: relative;
+  color: var(--ui-hsearch-fg);
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) left bottom / 0 1px no-repeat;
+  transition: background-size 400ms var(--ui-hsearch-ease);
+}
+
+.ui-hsearch__list a:hover,
+.ui-hsearch__list a:focus-visible { background-size: 100% 1px; outline: none; }
+
+/* Bar contents and links drift in after the layer starts to open */
+.ui-hsearch__form > *,
+.ui-hsearch__group {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.ui-hsearch.is-open .ui-hsearch__form > *,
+.ui-hsearch.is-open .ui-hsearch__group {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity calc(var(--ui-hsearch-duration) * 0.8) ease calc(var(--ui-hsearch-duration) * 0.25),
+    transform var(--ui-hsearch-duration) var(--ui-hsearch-ease) calc(var(--ui-hsearch-duration) * 0.25);
+}
+
+.ui-hsearch.is-open .ui-hsearch__group:nth-child(2) { transition-delay: calc(var(--ui-hsearch-duration) * 0.35); }
+.ui-hsearch.is-open .ui-hsearch__group:nth-child(3) { transition-delay: calc(var(--ui-hsearch-duration) * 0.45); }
+
+/* Page scrim behind the layer */
+.ui-hsearch__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--ui-hsearch-scrim);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms ease, visibility 0s linear 300ms;
+}
+
+.ui-hsearch.is-open .ui-hsearch__scrim {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--ui-hsearch-duration) ease, visibility 0s;
+}
+
+.ui-hsearch__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .ui-hsearch { --ui-hsearch-gutter: 16px; --ui-hsearch-bar-height: 64px; }
+  .ui-hsearch__trigger-label { display: none; }
+  .ui-hsearch__links { gap: 28px 48px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-hsearch *,
+  .ui-hsearch *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}
+
+/* ==========================================================================
+   Optional: overlay header
+   Transparent over a hero image, turns solid on hover or keyboard focus.
+   ========================================================================== */
+
+.ui-header {
+  --ui-header-fg: #FFFFFF;
+  --ui-header-fg-solid: #111111;
+  --ui-header-bg-solid: #FFFFFF;
+
+  position: relative;
+  z-index: 60;
+  color: var(--ui-header-fg);
+  background: transparent;
+  transition: background-color 400ms ease, color 400ms ease;
+}
+
+.ui-header--overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.ui-header:hover,
+.ui-header:focus-within {
+  color: var(--ui-header-fg-solid);
+  background: var(--ui-header-bg-solid);
+}

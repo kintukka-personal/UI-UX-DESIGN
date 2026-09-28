@@ -177,7 +177,7 @@
   <header class="demo-intro">
     <p class="demo-kicker">UI-Design · Component 01</p>
     <h1>Expanding search bar</h1>
-    <p>Click the magnifier. The circle stretches into a search field, the text fades in behind it, and a close mark appears. Press Escape or click away on an empty field to fold it back.</p>
+    <p>Click the magnifier. The circle stretches into a search field and the text fades in behind it. Click the magnifier again, click anywhere outside, or press Escape to fold it back.</p>
   </header>
 
   <section class="stages" aria-label="Previews">
@@ -187,13 +187,10 @@
         <h2>Find a piece</h2>
         <form class="ui-search" data-ui-search role="search" action="/search" method="get">
           <label class="ui-search__label" for="ui-search-ivory">Search</label>
-          <button class="ui-search__toggle" type="submit" aria-label="Open search" aria-expanded="false" aria-controls="ui-search-ivory">
+          <button class="ui-search__toggle" type="button" aria-label="Open search" aria-expanded="false" aria-controls="ui-search-ivory">
             <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
           </button>
           <input class="ui-search__input" id="ui-search-ivory" type="search" name="q" placeholder="Search the collection" autocomplete="off">
-          <button class="ui-search__close" type="button" aria-label="Clear and close search">
-            <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
-          </button>
         </form>
         <p class="stage-status" aria-live="polite"></p>
       </div>
@@ -208,13 +205,10 @@
           <div class="mock-header__search">
             <form class="ui-search" data-ui-search role="search" action="/search" method="get">
               <label class="ui-search__label" for="ui-search-onyx">Search</label>
-              <button class="ui-search__toggle" type="submit" aria-label="Open search" aria-expanded="false" aria-controls="ui-search-onyx">
+              <button class="ui-search__toggle" type="button" aria-label="Open search" aria-expanded="false" aria-controls="ui-search-onyx">
                 <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
               </button>
               <input class="ui-search__input" id="ui-search-onyx" type="search" name="q" placeholder="Search" autocomplete="off">
-              <button class="ui-search__close" type="button" aria-label="Clear and close search">
-                <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
-              </button>
             </form>
           </div>
         </div>
@@ -231,11 +225,10 @@
     <div>
       <h3>Behaviour</h3>
       <dl>
-        <dt>Click icon</dt><dd>Opens and focuses the field. With text entered, it submits.</dd>
+        <dt>Click icon</dt><dd>Opens the field, or closes it if it's already open.</dd>
         <dt>Enter</dt><dd>Submits the search.</dd>
         <dt>Escape</dt><dd>Closes and returns focus to the icon.</dd>
-        <dt>× button</dt><dd>Clears the text and closes.</dd>
-        <dt>Click away</dt><dd>Closes only if the field is empty.</dd>
+        <dt>Click away</dt><dd>Closes. Any typed text is kept for next time.</dd>
       </dl>
     </div>
     <div class="tokens">

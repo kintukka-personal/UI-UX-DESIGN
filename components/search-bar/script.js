@@ -1,10 +1,11 @@
 /* UI Search — expanding search bar behaviour.
-   Initialises every [data-ui-search] form on the page. */
+   Initialises every [data-ui-search] form on the page.
+   Open: click the magnifier. Close: click the magnifier again, click
+   anywhere outside, or press Escape. Enter submits. */
 (function () {
   function init(root) {
     var toggle = root.querySelector(".ui-search__toggle");
     var input = root.querySelector(".ui-search__input");
-    var close = root.querySelector(".ui-search__close");
     if (!toggle || !input) return;
 
     function isOpen() { return root.classList.contains("is-open"); }
@@ -12,7 +13,7 @@
     function open() {
       root.classList.add("is-open");
       toggle.setAttribute("aria-expanded", "true");
-      toggle.setAttribute("aria-label", "Submit search");
+      toggle.setAttribute("aria-label", "Close search");
       input.focus({ preventScroll: true });
     }
 
@@ -23,29 +24,21 @@
       if (returnFocus) toggle.focus({ preventScroll: true });
     }
 
-    // Closed: open. Open and empty: refocus. Open with text: submit.
-    toggle.addEventListener("click", function (e) {
-      if (!isOpen()) { e.preventDefault(); open(); }
-      else if (!input.value.trim()) { e.preventDefault(); input.focus(); }
+    toggle.addEventListener("click", function () {
+      if (isOpen()) shut(true);
+      else open();
     });
-
-    if (close) {
-      close.addEventListener("click", function () {
-        input.value = "";
-        shut(true);
-      });
-    }
 
     root.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && isOpen()) { e.preventDefault(); shut(true); }
     });
 
-    // Collapse when the user clicks or tabs away, unless they typed something.
+    // Collapse when the user clicks or tabs away.
     document.addEventListener("pointerdown", function (e) {
-      if (isOpen() && !root.contains(e.target) && !input.value.trim()) shut(false);
+      if (isOpen() && !root.contains(e.target)) shut(false);
     });
     root.addEventListener("focusout", function (e) {
-      if (isOpen() && e.relatedTarget && !root.contains(e.relatedTarget) && !input.value.trim()) shut(false);
+      if (isOpen() && e.relatedTarget && !root.contains(e.relatedTarget)) shut(false);
     });
   }
 
