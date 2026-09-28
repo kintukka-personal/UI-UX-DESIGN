@@ -1,0 +1,13 @@
+/* UI Snap Scroll — panels fill the screen. The script does the stepping. */
+
+[data-ui-snap-panel] {
+  position: relative;
+  box-sizing: border-box;
+  height: 100vh;
+  height: 100svh;
+  min-height: 480px;
+  overflow: hidden;
+}
+
+/* The script animates the scroll itself; native smooth scrolling would fight it. */
+html.ui-snap-ready { scroll-behavior: auto !important; }
