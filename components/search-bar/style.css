@@ -1,0 +1,198 @@
+/* ==========================================================================
+   UI Search — expanding search bar
+   Collapsed: a hairline circle with a magnifier.
+   Open: the circle stretches into a pill and the input fades in.
+   ========================================================================== */
+
+.ui-search {
+  /* Theme tokens — override these on .ui-search or any ancestor */
+  --ui-search-size: 48px;
+  --ui-search-width: 360px;
+  --ui-search-font: "Work Sans", "Helvetica Neue", Arial, sans-serif;
+  --ui-search-font-size: 16px;
+  --ui-search-font-weight: 300;
+  --ui-search-tracking: 0.03em;
+  --ui-search-fg: #161616;
+  --ui-search-muted: rgba(22, 22, 22, 0.45);
+  --ui-search-bg: transparent;
+  --ui-search-bg-open: rgba(255, 255, 255, 0.55);
+  --ui-search-border: rgba(22, 22, 22, 0.22);
+  --ui-search-border-open: #161616;
+  --ui-search-focus: #161616;
+  --ui-search-stroke: 1.25;
+  --ui-search-duration: 600ms;
+  --ui-search-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--ui-search-size);
+  max-width: 100%;
+  height: var(--ui-search-size);
+  margin: 0;
+  border: 1px solid var(--ui-search-border);
+  border-radius: 999px;
+  background: var(--ui-search-bg);
+  color: var(--ui-search-fg);
+  font-family: var(--ui-search-font);
+  overflow: hidden;
+  transition:
+    width var(--ui-search-duration) var(--ui-search-ease),
+    border-color calc(var(--ui-search-duration) * 0.6) ease,
+    background-color calc(var(--ui-search-duration) * 0.6) ease;
+}
+
+.ui-search:not(.is-open):hover {
+  border-color: var(--ui-search-border-open);
+}
+
+.ui-search.is-open {
+  width: var(--ui-search-width);
+  border-color: var(--ui-search-border-open);
+  background: var(--ui-search-bg-open);
+}
+
+/* Keyboard focus ring on the whole control */
+.ui-search:has(.ui-search__toggle:focus-visible, .ui-search__close:focus-visible) {
+  outline: 1px solid var(--ui-search-focus);
+  outline-offset: 4px;
+}
+
+/* ---- Buttons (magnifier + close) -------------------------------------- */
+
+.ui-search__toggle,
+.ui-search__close {
+  position: absolute;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: calc(var(--ui-search-size) - 2px);
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ui-search__toggle { left: 0; }
+.ui-search__close  { right: 0; }
+
+.ui-search__toggle:focus,
+.ui-search__close:focus,
+.ui-search__input:focus { outline: none; }
+
+.ui-search__icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--ui-search-stroke);
+  stroke-linecap: round;
+  transition: transform var(--ui-search-duration) var(--ui-search-ease);
+}
+
+.ui-search:not(.is-open) .ui-search__toggle:hover .ui-search__icon {
+  transform: scale(1.08);
+}
+
+.ui-search.is-open .ui-search__toggle .ui-search__icon {
+  transform: rotate(-8deg) scale(0.94);
+}
+
+.ui-search__close .ui-search__icon {
+  width: 12px;
+  height: 12px;
+}
+
+/* ---- Input ------------------------------------------------------------ */
+
+.ui-search__input {
+  position: absolute;
+  top: 0;
+  left: calc(var(--ui-search-size) - 6px);
+  right: calc(var(--ui-search-size) - 8px);
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: var(--ui-search-font-weight) var(--ui-search-font-size) / 1 var(--ui-search-font);
+  letter-spacing: var(--ui-search-tracking);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ui-search__input::placeholder {
+  color: var(--ui-search-muted);
+  opacity: 1;
+}
+
+.ui-search__input::-webkit-search-cancel-button,
+.ui-search__input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Input and close button: hidden (and unfocusable) while collapsed */
+.ui-search__input,
+.ui-search__close {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity calc(var(--ui-search-duration) * 0.4) ease,
+    transform calc(var(--ui-search-duration) * 0.4) ease,
+    visibility 0s linear calc(var(--ui-search-duration) * 0.4);
+}
+
+.ui-search__input { transform: translateX(10px); }
+.ui-search__close { transform: scale(0.6) rotate(-45deg); }
+
+.ui-search.is-open .ui-search__input,
+.ui-search.is-open .ui-search__close {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition:
+    opacity calc(var(--ui-search-duration) * 0.7) ease calc(var(--ui-search-duration) * 0.3),
+    transform var(--ui-search-duration) var(--ui-search-ease) calc(var(--ui-search-duration) * 0.3),
+    visibility 0s;
+}
+
+.ui-search.is-open .ui-search__close {
+  transition-delay: calc(var(--ui-search-duration) * 0.45), calc(var(--ui-search-duration) * 0.45), 0s;
+}
+
+.ui-search__close:hover .ui-search__icon {
+  transform: rotate(90deg);
+}
+
+/* Visually hidden label for screen readers */
+.ui-search__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Motion preferences ---------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-search,
+  .ui-search *,
+  .ui-search.is-open * {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}

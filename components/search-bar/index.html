@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Expanding Search Bar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ---- Demo page only (not part of the component) ---- */
+  :root {
+    --page-bg: #EDECE8;
+    --page-ink: #1B1B1A;
+    --page-muted: #6B6A66;
+    --page-line: #D5D3CE;
+    --page-code: #E3E1DC;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --page-bg: #111111;
+      --page-ink: #ECEAE5;
+      --page-muted: #8E8C87;
+      --page-line: #2A2A28;
+      --page-code: #1C1C1B;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --page-bg: #111111;
+    --page-ink: #ECEAE5;
+    --page-muted: #8E8C87;
+    --page-line: #2A2A28;
+    --page-code: #1C1C1B;
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    background: var(--page-bg);
+    color: var(--page-ink);
+    font: 300 15px/1.6 "Work Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+  .demo {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 56px 20px 80px;
+    display: grid;
+    gap: 40px;
+  }
+  .demo-intro { display: grid; gap: 10px; max-width: 60ch; }
+  .demo-kicker {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--page-muted);
+  }
+  .demo-intro h1 {
+    margin: 0;
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+  .demo-intro p { margin: 0; color: var(--page-muted); }
+
+  .stages { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
+  .stage { display: grid; gap: 10px; min-width: 0; }
+  .stage-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--page-muted);
+  }
+  .stage-label span:last-child { font-variant-numeric: tabular-nums; letter-spacing: 0.08em; }
+  .stage-surface {
+    min-height: 300px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    overflow: hidden;
+  }
+  .stage-status {
+    min-height: 1.6em;
+    margin: 0;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Ivory stage: search sits under an editorial heading */
+  .stage--ivory .stage-surface { background: #F6F3EE; color: #161616; justify-content: center; }
+  .stage--ivory h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+  }
+  .stage--ivory .stage-status { color: rgba(22, 22, 22, 0.55); }
+  .stage--ivory .ui-search { --ui-search-width: 400px; }
+
+  /* Onyx stage: search sits in a storefront header, right-aligned */
+  .stage--onyx .stage-surface { background: #141414; color: #F2EEE6; }
+  .stage--onyx .stage-status { color: rgba(242, 238, 230, 0.5); }
+  .mock-header {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(242, 238, 230, 0.12);
+  }
+  .mock-wordmark {
+    flex: none;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+  }
+  .mock-nav {
+    display: flex;
+    gap: 20px;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(242, 238, 230, 0.6);
+  }
+  .mock-header__search { flex: 1; min-width: 0; display: flex; justify-content: flex-end; }
+  .mock-hero { margin-top: auto; display: grid; gap: 6px; }
+  .mock-hero p { margin: 0; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(242, 238, 230, 0.5); }
+  .mock-hero strong { font-size: 24px; font-weight: 300; letter-spacing: 0.01em; }
+  .stage--onyx .ui-search {
+    --ui-search-width: 300px;
+    --ui-search-fg: #F2EEE6;
+    --ui-search-muted: rgba(242, 238, 230, 0.42);
+    --ui-search-border: rgba(242, 238, 230, 0.2);
+    --ui-search-border-open: #B89B6A;
+    --ui-search-bg-open: rgba(242, 238, 230, 0.04);
+    --ui-search-focus: #B89B6A;
+  }
+  @media (max-width: 720px) { .mock-nav { display: none; } }
+  @media (max-width: 480px) { .stage-surface { padding: 22px 18px; } .mock-header { gap: 16px; } }
+
+  .notes { display: grid; gap: 32px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+  .notes h3 {
+    margin: 0 0 12px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--page-muted);
+  }
+  .notes dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; font-size: 14px; }
+  .notes dt { font-weight: 400; white-space: nowrap; }
+  .notes dd { margin: 0; color: var(--page-muted); }
+  .notes code {
+    font: 12px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: var(--page-code);
+    padding: 1px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .notes .tokens dt { font-weight: 300; }
+</style>
+</head>
+<body>
+<main class="demo">
+  <header class="demo-intro">
+    <p class="demo-kicker">UI-Design · Component 01</p>
+    <h1>Expanding search bar</h1>
+    <p>Click the magnifier. The circle stretches into a search field, the text fades in behind it, and a close mark appears. Press Escape or click away on an empty field to fold it back.</p>
+  </header>
+
+  <section class="stages" aria-label="Previews">
+    <div class="stage stage--ivory">
+      <div class="stage-label"><span>Ivory · standalone</span><span>#F6F3EE / #161616</span></div>
+      <div class="stage-surface">
+        <h2>Find a piece</h2>
+        <form class="ui-search" data-ui-search role="search" action="/search" method="get">
+          <label class="ui-search__label" for="ui-search-ivory">Search</label>
+          <button class="ui-search__toggle" type="submit" aria-label="Open search" aria-expanded="false" aria-controls="ui-search-ivory">
+            <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
+          </button>
+          <input class="ui-search__input" id="ui-search-ivory" type="search" name="q" placeholder="Search the collection" autocomplete="off">
+          <button class="ui-search__close" type="button" aria-label="Clear and close search">
+            <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
+          </button>
+        </form>
+        <p class="stage-status" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="stage stage--onyx">
+      <div class="stage-label"><span>Onyx · in a header</span><span>#141414 / #B89B6A</span></div>
+      <div class="stage-surface">
+        <div class="mock-header">
+          <span class="mock-wordmark">Maison</span>
+          <nav class="mock-nav" aria-label="Example navigation"><span>New</span><span>Leather</span><span>Objects</span></nav>
+          <div class="mock-header__search">
+            <form class="ui-search" data-ui-search role="search" action="/search" method="get">
+              <label class="ui-search__label" for="ui-search-onyx">Search</label>
+              <button class="ui-search__toggle" type="submit" aria-label="Open search" aria-expanded="false" aria-controls="ui-search-onyx">
+                <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20 20"/></svg>
+              </button>
+              <input class="ui-search__input" id="ui-search-onyx" type="search" name="q" placeholder="Search" autocomplete="off">
+              <button class="ui-search__close" type="button" aria-label="Clear and close search">
+                <svg class="ui-search__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="mock-hero">
+          <p>Autumn edit</p>
+          <strong>Quiet forms, made to last</strong>
+        </div>
+        <p class="stage-status" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="notes">
+    <div>
+      <h3>Behaviour</h3>
+      <dl>
+        <dt>Click icon</dt><dd>Opens and focuses the field. With text entered, it submits.</dd>
+        <dt>Enter</dt><dd>Submits the search.</dd>
+        <dt>Escape</dt><dd>Closes and returns focus to the icon.</dd>
+        <dt>× button</dt><dd>Clears the text and closes.</dd>
+        <dt>Click away</dt><dd>Closes only if the field is empty.</dd>
+      </dl>
+    </div>
+    <div class="tokens">
+      <h3>Main tokens</h3>
+      <dl>
+        <dt><code>--ui-search-size</code></dt><dd>48px circle</dd>
+        <dt><code>--ui-search-width</code></dt><dd>360px when open</dd>
+        <dt><code>--ui-search-duration</code></dt><dd>600ms</dd>
+        <dt><code>--ui-search-ease</code></dt><dd>cubic-bezier(.22, 1, .36, 1)</dd>
+        <dt><code>--ui-search-border-open</code></dt><dd>Border colour when open</dd>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<script src="script.js"></script>
+<script>
+  // Demo only: show the query instead of navigating away.
+  document.querySelectorAll("[data-ui-search]").forEach(function (form) {
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var q = form.querySelector(".ui-search__input").value.trim();
+      var status = form.closest(".stage-surface").querySelector(".stage-status");
+      if (q) status.textContent = "Searching for “" + q + "”";
+    });
+  });
+</script>
+</body>
+</html>
