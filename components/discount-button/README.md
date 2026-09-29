@@ -9,6 +9,12 @@ A discount code field with an Apply button that feels rewarding to use:
   - A sweep of light crosses it, and confetti and twinkling sparkles burst from the button.
   - A message confirms the discount.
 - **Invalid code:** the button gives a short shake, and the field outline and message turn red.
+- **Price interaction:** as the confetti goes off, a stream of glowing gold sparks arcs from the button to the Estimated total. When the first spark lands:
+  - the total pops and glows
+  - the old price slides up and a line is drawn through it
+  - the new price counts down to the discounted amount in green
+  - "You saved $457.00 AUD with WELCOME10" fades in
+- **Changing codes:** applying a second code recalculates from the original price.
 - **Editing:** changing the code afterwards resets the button to "Apply".
 - **Reduced motion:** with it turned on, the states still change but nothing moves.
 
@@ -36,13 +42,28 @@ Open `index.html` for the demo. It uses a cart drawer footer. Try `WELCOME10` or
 </form>
 ```
 
+## Estimated total
+
+```html
+<div class="ui-discount-total" data-ui-discount-total data-amount="4570.00" data-currency="AUD" data-locale="en-AU" aria-live="polite">
+  <s class="ui-discount-total__was" aria-hidden="true"></s>
+  <strong class="ui-discount-total__now">$4,570.00 AUD</strong>
+</div>
+<p class="ui-discount-total__saved" data-ui-discount-savings></p>
+```
+
+- `data-amount` is the undiscounted total as a plain number.
+- `data-currency` and `data-locale` control the formatting. Add `data-show-code="false"` to drop the "AUD" suffix.
+- The script finds `[data-ui-discount-total]` on the page. To point it elsewhere, add `data-ui-discount-total="#your-selector"` to the form.
+- The savings line is optional.
+
 ## Checking codes for real
 
 By default a demo checker accepts `WELCOME10` and `VIP20`. To plug in your own, define this before or after loading `script.js`:
 
 ```js
 window.uiDiscountValidate = function (code) {
-  // Return a Promise of { ok: true|false, message: "..." }
+  // Return a Promise of { ok: true|false, message: "...", percent: 10 } or { ..., amount: 50 }
   return fetch(...).then(...);
 };
 ```

@@ -38,8 +38,10 @@
   .drawer__price { font-size: 14px; font-variant-numeric: tabular-nums; }
   .drawer__discount-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
   .drawer__discount-head span:last-child { font-size: 18px; line-height: 1; }
-  .drawer__total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 18px; border-top: 1px solid #E4DDD1; font-size: 16px; }
+  .drawer__total { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 18px; border-top: 1px solid #E4DDD1; font-size: 16px; }
   .drawer__total strong { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .ui-discount-total__saved { margin-top: -10px; }
+  .ui-discount-total__saved:empty { display: none; }
   .drawer__note { margin: -6px 0 0; font-size: 12px; color: #6F665C; }
   .drawer__checkout {
     display: flex; justify-content: center; align-items: center; gap: 14px;
@@ -78,11 +80,18 @@
       <p class="ui-discount__msg" role="status" aria-live="polite"></p>
     </form>
 
-    <div class="drawer__total"><span>Estimated total</span><strong>$4,570.00 AUD</strong></div>
+    <div class="drawer__total">
+      <span>Estimated total</span>
+      <div class="ui-discount-total" data-ui-discount-total data-amount="4570.00" data-currency="AUD" data-locale="en-AU" aria-live="polite">
+        <s class="ui-discount-total__was" aria-hidden="true"></s>
+        <strong class="ui-discount-total__now">$4,570.00 AUD</strong>
+      </div>
+    </div>
+    <p class="ui-discount-total__saved" data-ui-discount-savings></p>
     <p class="drawer__note">Duties and taxes included. Shipping is calculated at checkout.</p>
     <button class="drawer__checkout" type="button">Checkout <span aria-hidden="true">→</span></button>
   </div>
-  <p class="hint">Hover Apply, then try <code>WELCOME10</code> or <code>VIP20</code>. Any other code shows the error state.</p>
+  <p class="hint">Try <code>WELCOME10</code>, then <code>VIP20</code>. Any other code shows the error state.</p>
 </main>
 
 <script src="script.js"></script>
