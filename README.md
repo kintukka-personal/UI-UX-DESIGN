@@ -10,3 +10,4 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Header search](components/header-search/) | A full-width search bar that sweeps down over the header, with a quick-links panel |
 | [Full-page slideshow](components/fullpage-slideshow/) | Editorial homepage: one-scroll-per-slide, shrinking logo, header colours that follow each slide |
 | [Snap scroll](components/snap-scroll/) | One scroll, swipe or arrow key moves exactly one full-screen section |
+| [Discount button](components/discount-button/) | Apply button with a shimmering hover, a bounce and confetti on success, and a shake on error |

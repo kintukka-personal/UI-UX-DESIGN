@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Discount Apply Button</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ---- Demo page only: a cart drawer footer to show the button in context ---- */
+  :root { color-scheme: light; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #E9E3D8;
+    color: #2A2622;
+    font: 400 15px/1.5 "Work Sans", "Helvetica Neue", Arial, sans-serif;
+    display: grid;
+    place-items: center;
+    padding: 40px 16px;
+    box-sizing: border-box;
+  }
+  .drawer {
+    width: min(420px, 100%);
+    padding: 28px 24px 24px;
+    box-sizing: border-box;
+    background: #F7F3EC;
+    box-shadow: 0 30px 80px -30px rgba(42, 38, 34, 0.35);
+    display: grid;
+    gap: 18px;
+  }
+  .drawer__item { display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center; padding-bottom: 18px; border-bottom: 1px solid #E4DDD1; }
+  .drawer__thumb { aspect-ratio: 1; background: linear-gradient(160deg, #6E2530, #4A1820); border-radius: 4px; }
+  .drawer__name { margin: 0; font-size: 14px; font-weight: 500; }
+  .drawer__meta { margin: 2px 0 0; font-size: 12px; color: #8C8174; }
+  .drawer__price { font-size: 14px; font-variant-numeric: tabular-nums; }
+  .drawer__discount-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .drawer__discount-head span:last-child { font-size: 18px; line-height: 1; }
+  .drawer__total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 18px; border-top: 1px solid #E4DDD1; font-size: 16px; }
+  .drawer__total strong { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .drawer__note { margin: -6px 0 0; font-size: 12px; color: #6F665C; }
+  .drawer__checkout {
+    display: flex; justify-content: center; align-items: center; gap: 14px;
+    height: 52px; border: 0; border-radius: 8px;
+    background: #2A2622; color: #F7F3EC;
+    font: 700 13px/1 "Work Sans", sans-serif; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer;
+  }
+  .hint { margin: 16px 0 0; text-align: center; font-size: 13px; color: #7A7064; }
+  .hint code { font: 600 12px/1 ui-monospace, Menlo, Consolas, monospace; background: #F7F3EC; padding: 3px 6px; border-radius: 4px; color: #2A2622; }
+</style>
+</head>
+<body>
+<main>
+  <div class="drawer">
+    <div class="drawer__item">
+      <div class="drawer__thumb" aria-hidden="true"></div>
+      <div><p class="drawer__name">Archive Leather Tote</p><p class="drawer__meta">Burgundy · One size</p></div>
+      <span class="drawer__price">$4,570.00</span>
+    </div>
+
+    <div class="drawer__discount-head"><span>Discount</span><span aria-hidden="true">+</span></div>
+
+    <form class="ui-discount" data-ui-discount novalidate>
+      <label class="ui-discount__sr" for="ui-discount-code">Discount code</label>
+      <div class="ui-discount__row">
+        <input class="ui-discount__input" id="ui-discount-code" name="discount" type="text" placeholder="Discount code" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <button class="ui-discount__btn" type="submit">
+          <span class="ui-discount__label">Apply</span>
+          <span class="ui-discount__spinner" aria-hidden="true"></span>
+          <span class="ui-discount__done" aria-hidden="true">
+            <svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3.2L13 5"/></svg>Applied
+          </span>
+          <span class="ui-discount__shine" aria-hidden="true"></span>
+        </button>
+      </div>
+      <p class="ui-discount__msg" role="status" aria-live="polite"></p>
+    </form>
+
+    <div class="drawer__total"><span>Estimated total</span><strong>$4,570.00 AUD</strong></div>
+    <p class="drawer__note">Duties and taxes included. Shipping is calculated at checkout.</p>
+    <button class="drawer__checkout" type="button">Checkout <span aria-hidden="true">→</span></button>
+  </div>
+  <p class="hint">Hover Apply, then try <code>WELCOME10</code> or <code>VIP20</code>. Any other code shows the error state.</p>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
