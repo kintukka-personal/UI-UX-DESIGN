@@ -15,7 +15,7 @@
   function demoValidate(code) {
     return new Promise(function (resolve) {
       setTimeout(function () {
-        resolve(DEMO_CODES[code] || { ok: false, message: "“" + code + "” isn’t a valid code. Check the spelling and try again." });
+        resolve(DEMO_CODES[code] || { ok: false, message: "“" + code + "” isn’t a valid code. Please try again." });
       }, 900);
     });
   }
