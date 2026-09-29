@@ -1,0 +1,36 @@
+{%- comment -%}
+  UI Discount — discount code field + Apply button.
+  Render where the discount field should appear: {% render 'ui-discount' %}
+  Needs assets: ui-discount.css, ui-discount.js, ui-discount-shopify.js
+{%- endcomment -%}
+
+{%- assign applied = cart.discount_codes.first -%}
+
+{{ 'ui-discount.css' | asset_url | stylesheet_tag }}
+
+<form
+  class="ui-discount"
+  data-ui-discount
+  novalidate
+  {% if applied %}
+    data-applied-code="{{ applied.code | upcase | escape }}"
+    data-applied-label="{{ applied.amount | money }} off"
+  {% endif %}
+>
+  <label class="ui-discount__sr" for="ui-discount-code-{{ section.id | default: 'cart' }}">Discount code</label>
+  <div class="ui-discount__row">
+    <input class="ui-discount__input" id="ui-discount-code-{{ section.id | default: 'cart' }}" name="discount" type="text" placeholder="Discount code" autocomplete="off" autocapitalize="characters" spellcheck="false">
+    <button class="ui-discount__btn" type="submit">
+      <span class="ui-discount__label">Apply</span>
+      <span class="ui-discount__spinner" aria-hidden="true"></span>
+      <span class="ui-discount__done" aria-hidden="true">
+        <svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3.2L13 5"/></svg>Applied
+      </span>
+      <span class="ui-discount__shine" aria-hidden="true"></span>
+    </button>
+  </div>
+  <p class="ui-discount__msg" role="status" aria-live="polite"></p>
+</form>
+
+<script src="{{ 'ui-discount.js' | asset_url }}" defer></script>
+<script src="{{ 'ui-discount-shopify.js' | asset_url }}" defer></script>

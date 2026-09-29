@@ -279,23 +279,25 @@
 
   /* ---- Updating the total -------------------------------------------- */
 
-  function formatter(el) {
+  function formatter(el, noCode) {
     var currency = el.dataset.currency || "AUD";
     var locale = el.dataset.locale || "en-AU";
     var nf;
     try { nf = new Intl.NumberFormat(locale, { style: "currency", currency: currency, currencyDisplay: "narrowSymbol" }); }
     catch (err) { nf = new Intl.NumberFormat(locale, { style: "currency", currency: currency }); }
-    var suffix = el.dataset.showCode === "false" ? "" : " " + currency;
+    var suffix = noCode || el.dataset.showCode === "false" ? "" : " " + currency;
     return function (v) { return nf.format(v) + suffix; };
   }
 
   function discounted(base, result) {
+    if (typeof result.total === "number") return Math.max(0, result.total);
     if (result.percent) return Math.max(0, Math.round(base * (100 - result.percent)) / 100);
     if (result.amount) return Math.max(0, Math.round((base - result.amount) * 100) / 100);
     return base;
   }
 
   function updateTotal(totalEl, code, result) {
+    if (typeof result.original === "number") totalEl.dataset.amount = result.original;
     var base = parseFloat(totalEl.dataset.amount);
     if (isNaN(base)) return;
     var fmt = formatter(totalEl);
@@ -331,7 +333,8 @@
   }
 
 
-  function resetTotal(totalEl) {
+  function resetTotal(totalEl, result) {
+    if (result && typeof result.total === "number") totalEl.dataset.amount = result.total;
     var base = parseFloat(totalEl.dataset.amount);
     if (isNaN(base)) return;
     var fmt = formatter(totalEl);
@@ -358,10 +361,15 @@
     requestAnimationFrame(tick);
   }
 
-  function chipLabel(result) {
+  function chipLabel(result, totalEl) {
     if (result.label) return result.label;
     if (result.percent) return result.percent + "% off";
-    if (result.amount) return result.amount + " off";
+    var fmt = totalEl ? formatter(totalEl, true) : null;
+    if (result.amount) return (fmt ? fmt(result.amount) : result.amount) + " off";
+    if (typeof result.total === "number" && totalEl) {
+      var base = typeof result.original === "number" ? result.original : parseFloat(totalEl.dataset.amount);
+      if (!isNaN(base) && base > result.total) return fmt(base - result.total) + " off";
+    }
     return "";
   }
 
@@ -404,7 +412,7 @@
 
     function showChip(code, result) {
       chipCode.textContent = code;
-      var note = chipLabel(result);
+      var note = chipLabel(result, findTotal());
       chipNote.textContent = note ? "\u00B7 " + note : "";
       removeBtn.setAttribute("aria-label", "Remove discount " + code);
       chip.hidden = false;
@@ -416,6 +424,14 @@
     function hideChip() {
       chip.classList.remove("is-shown");
       setTimeout(function () { if (!chip.classList.contains("is-shown")) chip.hidden = true; }, reduceMotion.matches ? 0 : 300);
+    }
+
+    if (form.dataset.appliedCode) {
+      chipCode.textContent = form.dataset.appliedCode;
+      chipNote.textContent = form.dataset.appliedLabel ? "\u00B7 " + form.dataset.appliedLabel : "";
+      removeBtn.setAttribute("aria-label", "Remove discount " + form.dataset.appliedCode);
+      chip.hidden = false;
+      chip.classList.add("is-shown");
     }
 
     function setState(state, text) {
@@ -481,14 +497,14 @@
       if (!code || removeBtn.disabled) return;
       removeBtn.disabled = true;
       var remove = window.uiDiscountRemove || function () { return true; };
-      Promise.resolve(remove(code)).then(function () {
+      Promise.resolve(remove(code)).then(function (removed) {
         removeBtn.disabled = false;
         delete form.dataset.appliedCode;
         hideChip();
         setState(null);
         if (msg) { msg.textContent = code + " removed"; msg.classList.add("is-shown", "is-quiet"); }
         var totalEl = findTotal();
-        if (totalEl) resetTotal(totalEl);
+        if (totalEl) resetTotal(totalEl, removed);
         input.value = "";
         input.focus({ preventScroll: true });
         form.dispatchEvent(new CustomEvent("ui-discount:removed", { bubbles: true, detail: { code: code } }));
@@ -508,8 +524,20 @@
 
   function initAll() { document.querySelectorAll("[data-ui-discount]").forEach(init); }
 
+  // Themes often re-render the cart drawer; pick up any new forms automatically.
+  function watch() {
+    if (!window.MutationObserver) return;
+    var queued = false;
+    new MutationObserver(function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; initAll(); });
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
   window.uiDiscountBurst = burst;
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAll);
-  else initAll();
+  function start() { initAll(); watch(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
 })();
