@@ -90,3 +90,23 @@ Set these on `.ui-discount`.
 | `--ui-discount-error` | `#A5432F` | Error state |
 | `--ui-discount-radius` | `8px` | Corner radius |
 | `--ui-discount-height` | `44px` | Field and button height |
+
+## Shopify
+
+The files in `shopify/` connect the button to the real cart through Shopify's Cart AJAX API (`POST /cart/update.js` with `discount`). Shopify checks the code and calculates the total, and the sparks animate to that real figure. The discount carries through to checkout.
+
+1. **Assets:**
+   - upload `style.css` as `assets/ui-discount.css`
+   - upload `script.js` as `assets/ui-discount.js`
+   - upload `shopify/ui-discount-shopify.js` as `assets/ui-discount-shopify.js`
+2. **Snippets:** add `shopify/ui-discount.liquid` and `shopify/ui-discount-total.liquid` to `snippets/`.
+3. **Cart drawer and/or cart page:**
+   - replace the theme's discount field with `{% render 'ui-discount' %}`
+   - replace its estimated total with `{% render 'ui-discount-total' %}`
+   - put the duties/shipping note under the Checkout button
+
+Behaviour:
+- An invalid code is rejected, and any previously applied code is put back on the cart.
+- The × removes the discount from the cart and counts the total back up.
+- A discount that's already on the cart (from an earlier visit) shows its tag and struck-through price when the page loads.
+- After each change, a `ui-discount:cart` event fires on `document` with the updated cart JSON. The theme can use it to refresh other cart UI.

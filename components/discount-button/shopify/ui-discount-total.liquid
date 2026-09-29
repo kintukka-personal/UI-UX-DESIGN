@@ -1,0 +1,29 @@
+{%- comment -%}
+  UI Discount — estimated total that the sparks fly to.
+  Render in place of the theme's estimated total: {% render 'ui-discount-total' %}
+{%- endcomment -%}
+
+{%- liquid
+  assign original = cart.original_total_price
+  assign now = cart.total_price
+  assign has_discount = false
+  if cart.discount_codes.size > 0 and original > now
+    assign has_discount = true
+  endif
+-%}
+
+<div
+  class="ui-discount-total{% if has_discount %} is-discounted{% endif %}"
+  data-ui-discount-total
+  data-amount="{{ original | divided_by: 100.0 }}"
+  {% if has_discount %}data-current="{{ now | divided_by: 100.0 }}"{% endif %}
+  data-currency="{{ cart.currency.iso_code }}"
+  data-locale="{{ request.locale.iso_code }}"
+  aria-live="polite"
+>
+  <s class="ui-discount-total__was" aria-hidden="true">{% if has_discount %}{{ original | money_with_currency }}{% endif %}</s>
+  <strong class="ui-discount-total__now">{{ now | money_with_currency }}</strong>
+</div>
+<p class="ui-discount-total__saved{% if has_discount %} is-shown{% endif %}" data-ui-discount-savings>
+  {%- if has_discount -%}You saved {{ original | minus: now | money_with_currency }} with {{ cart.discount_codes.first.code | upcase }}{%- endif -%}
+</p>
