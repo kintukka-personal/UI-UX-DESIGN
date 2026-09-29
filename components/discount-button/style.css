@@ -1,0 +1,463 @@
+/* ==========================================================================
+   UI Discount — code field + celebratory Apply button
+   Hover:   a gold shimmer travels around the border and a soft glow breathes.
+   Loading: the label gives way to a small spinner.
+   Success: the button squashes and springs, a check draws in, confetti bursts.
+   Error:   a short shake and a message under the field.
+   ========================================================================== */
+
+@property --ui-discount-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.ui-discount {
+  --ui-discount-font: "Work Sans", "Helvetica Neue", Arial, sans-serif;
+  --ui-discount-btn-bg: #2A2622;
+  --ui-discount-btn-fg: #F7F3EC;
+  --ui-discount-field-bg: transparent;
+  --ui-discount-field-fg: #2A2622;
+  --ui-discount-field-border: #C9AE92;
+  --ui-discount-muted: #9A8E80;
+  --ui-discount-glow: #D9B77A;
+  --ui-discount-glow-light: #FFF1CF;
+  --ui-discount-success: #4F6B45;
+  --ui-discount-error: #A5432F;
+  --ui-discount-radius: 8px;
+  --ui-discount-height: 44px;
+
+  margin: 0;
+  font-family: var(--ui-discount-font);
+}
+
+.ui-discount__row {
+  display: flex;
+  gap: 12px;
+}
+
+.ui-discount__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Field ------------------------------------------------------------- */
+
+.ui-discount__input {
+  flex: 1;
+  min-width: 0;
+  height: var(--ui-discount-height);
+  margin: 0;
+  padding: 0 14px;
+  box-sizing: border-box;
+  border: 1px solid var(--ui-discount-field-border);
+  border-radius: var(--ui-discount-radius);
+  box-shadow: none;
+  background: var(--ui-discount-field-bg);
+  color: var(--ui-discount-field-fg);
+  font: 400 15px/1 var(--ui-discount-font);
+  letter-spacing: 0.02em;
+  transition: border-color 250ms ease, box-shadow 250ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ui-discount__input::placeholder { color: var(--ui-discount-muted); opacity: 1; }
+.ui-discount__input:not(:placeholder-shown) { text-transform: uppercase; letter-spacing: 0.06em; }
+
+.ui-discount__input:focus {
+  outline: none;
+  border-color: var(--ui-discount-field-fg);
+  box-shadow: 0 0 0 3px rgba(217, 183, 122, 0.25);
+}
+
+.ui-discount.is-error .ui-discount__input {
+  border-color: var(--ui-discount-error);
+  box-shadow: 0 0 0 3px rgba(165, 67, 47, 0.12);
+}
+
+.ui-discount.is-success .ui-discount__input { border-color: var(--ui-discount-success); }
+
+/* ---- Button ------------------------------------------------------------ */
+
+.ui-discount__btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 92px;
+  height: var(--ui-discount-height);
+  margin: 0;
+  padding: 0 24px;
+  border: 0;
+  border-radius: var(--ui-discount-radius);
+  box-shadow: none;
+  background: var(--ui-discount-btn-bg);
+  color: var(--ui-discount-btn-fg);
+  font: 500 16px/1 var(--ui-discount-font);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), background-color 400ms ease;
+}
+
+.ui-discount__btn > * { grid-area: 1 / 1; }
+
+/* Travelling shimmer on the border */
+.ui-discount__btn::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: 1;
+  padding: 2px;
+  border-radius: calc(var(--ui-discount-radius) + 2px);
+  background: conic-gradient(
+    from var(--ui-discount-angle),
+    transparent 0deg,
+    transparent 200deg,
+    var(--ui-discount-glow) 280deg,
+    var(--ui-discount-glow-light) 320deg,
+    var(--ui-discount-glow) 345deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+  animation: ui-discount-orbit 2.6s linear infinite;
+  animation-play-state: paused;
+}
+
+/* Soft breathing glow */
+.ui-discount__btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(217, 183, 122, 0);
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .ui-discount__btn:hover:not(:disabled) { transform: translateY(-1px); }
+  .ui-discount__btn:hover:not(:disabled)::before { opacity: 1; animation-play-state: running; }
+  .ui-discount__btn:hover:not(:disabled)::after { animation: ui-discount-breathe 1.8s ease-in-out infinite; }
+}
+
+.ui-discount__btn:focus { outline: none; }
+.ui-discount__btn:focus-visible::before { opacity: 1; animation-play-state: running; }
+.ui-discount__btn:focus-visible { box-shadow: 0 0 0 3px rgba(217, 183, 122, 0.35); }
+
+.ui-discount__btn:active:not(:disabled) { transform: scale(0.96); transition-duration: 80ms; }
+
+@keyframes ui-discount-orbit {
+  to { --ui-discount-angle: 360deg; }
+}
+
+@keyframes ui-discount-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 183, 122, 0.0), 0 4px 14px -6px rgba(217, 183, 122, 0.35); }
+  50%      { box-shadow: 0 0 0 4px rgba(217, 183, 122, 0.14), 0 6px 22px -4px rgba(217, 183, 122, 0.55); }
+}
+
+/* Label, spinner and check share the same spot */
+.ui-discount__label,
+.ui-discount__spinner,
+.ui-discount__done {
+  transition: opacity 250ms ease, transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ui-discount__spinner {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid rgba(247, 243, 236, 0.25);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.6);
+  animation: ui-discount-spin 700ms linear infinite;
+}
+
+.ui-discount__done {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(6px);
+  white-space: nowrap;
+}
+
+.ui-discount__done svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ui-discount__done path {
+  stroke-dasharray: 22;
+  stroke-dashoffset: 22;
+}
+
+@keyframes ui-discount-spin { to { rotate: 360deg; } }
+
+/* Loading */
+.ui-discount.is-loading .ui-discount__btn { cursor: progress; }
+.ui-discount.is-loading .ui-discount__label { opacity: 0; transform: translateY(-6px); }
+.ui-discount.is-loading .ui-discount__spinner { opacity: 1; transform: scale(1); }
+
+/* Success */
+.ui-discount.is-success .ui-discount__btn {
+  background: var(--ui-discount-success);
+  animation: ui-discount-bounce 750ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
+}
+.ui-discount.is-success .ui-discount__label { opacity: 0; transform: translateY(-6px); }
+.ui-discount.is-success .ui-discount__done { opacity: 1; transform: none; }
+.ui-discount.is-success .ui-discount__done path {
+  transition: stroke-dashoffset 450ms cubic-bezier(0.65, 0, 0.35, 1) 180ms;
+  stroke-dashoffset: 0;
+}
+
+/* A sweep of light across the button on success */
+.ui-discount__shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.ui-discount__shine::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: -40%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 244, 214, 0.55), transparent);
+  transform: translateX(0) skewX(-18deg);
+  opacity: 0;
+}
+.ui-discount.is-success .ui-discount__shine::before {
+  animation: ui-discount-shine 900ms ease 120ms both;
+}
+
+@keyframes ui-discount-bounce {
+  0%   { transform: scale(1, 1); }
+  18%  { transform: scale(1.12, 0.86); }
+  38%  { transform: scale(0.92, 1.1); }
+  56%  { transform: scale(1.05, 0.96); }
+  74%  { transform: scale(0.98, 1.02); }
+  100% { transform: scale(1, 1); }
+}
+
+@keyframes ui-discount-shine {
+  0%   { opacity: 0; transform: translateX(0) skewX(-18deg); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translateX(380%) skewX(-18deg); }
+}
+
+/* Error */
+.ui-discount.is-error .ui-discount__btn { animation: ui-discount-shake 360ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+
+@keyframes ui-discount-shake {
+  20%, 80% { transform: translateX(-1px); }
+  40%      { transform: translateX(2px); }
+  60%      { transform: translateX(-2px); }
+}
+
+/* ---- Message ----------------------------------------------------------- */
+
+.ui-discount__msg {
+  min-height: 1.4em;
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+.ui-discount__msg.is-shown { opacity: 1; transform: none; }
+.ui-discount.is-error .ui-discount__msg { color: var(--ui-discount-error); }
+.ui-discount.is-success .ui-discount__msg { color: var(--ui-discount-success); }
+
+/* Success text is announced to screen readers; the tag shows it visually */
+.ui-discount.is-success .ui-discount__msg,
+.ui-discount__msg.is-quiet {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Applied-code tag -------------------------------------------------- */
+
+.ui-discount__applied {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 4px 4px 4px 10px;
+  border-radius: 999px;
+  background: rgba(79, 107, 69, 0.1);
+  color: var(--ui-discount-success);
+  font: 500 12px/1 var(--ui-discount-font);
+  letter-spacing: 0.06em;
+  opacity: 0;
+  transform: scale(0.85);
+  transform-origin: 0 50%;
+  transition: opacity 250ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ui-discount__applied.is-shown {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 400ms ease 350ms,
+    transform 600ms cubic-bezier(0.3, 1.5, 0.5, 1) 350ms;
+}
+
+.ui-discount__applied[hidden] { display: none; }
+.ui-discount__applied:not([hidden]) + .ui-discount__msg:empty { min-height: 0; margin: 0; }
+
+.ui-discount__applied-icon svg {
+  display: block;
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+}
+
+.ui-discount__applied-note {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+}
+
+.ui-discount__remove {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 0 0 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 250ms ease;
+}
+
+.ui-discount__remove svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.ui-discount__remove:hover { background: rgba(79, 107, 69, 0.18); transform: rotate(90deg); }
+.ui-discount__remove:focus { outline: none; }
+.ui-discount__remove:focus-visible { outline: 1px solid currentColor; outline-offset: 1px; }
+.ui-discount__remove:disabled { opacity: 0.5; cursor: progress; }
+
+/* ---- Estimated total ---------------------------------------------------- */
+
+.ui-discount-total {
+  display: grid;
+  justify-items: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-discount-total__was {
+  display: block;
+  max-height: 0;
+  overflow: hidden;
+  color: var(--ui-discount-muted, #9A8E80);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-decoration: none;
+  opacity: 0;
+  /* the strike line is drawn in once the new price lands */
+  background: linear-gradient(currentColor, currentColor) left 55% / 0 1px no-repeat;
+  transition: max-height 400ms ease, opacity 400ms ease, background-size 500ms cubic-bezier(0.65, 0, 0.35, 1) 250ms;
+}
+
+.ui-discount-total.is-discounted .ui-discount-total__was {
+  max-height: 1.6em;
+  opacity: 1;
+  background-size: 100% 1px;
+}
+
+.ui-discount-total__now {
+  display: inline-block;
+  transform-origin: 100% 50%;
+  transition: color 500ms ease;
+}
+
+.ui-discount-total.is-discounted .ui-discount-total__now { color: var(--ui-discount-success, #4F6B45); }
+
+.ui-discount-total.is-hit .ui-discount-total__now {
+  animation: ui-discount-pop 650ms cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+
+@keyframes ui-discount-pop {
+  0%   { transform: scale(1); text-shadow: 0 0 0 rgba(217, 183, 122, 0); }
+  30%  { transform: scale(1.12); text-shadow: 0 0 14px rgba(217, 183, 122, 0.9); }
+  100% { transform: scale(1); text-shadow: 0 0 0 rgba(217, 183, 122, 0); }
+}
+
+.ui-discount-total__saved {
+  margin: 0;
+  color: var(--ui-discount-success, #4F6B45);
+  font-size: 13px;
+  text-align: right;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 400ms ease 300ms, transform 400ms ease 300ms;
+}
+
+.ui-discount-total__saved.is-shown { opacity: 1; transform: none; }
+
+/* ---- Reduced motion ---------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-discount-total *,
+  .ui-discount *,
+  .ui-discount *::before,
+  .ui-discount *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}
+
+/* Once applied, the button rests: no shimmer or glow */
+.ui-discount.is-success .ui-discount__btn::before,
+.ui-discount.is-loading .ui-discount__btn::before { opacity: 0 !important; }
+.ui-discount.is-success .ui-discount__btn::after,
+.ui-discount.is-loading .ui-discount__btn::after { animation: none !important; }
