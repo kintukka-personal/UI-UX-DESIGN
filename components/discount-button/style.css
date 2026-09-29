@@ -294,6 +294,96 @@
 .ui-discount.is-error .ui-discount__msg { color: var(--ui-discount-error); }
 .ui-discount.is-success .ui-discount__msg { color: var(--ui-discount-success); }
 
+/* Success text is announced to screen readers; the tag shows it visually */
+.ui-discount.is-success .ui-discount__msg,
+.ui-discount__msg.is-quiet {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Applied-code tag -------------------------------------------------- */
+
+.ui-discount__applied {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 4px 4px 4px 10px;
+  border-radius: 999px;
+  background: rgba(79, 107, 69, 0.1);
+  color: var(--ui-discount-success);
+  font: 500 12px/1 var(--ui-discount-font);
+  letter-spacing: 0.06em;
+  opacity: 0;
+  transform: scale(0.85);
+  transform-origin: 0 50%;
+  transition: opacity 250ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ui-discount__applied.is-shown {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 400ms ease 350ms,
+    transform 600ms cubic-bezier(0.3, 1.5, 0.5, 1) 350ms;
+}
+
+.ui-discount__applied[hidden] { display: none; }
+.ui-discount__applied:not([hidden]) + .ui-discount__msg:empty { min-height: 0; margin: 0; }
+
+.ui-discount__applied-icon svg {
+  display: block;
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+}
+
+.ui-discount__applied-note {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+}
+
+.ui-discount__remove {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 0 0 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 250ms ease;
+}
+
+.ui-discount__remove svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.ui-discount__remove:hover { background: rgba(79, 107, 69, 0.18); transform: rotate(90deg); }
+.ui-discount__remove:focus { outline: none; }
+.ui-discount__remove:focus-visible { outline: 1px solid currentColor; outline-offset: 1px; }
+.ui-discount__remove:disabled { opacity: 0.5; cursor: progress; }
+
 /* ---- Estimated total ---------------------------------------------------- */
 
 .ui-discount-total {

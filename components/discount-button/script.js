@@ -11,8 +11,12 @@
    success, gold sparks fly from the button to the total; when they land,
    the old price is struck through and the new one counts down into place.
 
-   On success the form fires "ui-discount:applied" (bubbles) with
-   detail = { code, result }. */
+   The applied code appears as a small tag under the field with a remove
+   (x) button. Removing it counts the total back up. For a real store, set
+   window.uiDiscountRemove = function (code) { ... } returning a Promise.
+
+   Events (bubble from the form): "ui-discount:applied" with
+   detail = { code, result }, and "ui-discount:removed" with detail = { code }. */
 (function () {
   var DEMO_CODES = {
     WELCOME10: { ok: true, percent: 10, message: "WELCOME10 applied: 10% off your order" },
@@ -326,6 +330,44 @@
     requestAnimationFrame(tick);
   }
 
+
+  function resetTotal(totalEl) {
+    var base = parseFloat(totalEl.dataset.amount);
+    if (isNaN(base)) return;
+    var fmt = formatter(totalEl);
+    var nowEl = totalEl.querySelector(".ui-discount-total__now") || totalEl;
+    var savedEl = document.querySelector("[data-ui-discount-savings]");
+    var from = parseFloat(totalEl.dataset.current || base);
+    delete totalEl.dataset.current;
+    totalEl.classList.remove("is-discounted", "is-hit");
+    if (savedEl) savedEl.classList.remove("is-shown");
+
+    // Count back up to the full price
+    var dur = reduceMotion.matches ? 1 : 600;
+    var t0 = performance.now();
+    function tick(now) {
+      var t = Math.min(1, (now - t0) / dur);
+      var e = 1 - Math.pow(1 - t, 3);
+      nowEl.textContent = fmt(from + (base - from) * e);
+      if (t < 1) requestAnimationFrame(tick);
+      else {
+        nowEl.textContent = fmt(base);
+        if (savedEl && !savedEl.classList.contains("is-shown")) savedEl.textContent = "";
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function chipLabel(result) {
+    if (result.label) return result.label;
+    if (result.percent) return result.percent + "% off";
+    if (result.amount) return result.amount + " off";
+    return "";
+  }
+
+  var TAG_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8.6 1.8H13a1.2 1.2 0 0 1 1.2 1.2v4.4a1.2 1.2 0 0 1-.35.85l-5.8 5.8a1.2 1.2 0 0 1-1.7 0l-4.4-4.4a1.2 1.2 0 0 1 0-1.7l5.8-5.8a1.2 1.2 0 0 1 .85-.35z"/><circle cx="11" cy="5" r="1"/></svg>';
+  var X_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg>';
+
   /* ---- Form behaviour ------------------------------------------------ */
 
   function init(form) {
@@ -337,6 +379,45 @@
     var msg = form.querySelector(".ui-discount__msg");
     if (!input || !btn) return;
 
+    function findTotal() {
+      return form.dataset.uiDiscountTotal
+        ? document.querySelector(form.dataset.uiDiscountTotal)
+        : document.querySelector("[data-ui-discount-total]");
+    }
+
+    // Applied-code tag with a remove button, created once
+    var chip = form.querySelector(".ui-discount__applied");
+    if (!chip) {
+      chip = document.createElement("div");
+      chip.className = "ui-discount__applied";
+      chip.hidden = true;
+      chip.innerHTML = '<span class="ui-discount__applied-icon">' + TAG_ICON + '</span>' +
+        '<span class="ui-discount__applied-code"></span>' +
+        '<span class="ui-discount__applied-note"></span>' +
+        '<button class="ui-discount__remove" type="button">' + X_ICON + '</button>';
+      var row = form.querySelector(".ui-discount__row");
+      (row || input).insertAdjacentElement("afterend", chip);
+    }
+    var chipCode = chip.querySelector(".ui-discount__applied-code");
+    var chipNote = chip.querySelector(".ui-discount__applied-note");
+    var removeBtn = chip.querySelector(".ui-discount__remove");
+
+    function showChip(code, result) {
+      chipCode.textContent = code;
+      var note = chipLabel(result);
+      chipNote.textContent = note ? "\u00B7 " + note : "";
+      removeBtn.setAttribute("aria-label", "Remove discount " + code);
+      chip.hidden = false;
+      chip.classList.remove("is-shown");
+      void chip.offsetWidth;
+      chip.classList.add("is-shown");
+    }
+
+    function hideChip() {
+      chip.classList.remove("is-shown");
+      setTimeout(function () { if (!chip.classList.contains("is-shown")) chip.hidden = true; }, reduceMotion.matches ? 0 : 300);
+    }
+
     function setState(state, text) {
       form.classList.remove("is-loading", "is-success", "is-error");
       if (state) form.classList.add("is-" + state);
@@ -344,6 +425,7 @@
       if (msg) {
         msg.textContent = text || "";
         msg.classList.toggle("is-shown", !!text);
+        msg.classList.remove("is-quiet");
       }
     }
 
@@ -375,10 +457,9 @@
         if (result.ok) {
           form.dataset.appliedCode = code;
           setState("success", result.message || code + " applied");
+          showChip(code, result);
           burst(btn);
-          var totalEl = form.dataset.uiDiscountTotal
-            ? document.querySelector(form.dataset.uiDiscountTotal)
-            : document.querySelector("[data-ui-discount-total]");
+          var totalEl = findTotal();
           if (totalEl) {
             var target = totalEl.querySelector(".ui-discount-total__now") || totalEl;
             if (reduceMotion.matches) updateTotal(totalEl, code, result);
@@ -391,6 +472,29 @@
       }, function () {
         restartAnimation();
         setState("error", "Something went wrong. Please try again.");
+      });
+    });
+
+    // Remove the applied discount
+    removeBtn.addEventListener("click", function () {
+      var code = form.dataset.appliedCode;
+      if (!code || removeBtn.disabled) return;
+      removeBtn.disabled = true;
+      var remove = window.uiDiscountRemove || function () { return true; };
+      Promise.resolve(remove(code)).then(function () {
+        removeBtn.disabled = false;
+        delete form.dataset.appliedCode;
+        hideChip();
+        setState(null);
+        if (msg) { msg.textContent = code + " removed"; msg.classList.add("is-shown", "is-quiet"); }
+        var totalEl = findTotal();
+        if (totalEl) resetTotal(totalEl);
+        input.value = "";
+        input.focus({ preventScroll: true });
+        form.dispatchEvent(new CustomEvent("ui-discount:removed", { bubbles: true, detail: { code: code } }));
+      }, function () {
+        removeBtn.disabled = false;
+        setState("error", "The discount couldn\u2019t be removed. Please try again.");
       });
     });
 

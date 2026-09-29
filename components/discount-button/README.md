@@ -14,7 +14,9 @@ A discount code field with an Apply button that feels rewarding to use:
   - the old price slides up and a line is drawn through it
   - the new price counts down to the discounted amount in green
   - "You saved $457.00 AUD with WELCOME10" fades in
-- **Changing codes:** applying a second code recalculates from the original price.
+- **Applied tag:** the active code shows as a small tag under the field, for example "🏷 VIP20 · 20% off ×". Typing a new code resets the button, but the current discount stays applied (and visible in the tag) until it's replaced or removed.
+- **Remove:** the × on the tag reverses everything: the tag shrinks away, the total counts back up, the strike line and "You saved" line disappear, and the field clears.
+- **Changing codes:** applying a second code replaces the first and recalculates from the original price.
 - **Editing:** changing the code afterwards resets the button to "Apply".
 - **Reduced motion:** with it turned on, the states still change but nothing moves.
 
@@ -68,7 +70,9 @@ window.uiDiscountValidate = function (code) {
 };
 ```
 
-On success the form fires a bubbling `ui-discount:applied` event with `detail = { code, result }`. The upcoming price animation will listen for it.
+For removal, define `window.uiDiscountRemove = function (code) { return Promise }`. Without it, removal just resets the display.
+
+On success the form fires a bubbling `ui-discount:applied` event with `detail = { code, result }`. Removing a code fires `ui-discount:removed` with `detail = { code }`.
 
 `window.uiDiscountBurst(element)` fires the confetti from any element, if you want it elsewhere.
 
