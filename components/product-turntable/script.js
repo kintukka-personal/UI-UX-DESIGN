@@ -37,6 +37,8 @@
     "uniform sampler2D uEB;",
     "uniform sampler2D uMA;",     // soft product mask of A (1 = product)
     "uniform sampler2D uMB;",
+    "uniform sampler2D uFA;",     // product colour spread outward (fills gaps)
+    "uniform sampler2D uFB;",
     "uniform float uMirA;",
     "uniform float uMirB;",
     "uniform float uT;",          // 0..1 progress from A to B
@@ -118,7 +120,9 @@
     // (edge pixels are skipped so no halo leaks in); soft weights only as a fallback.
     "  float hA = smoothstep(0.62, 0.8, fA) * (1.0 - mC), hB = smoothstep(0.62, 0.8, fB) * mC;",
     "  float sA = fA * (1.0 - mC), sB = fB * mC;",
-    "  vec3 prodSoft = (a * sA + b * sB + mix(a, b, mC) * 0.0001) / (sA + sB + 0.0001);",
+    "  vec3 fillA = texture2D(uFA, clamp(uvA, 0.0, 1.0)).rgb;",
+    "  vec3 fillB = texture2D(uFB, clamp(uvB, 0.0, 1.0)).rgb;",
+    "  vec3 prodSoft = mix(fillA, fillB, mC);",
     "  vec3 prod = (a * hA + b * hB + prodSoft * 0.002) / (hA + hB + 0.002);",
     "",
     // Outside: backdrop from whichever photo clearly shows backdrop here.
@@ -157,7 +161,7 @@
     return s;
   }
 
-  function GLRenderer(canvas, frames) {
+  function GLRenderer(canvas) {
     var gl = canvas.getContext("webgl", { antialias: false, premultipliedAlpha: false, preserveDrawingBuffer: true });
     if (!gl) throw new Error("no webgl");
     var prog = gl.createProgram();
@@ -175,7 +179,7 @@
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
     var u = {};
-    ["uA", "uB", "uEA", "uEB", "uMA", "uMB", "uMirA", "uMirB", "uT", "uStep", "uBlur", "uScale", "uBg"].forEach(function (n) {
+    ["uA", "uB", "uEA", "uEB", "uMA", "uMB", "uFA", "uFB", "uMirA", "uMirB", "uT", "uStep", "uBlur", "uScale", "uBg"].forEach(function (n) {
       u[n] = gl.getUniformLocation(prog, n);
     });
     gl.uniform1i(u.uA, 0);
@@ -184,6 +188,8 @@
     gl.uniform1i(u.uEB, 3);
     gl.uniform1i(u.uMA, 4);
     gl.uniform1i(u.uMB, 5);
+    gl.uniform1i(u.uFA, 6);
+    gl.uniform1i(u.uFB, 7);
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
 
     function makeTexture(filter) {
@@ -196,33 +202,47 @@
       return tex;
     }
 
-    // One texture per distinct photo, one small extents texture per frame
+    // One texture per distinct photo; extents + mask textures per frame.
+    // Uploaded the first time a frame set is used on this canvas.
     var textures = {};
-    frames.forEach(function (f) {
-      if (!textures[f.img.src]) {
-        textures[f.img.src] = makeTexture(gl.LINEAR);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, f.img);
-      }
-      f.extTex = makeTexture(gl.LINEAR);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, EXT_N, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, f.ext);
-      f.maskTex = makeTexture(gl.LINEAR);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, EXT_N, EXT_N, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, f.mask);
-    });
+    var perFrame = new Map();
+    this.load = function (frames) {
+      frames.forEach(function (f) {
+        if (perFrame.has(f)) return;
+        if (!textures[f.img.src]) {
+          textures[f.img.src] = makeTexture(gl.LINEAR);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, f.img);
+        }
+        var ext = makeTexture(gl.LINEAR);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, EXT_N, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, f.ext);
+        var msk = makeTexture(gl.LINEAR);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, EXT_N, EXT_N, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, f.mask);
+        var fill = makeTexture(gl.LINEAR);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, EXT_N, EXT_N, 0, gl.RGB, gl.UNSIGNED_BYTE, f.fill);
+        perFrame.set(f, { img: textures[f.img.src], ext: ext, mask: msk, fill: fill });
+      });
+    };
 
     this.draw = function (s) {
+      var ta = perFrame.get(s.a), tb = perFrame.get(s.b);
+      if (!ta || !tb) return;
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, textures[s.a.img.src]);
+      gl.bindTexture(gl.TEXTURE_2D, ta.img);
       gl.activeTexture(gl.TEXTURE1);
-      gl.bindTexture(gl.TEXTURE_2D, textures[s.b.img.src]);
+      gl.bindTexture(gl.TEXTURE_2D, tb.img);
       gl.activeTexture(gl.TEXTURE2);
-      gl.bindTexture(gl.TEXTURE_2D, s.a.extTex);
+      gl.bindTexture(gl.TEXTURE_2D, ta.ext);
       gl.activeTexture(gl.TEXTURE3);
-      gl.bindTexture(gl.TEXTURE_2D, s.b.extTex);
+      gl.bindTexture(gl.TEXTURE_2D, tb.ext);
       gl.activeTexture(gl.TEXTURE4);
-      gl.bindTexture(gl.TEXTURE_2D, s.a.maskTex);
+      gl.bindTexture(gl.TEXTURE_2D, ta.mask);
       gl.activeTexture(gl.TEXTURE5);
-      gl.bindTexture(gl.TEXTURE_2D, s.b.maskTex);
+      gl.bindTexture(gl.TEXTURE_2D, tb.mask);
+      gl.activeTexture(gl.TEXTURE6);
+      gl.bindTexture(gl.TEXTURE_2D, ta.fill);
+      gl.activeTexture(gl.TEXTURE7);
+      gl.bindTexture(gl.TEXTURE_2D, tb.fill);
       gl.uniform1f(u.uMirA, s.a.mirror ? 1 : 0);
       gl.uniform1f(u.uMirB, s.b.mirror ? 1 : 0);
       gl.uniform1f(u.uT, s.t);
@@ -254,7 +274,7 @@
       var r = d[i * 4], g = d[i * 4 + 1], b = d[i * 4 + 2];
       var mx = Math.max(r, g, b), mn = Math.min(r, g, b);
       var sat = mx ? (mx - mn) / mx : 0;
-      raw[i] = sat > SAT_THRESHOLD || mx < 90 ? 1 : 0;
+      raw[i] = sat > SAT_THRESHOLD || mx < DARK_THRESHOLD ? 1 : 0;
     }
     // Close small holes (highlights, deep folds) and drop specks: dilate, then erode.
     var closed = threshold(boxBlur(threshold(boxBlur(raw, n, 3), 0.2), n, 3), 0.85);
@@ -313,7 +333,30 @@
       out[k * 4 + 2] = Math.round(cols[0][k] * 255);
       out[k * 4 + 3] = Math.round(cols[1][k] * 255);
     }
-    return { ext: out, mask: maskBytes };
+    // Product colour spread outward so gaps inside a morphing outline fill with
+    // fabric, not backdrop: blur(colour * mask) / blur(mask) at growing radii.
+    var fillBytes = new Uint8Array(n * n * 3);
+    var chans = [0, 1, 2].map(function (c) {
+      var arr = new Float32Array(n * n);
+      for (var q = 0; q < n * n; q++) arr[q] = d[q * 4 + c] * closed[q];
+      return arr;
+    });
+    var have = new Float32Array(n * n);
+    var fillc = [new Float32Array(n * n), new Float32Array(n * n), new Float32Array(n * n)];
+    [0, 3, 10, 30].forEach(function (rad) {
+      var wsum = rad ? boxBlur(closed, n, rad) : closed;
+      var cs = chans.map(function (arr) { return rad ? boxBlur(arr, n, rad) : arr; });
+      for (var q = 0; q < n * n; q++) {
+        if (have[q] || wsum[q] < 0.02) continue;
+        for (var c = 0; c < 3; c++) fillc[c][q] = cs[c][q] / wsum[q];
+        have[q] = 1;
+      }
+    });
+    for (var q2 = 0; q2 < n * n; q2++) {
+      for (var c2 = 0; c2 < 3; c2++) fillBytes[q2 * 3 + c2] = have[q2] ? Math.round(fillc[c2][q2]) : d[q2 * 4 + c2];
+    }
+
+    return { ext: out, mask: maskBytes, fill: fillBytes };
   }
 
   // Separable box blur on an n*n float field
@@ -343,12 +386,14 @@
     return out;
   }
 
-  var SAT_THRESHOLD = 0.28;
+  var SAT_THRESHOLD = 0.28;  // saturated colour = product
+  var DARK_THRESHOLD = 150;  // dark or charcoal = product (backdrop is ~220)
 
   /* ---- Canvas 2D fallback: a clean crossfade ------------------------- */
 
   function CanvasRenderer(canvas) {
     var ctx = canvas.getContext("2d");
+    this.load = function () {};
     function drawOne(f, alpha, s) {
       var w = canvas.width / s.scale[0], h = canvas.height / s.scale[1];
       var x = (canvas.width - w) / 2, y = (canvas.height - h) / 2;
@@ -402,17 +447,37 @@
     var hint = root.querySelector(".ui-turn__hint");
     var dial = root.querySelector(".ui-turn__dial");
     var caption = root.querySelector(".ui-turn__caption");
-    var sources = Array.prototype.slice.call(root.querySelectorAll(".ui-turn__frames img"));
-    if (!stage || !canvas || !sources.length) return;
+    var groups = Array.prototype.slice.call(root.querySelectorAll(".ui-turn__frames"));
+    if (!stage || !canvas || !groups.length) return;
 
-    var frames = sources.map(function (el) {
-      return {
-        angle: mod(parseFloat(el.dataset.angle) || 0, 360),
-        mirror: el.hasAttribute("data-mirror"),
-        label: el.dataset.label || el.alt || "",
-        src: el.currentSrc || el.src
-      };
-    }).sort(function (a, b) { return a.angle - b.angle; });
+    // One frame set per colourway (a single group works too)
+    var sets = {};
+    var order = [];
+    groups.forEach(function (g, gi) {
+      var name = g.dataset.colorway || "default-" + gi;
+      var frs = Array.prototype.slice.call(g.querySelectorAll("img")).map(function (el) {
+        return {
+          angle: mod(parseFloat(el.dataset.angle) || 0, 360),
+          mirror: el.hasAttribute("data-mirror"),
+          label: el.dataset.label || el.alt || "",
+          src: el.getAttribute("src")
+        };
+      }).sort(function (a, b) { return a.angle - b.angle; });
+      if (!frs.length) return;
+      sets[name] = { name: name, label: g.dataset.label || name, tint: g.dataset.tint || "", frames: frs, ready: null };
+      order.push(name);
+    });
+    if (!order.length) return;
+
+    var current = sets[root.dataset.colorway] || sets[order[0]];
+    var frames = current.frames;
+
+    // A second canvas stacked on top shows the incoming colourway during a change
+    var canvasNext = canvas.cloneNode(false);
+    canvasNext.classList.add("ui-turn__canvas--next");
+    canvas.insertAdjacentElement("afterend", canvasNext);
+    var front = canvas, back = canvasNext;
+    var reveal = null; // { set, start, dur, ox, oy }
 
     var dragPerStage = parseFloat(root.dataset.dragDegrees) || 180; // degrees per stage width
     var zoom = parseFloat(root.dataset.zoom) || 0.86; // product size within the stage
@@ -434,8 +499,10 @@
     function resize() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       var r = stage.getBoundingClientRect();
-      canvas.width = Math.max(1, Math.round(r.width * dpr));
-      canvas.height = Math.max(1, Math.round(r.height * dpr));
+      [canvas, canvasNext].forEach(function (cv) {
+        cv.width = Math.max(1, Math.round(r.width * dpr));
+        cv.height = Math.max(1, Math.round(r.height * dpr));
+      });
       // "contain" the square-ish photo inside the stage
       var img = frames[0].img;
       var ia = img ? img.naturalWidth / img.naturalHeight : 1;
@@ -445,16 +512,17 @@
     }
 
     // Find the two photos either side of an angle
-    function pair(angle) {
+    function pair(angle, list) {
+      var fl = list || frames;
       var a = mod(angle, 360);
-      for (var i = 0; i < frames.length; i++) {
-        var A = frames[i];
-        var B = frames[(i + 1) % frames.length];
+      for (var i = 0; i < fl.length; i++) {
+        var A = fl[i];
+        var B = fl[(i + 1) % fl.length];
         var span = mod(B.angle - A.angle, 360) || 360;
         var into = mod(a - A.angle, 360);
         if (into < span) return { a: A, b: B, t: into / span, step: span };
       }
-      return { a: frames[0], b: frames[0], t: 0, step: 360 };
+      return { a: fl[0], b: fl[0], t: 0, step: 360 };
     }
 
     function nearestFrameAngle(angle) {
@@ -466,18 +534,139 @@
       return angle + best;
     }
 
+    function rendererFor(cv) {
+      if (!cv._uiTurnRenderer) {
+        try { cv._uiTurnRenderer = new GLRenderer(cv); root.classList.add("is-webgl"); }
+        catch (err) { cv._uiTurnRenderer = new CanvasRenderer(cv); }
+      }
+      return cv._uiTurnRenderer;
+    }
+
+    function drawSet(cv, set) {
+      var r = rendererFor(cv);
+      var p = pair(state.angle, set.frames);
+      var blur = reduceMotion.matches ? 0 : Math.min(0.012, Math.abs(state.vel) * 0.006);
+      r.draw({ a: p.a, b: p.b, t: p.t, step: p.step, blur: blur, scale: scale, bg: bg });
+    }
+
     var needsDraw = true;
     function draw() {
       if (!renderer) return;
-      var p = pair(state.angle);
-      var blur = reduceMotion.matches ? 0 : Math.min(0.012, Math.abs(state.vel) * 0.006);
-      renderer.draw({
-        a: p.a, b: p.b, t: p.t, step: p.step,
-        blur: blur, scale: scale, bg: bg
-      });
+      drawSet(front, current);
+      if (reveal) drawSet(back, reveal.set);
       updateDial();
       needsDraw = false;
     }
+
+    /* ---- Colourways ---- */
+
+    function loadSet(set) {
+      if (set.ready) return set.ready;
+      var unique = {};
+      set.frames.forEach(function (f) { unique[f.src] = unique[f.src] || loadImage(f.src); });
+      set.ready = Promise.all(set.frames.map(function (f) {
+        return unique[f.src].then(function (img) { f.img = img; });
+      })).then(function () {
+        set.frames.forEach(function (f) { var r = computeExtents(f.img, f.mirror); f.ext = r.ext; f.mask = r.mask; f.fill = r.fill; });
+        return set;
+      });
+      set.ready.catch(function () { set.ready = null; });
+      return set.ready;
+    }
+
+    var swatches = Array.prototype.slice.call(document.querySelectorAll("[data-ui-turn-colorway]")).filter(function (b) {
+      return sets[b.dataset.uiTurnColorway];
+    });
+    var colorLabel = document.querySelector("[data-ui-turn-colorway-label]");
+
+    function syncSwatches(name) {
+      swatches.forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.uiTurnColorway === name ? "true" : "false"); });
+    }
+
+    function applyDetails(set) {
+      if (set.tint) root.style.setProperty("--ui-turn-accent", set.tint);
+      if (colorLabel) {
+        colorLabel.classList.add("is-changing");
+        setTimeout(function () {
+          colorLabel.textContent = set.label;
+          colorLabel.classList.remove("is-changing");
+        }, 180);
+      }
+    }
+
+    // The new colour spreads from the edge of the stage nearest the swatch
+    function originFrom(el) {
+      var r = stage.getBoundingClientRect();
+      if (!el) return [r.width, r.height / 2];
+      var b = el.getBoundingClientRect();
+      var cx = b.left + b.width / 2 - r.left, cy = b.top + b.height / 2 - r.top;
+      return [Math.max(0, Math.min(r.width, cx)), Math.max(0, Math.min(r.height, cy))];
+    }
+
+    var pendingName = null;
+    function setColorway(name, fromEl) {
+      var set = sets[name];
+      if (!set || !renderer) return;
+      pendingName = name;
+      syncSwatches(name);
+      if (set === current && !reveal) return;
+      var btn = fromEl || swatches.filter(function (b) { return b.dataset.uiTurnColorway === name; })[0];
+      if (btn) btn.classList.add("is-loading");
+      loadSet(set).then(function () {
+        if (btn) btn.classList.remove("is-loading");
+        if (pendingName !== name) return;          // another swatch was chosen meanwhile
+        if (reveal) finishReveal();                  // snap any running change to its end
+        if (set === current) return;
+        rendererFor(back).load(set.frames);
+        var o = originFrom(btn);
+        reveal = { set: set, start: performance.now(), dur: reduceMotion.matches ? 220 : 950, ox: o[0], oy: o[1] };
+        back.classList.add("is-revealing");
+        applyDetails(set);
+        needsDraw = true;
+      }, function () {
+        if (btn) btn.classList.remove("is-loading");
+        syncSwatches(current.name);
+      });
+    }
+
+    function paintReveal(now) {
+      var k = Math.min(1, (now - reveal.start) / reveal.dur);
+      var e = 1 - Math.pow(1 - k, 3);
+      var r = stage.getBoundingClientRect();
+      var far = Math.hypot(Math.max(reveal.ox, r.width - reveal.ox), Math.max(reveal.oy, r.height - reveal.oy));
+      var soft = Math.max(40, r.width * 0.18);
+      var rad = e * (far + soft);
+      var g;
+      if (reduceMotion.matches) {
+        back.style.webkitMaskImage = back.style.maskImage = "none";
+        back.style.opacity = String(e);
+      } else {
+        g = "radial-gradient(circle at " + reveal.ox + "px " + reveal.oy + "px, #000 " + Math.max(0, rad - soft) + "px, transparent " + rad + "px)";
+        back.style.webkitMaskImage = g;
+        back.style.maskImage = g;
+      }
+      if (k >= 1) finishReveal();
+    }
+
+    function finishReveal() {
+      var set = reveal.set;
+      reveal = null;
+      // The incoming canvas becomes the front one
+      back.classList.remove("is-revealing");
+      back.style.webkitMaskImage = back.style.maskImage = "";
+      back.style.opacity = "";
+      back.classList.add("is-front");
+      front.classList.remove("is-front");
+      var t = front; front = back; back = t;
+      current = set;
+      frames = set.frames;
+      needsDraw = true;
+      root.dispatchEvent(new CustomEvent("ui-turn:colorway", { bubbles: true, detail: { colorway: set.name, label: set.label } }));
+    }
+
+    swatches.forEach(function (b) {
+      b.addEventListener("click", function () { setColorway(b.dataset.uiTurnColorway, b); });
+    });
 
     /* ---- Motion loop ---- */
 
@@ -521,7 +710,8 @@
         needsDraw = true;
       }
 
-      if (needsDraw) draw();
+      if (reveal) { needsDraw = true; draw(); paintReveal(now); }
+      else if (needsDraw) draw();
       requestAnimationFrame(loop);
     }
 
@@ -676,7 +866,7 @@
         var d = Math.abs(mod(f.angle - a + 180, 360) - 180);
         if (d < nd) { nd = d; nearest = f; }
       });
-      dialTicks.forEach(function (t) { t.el.classList.toggle("is-current", t.frame === nearest && nd < 12); });
+      dialTicks.forEach(function (t) { t.el.classList.toggle("is-current", !!nearest && t.frame.angle === nearest.angle && nd < 12); });
       if (caption && nearest && nearest.label !== lastCaption) {
         lastCaption = nearest.label;
         caption.textContent = nearest.label;
@@ -690,12 +880,12 @@
     /* ---- Start ---- */
 
     stage.classList.add("is-loading");
-    var unique = {};
-    frames.forEach(function (f) { unique[f.src] = unique[f.src] || loadImage(f.src); });
-    Promise.all(frames.map(function (f) { return unique[f.src].then(function (img) { f.img = img; }); })).then(function () {
-      frames.forEach(function (f) { var r = computeExtents(f.img, f.mirror); f.ext = r.ext; f.mask = r.mask; });
-      try { renderer = new GLRenderer(canvas, frames); root.classList.add("is-webgl"); }
-      catch (err) { renderer = new CanvasRenderer(canvas); }
+    canvas.classList.add("is-front");
+    syncSwatches(current.name);
+    if (current.tint) root.style.setProperty("--ui-turn-accent", current.tint);
+    loadSet(current).then(function () {
+      renderer = rendererFor(front);
+      renderer.load(current.frames);
       resize();
       draw();
       stage.classList.remove("is-loading");
@@ -708,6 +898,9 @@
         }, 700);
       }
       requestAnimationFrame(function (t) { last = t; loop(t); });
+      // Quietly prefetch the other colourways once the page is idle
+      var idleCb = window.requestIdleCallback || function (fn) { return setTimeout(fn, 1500); };
+      idleCb(function () { order.forEach(function (n) { if (sets[n] !== current) loadSet(sets[n]); }); });
     }, function () {
       stage.classList.remove("is-loading");
     });
@@ -715,7 +908,13 @@
     if (window.ResizeObserver) new ResizeObserver(function () { if (renderer) resize(); }).observe(stage);
     else window.addEventListener("resize", function () { if (renderer) resize(); });
 
-    root.uiTurn = { goTo: goTo, next: function () { step(1); }, prev: function () { step(-1); }, frames: frames };
+    root.uiTurn = {
+      goTo: goTo,
+      next: function () { step(1); },
+      prev: function () { step(-1); },
+      setColorway: function (name) { setColorway(name); },
+      colorways: order.slice()
+    };
   }
 
   function initAll() { document.querySelectorAll("[data-ui-turn]").forEach(init); }
