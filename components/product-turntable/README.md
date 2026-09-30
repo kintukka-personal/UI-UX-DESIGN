@@ -69,6 +69,21 @@ Give each colourway its own `.ui-turn__frames` group, then add swatches anywhere
 
 ## Photographing products for it
 
+The turntable invents the angles between photos, so **more photos means less invention and a more seamless turn**:
+- **5 photos** (every 45°, as in the demo) work, but mid-turn frames are visibly morphed.
+- **12 photos** (every 30°) is the minimum worthwhile.
+- **24 photos** (every 15°) is recommended. At 20° apart or less, the turntable automatically switches from the silhouette morph to a light aligned blend, which reads as real rotation.
+- **36 photos** (every 10°) is the smoothest option.
+
+Setup:
+- Rotate the **product** on a turntable or marked positions. Keep the camera locked on a tripod.
+- Shoot the full 360° instead of mirroring.
+- Use square 2000×2000 px, with the product centred on the rotation axis and filling about 80% of the width.
+- Name files by angle: `000`, `015` … `345`.
+- If the images are 3D renders, export a 24- or 36-frame turntable animation from the same scene.
+
+General tips:
+
 - Use the same backdrop, lighting, camera height and distance for every shot. The product should sit in the same place in the frame.
 - Take 5 to 8 angles around the product. Symmetric pieces can reuse mirrored shots.
 - Use a neutral backdrop. The outline detection treats saturated colour and dark tones as product and the pale backdrop as background. Very pale, grey or white products may need a slightly darker backdrop, or adjusted `SAT_THRESHOLD` / `DARK_THRESHOLD` values in `script.js`.

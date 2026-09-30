@@ -46,6 +46,7 @@
     "uniform float uBlur;",       // horizontal motion blur, in uv units
     "uniform vec2 uScale;",       // canvas uv -> image uv (contain + zoom)
     "uniform vec3 uBg;",          // page colour for the edge feather
+    "uniform float uMorph;",      // 1 = full silhouette morph (wide gaps), 0 = light blend (close photos)
     "",
     // Turn a point on a cylinder (s in -1..1) by d radians, keeping the edges pinned.
     "float cyl(float s, float d) {",
@@ -99,8 +100,8 @@
     "  vec2 rT = mix(rA, rB, e);",
     "  vec2 cT = mix(cA, cB, e);",
     "",
-    "  float dA =  uT * uStep * 0.55;",
-    "  float dB = -(1.0 - uT) * uStep * 0.55;",
+    "  float dA =  uT * uStep * 0.35;",
+    "  float dB = -(1.0 - uT) * uStep * 0.35;",
     "  vec2 uvA = vec2(remap(uv.x, rT.x, rT.y, rA.x, rA.y, dA), remap(uv.y, cT.x, cT.y, cA.x, cA.y, 0.0));",
     "  vec2 uvB = vec2(remap(uv.x, rT.x, rT.y, rB.x, rB.y, dB), remap(uv.y, cT.x, cT.y, cB.x, cB.y, 0.0));",
     "",
@@ -114,7 +115,7 @@
     // The outline morphs continuously; the surface swaps in the middle.
     "  float mS = e;",
     "  float mC = smoothstep(0.25, 0.75, uT);",
-    "  float shape = smoothstep(0.47, 0.53, mix(fA, fB, mS));",
+    "  float shape = smoothstep(0.40, 0.60, mix(fA, fB, mS));",
     "",
     // Inside the outline: solid product from whichever photo clearly has product here
     // (edge pixels are skipped so no halo leaks in); soft weights only as a fallback.
@@ -130,7 +131,9 @@
     "  vec3 plateB = mix(tap(uB, uMirB, vec2(0.015, uvB.y)).rgb, tap(uB, uMirB, vec2(0.985, uvB.y)).rgb, clamp(uvB.x, 0.0, 1.0));",
     "  float gA = (1.0 - smoothstep(0.15, 0.35, fA)) * (1.0 - mC), gB = (1.0 - smoothstep(0.15, 0.35, fB)) * mC;",
     "  float tA = (1.0 - fA) * (1.0 - mC), tB = (1.0 - fB) * mC;",
-    "  vec3 backSoft = (a * tA + b * tB + mix(plateA, plateB, mC) * 0.001) / (tA + tB + 0.001);",
+    // Favour clearly-backdrop pixels so product edges don't smudge the floor
+    "  tA = tA * tA * tA; tB = tB * tB * tB;",
+    "  vec3 backSoft = (a * tA + b * tB + mix(plateA, plateB, 0.5) * 0.004) / (tA + tB + 0.004);",
     "  vec3 back = (a * gA + b * gB + backSoft * 0.002) / (gA + gB + 0.002);",
     "",
     // A soft contact shadow that follows the morphing outline (only mid-turn,
@@ -142,6 +145,11 @@
     "  back *= 1.0 - 0.16 * shadow;",
     "",
     "  vec3 col = mix(back, prod, shape);",
+    "",
+    // Near a real photo, fade back to a plain aligned blend so the morph never
+    // shows at rest; with closely spaced photos the light blend is used throughout.
+    "  vec3 direct = mix(a, b, mC);",
+    "  col = mix(direct, col, smoothstep(0.0, 0.45, mid) * uMorph);",
     "",
     // Feather the frame into the page (rounded-rectangle falloff)
     "  vec2 o = max(-uv, uv - 1.0);",
@@ -179,7 +187,7 @@
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
     var u = {};
-    ["uA", "uB", "uEA", "uEB", "uMA", "uMB", "uFA", "uFB", "uMirA", "uMirB", "uT", "uStep", "uBlur", "uScale", "uBg"].forEach(function (n) {
+    ["uA", "uB", "uEA", "uEB", "uMA", "uMB", "uFA", "uFB", "uMirA", "uMirB", "uT", "uStep", "uBlur", "uScale", "uBg", "uMorph"].forEach(function (n) {
       u[n] = gl.getUniformLocation(prog, n);
     });
     gl.uniform1i(u.uA, 0);
@@ -247,6 +255,9 @@
       gl.uniform1f(u.uMirB, s.b.mirror ? 1 : 0);
       gl.uniform1f(u.uT, s.t);
       gl.uniform1f(u.uStep, s.step * Math.PI / 180);
+      // Wide gaps between photos need the full morph; close ones blend lightly.
+      var mw = Math.min(1, Math.max(0, (s.step - 20) / 15));
+      gl.uniform1f(u.uMorph, mw * mw * (3 - 2 * mw));
       gl.uniform1f(u.uBlur, s.blur);
       gl.uniform2f(u.uScale, s.scale[0], s.scale[1]);
       gl.uniform3f(u.uBg, s.bg[0], s.bg[1], s.bg[2]);
@@ -281,7 +292,7 @@
     closed = threshold(boxBlur(closed, n, 2), 0.5);
     // A wide, smooth field (1 inside, 0 outside, 0.5 on the outline). Blending two
     // of these and cutting at 0.5 morphs one outline into the other.
-    var soft = boxBlur(boxBlur(closed, n, 6), n, 6);
+    var soft = boxBlur(boxBlur(closed, n, 7), n, 7);
     var mask = new Uint8Array(n * n);
     var maskBytes = new Uint8Array(n * n);
     for (i = 0; i < n * n; i++) {
@@ -315,7 +326,7 @@
         var out = new Float32Array(n);
         for (var k = 0; k < n; k++) {
           var sum = 0, w = 0;
-          for (var j = -4; j <= 4; j++) {
+          for (var j = -10; j <= 10; j++) {
             var idx = Math.min(n - 1, Math.max(0, k + j));
             sum += arr[idx]; w++;
           }
@@ -545,7 +556,9 @@
     function drawSet(cv, set) {
       var r = rendererFor(cv);
       var p = pair(state.angle, set.frames);
-      var blur = reduceMotion.matches ? 0 : Math.min(0.012, Math.abs(state.vel) * 0.006);
+      var midK = 4 * p.t * (1 - p.t);
+      var speed = Math.abs(state.vel);
+      var blur = reduceMotion.matches ? 0 : Math.min(0.018, speed * 0.006 * (1 + 1.6 * midK) + (speed > 0.02 ? 0.003 * midK : 0));
       r.draw({ a: p.a, b: p.b, t: p.t, step: p.step, blur: blur, scale: scale, bg: bg });
     }
 
