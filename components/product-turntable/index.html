@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Product Turntable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ---- Demo page only: a product page around the turntable ---- */
+  :root { color-scheme: light; }
+  body {
+    margin: 0;
+    background: #E8DFD6;
+    color: #2A2622;
+    font: 300 15px/1.6 "Work Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+  .pdp {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 32px 24px 72px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+  }
+  .pdp__media .ui-turn__stage { max-width: 720px; }
+  .pdp__info { display: grid; gap: 22px; max-width: 420px; }
+  .pdp__crumbs { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: #8C8174; }
+  .pdp__title { margin: 0; font-size: clamp(30px, 4vw, 42px); font-weight: 300; line-height: 1.05; letter-spacing: -0.01em; text-wrap: balance; }
+  .pdp__price { margin: 0; font-size: 18px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .pdp__desc { margin: 0; color: #5E554C; max-width: 44ch; }
+  .pdp__label { margin: 0 0 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #8C8174; }
+  .pdp__swatches { display: flex; gap: 10px; }
+  .pdp__swatch { width: 28px; height: 28px; padding: 0; border-radius: 50%; border: 1px solid rgba(42, 38, 34, 0.2); color: #2A2622; cursor: pointer; transition: box-shadow 300ms ease, transform 200ms ease; }
+  .pdp__swatch:hover { transform: scale(1.08); }
+  .pdp__swatch:focus-visible { outline: 1px solid #2A2622; outline-offset: 6px; }
+  .pdp__swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px #E8DFD6, 0 0 0 3px #2A2622; }
+  .pdp__specs { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; margin: 0; font-size: 13px; }
+  .pdp__specs dt { color: #8C8174; }
+  .pdp__specs dd { margin: 0; font-variant-numeric: tabular-nums; }
+  .pdp__cta {
+    height: 52px; border: 0; border-radius: 8px; background: #2A2622; color: #F7F3EC;
+    font: 600 13px/1 "Work Sans", sans-serif; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer;
+  }
+  @media (max-width: 860px) {
+    .pdp { grid-template-columns: 1fr; gap: 28px; padding: 16px 16px 56px; }
+    .pdp__info { max-width: none; }
+  }
+</style>
+</head>
+<body>
+<main class="pdp">
+  <section class="pdp__media" aria-label="Product viewer">
+    <div class="ui-turn" data-ui-turn data-name="Dune low sofa">
+      <div class="ui-turn__stage" tabindex="0" role="img" aria-label="Dune low sofa. Drag or use arrow keys to turn.">
+        <img class="ui-turn__poster" src="images/saffron/front.webp" alt="" width="1254" height="1254">
+        <canvas class="ui-turn__canvas" aria-hidden="true"></canvas>
+        <div class="ui-turn__frames" data-colorway="saffron" data-label="Saffron bouclé" data-tint="#C07A2E">
+          <img src="images/saffron/front.webp" data-angle="0" data-label="Front" alt="Front view">
+          <img src="images/saffron/three-quarter.webp" data-angle="45" data-label="Three-quarter" alt="Three-quarter view">
+          <img src="images/saffron/side.webp" data-angle="90" data-label="Side" alt="Side view">
+          <img src="images/saffron/back-three-quarter.webp" data-angle="135" data-mirror data-label="Back three-quarter" alt="">
+          <img src="images/saffron/back.webp" data-angle="180" data-label="Back" alt="Back view">
+          <img src="images/saffron/back-three-quarter.webp" data-angle="225" data-label="Back three-quarter" alt="Back three-quarter view">
+          <img src="images/saffron/side.webp" data-angle="270" data-mirror data-label="Side" alt="">
+          <img src="images/saffron/three-quarter.webp" data-angle="315" data-mirror data-label="Three-quarter" alt="">
+        </div>
+        <div class="ui-turn__frames" data-colorway="onyx" data-label="Onyx bouclé" data-tint="#2B2927">
+          <img src="images/onyx/front.webp" data-angle="0" data-label="Front" alt="Front view">
+          <img src="images/onyx/three-quarter.webp" data-angle="45" data-label="Three-quarter" alt="Three-quarter view">
+          <img src="images/onyx/side.webp" data-angle="90" data-label="Side" alt="Side view">
+          <img src="images/onyx/back-three-quarter.webp" data-angle="135" data-mirror data-label="Back three-quarter" alt="">
+          <img src="images/onyx/back.webp" data-angle="180" data-label="Back" alt="Back view">
+          <img src="images/onyx/back-three-quarter.webp" data-angle="225" data-label="Back three-quarter" alt="Back three-quarter view">
+          <img src="images/onyx/side.webp" data-angle="270" data-mirror data-label="Side" alt="">
+          <img src="images/onyx/three-quarter.webp" data-angle="315" data-mirror data-label="Three-quarter" alt="">
+        </div>
+        <div class="ui-turn__hint" aria-hidden="true">
+          <svg viewBox="0 0 16 16"><path d="M10 3.5L5.5 8l4.5 4.5"/></svg>
+          Drag to turn
+          <svg viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5"/></svg>
+        </div>
+      </div>
+
+      <div class="ui-turn__controls">
+        <svg class="ui-turn__dial" viewBox="0 0 100 100" aria-label="Viewing angle">
+          <circle class="ui-turn__dial-ring" cx="50" cy="50" r="40"></circle>
+          <g class="ui-turn__dial-icon">
+            <rect x="34" y="40" width="32" height="20" rx="5"></rect>
+            <rect class="ui-turn__dial-back" x="34" y="38" width="32" height="6" rx="3"></rect>
+          </g>
+          <path class="ui-turn__dial-viewer" d="M50 94l-4 6h8z"></path>
+          <g class="ui-turn__dial-ticks"></g>
+        </svg>
+        <div class="ui-turn__caption-wrap">
+          <span class="ui-turn__caption-kicker">Viewing</span>
+          <span class="ui-turn__caption" aria-live="polite">Front</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pdp__info">
+    <p class="pdp__crumbs">Living · Sofas</p>
+    <h1 class="pdp__title">Dune low sofa</h1>
+    <p class="pdp__price">$4,570.00 AUD</p>
+    <p class="pdp__desc">A deep, low three-seater with no frame at all: layered, channel-quilted foam in a textured bouclé that softens the more it is used.</p>
+    <div>
+      <p class="pdp__label">Colour · <span data-ui-turn-colorway-label>Saffron bouclé</span></p>
+      <div class="pdp__swatches" role="group" aria-label="Colour">
+        <button class="pdp__swatch" type="button" data-ui-turn-colorway="saffron" aria-pressed="true" aria-label="Saffron bouclé" style="background:#C07A2E"></button>
+        <button class="pdp__swatch" type="button" data-ui-turn-colorway="onyx" aria-pressed="false" aria-label="Onyx bouclé" style="background:#2B2927"></button>
+      </div>
+    </div>
+    <dl class="pdp__specs">
+      <dt>Dimensions</dt><dd>174 W × 102 D × 70 H cm</dd>
+      <dt>Seat height</dt><dd>38 cm</dd>
+      <dt>Delivery</dt><dd>4–6 weeks</dd>
+    </dl>
+    <button class="pdp__cta" type="button">Add to cart</button>
+  </section>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
