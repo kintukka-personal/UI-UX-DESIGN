@@ -1,0 +1,58 @@
+/* ==========================================================================
+   UI Numeric Text — digits that roll when a number changes
+   Only the digits that change move: out one way, in the other, with a
+   touch of blur. Every change settles in about 200ms.
+   ========================================================================== */
+
+.ui-numtext {
+  /* Motion. Enter decelerates, exit accelerates and leaves a little sooner. */
+  --ui-numtext-duration: 200ms;
+  --ui-numtext-exit: 150ms;
+  --ui-numtext-shift: 0.8em;
+  --ui-numtext-blur: 2px;
+  --ui-numtext-ease-in: cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-numtext-ease-out: cubic-bezier(0.4, 0, 1, 1);
+
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.ui-numtext__box {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.ui-numtext__slot {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.ui-numtext__g {
+  display: inline-block;
+}
+
+/* The outgoing glyph sits on top of the incoming one while it leaves */
+.ui-numtext__g.is-out {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+/* The real, formatted value for screen readers and copy-paste */
+.ui-numtext__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Numeric Text</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ---- Demo page only ---------------------------------------------------- */
+  :root {
+    color-scheme: light dark;
+    --bg: #E9E3D8;
+    --card: #F7F3EC;
+    --ink: #2A2622;
+    --muted: #6F665C;
+    --line: #DDD5C8;
+    --accent: #A5432F;
+    --ok: #4F6B45;
+    --btn: #2A2622;
+    --btn-ink: #F7F3EC;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171513;
+      --card: #211E1B;
+      --ink: #F1EBE1;
+      --muted: #A39889;
+      --line: #36312C;
+      --accent: #E08A70;
+      --ok: #9DBB8F;
+      --btn: #F1EBE1;
+      --btn-ink: #211E1B;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 15px/1.5 "Work Sans", "Helvetica Neue", Arial, sans-serif;
+    padding: clamp(24px, 5vw, 64px) 16px 64px;
+  }
+  main { max-width: 1040px; margin: 0 auto; display: grid; gap: 20px; }
+  header { margin-bottom: 12px; }
+  .eyebrow { margin: 0 0 6px; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 0; font-weight: 300; font-size: clamp(34px, 6vw, 56px); line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; }
+  .lede { margin: 12px 0 0; max-width: 56ch; color: var(--muted); text-wrap: pretty; }
+
+  .grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+  .card { background: var(--card); border-radius: 14px; padding: 24px; display: grid; gap: 16px; align-content: start; }
+  .card h2 { margin: 0; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .note { margin: 0; font-size: 13px; color: var(--muted); }
+
+  button {
+    font: inherit;
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 16px;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background-color 150ms ease, border-color 150ms ease, transform 120ms ease;
+  }
+  button:hover { border-color: var(--muted); }
+  button:active { transform: scale(0.96); }
+  button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  button.solid { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+  button[aria-pressed="true"] { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+  button:disabled { opacity: 0.4; cursor: default; transform: none; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+  /* Countdown */
+  .countdown { grid-column: 1 / -1; padding: clamp(24px, 4vw, 40px); }
+  .clock { display: flex; flex-wrap: wrap; gap: clamp(8px, 2vw, 24px); align-items: flex-start; }
+  .unit { display: grid; gap: 4px; }
+  .unit .ui-numtext { font-size: clamp(48px, 11vw, 112px); font-weight: 300; line-height: 1; letter-spacing: -0.03em; }
+  .unit span.label { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .colon { font-size: clamp(48px, 11vw, 112px); font-weight: 300; line-height: 1; color: var(--muted); }
+
+  /* Cart */
+  .item { display: grid; grid-template-columns: 56px 1fr; gap: 14px; align-items: center; }
+  .thumb { aspect-ratio: 1; border-radius: 8px; background: linear-gradient(160deg, #6E2530, #4A1820); }
+  .item p { margin: 0; }
+  .item .meta { font-size: 13px; color: var(--muted); }
+  .stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; }
+  .stepper button { border: 0; font-size: 18px; }
+  .stepper .ui-numtext { min-width: 2.2ch; text-align: center; font-weight: 500; }
+  .totals { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); padding-top: 14px; }
+  .totals .ui-numtext { font-size: 28px; font-weight: 500; letter-spacing: -0.01em; }
+
+  /* Stock */
+  .stock { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; color: var(--accent); }
+  .stock::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .stock.is-plenty { color: var(--ok); }
+
+  /* Playground */
+  .playground { grid-column: 1 / -1; }
+  .stage { display: grid; place-items: center; min-height: 180px; border-radius: 10px; background: var(--bg); overflow: hidden; }
+  .stage .ui-numtext { font-size: clamp(48px, 12vw, 120px); font-weight: 400; letter-spacing: -0.03em; line-height: 1.1; }
+  .controls { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  .controls fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .controls legend { padding: 0; margin-bottom: 8px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .log { margin: 0; font: 400 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); min-height: 1.5em; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">Numeric text</p>
+    <h1>Anything that changes should&nbsp;move.</h1>
+    <p class="lede">Only the digits that change roll: up when the number climbs, down when it falls, each one settling in about 200ms. Everything else holds still.</p>
+  </header>
+
+  <section class="card countdown" aria-labelledby="cd-title">
+    <h2 id="cd-title">Drop 04 opens in</h2>
+    <div class="clock" role="timer" aria-label="Time until the drop opens">
+      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-format='{"minimumIntegerDigits":2}' id="cd-d"></span><span class="label">Days</span></div>
+      <span class="colon" aria-hidden="true">:</span>
+      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-format='{"minimumIntegerDigits":2}' id="cd-h"></span><span class="label">Hours</span></div>
+      <span class="colon" aria-hidden="true">:</span>
+      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-format='{"minimumIntegerDigits":2}' id="cd-m"></span><span class="label">Minutes</span></div>
+      <span class="colon" aria-hidden="true">:</span>
+      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-format='{"minimumIntegerDigits":2}' id="cd-s"></span><span class="label">Seconds</span></div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="cart-title">
+      <h2 id="cart-title">Cart</h2>
+      <div class="item">
+        <div class="thumb" aria-hidden="true"></div>
+        <div>
+          <p>Merino Crew, Oxblood</p>
+          <p class="meta">$189.00 each</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="stepper">
+          <button type="button" id="qty-dec" aria-label="Decrease quantity">−</button>
+          <span class="ui-numtext" data-ui-numtext data-value="1" id="qty" data-live="polite"></span>
+          <button type="button" id="qty-inc" aria-label="Increase quantity">+</button>
+        </div>
+      </div>
+      <div class="totals">
+        <span>Subtotal</span>
+        <span class="ui-numtext" data-ui-numtext data-value="189" id="subtotal"
+              data-format='{"style":"currency","currency":"AUD","currencyDisplay":"narrowSymbol"}' data-live="polite"></span>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="stock-title">
+      <h2 id="stock-title">Stock</h2>
+      <p class="stock" id="stock-badge"><span>Only <span class="ui-numtext" data-ui-numtext data-value="7" id="stock" data-live="polite"></span> left</span></p>
+      <p class="note">Each purchase takes one; the badge counts down and turns red when it gets low.</p>
+      <div class="row">
+        <button type="button" class="solid" id="buy">Buy one</button>
+        <button type="button" id="restock">Restock</button>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="views-title">
+      <h2 id="views-title">Live viewers</h2>
+      <p style="margin:0;font-size:40px;font-weight:300;letter-spacing:-0.02em;line-height:1.1">
+        <span class="ui-numtext" data-ui-numtext data-value="1284" id="viewers"></span>
+      </p>
+      <p class="note">Drifts up and down every second or so, the way real-time counts do. Digits change only where the value changes.</p>
+    </section>
+  </div>
+
+  <section class="card playground" aria-labelledby="pg-title">
+    <h2 id="pg-title">Playground</h2>
+    <div class="stage">
+      <span class="ui-numtext" data-ui-numtext data-value="99" id="pg" data-live="polite"></span>
+    </div>
+    <div class="controls">
+      <fieldset>
+        <legend>Change</legend>
+        <div class="row">
+          <button type="button" data-step="-1">−1</button>
+          <button type="button" data-step="1">+1</button>
+          <button type="button" data-step="-10">−10</button>
+          <button type="button" data-step="10">+10</button>
+          <button type="button" id="pg-random">Random</button>
+        </div>
+        <div class="row">
+          <button type="button" data-to="9">9</button>
+          <button type="button" data-to="10">10</button>
+          <button type="button" data-to="999">999</button>
+          <button type="button" data-to="1000">1,000</button>
+          <button type="button" data-to="1000000">1,000,000</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Options</legend>
+        <div class="row" role="group" aria-label="Format">
+          <button type="button" data-fmt="plain" aria-pressed="true">Plain</button>
+          <button type="button" data-fmt="currency" aria-pressed="false">Currency</button>
+          <button type="button" data-fmt="percent" aria-pressed="false">Percent</button>
+          <button type="button" data-fmt="compact" aria-pressed="false">Compact</button>
+        </div>
+        <div class="row" role="group" aria-label="Transition">
+          <button type="button" data-mode="roll" aria-pressed="true">Roll</button>
+          <button type="button" data-mode="count" aria-pressed="false">Count</button>
+        </div>
+      </fieldset>
+    </div>
+    <p class="log" id="log" aria-hidden="true">Ready.</p>
+    <p class="note">With Reduce Motion turned on, the digits cross-fade in place instead of rolling.</p>
+  </section>
+</main>
+
+<script src="script.js"></script>
+<script>
+  /* ---- Demo wiring only ---------------------------------------------- */
+  (function () {
+    var set = window.uiNumText.set;
+    var $ = function (id) { return document.getElementById(id); };
+
+    // Countdown to a fixed moment three days from page load
+    var target = Date.now() + ((2 * 24 + 7) * 3600 + 42 * 60 + 9) * 1000;
+    function tick() {
+      var s = Math.max(0, Math.round((target - Date.now()) / 1000));
+      set($("cd-d"), Math.floor(s / 86400));
+      set($("cd-h"), Math.floor(s / 3600) % 24);
+      set($("cd-m"), Math.floor(s / 60) % 60);
+      set($("cd-s"), s % 60);
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    // Cart
+    var price = 189, qty = 1;
+    function setQty(n) {
+      qty = Math.min(99, Math.max(1, n));
+      set($("qty"), qty);
+      set($("subtotal"), qty * price);
+      $("qty-dec").disabled = qty === 1;
+      $("qty-inc").disabled = qty === 99;
+    }
+    $("qty-dec").addEventListener("click", function () { setQty(qty - 1); });
+    $("qty-inc").addEventListener("click", function () { setQty(qty + 1); });
+    setQty(1);
+
+    // Stock
+    var stock = 7;
+    function setStock(n) {
+      stock = n;
+      set($("stock"), stock);
+      $("stock-badge").classList.toggle("is-plenty", stock > 5);
+      $("buy").disabled = stock === 0;
+    }
+    $("buy").addEventListener("click", function () { setStock(stock - 1); });
+    $("restock").addEventListener("click", function () { setStock(stock + 12); });
+    setStock(7);
+
+    // Viewers drift
+    var viewers = 1284;
+    setInterval(function () {
+      viewers = Math.max(900, viewers + Math.round((Math.random() - 0.45) * 14));
+      set($("viewers"), viewers);
+    }, 1100);
+
+    // Playground
+    var pg = $("pg");
+    var formats = {
+      plain: "{}",
+      currency: '{"style":"currency","currency":"AUD","currencyDisplay":"narrowSymbol"}',
+      percent: '{"style":"percent","maximumFractionDigits":1}',
+      compact: '{"notation":"compact","maximumFractionDigits":1}'
+    };
+    var scale = { plain: 1, currency: 1, percent: 0.001, compact: 1 };
+    var fmt = "plain", raw = 99;
+    function show(n) {
+      raw = Math.max(-999999999, Math.min(999999999, Math.round(n)));
+      set(pg, raw * scale[fmt]);
+    }
+    document.querySelectorAll("[data-step]").forEach(function (b) {
+      b.addEventListener("click", function () { show(raw + Number(b.dataset.step)); });
+    });
+    document.querySelectorAll("[data-to]").forEach(function (b) {
+      b.addEventListener("click", function () { show(Number(b.dataset.to)); });
+    });
+    $("pg-random").addEventListener("click", function () {
+      var digits = 1 + Math.floor(Math.random() * 6);
+      show(Math.floor(Math.random() * Math.pow(10, digits)));
+    });
+    function press(sel, btn) {
+      document.querySelectorAll(sel).forEach(function (b) { b.setAttribute("aria-pressed", String(b === btn)); });
+    }
+    document.querySelectorAll("[data-fmt]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        fmt = b.dataset.fmt;
+        press("[data-fmt]", b);
+        pg.dataset.format = formats[fmt];
+        show(raw);
+      });
+    });
+    document.querySelectorAll("button[data-mode]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        press("button[data-mode]", b);
+        pg.dataset.mode = b.dataset.mode;
+      });
+    });
+    pg.addEventListener("ui-numtext:change", function (e) {
+      $("log").textContent = "ui-numtext:change  " + e.detail.from + " → " + e.detail.to + "  (" + e.detail.direction + ")";
+    });
+  })();
+</script>
+</body>
+</html>
