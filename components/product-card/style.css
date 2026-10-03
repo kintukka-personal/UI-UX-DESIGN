@@ -189,8 +189,6 @@
   line-height: 0.8;
   text-align: center;
   white-space: nowrap;
-  transform: translate3d(calc(var(--ui-pcard-px, 0) * -6 * var(--u)), calc(var(--ui-pcard-py, 0) * -4 * var(--u)), 0);
-  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .ui-pcard__title > span[aria-hidden] { display: inline-block; }
@@ -534,7 +532,6 @@
 @media (prefers-reduced-motion: reduce) {
   .ui-pcard,
   .ui-pcard__img,
-  .ui-pcard__title,
   .ui-pcard__media,
   .ui-pcard__cta-labels > span { transition-duration: 0.01ms; }
   .ui-pcard__float,

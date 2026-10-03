@@ -13,7 +13,7 @@
 
    Entrance: the first time the card scrolls into view the wordmark letters
    rise, the product drops in and the footer fades up. On devices with a fine
-   pointer the product and wordmark drift apart slightly as the pointer moves.
+   pointer the product drifts slightly with the pointer; the wordmark stays put.
    With reduced motion turned on, neither happens. */
 (function () {
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -208,7 +208,7 @@
       io.observe(card);
     }
 
-    // Pointer parallax: product and wordmark drift in opposite directions.
+    // Pointer parallax: the product drifts with the pointer; the wordmark stays still.
     var frame = 0;
     var target = { x: 0, y: 0 };
     function paint() {

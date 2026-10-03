@@ -21,7 +21,7 @@ An editorial product card where the product is the hero. A deep coloured stage h
   - On first view, everything builds left to right with one move: each piece shoots out from behind the one before it, staying hidden until it clears it, then overshoots a touch, squashes and locks in. Each lock sets off the next piece, one every 95ms (tune it with `--ui-pcard-beat`).
   - The order is: the AURA letters, with the spec line alongside; then price, Sage, Onyx, Oat and Add to bag; and finally the product drops in. The word gives a small recoil on each letter's hit.
   - The product then floats gently, with its shadow breathing.
-  - With a mouse, the product and wordmark drift apart slightly as the pointer moves.
+  - With a mouse, the product drifts slightly as the pointer moves while the wordmark stays still.
 - **Reduced motion:** colour changes still happen, but nothing moves.
 - **Scaling:** every size is derived from the card's width (390 design units through container query units), so the whole composition scales as one piece from a 320px phone up to the 430px max width.
 
