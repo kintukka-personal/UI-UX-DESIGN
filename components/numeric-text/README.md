@@ -2,19 +2,19 @@
 
 A transition for numbers that change, modelled on SwiftUI's `.contentTransition(.numericText(countsDown:))`.
 
-- **Only the changed digits move.** Going from 1,284 to 1,291, the "1,2" stays put while the last two digits roll.
-- **Direction follows the value.** When the number goes up, the old digit leaves upward and the new one rises from below. When it goes down, the roll reverses. `data-counts-down` can force either direction, which suits a countdown.
-- **Digits are matched by place value.** 99 → 100 rolls the ones, tens and hundreds into the right places. A new leading digit (or thousands separator) opens its space and the rest of the number slides over instead of jumping.
-- **Fast.** New digits take 200ms with an ease-out. Old digits leave in 150ms, accelerating and fading out in the first half so the two never smudge together.
-- **Interruptible.** A new value mid-roll picks up from where the glyphs are right now. Nothing queues or stacks, so a 1-second countdown or a burst of + taps stays crisp.
-- **Any format.** Formatting is done by `Intl.NumberFormat`, so currency, percent, compact ("1.2K"), grouping and locales all work. Symbols and separators fade, and digits roll.
-- **Count mode.** `data-mode="count"` tweens through the in-between values instead, in the same 200ms.
-- **Accessible.** Screen readers get the real formatted value from a visually hidden copy, and the moving glyphs are hidden from them. Add `data-live="polite"` to announce changes; leave it off for ticking timers.
-- **Reduced motion.** With it turned on, changed digits cross-fade in place (120ms) without moving or blurring. Animations are skipped while the tab is hidden.
+- **What moves:** only the changed digits. Going from 1,284 to 1,291, the "1,2" stays put while the last two digits roll.
+- **Direction:** follows the value. When the number goes up, the old digit leaves upward and the new one rises from below. When it goes down, the roll reverses. `data-counts-down` can force either direction, which suits a countdown.
+- **Place value:** 99 → 100 rolls the ones, tens and hundreds into the right places. A new leading digit (or thousands separator) opens its space and the rest of the number slides over instead of jumping.
+- **Timing:** new digits take 200ms with an ease-out. Old digits leave in 150ms, speeding up as they go and gone by the halfway mark, so old and new never smudge together.
+- **Interruptions:** a new value mid-roll carries on from wherever the glyphs are. Nothing queues. A digit that vanishes and comes back mid-exit (999 → 1,000 → 999) reuses its slot. A burst of + taps stays crisp.
+- **Formats:** `Intl.NumberFormat` does the formatting, so currency, percent, compact ("1.2K") and locale grouping all work. Symbols and separators fade; digits roll.
+- **Count mode:** `data-mode="count"` tweens through the in-between values instead, in the same 200ms.
+- **Screen readers:** get the real formatted value from a visually hidden copy, and the moving glyphs are hidden from them. Add `data-live="polite"` to announce changes; leave it off for ticking timers.
+- **Reduced motion:** with it on, changed digits cross-fade in place (120ms) without moving or blurring. Animations are skipped while the tab is hidden.
 
 Plain HTML, CSS and vanilla JS with no dependencies. Classes are prefixed `ui-numtext`.
 
-Open `index.html` for the demo: a drop countdown, a cart stepper with a currency subtotal, a low-stock badge, a live viewer count, and a playground with formats and modes.
+Open `index.html` for the demo: a drop countdown, a cart stepper with a currency subtotal, a low-stock badge, a live viewer count and a playground for formats and modes. The live counters can be paused from the header.
 
 ## Markup
 
@@ -37,7 +37,7 @@ The script fills the element on load. Any `[data-ui-numtext]` element added late
 | `data-mode` | `count` | Tween through the values instead of rolling |
 | `data-live` | `polite` | Announce changes to screen readers |
 
-A countdown clock is one element per unit with `'{"minimumIntegerDigits":2}'`, so 9 shows as 09.
+A countdown clock is one element per unit with `data-counts-down="true"` and `'{"minimumIntegerDigits":2}'`, so 9 shows as 09 and 00 → 59 still rolls downward.
 
 ## Changing the value
 

@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E9E3D8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171513" media="(prefers-color-scheme: dark)">
 <title>Numeric Text</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,7 +47,8 @@
     padding: clamp(24px, 5vw, 64px) 16px 64px;
   }
   main { max-width: 1040px; margin: 0 auto; display: grid; gap: 20px; }
-  header { margin-bottom: 12px; }
+  header { margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: flex-end; justify-content: space-between; }
+  header > div { flex: 1 1 420px; min-width: 0; }
   .eyebrow { margin: 0 0 6px; font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
   h1 { margin: 0; font-weight: 300; font-size: clamp(34px, 6vw, 56px); line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; }
   .lede { margin: 12px 0 0; max-width: 56ch; color: var(--muted); text-wrap: pretty; }
@@ -66,6 +69,7 @@
     padding: 0 16px;
     cursor: pointer;
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     transition: background-color 150ms ease, border-color 150ms ease, transform 120ms ease;
   }
   button:hover { border-color: var(--muted); }
@@ -78,11 +82,11 @@
 
   /* Countdown */
   .countdown { grid-column: 1 / -1; padding: clamp(24px, 4vw, 40px); }
-  .clock { display: flex; flex-wrap: wrap; gap: clamp(8px, 2vw, 24px); align-items: flex-start; }
+  .clock { display: flex; gap: clamp(4px, 2vw, 24px); align-items: flex-start; }
   .unit { display: grid; gap: 4px; }
-  .unit .ui-numtext { font-size: clamp(48px, 11vw, 112px); font-weight: 300; line-height: 1; letter-spacing: -0.03em; }
-  .unit span.label { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-  .colon { font-size: clamp(48px, 11vw, 112px); font-weight: 300; line-height: 1; color: var(--muted); }
+  .unit .ui-numtext { font-size: clamp(30px, 10vw, 112px); font-weight: 300; line-height: 1; letter-spacing: -0.03em; }
+  .unit span.label { font-size: clamp(10px, 2.6vw, 12px); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .colon { font-size: clamp(30px, 10vw, 112px); font-weight: 300; line-height: 1; color: var(--muted); }
 
   /* Cart */
   .item { display: grid; grid-template-columns: 56px 1fr; gap: 14px; align-items: center; }
@@ -114,21 +118,24 @@
 <body>
 <main>
   <header>
-    <p class="eyebrow">Numeric text</p>
-    <h1>Anything that changes should&nbsp;move.</h1>
-    <p class="lede">Only the digits that change roll: up when the number climbs, down when it falls, each one settling in about 200ms. Everything else holds still.</p>
+    <div>
+      <p class="eyebrow">Numeric text</p>
+      <h1>Anything that changes should&nbsp;move.</h1>
+      <p class="lede">Only the digits that change roll: up when the number climbs, down when it falls, each one settling in about 200ms. Everything else holds still.</p>
+    </div>
+    <button type="button" id="pause">Pause Live Updates</button>
   </header>
 
   <section class="card countdown" aria-labelledby="cd-title">
     <h2 id="cd-title">Drop 04 opens in</h2>
     <div class="clock" role="timer" aria-label="Time until the drop opens">
-      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-format='{"minimumIntegerDigits":2}' id="cd-d"></span><span class="label">Days</span></div>
+      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-counts-down="true" data-format='{"minimumIntegerDigits":2}' id="cd-d"></span><span class="label">Days</span></div>
       <span class="colon" aria-hidden="true">:</span>
-      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-format='{"minimumIntegerDigits":2}' id="cd-h"></span><span class="label">Hours</span></div>
+      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-counts-down="true" data-format='{"minimumIntegerDigits":2}' id="cd-h"></span><span class="label">Hours</span></div>
       <span class="colon" aria-hidden="true">:</span>
-      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-format='{"minimumIntegerDigits":2}' id="cd-m"></span><span class="label">Minutes</span></div>
+      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-counts-down="true" data-format='{"minimumIntegerDigits":2}' id="cd-m"></span><span class="label">Minutes</span></div>
       <span class="colon" aria-hidden="true">:</span>
-      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-format='{"minimumIntegerDigits":2}' id="cd-s"></span><span class="label">Seconds</span></div>
+      <div class="unit"><span class="ui-numtext" data-ui-numtext data-value="0" data-counts-down="true" data-format='{"minimumIntegerDigits":2}' id="cd-s"></span><span class="label">Seconds</span></div>
     </div>
   </section>
 
@@ -161,7 +168,7 @@
       <p class="stock" id="stock-badge"><span>Only <span class="ui-numtext" data-ui-numtext data-value="7" id="stock" data-live="polite"></span> left</span></p>
       <p class="note">Each purchase takes one; the badge counts down and turns red when it gets low.</p>
       <div class="row">
-        <button type="button" class="solid" id="buy">Buy one</button>
+        <button type="button" class="solid" id="buy">Buy One</button>
         <button type="button" id="restock">Restock</button>
       </div>
     </section>
@@ -234,7 +241,13 @@
       set($("cd-s"), s % 60);
     }
     tick();
-    setInterval(tick, 1000);
+    var paused = false;
+    setInterval(function () { if (!paused) tick(); }, 1000);
+    $("pause").addEventListener("click", function () {
+      paused = !paused;
+      this.textContent = paused ? "Resume Live Updates" : "Pause Live Updates";
+      if (!paused) tick();
+    });
 
     // Cart
     var price = 189, qty = 1;
@@ -264,6 +277,7 @@
     // Viewers drift
     var viewers = 1284;
     setInterval(function () {
+      if (paused) return;
       viewers = Math.max(900, viewers + Math.round((Math.random() - 0.45) * 14));
       set($("viewers"), viewers);
     }, 1100);

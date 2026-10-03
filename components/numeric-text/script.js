@@ -31,14 +31,16 @@
   function keyed(fmt, value) {
     var parts = fmt.formatToParts(value);
     var place = 0, frac = 0, side = "pre", seen = {}, out = [];
-    parts.forEach(function (p) { if (p.type === "integer") place += p.value.length; });
+    // Array.from splits by code point, so digits outside the BMP
+    // (e.g. numberingSystem "mathsans") stay whole.
+    parts.forEach(function (p) { if (p.type === "integer") place += Array.from(p.value).length; });
     parts.forEach(function (p) {
-      var j, k;
+      var k;
       if (p.type === "integer") {
-        for (j = 0; j < p.value.length; j++) out.push({ key: "i" + --place, ch: p.value[j] });
+        Array.from(p.value).forEach(function (ch) { out.push({ key: "i" + --place, ch: ch }); });
         side = "post";
       } else if (p.type === "fraction") {
-        for (j = 0; j < p.value.length; j++) out.push({ key: "f" + frac++, ch: p.value[j] });
+        Array.from(p.value).forEach(function (ch) { out.push({ key: "f" + frac++, ch: ch }); });
       } else if (p.type === "group") {
         out.push({ key: "g" + place, ch: p.value });
       } else {
@@ -169,16 +171,18 @@
 
     // Merge old and new in reading order. Slots that are going away keep
     // their place so they close up where they stand.
-    var merged = [], placed = new Set(), entering = [], i = 0;
+    var merged = [], entering = [], i = 0;
     function drain(stopAt) {
       while (i < old.length && old[i] !== stopAt) {
-        if (!placed.has(old[i]) && !want.has(old[i]._key)) { merged.push(old[i]); placed.add(old[i]); }
+        if (!want.has(old[i]._key)) merged.push(old[i]);
         i++;
       }
     }
     parts.forEach(function (p) {
       var s = st.slots.get(p.key);
-      if (s) drain(s);
+      // A key that moved earlier (e.g. a locale puts the minus sign after the
+      // currency) must not sweep the leaving slots ahead of it out of place.
+      if (s) { if (old.indexOf(s, i) !== -1) drain(s); }
       else {
         s = document.createElement("span");
         s.className = "ui-numtext__slot";
@@ -188,7 +192,6 @@
       }
       if (old[i] === s) i++;
       merged.push(s);
-      placed.add(s);
     });
     drain(null);
 
@@ -208,6 +211,7 @@
         return;
       }
       s._leaving = false;
+      s._exit = null;
       s.classList.remove("is-leaving");
       var prev = s._g;
       s._ch = ch;
@@ -236,7 +240,10 @@
       var b = before.get(s);
       var out = rollOut(s._g, t, isDigit(s) && outShift, b.glyph);
       s._g = null;
-      (width(s, b.width, 0) || out).addEventListener("finish", function () { if (s._leaving) retire(st, s); });
+      // Only this exit may retire the slot: an older exit's glyph fade can
+      // still finish after the slot was revived and started leaving again.
+      var done = s._exit = width(s, b.width, 0) || out;
+      done.addEventListener("finish", function () { if (s._leaving && s._exit === done) retire(st, s); });
     });
   }
 
@@ -251,10 +258,24 @@
     return true;
   }
 
+  // Number("") and Number(null) are 0; an empty value is not a number
+  function num(v) {
+    return v == null || String(v).trim() === "" ? NaN : Number(v);
+  }
+
+  // Decimal places a value is written with, so count mode can tween
+  // integers through integers instead of flashing "9.432".
+  function places(n) {
+    var m = /(?:\.(\d+))?(?:e-(\d+))?$/.exec(String(n));
+    return (m[1] ? m[1].length : 0) + (m[2] ? Number(m[2]) : 0);
+  }
+
   function set(el, value) {
+    value = num(value);
+    if (isNaN(value)) return;
+    if (!states.has(el) && el.dataset.value === undefined) el.dataset.value = value;
     var st = states.get(el) || init(el);
-    value = Number(value);
-    if (!st || isNaN(value)) return;
+    if (!st) return;
     var reformatted = refreshFormat(st);
     if (value === st.target && !reformatted) return;
     var from = st.target;
@@ -266,9 +287,11 @@
     if (el.dataset.mode === "count" && !reduceMotion.matches && !document.hidden) {
       // Count mode: tween through the in-between values, no roll
       var dur = tokens(el).enter, t0 = performance.now(), start = st.value;
+      var f = Math.pow(10, Math.max(places(start), places(value)));
       st.raf = requestAnimationFrame(function tick(now) {
         var p = Math.min(1, (now - t0) / dur);
-        render(st, p < 1 ? start + (value - start) * (1 - Math.pow(1 - p, 3)) : value, false);
+        // "|| 0" keeps a rounded -0 from showing as "-0"
+        render(st, p < 1 ? Math.round((start + (value - start) * (1 - Math.pow(1 - p, 3))) * f) / f || 0 : value, false);
         if (p < 1) st.raf = requestAnimationFrame(tick);
       });
     } else {
@@ -283,8 +306,8 @@
 
   function init(el) {
     if (states.has(el)) return states.get(el);
-    var value = Number(el.dataset.value);
-    if (el.dataset.value === undefined || isNaN(value)) return null;
+    var value = num(el.dataset.value);
+    if (isNaN(value)) return null;
 
     var sr = document.createElement("span");
     sr.className = "ui-numtext__sr";
