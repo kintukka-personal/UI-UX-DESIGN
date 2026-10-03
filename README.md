@@ -15,3 +15,4 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Numeric text](components/numeric-text/) | Numbers that change roll only the digits that changed, up or down, in about 200ms |
 | [Number roll](components/number-roll/) | Odometer-style digit strips that roll through every number in between, with per-column stagger and selectable easing |
 | [Numeric text (React)](components/numeric-text-react/) | React component: changed digits roll as an odometer, with an optional motion blur that follows the digit's speed |
+| [Product card](components/product-card/) | Editorial product hero: giant wordmark, a floating cut-out over a two-tone stage, colourway swatches that retint the card, and an animated Add to bag |
