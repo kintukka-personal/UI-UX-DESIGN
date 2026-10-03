@@ -35,10 +35,10 @@
     parts.forEach(function (p) {
       var j, k;
       if (p.type === "integer") {
-        for (j = 0; j < p.value.length; j++) out.push({ key: "i" + --place, ch: p.value[j], digit: true });
+        for (j = 0; j < p.value.length; j++) out.push({ key: "i" + --place, ch: p.value[j] });
         side = "post";
       } else if (p.type === "fraction") {
-        for (j = 0; j < p.value.length; j++) out.push({ key: "f" + frac++, ch: p.value[j], digit: true });
+        for (j = 0; j < p.value.length; j++) out.push({ key: "f" + frac++, ch: p.value[j] });
       } else if (p.type === "group") {
         out.push({ key: "g" + place, ch: p.value });
       } else {
@@ -61,18 +61,19 @@
   /* ---- Motion tokens, read from CSS so themes can tune them ------------ */
 
   function ms(v, fallback) {
-    v = String(v).trim();
     var n = parseFloat(v);
     if (isNaN(n)) return fallback;
     return /[^m]s$/.test(v) ? n * 1000 : n;
   }
 
+  // ponytail: one getComputedStyle per change; cache on the state if a page
+  // drives hundreds of these at 60fps.
   function tokens(el) {
     var cs = getComputedStyle(el);
     var get = function (name, fallback) { return cs.getPropertyValue(name).trim() || fallback; };
     return {
-      enter: ms(get("--ui-numtext-duration", "200ms"), 200),
-      exit: ms(get("--ui-numtext-exit", "150ms"), 150),
+      enter: ms(get("--ui-numtext-duration"), 200),
+      exit: ms(get("--ui-numtext-exit"), 150),
       shift: get("--ui-numtext-shift", "0.8em"),
       blur: get("--ui-numtext-blur", "2px"),
       easeIn: get("--ui-numtext-ease-in", "cubic-bezier(0.22, 1, 0.36, 1)"),
@@ -90,18 +91,12 @@
     return g;
   }
 
-  function slot(item) {
-    var s = document.createElement("span");
-    s.className = "ui-numtext__slot";
-    s.appendChild(glyph(item.ch));
-    s._key = item.key;
-    s._ch = item.ch;
-    s._digit = item.digit;
-    return s;
-  }
-
   function stop(node) {
     node.getAnimations().forEach(function (a) { a.cancel(); });
+  }
+
+  function isDigit(s) {
+    return s._key[0] === "i" || s._key[0] === "f";
   }
 
   // Where a glyph is right now, mid-animation or not, so a new change can
@@ -112,124 +107,136 @@
   }
 
   function rollIn(g, t, from) {
-    if (t.reduced) return g.animate({ opacity: [0, 1] }, { duration: 120, easing: "linear" });
-    g.animate([
-      from ? { transform: "translateY(" + from + ")", opacity: 0, filter: "blur(" + t.blur + ")" }
-           : { opacity: 0, filter: "blur(" + t.blur + ")" },
-      { transform: "none", opacity: 1, filter: "blur(0)" }
-    ], { duration: t.enter, easing: t.easeIn });
+    if (t.reduced) { g.animate({ opacity: [0, 1] }, { duration: 120, easing: "linear" }); return; }
+    var first = { opacity: 0, filter: "blur(" + t.blur + ")" };
+    if (from) first.transform = "translateY(" + from + ")";
+    g.animate([first, { transform: "none", opacity: 1, filter: "blur(0)" }], { duration: t.enter, easing: t.easeIn });
   }
 
+  // The outgoing glyph lifts out of the flow, leaves, and removes itself.
   function rollOut(g, t, to, start) {
+    stop(g);
+    g.classList.add("is-out");
     var end = { opacity: 0 };
     if (!t.reduced) {
       end.filter = "blur(" + t.blur + ")";
-      end.transform = to ? "translateY(" + to + ")" : start.transform;
+      if (to) end.transform = "translateY(" + to + ")";
     }
     // Fade out within the first half so old and new never read as a smudge
     var a = g.animate([start, { opacity: 0, offset: 0.5 }, end], { duration: t.reduced ? 120 : t.exit, easing: t.easeOut, fill: "forwards" });
-    a.onfinish = function () { g.remove(); };
+    a.addEventListener("finish", function () { g.remove(); });
+    return a;
   }
 
   /* ---- Rendering a change ---------------------------------------------- */
 
+  // A slot that has finished leaving. Until then it stays in st.slots, so
+  // the same place coming back mid-exit revives it instead of doubling up.
+  function retire(st, s) {
+    s.remove();
+    if (st.slots.get(s._key) === s) st.slots.delete(s._key);
+  }
+
   function render(st, value, animate) {
-    var items = keyed(st.fmt, value);
+    var parts = keyed(st.fmt, value);
+    var text = parts.map(function (p) { return p.ch; }).join("");
     var from = st.value;
-    var up = st.el.dataset.countsDown === "true" ? false
-      : st.el.dataset.countsDown === "false" ? true
-      : !(value < from);
+    st.value = value;
+    if (text === st.text) return;
+    st.text = text;
+
+    var cd = st.el.dataset.countsDown;
+    var up = cd ? cd !== "true" : !(value < from);
     var t = animate && from !== undefined && !document.hidden ? tokens(st.el) : null;
     var outShift = t && (up ? "-" : "") + t.shift;
     var inShift = t && (up ? "" : "-") + t.shift;
 
-    st.value = value;
-
-    // Clear what an interrupted change left behind
-    st.box.querySelectorAll(".is-leaving").forEach(function (n) { n.remove(); });
+    var want = new Map(parts.map(function (p) { return [p.key, p.ch]; }));
     var old = Array.prototype.slice.call(st.box.children);
-    var keys = new Set(items.map(function (it) { return it.key; }));
 
-    // Read everything first (before any writes) to avoid layout thrash
+    // Which existing slots change: a new character, coming back while
+    // leaving, or starting to leave. Everything else is left alone, mid-motion
+    // or not.
+    var touched = old.filter(function (s) {
+      return want.has(s._key) ? s._leaving || want.get(s._key) !== s._ch : !s._leaving;
+    });
+
+    // Reads first, then writes, so this costs one layout, not one per slot
     var before = new Map();
-    if (t) old.forEach(function (s) {
-      var g = s.lastElementChild;
-      before.set(s, { width: s.getBoundingClientRect().width, glyph: g && snapshot(g) });
-    });
-    old.forEach(function (s) {
-      stop(s);
-      s.style.width = "";
-      s.querySelectorAll(".is-out").forEach(function (n) { n.remove(); });
+    if (t) touched.forEach(function (s) {
+      before.set(s, { width: s.getBoundingClientRect().width, glyph: s._g && snapshot(s._g) });
     });
 
-    // Merge old and new in reading order; slots that are going away keep
-    // their place so they can close up where they stand.
-    var merged = [], changed = [], added = [], i = 0;
-    items.forEach(function (it) {
-      while (i < old.length && !keys.has(old[i]._key)) merged.push(old[i++]);
-      var s = st.slots.get(it.key);
-      if (s) {
-        if (old[i] === s) i++;
-        if (s._ch !== it.ch) {
-          var prev = s.lastElementChild;
-          prev.classList.add("is-out");
-          s.appendChild(glyph(it.ch));
-          s._ch = it.ch;
-          s._digit = it.digit;
-          changed.push({ s: s, prev: prev });
-        }
-      } else {
-        s = slot(it);
-        added.push(s);
+    // Merge old and new in reading order. Slots that are going away keep
+    // their place so they close up where they stand.
+    var merged = [], placed = new Set(), entering = [], i = 0;
+    function drain(stopAt) {
+      while (i < old.length && old[i] !== stopAt) {
+        if (!placed.has(old[i]) && !want.has(old[i]._key)) { merged.push(old[i]); placed.add(old[i]); }
+        i++;
       }
+    }
+    parts.forEach(function (p) {
+      var s = st.slots.get(p.key);
+      if (s) drain(s);
+      else {
+        s = document.createElement("span");
+        s.className = "ui-numtext__slot";
+        s._key = p.key;
+        st.slots.set(p.key, s);
+        entering.push(s);
+      }
+      if (old[i] === s) i++;
       merged.push(s);
+      placed.add(s);
     });
-    while (i < old.length) merged.push(old[i++]);
+    drain(null);
 
-    var slots = new Map();
     merged.forEach(function (s, idx) {
-      if (keys.has(s._key)) slots.set(s._key, s);
-      else s.classList.add("is-leaving");
       if (st.box.children[idx] !== s) st.box.insertBefore(s, st.box.children[idx] || null);
     });
-    st.slots = slots;
 
-    if (!t) {
-      changed.forEach(function (c) { c.prev.remove(); });
-      merged.forEach(function (s) { if (s.classList.contains("is-leaving")) s.remove(); });
-      return;
+    var leaving = [];
+    touched.concat(entering).forEach(function (s) {
+      stop(s);
+      var ch = want.get(s._key);
+      if (ch === undefined) {
+        s._leaving = true;
+        s.classList.add("is-leaving");
+        leaving.push(s);
+        if (!t) retire(st, s);
+        return;
+      }
+      s._leaving = false;
+      s.classList.remove("is-leaving");
+      var prev = s._g;
+      s._ch = ch;
+      s._g = s.appendChild(glyph(ch));
+      if (prev) {
+        if (t) rollOut(prev, t, isDigit(s) && outShift, before.get(s).glyph);
+        else prev.remove();
+      }
+    });
+    if (!t) return;
+
+    // Natural widths of the new layout (the one forced layout), then motion
+    var grow = touched.concat(entering).filter(function (s) { return !s._leaving; });
+    var after = grow.map(function (s) { return s.getBoundingClientRect().width; });
+
+    function width(s, a, b) {
+      if (t.reduced || Math.abs(a - b) < 0.5) return null;
+      return s.animate({ width: [a + "px", b + "px"] }, { duration: b ? t.enter : t.exit, easing: b ? t.easeIn : t.easeOut });
     }
 
-    // Natural widths of the new layout, then animate from the old ones
-    var after = new Map();
-    merged.forEach(function (s) {
-      if (!s.classList.contains("is-leaving")) after.set(s, s.getBoundingClientRect().width);
+    grow.forEach(function (s, k) {
+      rollIn(s._g, t, isDigit(s) && inShift);
+      width(s, before.has(s) ? before.get(s).width : 0, after[k]);
     });
-
-    function width(s, a, b, onDone) {
-      if (t.reduced || Math.abs(a - b) < 0.5) { if (onDone) onDone(); return; }
-      var anim = s.animate({ width: [a + "px", b + "px"] }, { duration: b ? t.enter : t.exit, easing: b ? t.easeIn : t.easeOut });
-      if (onDone) anim.onfinish = onDone;
-    }
-
-    changed.forEach(function (c) {
-      var b = before.get(c.s);
-      rollOut(c.prev, t, c.s._digit && outShift, b.glyph);
-      rollIn(c.s.lastElementChild, t, c.s._digit && inShift);
-      width(c.s, b.width, after.get(c.s));
-    });
-    added.forEach(function (s) {
-      rollIn(s.lastElementChild, t, s._digit && inShift);
-      width(s, 0, after.get(s));
-    });
-    merged.forEach(function (s) {
-      if (!s.classList.contains("is-leaving")) return;
+    leaving.forEach(function (s) {
       var b = before.get(s);
-      var g = s.lastElementChild;
-      if (!b || !g) { s.remove(); return; }
-      var a = g.animate([b.glyph, { opacity: 0, offset: 0.5 }, { opacity: 0 }], { duration: t.exit, easing: t.easeOut, fill: "forwards" });
-      if (t.reduced) a.onfinish = function () { s.remove(); };
-      else width(s, b.width, 0, function () { s.remove(); });
+      var out = rollOut(s._g, t, isDigit(s) && outShift, b.glyph);
+      s._g = null;
+      (width(s, b.width, 0) || out).addEventListener("finish", function () { if (s._leaving) retire(st, s); });
     });
   }
 
@@ -254,7 +261,7 @@
     st.target = value;
     cancelAnimationFrame(st.raf);
     st.sr.textContent = st.fmt.format(value);
-    if (String(el.dataset.value) !== String(value)) el.dataset.value = value;
+    if (String(el.dataset.value) !== String(value)) { el.dataset.value = value; st.observer.takeRecords(); }
 
     if (el.dataset.mode === "count" && !reduceMotion.matches && !document.hidden) {
       // Count mode: tween through the in-between values, no roll
@@ -294,9 +301,9 @@
     sr.textContent = st.fmt.format(value);
     render(st, value, false);
 
-    // Attribute changes made by other code (or by set itself) land here
-    new MutationObserver(function () { set(el, el.dataset.value); })
-      .observe(el, { attributes: true, attributeFilter: ["data-value", "data-format", "data-locale"] });
+    // Attribute changes made by other code land here
+    st.observer = new MutationObserver(function () { set(el, el.dataset.value); });
+    st.observer.observe(el, { attributes: true, attributeFilter: ["data-value", "data-format", "data-locale"] });
 
     return st;
   }

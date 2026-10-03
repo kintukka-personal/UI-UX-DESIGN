@@ -71,7 +71,7 @@
   button:hover { border-color: var(--muted); }
   button:active { transform: scale(0.96); }
   button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-  button.solid { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+  button.solid,
   button[aria-pressed="true"] { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
   button:disabled { opacity: 0.4; cursor: default; transform: none; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
@@ -107,6 +107,7 @@
   .controls { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
   .controls fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; }
   .controls legend { padding: 0; margin-bottom: 8px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .big { margin: 0; font-size: 40px; font-weight: 300; letter-spacing: -0.02em; line-height: 1.1; }
   .log { margin: 0; font: 400 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); min-height: 1.5em; }
 </style>
 </head>
@@ -167,7 +168,7 @@
 
     <section class="card" aria-labelledby="views-title">
       <h2 id="views-title">Live viewers</h2>
-      <p style="margin:0;font-size:40px;font-weight:300;letter-spacing:-0.02em;line-height:1.1">
+      <p class="big">
         <span class="ui-numtext" data-ui-numtext data-value="1284" id="viewers"></span>
       </p>
       <p class="note">Drifts up and down every second or so, the way real-time counts do. Digits change only where the value changes.</p>
@@ -275,11 +276,10 @@
       percent: '{"style":"percent","maximumFractionDigits":1}',
       compact: '{"notation":"compact","maximumFractionDigits":1}'
     };
-    var scale = { plain: 1, currency: 1, percent: 0.001, compact: 1 };
     var fmt = "plain", raw = 99;
     function show(n) {
       raw = Math.max(-999999999, Math.min(999999999, Math.round(n)));
-      set(pg, raw * scale[fmt]);
+      set(pg, fmt === "percent" ? raw / 1000 : raw);
     }
     document.querySelectorAll("[data-step]").forEach(function (b) {
       b.addEventListener("click", function () { show(raw + Number(b.dataset.step)); });

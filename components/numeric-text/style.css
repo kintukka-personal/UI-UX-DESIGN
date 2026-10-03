@@ -17,7 +17,6 @@
   position: relative;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1;
 }
 
 .ui-numtext__box {
