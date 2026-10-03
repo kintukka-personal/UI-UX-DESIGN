@@ -182,6 +182,20 @@
 
     if (title) splitLetters(title);
 
+    // Entrance order for the pieces that shoot out after (or alongside) the name.
+    var specs = card.querySelectorAll(".ui-pcard__specs > span");
+    var shots = [];
+    if (specs[0]) shots.push([specs[0], 0]);
+    if (specs[1]) shots.push([specs[1], 3]);
+    var seq = [card.querySelector(".ui-pcard__price-label")]
+      .concat(Array.prototype.slice.call(card.querySelectorAll(".ui-pcard__swatch")))
+      .concat([cta]);
+    seq.forEach(function (el, k) { if (el) shots.push([el, 4 + k]); });
+    shots.forEach(function (s) {
+      s[0].classList.add("ui-pcard__shoot");
+      s[0].style.setProperty("--i", s[1]);
+    });
+
     // Entrance, once, when the card first comes into view.
     if (!reduceMotion.matches && "IntersectionObserver" in window) {
       card.classList.add("is-pending");

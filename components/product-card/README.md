@@ -18,7 +18,8 @@ An editorial product card where the product is the hero. A deep coloured stage h
 
   0.23s after landing, the product regrows in place from a soft blur. Clicks during the flight are ignored. With reduced motion turned on, the item is counted straight away and nothing flies.
 - **Motion:**
-  - On first view, the wordmark builds left to right. The first A shoots out from behind an invisible wall, then each letter shoots out from behind the one before it, staying hidden until it clears that letter. Each one overshoots a touch, squashes and locks in, and that moment sets off the next letter (one every 200ms; tune it with `--ui-pcard-beat`). The word gives a small recoil on every hit. The product drops in at 0.95s, then the footer fades up.
+  - On first view, everything builds left to right with one move: each piece shoots out from behind the one before it, staying hidden until it clears it, then overshoots a touch, squashes and locks in. Each lock sets off the next piece, one every 130ms (tune it with `--ui-pcard-beat`).
+  - The order is: the AURA letters, with the spec line alongside; then price, Sage, Onyx, Oat and Add to bag; and finally the product drops in. The word gives a small recoil on each letter's hit.
   - The product then floats gently, with its shadow breathing.
   - With a mouse, the product and wordmark drift apart slightly as the pointer moves.
 - **Reduced motion:** colour changes still happen, but nothing moves.
