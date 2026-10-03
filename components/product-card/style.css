@@ -8,6 +8,7 @@
 
 @property --ui-pcard-stage-1 { syntax: "<color>"; inherits: true; initial-value: #4F7D5B; }
 @property --ui-pcard-stage-2 { syntax: "<color>"; inherits: true; initial-value: #3A6545; }
+@property --ui-pcard-stage-top { syntax: "<color>"; inherits: true; initial-value: #1F3B28; }
 @property --ui-pcard-title { syntax: "<color>"; inherits: true; initial-value: #E3EEDD; }
 @property --ui-pcard-specs { syntax: "<color>"; inherits: true; initial-value: #A9C4AB; }
 @property --ui-pcard-cta-bg { syntax: "<color>"; inherits: true; initial-value: #1C2C22; }
@@ -25,6 +26,7 @@
   /* Sage (default) */
   --ui-pcard-stage-1: #4F7D5B;
   --ui-pcard-stage-2: #3A6545;
+  --ui-pcard-stage-top: #1F3B28;   /* ombré: the top third darkens to this */
   --ui-pcard-title: #E3EEDD;
   --ui-pcard-specs: #A9C4AB;
   --ui-pcard-cta-bg: #1C2C22;
@@ -37,6 +39,7 @@
   transition:
     --ui-pcard-stage-1 0.6s ease,
     --ui-pcard-stage-2 0.6s ease,
+    --ui-pcard-stage-top 0.6s ease,
     --ui-pcard-title 0.6s ease,
     --ui-pcard-specs 0.6s ease,
     --ui-pcard-cta-bg 0.6s ease;
@@ -45,6 +48,7 @@
 .ui-pcard[data-colorway="onyx"] {
   --ui-pcard-stage-1: #4A4C4D;
   --ui-pcard-stage-2: #262829;
+  --ui-pcard-stage-top: #121313;
   --ui-pcard-title: #E9E7E2;
   --ui-pcard-specs: #A3A5A3;
   --ui-pcard-cta-bg: #171818;
@@ -54,6 +58,7 @@
 .ui-pcard[data-colorway="oat"] {
   --ui-pcard-stage-1: #D2C5AE;
   --ui-pcard-stage-2: #B4A487;
+  --ui-pcard-stage-top: #8E7E62;
   --ui-pcard-title: #F7F2E8;
   --ui-pcard-specs: #7D6F57;
   --ui-pcard-cta-bg: #3A3226;
@@ -89,6 +94,7 @@
   inset: 0 0 auto;
   height: calc(var(--ui-pcard-inset-top) + 494 * var(--u));
   background:
+    linear-gradient(to bottom, var(--ui-pcard-stage-top), color-mix(in srgb, var(--ui-pcard-stage-top) 55%, transparent) 18%, transparent 46%),
     radial-gradient(ellipse 70% 58% at 50% 62%, var(--ui-pcard-stage-1), transparent 100%),
     var(--ui-pcard-stage-2);
   z-index: -1;

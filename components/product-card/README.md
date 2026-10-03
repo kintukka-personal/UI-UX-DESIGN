@@ -100,6 +100,7 @@ Colours live in custom properties on `.ui-pcard`. Each colourway overrides the s
 .ui-pcard[data-colorway="onyx"] {
   --ui-pcard-stage-1: #4A4C4D;   /* centre of the stage glow */
   --ui-pcard-stage-2: #262829;   /* stage edges */
+  --ui-pcard-stage-top: #121313; /* ombré: the top third darkens to this */
   --ui-pcard-title: #E9E7E2;     /* wordmark, icons, badge */
   --ui-pcard-specs: #A3A5A3;     /* spec line */
   --ui-pcard-cta-bg: #171818;    /* Add to bag */
