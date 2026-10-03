@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NumberRoll — a counting transition for numeric text</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Martian+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --ground:#deddd2;
+  --surface:#f4f3ec;
+  --slot:#e7e6db;
+  --ink:#1d1f1c;
+  --muted:#6a6d63;
+  --rule:#c4c3b7;
+  --accent:#155663;
+  --accent-soft:#d7e4e5;
+  --warn:#8a5a14;
+
+  --ui:'Archivo','Helvetica Neue',Arial,sans-serif;
+  --num:'Martian Mono',ui-monospace,'SF Mono',Menlo,monospace;
+
+  --radius:3px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#191b18;
+    --surface:#22241f;
+    --slot:#14160f;
+    --ink:#edede2;
+    --muted:#908f80;
+    --rule:#36392f;
+    --accent:#6fbecb;
+    --accent-soft:#1d3238;
+    --warn:#d4a257;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#191b18;
+  --surface:#22241f;
+  --slot:#14160f;
+  --ink:#edede2;
+  --muted:#908f80;
+  --rule:#36392f;
+  --accent:#6fbecb;
+  --accent-soft:#1d3238;
+  --warn:#d4a257;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--ui);
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- readout face ---------- */
+.nr{font-family:var(--num)}
+
+/* ---------- page ---------- */
+.wrap{max-width:940px;margin:0 auto;padding:0 24px}
+header{padding:72px 0 0}
+h1{
+  font-size:clamp(28px,4.4vw,44px);
+  font-weight:600;
+  letter-spacing:-0.025em;
+  margin:0 0 14px;
+  max-width:18ch;
+}
+.lede{
+  margin:0;
+  max-width:62ch;
+  color:var(--muted);
+  font-size:17px;
+}
+.lede code{
+  font-family:var(--num);
+  font-size:0.84em;
+  color:var(--ink);
+}
+
+/* readout slot */
+.stage{
+  margin:48px 0 0;
+  background:var(--slot);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:46px 20px 42px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  position:relative;
+  overflow:hidden;
+  box-shadow:inset 0 2px 10px rgba(0,0,0,.09);
+}
+.stage::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;
+  top:50%;
+  height:1px;
+  background:var(--rule);
+  opacity:.5;
+  pointer-events:none;
+}
+#hero{
+  font-size:clamp(40px,10vw,88px);
+  font-weight:700;
+  letter-spacing:-0.03em;
+  position:relative;
+  z-index:1;
+}
+.stage-note{
+  margin:26px 0 0;
+  font-size:13.5px;
+  color:var(--muted);
+  position:relative;
+  z-index:1;
+}
+
+/* buttons */
+.bar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  margin:18px 0 0;
+  position:relative;
+  z-index:1;
+}
+button{
+  font-family:var(--ui);
+  font-size:14px;
+  font-weight:500;
+  color:var(--ink);
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:7px 14px;
+  cursor:pointer;
+  transition:background .12s,border-color .12s;
+}
+button:hover{border-color:var(--accent)}
+button:active{background:var(--accent-soft)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button .n{font-family:var(--num);font-size:.86em}
+
+/* sections */
+section{margin:76px 0 0}
+h2{
+  font-size:21px;
+  font-weight:600;
+  letter-spacing:-0.015em;
+  margin:0 0 6px;
+}
+.sub{margin:0 0 24px;color:var(--muted);max-width:60ch;font-size:15px}
+
+/* examples */
+.examples{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(248px,1fr));
+  gap:1px;
+  background:var(--rule);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.ex{
+  background:var(--surface);
+  padding:22px 20px 20px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.ex-name{font-size:14px;color:var(--muted);margin:0}
+.ex-val{font-size:30px;font-weight:600;letter-spacing:-0.02em}
+.ex-val.down{color:var(--warn)}
+.ex .bar{justify-content:flex-start;margin:0}
+
+/* controls */
+.panel{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:24px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:22px 32px;
+}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-size:14px;font-weight:500}
+.field .val{font-family:var(--num);font-size:12.5px;color:var(--muted);font-weight:400}
+input[type=range]{width:100%;accent-color:var(--accent);margin:0}
+select{
+  font-family:var(--ui);font-size:14px;color:var(--ink);
+  background:var(--ground);border:1px solid var(--rule);
+  border-radius:var(--radius);padding:7px 9px;
+}
+select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.check{flex-direction:row;align-items:center;gap:10px}
+.check input{accent-color:var(--accent);width:16px;height:16px;margin:0}
+.check label{font-weight:400}
+
+/* code */
+pre{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  border-radius:var(--radius);
+  padding:20px;
+  overflow-x:auto;
+  margin:0;
+  font-family:var(--num);
+  font-size:12.5px;
+  line-height:1.75;
+  color:var(--ink);
+}
+pre .c{color:var(--muted)}
+pre .k{color:var(--accent)}
+
+.notes{max-width:66ch}
+.notes li{margin-bottom:9px;color:var(--muted)}
+.notes li b{color:var(--ink);font-weight:500}
+.notes code{font-family:var(--num);font-size:.84em;color:var(--ink)}
+
+footer{
+  margin:84px 0 0;
+  border-top:1px solid var(--rule);
+  padding:22px 0 56px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+@media (max-width:560px){
+  .wrap{padding:0 18px}
+  header{padding-top:48px}
+  .stage{padding:34px 12px 30px}
+}
+@media (prefers-reduced-motion: reduce){
+  button{transition:none}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <h1>A counting transition for numeric text</h1>
+  <p class="lede">
+    <code>NumberRoll</code> watches a text view that holds a number. When the value changes it
+    doesn't swap the string — it rolls each digit that actually moved, upward when the number
+    climbs and downward when it falls. Digits that didn't change stay put. Where motion is
+    turned off, the text updates instantly and nothing is lost.
+  </p>
+</header>
+
+<div class="stage">
+  <div id="hero" class="nr"></div>
+  <div class="bar">
+    <button data-step="-100"><span class="n">−100</span></button>
+    <button data-step="-1"><span class="n">−1</span></button>
+    <button data-step="1"><span class="n">+1</span></button>
+    <button data-step="100"><span class="n">+100</span></button>
+    <button id="jump">Jump somewhere</button>
+    <button id="reset">Reset</button>
+  </div>
+  <p class="stage-note">Watch the hundreds column: it only moves when it has to.</p>
+</div>
+
+<section>
+  <h2>Other shapes of number</h2>
+  <p class="sub">Separators, currency symbols and colons are columns too. They hold their place
+  while the digits around them move, and cross-fade if they change.</p>
+
+  <div class="examples">
+    <div class="ex">
+      <p class="ex-name">Account balance</p>
+      <div id="ex-money" class="nr ex-val"></div>
+      <div class="bar">
+        <button data-money="-48.5">Spend</button>
+        <button data-money="320">Deposit</button>
+      </div>
+    </div>
+
+    <div class="ex">
+      <p class="ex-name">Time remaining</p>
+      <div id="ex-timer" class="nr ex-val down"></div>
+      <div class="bar">
+        <button id="timer-toggle">Start</button>
+        <button id="timer-reset">Reset</button>
+      </div>
+    </div>
+
+    <div class="ex">
+      <p class="ex-name">Battery</p>
+      <div id="ex-pct" class="nr ex-val"></div>
+      <div class="bar">
+        <button data-pct="-3.4">Drain</button>
+        <button data-pct="7.1">Charge</button>
+      </div>
+    </div>
+
+    <div class="ex">
+      <p class="ex-name">Temperature</p>
+      <div id="ex-temp" class="nr ex-val"></div>
+      <div class="bar">
+        <button data-temp="-2.5">Cooler</button>
+        <button data-temp="2.5">Warmer</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Tune the roll</h2>
+  <p class="sub">These apply to every readout on the page as you change them.</p>
+  <div class="panel">
+    <div class="field">
+      <label for="dur">Duration <span class="val" id="dur-val">900ms</span></label>
+      <input type="range" id="dur" min="120" max="2000" step="20" value="900">
+    </div>
+    <div class="field">
+      <label for="stag">Column delay <span class="val" id="stag-val">45ms</span></label>
+      <input type="range" id="stag" min="0" max="160" step="5" value="45">
+    </div>
+    <div class="field">
+      <label for="ease">Easing</label>
+      <select id="ease">
+        <option value="smooth">Smooth</option>
+        <option value="overshoot">Overshoot</option>
+        <option value="mechanical">Mechanical</option>
+        <option value="linear">Linear</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="lead">Leading column</label>
+      <select id="lead">
+        <option value="right">Ones digit leads</option>
+        <option value="left">Highest digit leads</option>
+      </select>
+    </div>
+    <div class="field check">
+      <input type="checkbox" id="reduced">
+      <label for="reduced">Update instantly, no motion</label>
+    </div>
+    <div class="field check">
+      <input type="checkbox" id="theme">
+      <label for="theme">Dark surface</label>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Using it</h2>
+  <p class="sub">One class, no dependencies. Point it at an element and hand it numbers.</p>
+<pre><span class="c">// Attach to any element that will hold a number.</span>
+<span class="k">const</span> counter = <span class="k">new</span> NumberRoll(document.querySelector(<span class="k">'#views'</span>), {
+  duration: 900,          <span class="c">// ms for one column's roll</span>
+  stagger: 45,            <span class="c">// ms between adjacent columns</span>
+  easing: <span class="k">'smooth'</span>,      <span class="c">// smooth | overshoot | mechanical | linear</span>
+  lead: <span class="k">'right'</span>,         <span class="c">// which end starts moving first</span>
+  format: v =&gt; v.toLocaleString(<span class="k">'en-AU'</span>)
+});
+
+counter.set(<span class="k">1024</span>);          <span class="c">// first call paints, no animation</span>
+counter.set(<span class="k">1025</span>);          <span class="c">// ones column rolls up one notch</span>
+counter.set(<span class="k">998</span>);           <span class="c">// everything rolls down, thousands column retires</span>
+
+counter.set(<span class="k">500</span>, { direction: <span class="k">1</span> });  <span class="c">// force an upward roll</span>
+counter.options.duration = <span class="k">400</span>;         <span class="c">// change settings whenever</span></pre>
+</section>
+
+<section>
+  <h2>Decisions worth knowing about</h2>
+  <ul class="notes">
+    <li><b>Direction follows the value.</b> Going up rolls up, going down rolls down, and a
+    digit takes the short way round — 9 to 1 climbing passes through 0, it doesn't reverse.
+    Pass <code>direction</code> to override.</li>
+    <li><b>Columns are matched from the right.</b> So 99 to 100 keeps the two nines where
+    they are and grows a new column on the left, instead of re-rolling everything.</li>
+    <li><b>Widths animate on entry and exit.</b> A digit appearing or retiring expands and
+    collapses its own column, so the surrounding text never jumps.</li>
+    <li><b>Overshoot renders one extra digit.</b> Past the target in the direction of travel,
+    so a springy easing reveals the next number rather than empty space.</li>
+    <li><b>Reduced motion is honoured on load.</b> If the system asks for less motion the text
+    just changes, and the checkbox above lets you feel the difference.</li>
+    <li><b>Interrupted rolls settle first.</b> Rapid updates finish the previous column
+    instantly and start again, so the strip never drifts out of alignment.</li>
+  </ul>
+</section>
+
+<footer>
+  Close cousin of SwiftUI's <code>.contentTransition(.numericText())</code>. The web has no
+  built-in equivalent, so this builds the column mask by hand.
+</footer>
+
+</div>
+
+<script src="script.js"></script>
+<script>
+/* ============================================================
+   Demo wiring
+   ============================================================ */
+
+const shared = { duration: 900, stagger: 45, easing: 'smooth', lead: 'right', reduced: null };
+const all = [];
+function make(sel, fmt) {
+  const r = new NumberRoll(document.querySelector(sel), Object.assign({ format: fmt }, shared));
+  all.push(r);
+  return r;
+}
+
+const nf = new Intl.NumberFormat('en-AU');
+const hero  = make('#hero',     v => nf.format(v));
+const money = make('#ex-money', v => '$' + v.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+const timer = make('#ex-timer', v => `${String(Math.floor(v / 60)).padStart(2,'0')}:${String(v % 60).padStart(2,'0')}`);
+const pct   = make('#ex-pct',   v => v.toFixed(1) + '%');
+const temp  = make('#ex-temp',  v => (v > 0 ? '+' : v < 0 ? '−' : ' ') + Math.abs(v).toFixed(1) + '°');
+
+hero.set(1024);
+money.set(4820.75);
+timer.set(185);
+pct.set(68.0);
+temp.set(21.5);
+
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+document.querySelectorAll('[data-step]').forEach(b =>
+  b.addEventListener('click', () => hero.set(clamp(hero.value + +b.dataset.step, 0, 999999))));
+document.getElementById('jump').addEventListener('click', () =>
+  hero.set(Math.floor(Math.random() * 99999)));
+document.getElementById('reset').addEventListener('click', () => hero.set(1024));
+
+document.querySelectorAll('[data-money]').forEach(b =>
+  b.addEventListener('click', () =>
+    money.set(Math.round(clamp(money.value + +b.dataset.money, 0, 99999.99) * 100) / 100)));
+
+document.querySelectorAll('[data-pct]').forEach(b =>
+  b.addEventListener('click', () =>
+    pct.set(Math.round(clamp(pct.value + +b.dataset.pct, 0, 100) * 10) / 10)));
+
+document.querySelectorAll('[data-temp]').forEach(b =>
+  b.addEventListener('click', () =>
+    temp.set(Math.round(clamp(temp.value + +b.dataset.temp, -15, 45) * 10) / 10)));
+
+// countdown
+let tick = null;
+const toggle = document.getElementById('timer-toggle');
+toggle.addEventListener('click', () => {
+  if (tick) { clearInterval(tick); tick = null; toggle.textContent = 'Start'; return; }
+  toggle.textContent = 'Pause';
+  tick = setInterval(() => {
+    if (timer.value <= 0) { clearInterval(tick); tick = null; toggle.textContent = 'Start'; return; }
+    timer.set(timer.value - 1);
+  }, 1000);
+});
+document.getElementById('timer-reset').addEventListener('click', () => {
+  clearInterval(tick); tick = null; toggle.textContent = 'Start'; timer.set(185);
+});
+
+// controls
+function push(key, value) {
+  shared[key] = value;
+  all.forEach(r => r.options[key] = value);
+}
+const dur = document.getElementById('dur'), durVal = document.getElementById('dur-val');
+dur.addEventListener('input', () => { push('duration', +dur.value); durVal.textContent = dur.value + 'ms'; });
+
+const stag = document.getElementById('stag'), stagVal = document.getElementById('stag-val');
+stag.addEventListener('input', () => { push('stagger', +stag.value); stagVal.textContent = stag.value + 'ms'; });
+
+document.getElementById('ease').addEventListener('change', e => push('easing', e.target.value));
+document.getElementById('lead').addEventListener('change', e => push('lead', e.target.value));
+
+const reduced = document.getElementById('reduced');
+reduced.checked = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+push('reduced', reduced.checked ? true : null);
+reduced.addEventListener('change', () => push('reduced', reduced.checked ? true : null));
+
+const theme = document.getElementById('theme');
+theme.checked = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const applyTheme = () => document.documentElement.setAttribute('data-theme', theme.checked ? 'dark' : 'light');
+applyTheme();
+theme.addEventListener('change', applyTheme);
+</script>
+</body>
+</html>

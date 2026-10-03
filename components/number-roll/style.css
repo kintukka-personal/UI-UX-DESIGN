@@ -1,0 +1,36 @@
+/* ==========================================================================
+   Number Roll: rolling digit strips for numeric text
+   1.1em is the cell height. Change it here and the script picks it up
+   (it measures).
+   ========================================================================== */
+
+.nr {
+  display: inline-flex;
+  align-items: flex-start;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.nr-col {
+  display: block;
+  height: 1.1em;
+  overflow: hidden;
+  position: relative;
+}
+
+.nr-strip {
+  display: block;
+  will-change: transform;
+}
+
+.nr-cell {
+  display: block;
+  height: 1.1em;
+  line-height: 1.1em;
+}
+
+.nr-sep .nr-cell {
+  text-align: center;
+}
