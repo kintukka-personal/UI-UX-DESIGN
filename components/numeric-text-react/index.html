@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NumericText — odometer content transition</title>
+<style>
+  :root {
+    --bg:        #0b0c0e;
+    --panel:     #131519;
+    --panel-2:   #1a1d22;
+    --line:      #24282f;
+    --line-2:    #31363f;
+    --ink:       #f2f4f7;
+    --ink-dim:   #9aa3b0;
+    --ink-faint: #656d79;
+    --up:        #4ade80;
+    --down:      #f87171;
+    --accent:    #7c9cff;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Inter, Roboto, system-ui, sans-serif;
+    font-feature-settings: "tnum" 1;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 56px 28px 96px; }
+
+  header { margin-bottom: 44px; }
+  h1 {
+    font-size: 15px; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--ink-dim); margin: 0 0 10px;
+  }
+  .lede { font-size: 17px; line-height: 1.6; color: var(--ink-faint); max-width: 60ch; margin: 0; }
+  .lede b { color: var(--ink-dim); font-weight: 500; }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 30px 32px;
+    margin-bottom: 20px;
+  }
+
+  .panel-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 18px; margin-bottom: 26px; flex-wrap: wrap;
+  }
+  .label {
+    font-size: 11px; font-weight: 600; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--ink-faint);
+  }
+  .note { font-size: 13px; color: var(--ink-faint); }
+
+  .stage {
+    display: flex; align-items: flex-end; gap: 20px;
+    flex-wrap: wrap; margin-bottom: 26px;
+  }
+
+  .hero   { font-size: 76px; font-weight: 650; letter-spacing: -.028em; line-height: 1; }
+  .mid    { font-size: 44px; font-weight: 600; letter-spacing: -.02em; line-height: 1; }
+  .small  { font-size: 26px; font-weight: 550; letter-spacing: -.01em; line-height: 1; }
+
+  .delta {
+    font-size: 14px; font-weight: 600; padding: 5px 10px; border-radius: 999px;
+    margin-bottom: 10px; transition: color .25s, background .25s;
+  }
+  .delta.up   { color: var(--up);   background: rgba(74,222,128,.1); }
+  .delta.down { color: var(--down); background: rgba(248,113,113,.1); }
+  .delta.flat { color: var(--ink-faint); background: rgba(154,163,176,.08); }
+
+  .row { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; }
+
+  button {
+    font: inherit; font-size: 13px; font-weight: 500;
+    color: var(--ink-dim); background: var(--panel-2);
+    border: 1px solid var(--line-2); border-radius: 8px;
+    padding: 8px 14px; cursor: pointer;
+    transition: background .14s, color .14s, border-color .14s;
+  }
+  button:hover { background: #22262d; color: var(--ink); border-color: #3c424c; }
+  button:active { transform: translateY(1px); }
+  button[data-on="true"] { background: var(--accent); border-color: var(--accent); color: #0b0c0e; }
+
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 26px; }
+  .cell-head { font-size: 11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:12px; }
+
+  .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px,1fr)); gap: 22px 30px; }
+  .ctl { display: flex; flex-direction: column; gap: 8px; }
+  .ctl > span { font-size: 12px; color: var(--ink-faint); display:flex; justify-content:space-between; }
+  .ctl > span em { font-style: normal; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  select {
+    font: inherit; font-size: 13px; color: var(--ink-dim);
+    background: var(--panel-2); border: 1px solid var(--line-2);
+    border-radius: 8px; padding: 8px 10px;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px; color: var(--ink-dim);
+    background: var(--panel-2); border: 1px solid var(--line);
+    border-radius: 6px; padding: 2px 6px;
+  }
+
+  pre {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px; line-height: 1.75; color: var(--ink-dim);
+    background: #0e1013; border: 1px solid var(--line);
+    border-radius: 10px; padding: 20px 22px; overflow-x: auto; margin: 0;
+  }
+  pre .k { color: var(--accent); }
+  pre .s { color: #8fd98f; }
+  pre .c { color: var(--ink-faint); font-style: italic; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<script src="script.js"></script>
+
+<script type="text/babel" data-presets="react">
+const { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } = React;
+
+/* NumericText comes from script.js (generated from NumericText.jsx). */
+
+/* ===================================================================== */
+/*  Demo                                                                  */
+/* ===================================================================== */
+
+const EASINGS = {
+  "Soft out (default)": "cubic-bezier(0.22, 1, 0.36, 1)",
+  "Mechanical":         "cubic-bezier(0.65, 0, 0.35, 1)",
+  "Overshoot":          "cubic-bezier(0.34, 1.56, 0.64, 1)",
+  "Linear":             "linear",
+};
+
+function Delta({ n }) {
+  const cls = n > 0 ? "up" : n < 0 ? "down" : "flat";
+  const sign = n > 0 ? "+" : n < 0 ? "−" : "±";
+  return <span className={"delta " + cls}>{sign}{Math.abs(n).toLocaleString()}</span>;
+}
+
+function Ctl({ label, value, suffix, children }) {
+  return (
+    <label className="ctl">
+      <span>{label}<em>{value}{suffix}</em></span>
+      {children}
+    </label>
+  );
+}
+
+function App() {
+  const [duration, setDuration] = useState(420);
+  const [stagger, setStagger]   = useState(28);
+  const [easing, setEasing]     = useState(EASINGS["Soft out (default)"]);
+  const [direction, setDir]     = useState("auto");
+  const [variant, setVariant]   = useState("odometer");
+  const [blurAmount, setBlur]   = useState(0.08);
+
+  const [sessions, setSessions] = useState(48213);
+  const [revenue, setRevenue]   = useState(1284990.5);
+  const [live, setLive]         = useState(true);
+  const [delta, setDelta]       = useState(0);
+
+  const motion = { duration, stagger, easing, direction, variant, blurAmount };
+
+  const bump = useCallback((d) => {
+    setSessions((v) => Math.max(0, v + d));
+    setDelta(d);
+  }, []);
+
+  useEffect(() => {
+    if (!live) return;
+    const id = setInterval(() => {
+      const d = Math.round((Math.random() - 0.38) * 340);
+      setSessions((v) => Math.max(0, v + d));
+      setRevenue((v) => Math.max(0, +(v + (Math.random() - 0.35) * 2400).toFixed(2)));
+      setDelta(d);
+    }, 1400);
+    return () => clearInterval(id);
+  }, [live]);
+
+  return (
+    <div className="wrap">
+      <header>
+        <h1>NumericText</h1>
+        <p className="lede">
+          A content transition for text views displaying numeric text. Changed digits
+          roll in the direction of travel; unchanged digits hold still. Columns are
+          keyed by <b>place value from the right</b>, so a number can gain or lose a
+          digit without the rest of it jumping.
+        </p>
+      </header>
+
+      {/* -------------------------------------------------- live metric */}
+      <section className="panel">
+        <div className="panel-head">
+          <span className="label">Live metric counter</span>
+          <span className="note">arbitrary jumps, not just ±1 — each digit takes the shortest single roll</span>
+        </div>
+
+        <div className="stage">
+          <NumericText className="hero" value={sessions} {...motion} />
+          <Delta n={delta} />
+        </div>
+
+        <div className="row">
+          <button data-on={live} onClick={() => setLive((v) => !v)}>
+            {live ? "Pause stream" : "Resume stream"}
+          </button>
+          <button onClick={() => bump(1)}>+1</button>
+          <button onClick={() => bump(-1)}>−1</button>
+          <button onClick={() => bump(137)}>+137</button>
+          <button onClick={() => bump(-4096)}>−4096</button>
+          <button onClick={() => { setDelta(999 - sessions); setSessions(999); }}>Set 999</button>
+          <button onClick={() => { setDelta(1000 - sessions); setSessions(1000); }}>Set 1,000</button>
+          <button onClick={() => { setDelta(-sessions); setSessions(0); }}>Reset</button>
+        </div>
+      </section>
+
+      {/* -------------------------------------------------- currency */}
+      <section className="panel">
+        <div className="panel-head">
+          <span className="label">Price / currency</span>
+          <span className="note">symbol, grouping separators and the decimal point stay static</span>
+        </div>
+
+        <div className="stage">
+          <NumericText
+            className="mid"
+            value={revenue}
+            format={{ style: "currency", currency: "USD" }}
+            {...motion}
+          />
+        </div>
+
+        <div className="row">
+          <button onClick={() => setRevenue((v) => +(v * 1.085).toFixed(2))}>+8.5%</button>
+          <button onClick={() => setRevenue((v) => +(v * 0.915).toFixed(2))}>−8.5%</button>
+          <button onClick={() => setRevenue((v) => +(v + 0.01).toFixed(2))}>+1¢</button>
+          <button onClick={() => setRevenue(999.99)}>$999.99</button>
+          <button onClick={() => setRevenue(1000)}>$1,000.00</button>
+        </div>
+
+        <div className="grid3" style={{ marginTop: 34 }}>
+          <div>
+            <div className="cell-head">EUR · de-DE</div>
+            <NumericText className="small" value={revenue} locale="de-DE"
+              format={{ style: "currency", currency: "EUR" }} {...motion} />
+          </div>
+          <div>
+            <div className="cell-head">JPY · no decimals</div>
+            <NumericText className="small" value={Math.round(revenue * 157)} locale="ja-JP"
+              format={{ style: "currency", currency: "JPY" }} {...motion} />
+          </div>
+          <div>
+            <div className="cell-head">Compact</div>
+            <NumericText className="small" value={sessions}
+              format={{ notation: "compact", maximumFractionDigits: 1 }} {...motion} />
+          </div>
+        </div>
+      </section>
+
+      {/* -------------------------------------------------- controls */}
+      <section className="panel">
+        <div className="panel-head">
+          <span className="label">Motion</span>
+          <span className="note">every panel above reads these live</span>
+        </div>
+
+        <div className="controls">
+          <Ctl label="Duration" value={duration} suffix="ms">
+            <input type="range" min="80" max="1600" step="20"
+                   value={duration} onChange={(e) => setDuration(+e.target.value)} />
+          </Ctl>
+
+          <Ctl label="Stagger per place" value={stagger} suffix="ms">
+            <input type="range" min="0" max="120" step="2"
+                   value={stagger} onChange={(e) => setStagger(+e.target.value)} />
+          </Ctl>
+
+          <label className="ctl">
+            <span>Easing</span>
+            <select value={easing} onChange={(e) => setEasing(e.target.value)}>
+              {Object.entries(EASINGS).map(([k, v]) => <option key={k} value={v}>{k}</option>)}
+            </select>
+          </label>
+
+          <label className="ctl">
+            <span>Direction</span>
+            <select value={direction} onChange={(e) => setDir(e.target.value)}>
+              <option value="auto">auto — follow the delta</option>
+              <option value="up">up — always rise</option>
+              <option value="down">down — always fall</option>
+            </select>
+          </label>
+
+          <label className="ctl">
+            <span>Variant</span>
+            <select value={variant} onChange={(e) => setVariant(e.target.value)}>
+              <option value="odometer">odometer — roll only</option>
+              <option value="blur">blur — roll + velocity smear</option>
+            </select>
+          </label>
+
+          <Ctl label="Blur amount" value={blurAmount.toFixed(2)} suffix="em">
+            <input type="range" min="0" max="0.2" step="0.01"
+                   value={blurAmount} onChange={(e) => setBlur(+e.target.value)}
+                   disabled={variant !== "blur"} />
+          </Ctl>
+        </div>
+      </section>
+
+      {/* -------------------------------------------------- variants */}
+      <section className="panel">
+        <div className="panel-head">
+          <span className="label">Variants, side by side</span>
+          <span className="note">
+            both run the same roll — blur samples the derivative of the easing curve,
+            so the smear peaks where the digit is genuinely fastest
+          </span>
+        </div>
+
+        <div className="grid3">
+          <div>
+            <div className="cell-head">odometer</div>
+            <NumericText className="mid" value={sessions}
+              duration={duration} stagger={stagger} easing={easing} direction={direction}
+              variant="odometer" />
+          </div>
+          <div>
+            <div className="cell-head">blur · {blurAmount.toFixed(2)}em</div>
+            <NumericText className="mid" value={sessions}
+              duration={duration} stagger={stagger} easing={easing} direction={direction}
+              variant="blur" blurAmount={blurAmount} />
+          </div>
+          <div>
+            <div className="cell-head">blur · heavy, slow</div>
+            <NumericText className="mid" value={sessions}
+              duration={Math.max(duration, 700)} stagger={stagger} easing={easing}
+              direction={direction} variant="blur" blurAmount={0.14} />
+          </div>
+        </div>
+      </section>
+
+      {/* -------------------------------------------------- usage */}
+      <section className="panel">
+        <div className="panel-head"><span className="label">Usage</span></div>
+<pre><span className="c">{"// Tailwind, CSS modules, plain CSS — the component ships no styles of its own."}</span>{"\n"}
+<span className="k">import</span>{" NumericText "}<span className="k">from</span>{" "}<span className="s">"./NumericText"</span>{";\n\n"}
+{"<NumericText\n"}
+{"  value={revenue}\n"}
+{"  format={{ style: "}<span className="s">"currency"</span>{", currency: "}<span className="s">"USD"</span>{" }}\n"}
+{"  className="}<span className="s">"text-6xl font-semibold tracking-tight"</span>{"\n"}
+{"  duration={420}\n"}
+{"  stagger={28}\n"}
+{"/>\n\n"}
+<span className="c">{"// Blur variant — blurAmount is in em, so the smear scales with font-size."}</span>{"\n"}
+{"<NumericText value={views} variant="}<span className="s">"blur"</span>{" blurAmount={0.1} />"}</pre>
+      </section>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
