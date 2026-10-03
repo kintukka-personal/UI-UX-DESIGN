@@ -447,7 +447,7 @@
    squashes and locks in. The moment it locks is the cue for the next letter.
    The word gives a small recoil on every hit. */
 .ui-pcard {
-  --ui-pcard-beat: 130ms;          /* time from one piece locking in to the next */
+  --ui-pcard-beat: 95ms;           /* time from one piece locking in to the next */
 }
 
 .ui-pcard.is-in .ui-pcard__glyph {
