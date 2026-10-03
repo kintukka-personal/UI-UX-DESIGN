@@ -46,14 +46,14 @@ Give each colourway its own `.ui-turn__frames` group, then add swatches anywhere
 ```html
 <div class="ui-turn" data-ui-turn data-name="Dune low sofa">
   <div class="ui-turn__stage" tabindex="0" role="img" aria-label="Dune low sofa. Drag or use arrow keys to turn.">
-    <img class="ui-turn__poster" src="images/saffron/front.webp" alt="">
+    <img class="ui-turn__poster" src="images/dune-low-sofa/saffron/front.webp" alt="">
     <canvas class="ui-turn__canvas" aria-hidden="true"></canvas>
     <div class="ui-turn__frames">
-      <img src="images/saffron/front.webp" data-angle="0" data-label="Front" alt="Front view">
-      <img src="images/saffron/three-quarter.webp" data-angle="45" data-label="Three-quarter" alt="Three-quarter view">
-      <img src="images/saffron/side.webp" data-angle="90" data-label="Side" alt="Side view">
+      <img src="images/dune-low-sofa/saffron/front.webp" data-angle="0" data-label="Front" alt="Front view">
+      <img src="images/dune-low-sofa/saffron/three-quarter.webp" data-angle="45" data-label="Three-quarter" alt="Three-quarter view">
+      <img src="images/dune-low-sofa/saffron/side.webp" data-angle="90" data-label="Side" alt="Side view">
       <!-- data-mirror reuses a photo flipped, for symmetric products -->
-      <img src="images/saffron/back-three-quarter.webp" data-angle="135" data-mirror data-label="Back three-quarter" alt="">
+      <img src="images/dune-low-sofa/saffron/back-three-quarter.webp" data-angle="135" data-mirror data-label="Back three-quarter" alt="">
       ...
     </div>
     <div class="ui-turn__hint" aria-hidden="true">Drag to turn</div>
@@ -80,6 +80,7 @@ Setup:
 - Shoot the full 360° instead of mirroring.
 - Use square 2000×2000 px, with the product centred on the rotation axis and filling about 80% of the width.
 - Name files by angle: `000`, `015` … `345`.
+- File them as `images/<product>/<colourway>/<angle>.webp`, e.g. `images/dune-low-sofa/onyx/front.webp`. The colourway folder name matches its `data-colorway`.
 - If the images are 3D renders, export a 24- or 36-frame turntable animation from the same scene.
 
 General tips:
