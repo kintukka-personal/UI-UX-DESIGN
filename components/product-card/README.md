@@ -18,7 +18,7 @@ An editorial product card where the product is the hero. A deep coloured stage h
 
   0.23s after landing, the product regrows in place from a soft blur. Clicks during the flight are ignored. With reduced motion turned on, the item is counted straight away and nothing flies.
 - **Motion:**
-  - On first view, the wordmark letters rise one by one, the product drops in and the footer fades up.
+  - On first view, the wordmark letters rise one by one. After a short pause (the product starts at 0.95s, once the name has settled), the product drops in, then the footer fades up.
   - The product then floats gently, with its shadow breathing.
   - With a mouse, the product and wordmark drift apart slightly as the pointer moves.
 - **Reduced motion:** colour changes still happen, but nothing moves.
