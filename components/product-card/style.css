@@ -191,8 +191,12 @@
   transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-.ui-pcard__title > span[aria-hidden] { display: inline-block; }
-.ui-pcard__letter { display: inline-block; }
+.ui-pcard__title > span[aria-hidden] {
+  display: inline-block;
+  /* A mask at the baseline: letters punch up out of it on the entrance. */
+  clip-path: inset(-30% -10% -0.02em -10%);
+}
+.ui-pcard__letter { display: inline-block; transform-origin: 50% 100%; }
 
 /* ---- Product ----------------------------------------------------------- */
 
@@ -434,20 +438,46 @@
 .ui-pcard.is-pending .ui-pcard__media,
 .ui-pcard.is-pending .ui-pcard__body { opacity: 0; }
 
-.ui-pcard.is-in .ui-pcard__letter {
-  animation: ui-pcard-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  animation-delay: calc(var(--i, 0) * 70ms);
+/* Each letter accelerates up, slams into place with a squash, and its impact
+   is the cue for the next one: one letter per beat. The whole word dips a
+   hair on every impact, so the hits feel heavy. */
+.ui-pcard {
+  --ui-pcard-beat: 200ms;          /* time from one letter's impact to the next */
 }
 
-/* The name lands first (letters mostly settle by ~0.7s); the product follows after a
-   beat so the name registers on its own, then the footer. */
-.ui-pcard.is-in .ui-pcard__specs { animation: ui-pcard-fade 0.7s ease both 0.1s; }
-.ui-pcard.is-in .ui-pcard__media { animation: ui-pcard-drop 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both 0.7s; }
-.ui-pcard.is-in .ui-pcard__body { animation: ui-pcard-fade-up 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both 1.1s; }
+.ui-pcard.is-in .ui-pcard__letter {
+  animation:
+    ui-pcard-clack calc(var(--ui-pcard-beat) / 0.6) linear both,
+    ui-pcard-show 90ms ease-out both;
+  animation-delay: calc(var(--i, 0) * var(--ui-pcard-beat));
+}
 
-@keyframes ui-pcard-rise {
-  from { opacity: 0; transform: translateY(40%); }
-  to { opacity: 1; transform: none; }
+.ui-pcard.is-in .ui-pcard__title > span[aria-hidden] {
+  animation: ui-pcard-thud var(--ui-pcard-beat) linear var(--ui-pcard-beat) 4;
+}
+
+/* The name lands first (last letter clicks in at 0.8s); the product follows
+   after a short beat, then the footer. */
+.ui-pcard.is-in .ui-pcard__specs { animation: ui-pcard-fade 0.7s ease both 0.1s; }
+.ui-pcard.is-in .ui-pcard__media { animation: ui-pcard-drop 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both 0.95s; }
+.ui-pcard.is-in .ui-pcard__body { animation: ui-pcard-fade-up 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both 1.35s; }
+
+/* Impact lands at 60% of the run, which is exactly one beat: a hard,
+   accelerating rise, a squash on the hit, a small rebound, then still. */
+@keyframes ui-pcard-clack {
+  0% { transform: translateY(85%); animation-timing-function: cubic-bezier(0.6, 0, 1, 0.55); }
+  60% { transform: translateY(0) scale(1.08, 0.86); animation-timing-function: cubic-bezier(0.2, 0.9, 0.3, 1); }
+  72% { transform: translateY(-4%) scale(0.97, 1.04); animation-timing-function: ease-in-out; }
+  86% { transform: translateY(0) scale(1.01, 0.99); animation-timing-function: ease-out; }
+  100% { transform: none; }
+}
+
+@keyframes ui-pcard-show { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes ui-pcard-thud {
+  0% { transform: translateY(0); animation-timing-function: cubic-bezier(0.2, 0.9, 0.3, 1); }
+  12% { transform: translateY(0.022em); animation-timing-function: ease-out; }
+  55%, 100% { transform: translateY(0); }
 }
 
 @keyframes ui-pcard-drop {
@@ -488,6 +518,7 @@
   .ui-pcard__shadow,
   .ui-pcard__badge.is-bump,
   .ui-pcard.is-in .ui-pcard__letter,
+  .ui-pcard.is-in .ui-pcard__title > span[aria-hidden],
   .ui-pcard.is-in .ui-pcard__specs,
   .ui-pcard.is-in .ui-pcard__media,
   .ui-pcard.is-in .ui-pcard__body { animation: none; }
