@@ -18,7 +18,7 @@ An editorial product card where the product is the hero. A deep coloured stage h
 
   0.23s after landing, the product regrows in place from a soft blur. Clicks during the flight are ignored. With reduced motion turned on, the item is counted straight away and nothing flies.
 - **Motion:**
-  - On first view, the wordmark letters rise one at a time. Each slams into place with a squash and a small jolt through the word, and that impact sets off the next letter (one every 200ms; tune it with `--ui-pcard-beat`). The product drops in at 0.95s, once the last letter has clicked in, then the footer fades up.
+  - On first view, the wordmark builds left to right. The first A shoots out from behind an invisible wall, then each letter shoots out from behind the one before it, staying hidden until it clears that letter. Each one overshoots a touch, squashes and locks in, and that moment sets off the next letter (one every 200ms; tune it with `--ui-pcard-beat`). The word gives a small recoil on every hit. The product drops in at 0.95s, then the footer fades up.
   - The product then floats gently, with its shadow breathing.
   - With a mouse, the product and wordmark drift apart slightly as the pointer moves.
 - **Reduced motion:** colour changes still happen, but nothing moves.

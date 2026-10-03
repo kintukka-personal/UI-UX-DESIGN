@@ -25,11 +25,16 @@
     var text = visual.textContent;
     visual.textContent = "";
     for (var i = 0; i < text.length; i++) {
-      var span = document.createElement("span");
-      span.className = "ui-pcard__letter";
-      span.style.setProperty("--i", i);
-      span.textContent = text[i];
-      visual.appendChild(span);
+      // The outer span is a fixed window the size of the letter's own slot;
+      // the glyph inside slides into it from behind the previous letter.
+      var slot = document.createElement("span");
+      slot.className = "ui-pcard__letter";
+      slot.style.setProperty("--i", i);
+      var glyph = document.createElement("span");
+      glyph.className = "ui-pcard__glyph";
+      glyph.textContent = text[i];
+      slot.appendChild(glyph);
+      visual.appendChild(slot);
     }
     visual.dataset.split = "true";
   }
