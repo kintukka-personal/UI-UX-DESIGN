@@ -104,14 +104,13 @@ These properties are registered with `@property`, so switching colourways blends
 
 | Property | Default | What it does |
 | --- | --- | --- |
-| `--ui-pcard-font` | Manrope | Typeface for everything except the wordmark |
-| `--ui-pcard-display-font` | Archivo | Wordmark face, set at weight 900 and 74% width so four letters fill the card |
+| `--ui-pcard-font` | Manrope | Typeface for everything |
 | `--ui-pcard-body-bg` | `#EFEBE1` | Cream footer |
 | `--ui-pcard-ink` | `#1C2A21` | Price and swatch labels |
 | `--ui-pcard-radius` | `28` | Corner radius in design units |
 | `--ui-pcard-inset-top` | `0px` | Extra top padding when the card sits under a status bar |
 
-The demo loads Manrope and variable Archivo (its width axis is needed for the condensed wordmark) from Google Fonts.
+The demo loads Manrope from Google Fonts.
 
 ## Events
 

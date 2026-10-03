@@ -14,7 +14,6 @@
 
 .ui-pcard {
   --ui-pcard-font: "Manrope", "Helvetica Neue", Arial, sans-serif;
-  --ui-pcard-display-font: "Archivo", "Arial Black", "Helvetica Neue", Arial, sans-serif;
   --ui-pcard-body-bg: #EFEBE1;
   --ui-pcard-ink: #1C2A21;
   --ui-pcard-muted: #8B887F;
@@ -174,15 +173,12 @@
 .ui-pcard__title {
   position: relative;
   z-index: 1;
-  margin: calc(10 * var(--u)) 0 0;
+  margin: calc(14 * var(--u)) 0 0;
   color: var(--ui-pcard-title);
-  font-family: var(--ui-pcard-display-font);
-  font-size: calc(158 * var(--u));
-  font-weight: 900;
-  font-stretch: 74%;
-  letter-spacing: -0.03em;
+  font-size: calc(140 * var(--u));
+  font-weight: 800;
+  letter-spacing: -0.035em;
   line-height: 0.8;
-  padding-right: 0.03em;           /* re-centres after the last letter's negative tracking */
   text-align: center;
   white-space: nowrap;
   transform: translate3d(calc(var(--ui-pcard-px, 0) * -6 * var(--u)), calc(var(--ui-pcard-py, 0) * -4 * var(--u)), 0);
