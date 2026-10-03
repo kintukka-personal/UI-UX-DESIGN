@@ -35,6 +35,8 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-pcard`
 | `style.css` | Component styles and the three colourway themes |
 | `script.js` | Swatches, add to bag, entrance and pointer parallax |
 | `images/aura-*.webp` | Transparent product cut-outs, one per colourway (684 × 888) |
+| `shopify/ui-pcard.liquid` | Shopify section: the card for a real product, with one block per colourway |
+| `shopify/ui-pcard-shopify.js` | Shopify connection: variants, real add to cart, header cart count |
 
 ## Markup
 
@@ -128,6 +130,54 @@ document.addEventListener("ui-pcard:add", function (e) {
   // e.detail = { colorway: "sage", count: 2 }
 });
 ```
+
+## Connecting a cart
+
+Set `window.uiPcardAdd` to add the item for real. It's called on click, while the product flies, and should return a Promise:
+
+```js
+window.uiPcardAdd = function ({ card, colorway }) {
+  return fetch("/my-cart/add", { method: "POST" /* … */ })
+    .then(function (res) { return res.json(); })
+    .then(function (cart) { return { count: cart.count }; });  // the badge shows this
+};
+```
+
+- **The badge waits for it.** If the request is still running when the product reaches the bag, the count goes up when it resolves.
+- **On failure,** reject with an `Error`. Its message replaces the button note for a few seconds, the button gives a short shake, the product comes back and nothing is counted.
+- **Without the hook,** the count simply goes up by one.
+
+A disabled button (`disabled` attribute) ignores clicks, and the card dims it.
+
+## Shopify
+
+The `shopify/` folder turns the card into a theme section for a real product.
+
+1. **Assets.** Upload three files to the theme's `assets/` folder:
+   - this folder's `style.css` as `ui-pcard.css`
+   - this folder's `script.js` as `ui-pcard.js`
+   - `shopify/ui-pcard-shopify.js` as is
+2. **Section.** Add `shopify/ui-pcard.liquid` to `sections/`.
+3. **Product page.** In the theme editor, open a product template and add the **UI product card** section. It uses that page's product. You can hide the theme's own product section, or keep it below for the full description. On any other page, pick a product in the section settings.
+4. **Colourways.** The section reads the product's colour option ("Color" or "Colour" by default; change it in the settings). It adds one swatch per value. Each **Colourway** block matches one value by name and sets:
+   - its swatch colour
+   - a **cut-out image**: a transparent PNG or WebP, portrait, with the product filling the frame
+   - its card colours: stage, ombré, wordmark, spec line, button and ring
+
+   The preset comes with Sage, Onyx and Oat. Values without a block use the theme's swatch colour, the variant image and the Sage card colours. Products without a colour option show one image and no swatches.
+5. **Text.** The settings cover the wordmark, spec line, price label, button label, "Added", "Sold out" and the button note. The wordmark defaults to the first word of the product title. Short words of 3–5 letters fill the card best.
+
+**What the connection does:**
+- Picking a swatch selects that colour's variant, updates the price, and shows "Sold out" (and disables the button) when it's unavailable.
+- Add to bag posts to Shopify's Cart AJAX API (`/cart/add.js`) while the product flies. The badge then shows the real cart count.
+- Shopify's errors, such as "All 1 Aura Studio - Onyx are in your cart.", show on the button.
+- It refreshes a Dawn-style `#cart-icon-bubble` in the theme header and fires `ui-pcard:cart` on `document` with `{ cart }`, for themes that refresh their cart drawer some other way.
+- Without JavaScript, the button is a normal product form submit.
+
+**Limits:**
+- The swatches handle one option. On products with more options, such as size, each colour adds its first available variant.
+- The bag icon links to `/cart`.
+- The back button goes back if the visitor came from the store, otherwise to the product's first collection.
 
 ## Product images
 

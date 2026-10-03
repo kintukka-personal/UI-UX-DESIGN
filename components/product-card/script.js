@@ -6,10 +6,17 @@
 
    Add to bag: the product shrinks and arcs into the bag icon. When it lands,
    the badge counts up with a bump, the button flips to "Added" and the card
-   dispatches "ui-pcard:add" (bubbles) with detail = { colorway, count }; hook
-   a real cart up to that event. 230ms later the product regrows in place.
-   Clicks during the flight are ignored. With reduced motion the item is
-   counted straight away and nothing flies.
+   dispatches "ui-pcard:add" (bubbles) with detail = { colorway, count }.
+   230ms later the product regrows in place. Clicks during the flight are
+   ignored. With reduced motion the item is counted straight away and nothing
+   flies.
+
+   Real carts: set window.uiPcardAdd = function ({ card, colorway }) { ... }
+   returning a Promise. It is called on click, while the product flies. The
+   badge waits for it: resolve with { count } to show the real cart count, or
+   reject with an Error whose message is shown on the button. On failure the
+   product comes back and nothing is counted. shopify/ui-pcard-shopify.js is
+   one. window.uiPcard.init(card) sets up a card added after page load.
 
    Entrance: the first time the card scrolls into view the wordmark letters
    rise, the product drops in and the footer fades up. On devices with a fine
@@ -40,6 +47,8 @@
   }
 
   function init(card) {
+    if (card.dataset.uiPcardReady) return;
+    card.dataset.uiPcardReady = "true";
     var images = card.querySelectorAll(".ui-pcard__img");
     var radios = card.querySelectorAll(".ui-pcard__swatch input");
     var cta = card.querySelector(".ui-pcard__cta");
@@ -76,9 +85,13 @@
     var inner = card.querySelector(".ui-pcard__inner");
     var flying = false;
 
+    var note = card.querySelector(".ui-pcard__cta-note");
+    var noteText = note ? note.textContent : "";
+    var noteTimer;
+
     // Count the item, bump the badge, flip the button. Runs when the product lands.
-    function commitAdd() {
-      count += 1;
+    function commitAdd(newCount) {
+      count = newCount;
       updateBag();
       if (!reduceMotion.matches) {
         if (badge) {
@@ -105,10 +118,44 @@
       }));
     }
 
+    // The add failed (sold out, network): say why on the button and shake it.
+    function failAdd(message) {
+      message = message || "Couldn't add to bag. Please try again.";
+      if (status) status.textContent = message;
+      if (note) {
+        note.textContent = message;
+        clearTimeout(noteTimer);
+        noteTimer = setTimeout(function () { note.textContent = noteText; }, 2800);
+      }
+      if (!reduceMotion.matches && cta.animate) {
+        cta.animate([
+          { transform: "translateX(0)" },
+          { transform: "translateX(-6px)", offset: 0.2 },
+          { transform: "translateX(5px)", offset: 0.45 },
+          { transform: "translateX(-3px)", offset: 0.7 },
+          { transform: "translateX(0)" }
+        ], { duration: 380, easing: "ease-out" });
+      }
+    }
+
+    // Waits for the cart (if one is hooked up), then counts or reports the failure.
+    function settleAdd(pending) {
+      if (!pending) { commitAdd(count + 1); return; }
+      return pending.then(function (result) {
+        commitAdd(result && typeof result.count === "number" ? result.count : count + 1);
+      }, function (err) {
+        failAdd(err && err.message);
+      });
+    }
+
     // The hero shrinks and arcs into the bag icon, then grows back in place.
-    function flyToBag(done) {
+    // onLand runs as it reaches the bag; the regrow waits for what it returns.
+    function flyToBag(onLand) {
       var img = card.querySelector(".ui-pcard__img.is-active");
-      if (!img || !bag || !media || !inner || !inner.animate) { done(); return; }
+      if (!img || !bag || !media || !inner || !inner.animate) {
+        Promise.resolve(onLand()).then(function () { flying = false; });
+        return;
+      }
 
       var box = inner.getBoundingClientRect();
       var from = img.getBoundingClientRect();
@@ -156,8 +203,11 @@
 
       trip.onfinish = function () {
         flyer.remove();
-        done();
-        // A short beat after the count goes up, the product regrows where it was.
+        Promise.resolve(onLand()).then(regrowSoon, regrowSoon);
+      };
+
+      // A short beat after the count goes up, the product regrows where it was.
+      function regrowSoon() {
         setTimeout(function () {
           media.classList.remove("is-away");
           media.animate([
@@ -168,15 +218,23 @@
             flying = false;
           };
         }, 230);
-      };
+      }
     }
 
     if (cta) {
       cta.addEventListener("click", function () {
-        if (flying) return;
-        if (reduceMotion.matches) { commitAdd(); return; }
+        if (flying || cta.disabled) return;
         flying = true;
-        flyToBag(commitAdd);
+        var pending = typeof window.uiPcardAdd === "function"
+          ? new Promise(function (resolve) { resolve(window.uiPcardAdd({ card: card, colorway: card.dataset.colorway })); })
+          : null;
+        // Handled when the product lands; this stops an early failure being reported as unhandled.
+        if (pending) pending.catch(function () {});
+        if (reduceMotion.matches) {
+          Promise.resolve(settleAdd(pending)).then(function () { flying = false; });
+          return;
+        }
+        flyToBag(function () { return settleAdd(pending); });
       });
     }
 
@@ -235,6 +293,8 @@
   function boot() {
     document.querySelectorAll("[data-ui-pcard]").forEach(init);
   }
+
+  window.uiPcard = { init: init };
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();

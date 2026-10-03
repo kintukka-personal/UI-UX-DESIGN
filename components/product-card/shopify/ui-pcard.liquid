@@ -1,0 +1,348 @@
+{%- comment -%}
+  UI Product Card — sections/ui-pcard.liquid
+  Editorial product hero: giant wordmark, floating cut-out, colour swatches and
+  an Add to bag that flies the product into the bag icon.
+
+  Needs these theme assets (see the README):
+    assets/ui-pcard.css          (this component's style.css)
+    assets/ui-pcard.js           (this component's script.js)
+    assets/ui-pcard-shopify.js   (shopify/ui-pcard-shopify.js)
+
+  On a product page it shows that product. Anywhere else, pick a product in
+  the section settings. Each "Colourway" block matches one value of the
+  product's colour option and sets its swatch, transparent cut-out image and
+  card colours. Values without a block use the theme swatch colour, the
+  variant image and the default (Sage) card colours.
+{%- endcomment -%}
+
+{{ 'ui-pcard.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ui-pcard.js' | asset_url }}" defer></script>
+<script src="{{ 'ui-pcard-shopify.js' | asset_url }}" defer></script>
+{%- if section.settings.load_font -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap">
+{%- endif -%}
+
+{%- liquid
+  assign p = product
+  if section.settings.product != blank
+    assign p = section.settings.product
+  endif
+  assign card_id = 'ui-pcard-' | append: section.id
+-%}
+
+<div class="ui-pcard-section" style="--ui-pcard-section-pt: {{ section.settings.padding_top }}px; --ui-pcard-section-pb: {{ section.settings.padding_bottom }}px;">
+  <style>
+    .ui-pcard-section { display: flex; justify-content: center; padding: var(--ui-pcard-section-pt) 16px var(--ui-pcard-section-pb); }
+    .ui-pcard-section .ui-pcard__img { width: 100%; height: 100%; }
+    #{{ card_id }} { max-width: {{ section.settings.max_width }}px; --ui-pcard-radius: {{ section.settings.radius }}; }
+  </style>
+
+  {%- if p == blank -%}
+    {%- if request.design_mode -%}
+      <p>UI product card: pick a product in the section settings.</p>
+    {%- endif -%}
+  {%- else -%}
+    {%- liquid
+      assign current = p.selected_or_first_available_variant
+
+      # Find the colour option by name (any of the comma-separated names).
+      assign wanted = section.settings.option_name | downcase | split: ','
+      assign color_option = false
+      for option in p.options_with_values
+        assign oname = option.name | downcase | strip
+        for w in wanted
+          assign ws = w | strip
+          if oname == ws
+            assign color_option = option
+          endif
+        endfor
+      endfor
+
+      assign wordmark = section.settings.wordmark | strip
+      if wordmark == blank
+        assign wordmark = p.title | split: ' ' | first
+      endif
+      assign wordmark = wordmark | upcase
+
+      assign fallback_url = routes.all_products_collection_url
+      if p.collections.size > 0
+        assign fallback_url = p.collections.first.url
+      endif
+
+      assign imgs_html = ''
+      assign swatches_html = ''
+      assign theme_css = ''
+      assign start_handle = 'default'
+    -%}
+
+    {%- if color_option -%}
+      {%- assign idx = color_option.position | minus: 1 -%}
+      {%- assign current_value = current.options[idx] -%}
+      {%- for value in color_option.values -%}
+        {%- liquid
+          assign vname = value.name | default: value
+          assign vname_down = vname | downcase | strip
+          assign handle = vname | handle
+
+          # The variant for this colour: the first available one, else the first.
+          assign v = false
+          for variant in p.variants
+            if variant.options[idx] == vname
+              if v == false
+                assign v = variant
+              elsif v.available == false and variant.available
+                assign v = variant
+              endif
+            endif
+          endfor
+
+          assign b = false
+          for block in section.blocks
+            assign bval = block.settings.value | downcase | strip
+            if bval == vname_down
+              assign b = block
+            endif
+          endfor
+
+          assign swatch = '#CCCCCC'
+          if value.swatch.color
+            assign swatch = value.swatch.color
+          endif
+          assign img = p.featured_image
+          if v and v.featured_image
+            assign img = v.featured_image
+          endif
+          if b
+            assign swatch = b.settings.swatch
+            if b.settings.image != blank
+              assign img = b.settings.image
+            endif
+          endif
+
+          assign is_current = false
+          if vname == current_value
+            assign is_current = true
+            assign start_handle = handle
+          endif
+        -%}
+
+        {%- capture img_html -%}
+          {%- if img -%}
+            <img
+              class="ui-pcard__img{% if is_current %} is-active{% endif %}"
+              data-colorway="{{ handle }}"
+              src="{{ img | image_url: width: 1000 }}"
+              srcset="{{ img | image_url: width: 400 }} 400w, {{ img | image_url: width: 700 }} 700w, {{ img | image_url: width: 1000 }} 1000w, {{ img | image_url: width: 1400 }} 1400w"
+              sizes="(max-width: 480px) 80vw, 360px"
+              width="{{ img.width }}"
+              height="{{ img.height }}"
+              alt="{{ p.title | escape }} in {{ vname | escape }}"
+              {% unless is_current %}aria-hidden="true"{% endunless %}
+              loading="eager"
+              decoding="async"
+            >
+          {%- endif -%}
+        {%- endcapture -%}
+        {%- assign imgs_html = imgs_html | append: img_html -%}
+
+        {%- capture swatch_html -%}
+          <label class="ui-pcard__swatch" style="--swatch: {{ swatch }}">
+            <input
+              type="radio"
+              name="ui-pcard-colour-{{ section.id }}"
+              value="{{ handle }}"
+              {% if v %}data-variant-id="{{ v.id }}" data-price="{{ v.price | money_without_trailing_zeros | strip_html | escape }}" data-available="{{ v.available }}"{% endif %}
+              {% if is_current %}checked{% endif %}
+            >
+            <span class="ui-pcard__dot" aria-hidden="true"></span>
+            <span class="ui-pcard__swatch-name">{{ vname | escape }}</span>
+          </label>
+        {%- endcapture -%}
+        {%- assign swatches_html = swatches_html | append: swatch_html -%}
+
+        {%- if b -%}
+          {%- capture block_css -%}
+            #{{ card_id }}[data-colorway="{{ handle }}"] {
+              --ui-pcard-stage-1: {{ b.settings.stage_1 }};
+              --ui-pcard-stage-2: {{ b.settings.stage_2 }};
+              --ui-pcard-stage-top: {{ b.settings.stage_top }};
+              --ui-pcard-title: {{ b.settings.title }};
+              --ui-pcard-specs: {{ b.settings.specs }};
+              --ui-pcard-cta-bg: {{ b.settings.cta_bg }};
+              --ui-pcard-ring: {{ b.settings.ring }};
+            }
+          {%- endcapture -%}
+          {%- assign theme_css = theme_css | append: block_css -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- else -%}
+      {%- liquid
+        assign img = current.featured_image | default: p.featured_image
+        assign b = section.blocks.first
+        if b and b.settings.image != blank
+          assign img = b.settings.image
+        endif
+      -%}
+      {%- capture imgs_html -%}
+        {%- if img -%}
+          <img
+            class="ui-pcard__img is-active"
+            data-colorway="default"
+            src="{{ img | image_url: width: 1000 }}"
+            srcset="{{ img | image_url: width: 400 }} 400w, {{ img | image_url: width: 700 }} 700w, {{ img | image_url: width: 1000 }} 1000w, {{ img | image_url: width: 1400 }} 1400w"
+            sizes="(max-width: 480px) 80vw, 360px"
+            width="{{ img.width }}"
+            height="{{ img.height }}"
+            alt="{{ p.title | escape }}"
+            loading="eager"
+            decoding="async"
+          >
+        {%- endif -%}
+      {%- endcapture -%}
+      {%- if b -%}
+        {%- capture theme_css -%}
+          #{{ card_id }} {
+            --ui-pcard-stage-1: {{ b.settings.stage_1 }};
+            --ui-pcard-stage-2: {{ b.settings.stage_2 }};
+            --ui-pcard-stage-top: {{ b.settings.stage_top }};
+            --ui-pcard-title: {{ b.settings.title }};
+            --ui-pcard-specs: {{ b.settings.specs }};
+            --ui-pcard-cta-bg: {{ b.settings.cta_bg }};
+            --ui-pcard-ring: {{ b.settings.ring }};
+          }
+        {%- endcapture -%}
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if theme_css != blank -%}<style>{{ theme_css }}</style>{%- endif -%}
+
+    <article
+      class="ui-pcard"
+      id="{{ card_id }}"
+      data-ui-pcard
+      data-colorway="{{ start_handle }}"
+      data-sold-out-label="{{ section.settings.sold_out_label | escape }}"
+    >
+      {%- form 'product', p, class: 'ui-pcard__inner', data-ui-pcard-form: '' -%}
+        <input type="hidden" name="id" value="{{ current.id }}" data-ui-pcard-variant>
+        <div class="ui-pcard__stage" aria-hidden="true"></div>
+
+        {%- if section.settings.show_bar -%}
+          <header class="ui-pcard__bar">
+            <button class="ui-pcard__icon" type="button" aria-label="Back" data-ui-pcard-back data-fallback="{{ fallback_url }}">
+              <svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+            </button>
+            <a class="ui-pcard__icon" href="{{ routes.cart_url }}" aria-label="Bag, {{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %}" data-ui-pcard-bag>
+              <svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+              <span class="ui-pcard__badge" aria-hidden="true">{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}</span>
+            </a>
+          </header>
+        {%- endif -%}
+
+        {%- if section.settings.spec_left != blank or section.settings.spec_right != blank -%}
+          <p class="ui-pcard__specs">
+            <span>{{ section.settings.spec_left | escape }}</span>
+            <span>{{ section.settings.spec_right | escape }}</span>
+          </p>
+        {%- endif -%}
+
+        <h2 class="ui-pcard__title">
+          <span aria-hidden="true">{{ wordmark | escape }}</span>
+          <span class="ui-pcard__sr">{{ p.title | escape }}</span>
+        </h2>
+
+        <figure class="ui-pcard__media">
+          <span class="ui-pcard__shadow" aria-hidden="true"></span>
+          <span class="ui-pcard__float">{{ imgs_html }}</span>
+        </figure>
+
+        <div class="ui-pcard__body">
+          <div class="ui-pcard__row">
+            <p class="ui-pcard__price-label">
+              {{ section.settings.price_label | escape }}
+              <strong class="ui-pcard__price">{{ current.price | money_without_trailing_zeros }}</strong>
+            </p>
+
+            {%- if color_option and color_option.values.size > 1 -%}
+              <fieldset class="ui-pcard__swatches">
+                <legend class="ui-pcard__sr">{{ color_option.name | escape }}</legend>
+                {{ swatches_html }}
+              </fieldset>
+            {%- endif -%}
+          </div>
+
+          <button class="ui-pcard__cta" type="submit" {% unless current.available %}disabled{% endunless %}>
+            <span class="ui-pcard__cta-labels">
+              <span class="ui-pcard__cta-add">{% if current.available %}{{ section.settings.cta_label | escape }}{% else %}{{ section.settings.sold_out_label | escape }}{% endif %}</span>
+              <span class="ui-pcard__cta-done" aria-hidden="true">
+                <svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3.2L13 5"/></svg>{{ section.settings.added_label | escape }}
+              </span>
+            </span>
+            {%- if section.settings.cta_note != blank -%}
+              <span class="ui-pcard__cta-note">{{ section.settings.cta_note | escape }}</span>
+            {%- endif -%}
+          </button>
+          <p class="ui-pcard__sr" role="status" aria-live="polite" data-ui-pcard-status></p>
+        </div>
+      {%- endform -%}
+    </article>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "UI product card",
+  "class": "ui-pcard-shopify-section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product", "info": "On a product page, leave empty to use that page's product." },
+    { "type": "text", "id": "wordmark", "label": "Wordmark", "info": "Large name behind the product. Leave empty to use the first word of the product title. Short words (3–5 letters) fill the card best." },
+    { "type": "text", "id": "spec_left", "label": "Spec line, left", "default": "Over-ear · Wireless" },
+    { "type": "text", "id": "spec_right", "label": "Spec line, right", "default": "40 h · −32 dB" },
+    { "type": "text", "id": "option_name", "label": "Colour option name", "default": "Color, Colour", "info": "The product option the swatches use. Separate alternatives with commas." },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "price_label", "label": "Price label", "default": "Price" },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Add to bag" },
+    { "type": "text", "id": "added_label", "label": "Added label", "default": "Added" },
+    { "type": "text", "id": "sold_out_label", "label": "Sold out label", "default": "Sold out" },
+    { "type": "text", "id": "cta_note", "label": "Button note", "default": "Free returns" },
+    { "type": "header", "content": "Layout" },
+    { "type": "checkbox", "id": "show_bar", "label": "Show back and bag buttons", "default": true },
+    { "type": "range", "id": "max_width", "label": "Card width", "min": 320, "max": 560, "step": 10, "unit": "px", "default": 430 },
+    { "type": "range", "id": "radius", "label": "Corner radius", "min": 0, "max": 40, "step": 2, "default": 28, "info": "In card units (1/390 of the card width)." },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 40 },
+    { "type": "checkbox", "id": "load_font", "label": "Load Manrope from Google Fonts", "default": true, "info": "Turn off if the theme already loads it, or if you set --ui-pcard-font to the theme's font." }
+  ],
+  "blocks": [
+    {
+      "type": "colourway",
+      "name": "Colourway",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Colour value", "default": "Sage", "info": "Must match the product's colour option value exactly (case doesn't matter)." },
+        { "type": "color", "id": "swatch", "label": "Swatch", "default": "#8DB28F" },
+        { "type": "image_picker", "id": "image", "label": "Cut-out image", "info": "A transparent PNG or WebP of the product, portrait, with the product filling the frame. Falls back to the variant image." },
+        { "type": "header", "content": "Card colours" },
+        { "type": "color", "id": "stage_1", "label": "Stage glow (centre)", "default": "#4F7D5B" },
+        { "type": "color", "id": "stage_2", "label": "Stage (edges)", "default": "#3A6545" },
+        { "type": "color", "id": "stage_top", "label": "Stage top (ombré)", "default": "#1F3B28" },
+        { "type": "color", "id": "title", "label": "Wordmark and icons", "default": "#E3EEDD" },
+        { "type": "color", "id": "specs", "label": "Spec line", "default": "#A9C4AB" },
+        { "type": "color", "id": "cta_bg", "label": "Button", "default": "#1C2C22" },
+        { "type": "color", "id": "ring", "label": "Selected swatch ring", "default": "#2F4A37" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "UI product card",
+      "blocks": [
+        { "type": "colourway", "settings": { "value": "Sage", "swatch": "#8DB28F", "stage_1": "#4F7D5B", "stage_2": "#3A6545", "stage_top": "#1F3B28", "title": "#E3EEDD", "specs": "#A9C4AB", "cta_bg": "#1C2C22", "ring": "#2F4A37" } },
+        { "type": "colourway", "settings": { "value": "Onyx", "swatch": "#262626", "stage_1": "#4A4C4D", "stage_2": "#262829", "stage_top": "#121313", "title": "#E9E7E2", "specs": "#A3A5A3", "cta_bg": "#171818", "ring": "#262626" } },
+        { "type": "colourway", "settings": { "value": "Oat", "swatch": "#E4DCCD", "stage_1": "#D2C5AE", "stage_2": "#B4A487", "stage_top": "#8E7E62", "title": "#F7F2E8", "specs": "#7D6F57", "cta_bg": "#3A3226", "ring": "#8C7C62" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
