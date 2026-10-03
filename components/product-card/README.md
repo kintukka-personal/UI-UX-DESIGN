@@ -9,7 +9,14 @@ An editorial product card where the product is the hero. A deep coloured stage h
   - Product: overlaps the bottom of the wordmark and crosses from the stage into the footer, over a soft contact shadow.
   - Footer: price on the left, swatches on the right, CTA underneath.
 - **Colours:** picking Sage, Onyx or Oat crossfades the product photo and retints the stage, wordmark and button to match.
-- **Add to bag:** the label flips to "✓ Added", the bag badge counts up with a small bump, a screen-reader status announces it, and the card fires a `ui-pcard:add` event.
+- **Add to bag:** the product lifts off the stage, shrinks and arcs into the bag icon in about 0.76s. When it lands:
+  - the bag icon gives a little wobble
+  - the badge counts up with a bump
+  - the label flips to "✓ Added"
+  - a screen-reader status announces it
+  - the card fires a `ui-pcard:add` event
+
+  0.23s after landing, the product regrows in place from a soft blur. Clicks during the flight are ignored. With reduced motion turned on, the item is counted straight away and nothing flies.
 - **Motion:**
   - On first view, the wordmark letters rise one by one, the product drops in and the footer fades up.
   - The product then floats gently, with its shadow breathing.
