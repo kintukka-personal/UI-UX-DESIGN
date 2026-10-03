@@ -431,11 +431,11 @@
   animation-delay: calc(var(--i, 0) * 70ms);
 }
 
-/* The name lands first (letters settle by ~0.9s); the product follows after a
+/* The name lands first (letters mostly settle by ~0.7s); the product follows after a
    beat so the name registers on its own, then the footer. */
 .ui-pcard.is-in .ui-pcard__specs { animation: ui-pcard-fade 0.7s ease both 0.1s; }
-.ui-pcard.is-in .ui-pcard__media { animation: ui-pcard-drop 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both 0.95s; }
-.ui-pcard.is-in .ui-pcard__body { animation: ui-pcard-fade-up 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both 1.35s; }
+.ui-pcard.is-in .ui-pcard__media { animation: ui-pcard-drop 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both 0.7s; }
+.ui-pcard.is-in .ui-pcard__body { animation: ui-pcard-fade-up 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both 1.1s; }
 
 @keyframes ui-pcard-rise {
   from { opacity: 0; transform: translateY(40%); }
