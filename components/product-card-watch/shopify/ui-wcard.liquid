@@ -153,7 +153,7 @@
               type="radio"
               name="ui-wcard-colour-{{ section.id }}"
               value="{{ handle }}"
-              {% if v %}data-variant-id="{{ v.id }}" data-price="{{ v.price | money_without_trailing_zeros | strip_html | escape }}" data-available="{{ v.available }}"{% if v.compare_at_price > v.price %} data-compare="{{ v.compare_at_price | money_without_trailing_zeros | strip_html | escape }}" data-off="{{ v.compare_at_price | minus: v.price | times: 100.0 | divided_by: v.compare_at_price | round }}"{% endif %}{% endif %}
+              {% if v %}data-variant-id="{{ v.id }}" data-price="{{ v.price | money_without_trailing_zeros | strip_html | escape }}" data-available="{{ v.available }}"{% if v.compare_at_price > v.price %} data-compare="{{ v.compare_at_price | money_without_trailing_zeros | strip_html | escape }}"{% endif %}{% endif %}
               {% if is_current %}checked{% endif %}
             >
             <span class="ui-wcard__dot" aria-hidden="true"></span>
@@ -228,9 +228,6 @@
       data-ui-wcard
       data-colorway="{{ start_handle }}"
       data-sold-out-label="{{ section.settings.sold_out_label | escape }}"
-      data-price-label="{{ section.settings.price_label | escape }}"
-      data-sale-label="{{ section.settings.sale_label | escape }}"
-      data-show-percent="{{ section.settings.show_percent }}"
     >
       {%- form 'product', p, class: 'ui-wcard__inner', data-ui-wcard-form: '' -%}
         <input type="hidden" name="id" value="{{ current.id }}" data-ui-wcard-variant>
@@ -271,14 +268,10 @@
               assign on_sale = false
               if current.compare_at_price > current.price
                 assign on_sale = true
-                assign off = current.compare_at_price | minus: current.price | times: 100.0 | divided_by: current.compare_at_price | round
               endif
             -%}
             <p class="ui-wcard__price-label">
-              <span class="ui-wcard__price-head">
-                <span class="ui-wcard__price-name">{% if on_sale %}{{ section.settings.sale_label | escape }}{% else %}{{ section.settings.price_label | escape }}{% endif %}</span>
-                <span class="ui-wcard__price-off"{% unless on_sale and section.settings.show_percent %} hidden{% endunless %}>−{{ off }}%</span>
-              </span>
+              <span class="ui-wcard__price-head"{% if on_sale %} hidden{% endif %}>{{ section.settings.price_label | escape }}</span>
               <span class="ui-wcard__price-row">
                 <strong class="ui-wcard__price">{{ current.price | money_without_trailing_zeros }}</strong>
                 <s class="ui-wcard__price-was"{% unless on_sale %} hidden{% endunless %}><span class="ui-wcard__sr">{{ section.settings.was_label | escape }} </span><span data-ui-wcard-was>{% if on_sale %}{{ current.compare_at_price | money_without_trailing_zeros }}{% endif %}</span></s>
@@ -322,10 +315,8 @@
     {"type": "text", "id": "spec_right", "label": "Spec line, right", "default": "FOSLN"},
     {"type": "text", "id": "option_name", "label": "Colour option name", "default": "Color, Colour, Dial", "info": "The product option the swatches use. Separate alternatives with commas."},
     {"type": "header", "content": "Text"},
-    {"type": "text", "id": "price_label", "label": "Price label", "default": "Price", "info": "Shown when the variant has no compare-at price."},
-    {"type": "text", "id": "sale_label", "label": "Sale label", "default": "Sale", "info": "Shown instead when the variant's compare-at price is higher than its price. The compare-at price is struck through next to the price."},
+    {"type": "text", "id": "price_label", "label": "Price label", "default": "Price", "info": "Shown above the price when the variant isn't on sale. On sale, the compare-at price is struck through next to the price instead."},
     {"type": "text", "id": "was_label", "label": "Screen-reader text before the old price", "default": "Was"},
-    {"type": "checkbox", "id": "show_percent", "label": "Show the discount percentage", "default": true},
     {"type": "text", "id": "cta_label", "label": "Button label", "default": "Add to cart"},
     {"type": "text", "id": "added_label", "label": "Added label", "default": "Added"},
     {"type": "text", "id": "sold_out_label", "label": "Sold out label", "default": "Sold out"},

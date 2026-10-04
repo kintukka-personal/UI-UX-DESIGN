@@ -328,25 +328,7 @@
   text-transform: uppercase;
 }
 
-.ui-wcard__price-head {
-  display: flex;
-  align-items: center;
-  gap: calc(7 * var(--u));
-}
-
-/* Discount tag: a small pill in the ring colour (gold on Chrome, ivory on Onyx). */
-.ui-wcard__price-off {
-  padding: calc(3 * var(--u)) calc(7 * var(--u));
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--ui-wcard-ring) 18%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-wcard-ring) 45%, transparent);
-  color: var(--ui-wcard-ring);
-  font-size: calc(10 * var(--u));
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
+.ui-wcard__price-head { display: block; }
 
 .ui-wcard__price-row {
   display: flex;
@@ -368,8 +350,12 @@
   text-transform: none;
 }
 
-.ui-wcard__price-off[hidden],
+.ui-wcard__price-head[hidden],
 .ui-wcard__price-was[hidden] { display: none; }
+
+/* With no label above it (on sale), the price row sits on the label's line. */
+.ui-wcard__price-head[hidden] + .ui-wcard__price-row,
+.ui-wcard__price-label > .ui-wcard__price-row:first-child { margin-top: 0; }
 
 .ui-wcard__price {
   display: block;

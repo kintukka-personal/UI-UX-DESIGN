@@ -1,10 +1,10 @@
 /* UI Product Card (watch) — Shopify connection. Upload as assets/ui-wcard-shopify.js.
 
    - Swatches pick the variant: each swatch input carries data-variant-id,
-     data-price and data-available (plus data-compare and data-off when the
-     variant is on sale). Picking one updates the hidden variant id, the
-     price, the struck-through compare-at price and discount tag, the price
-     label ("Price" or "Sale"), and the button (it reads "Sold out" and
+     data-price and data-available (plus data-compare when the variant is on
+     sale). Picking one updates the hidden variant id, the price, the
+     struck-through compare-at price (the "Price" label hides while it shows),
+     and the button (it reads "Sold out" and
      disables when the variant is unavailable).
    - Add to cart adds the selected variant to the real cart through Shopify's
      Cart AJAX API (POST /cart/add.js), while the product flies. The badge
@@ -68,9 +68,7 @@
     var price = card.querySelector(".ui-wcard__price");
     var was = card.querySelector(".ui-wcard__price-was");
     var wasValue = card.querySelector("[data-ui-wcard-was]");
-    var off = card.querySelector(".ui-wcard__price-off");
-    var priceName = card.querySelector(".ui-wcard__price-name");
-    var showPercent = card.getAttribute("data-show-percent") !== "false";
+    var priceHead = card.querySelector(".ui-wcard__price-head");
     var cta = card.querySelector(".ui-wcard__cta");
     var label = card.querySelector(".ui-wcard__cta-add");
     var addHTML = label ? label.innerHTML : "";
@@ -84,13 +82,7 @@
       var compare = radio.dataset.compare;
       if (was) was.hidden = !compare;
       if (wasValue) wasValue.textContent = compare || "";
-      if (off) {
-        off.hidden = !(compare && showPercent);
-        off.textContent = compare ? "\u2212" + radio.dataset.off + "%" : "";
-      }
-      if (priceName) {
-        priceName.textContent = card.getAttribute(compare ? "data-sale-label" : "data-price-label") || priceName.textContent;
-      }
+      if (priceHead) priceHead.hidden = !!compare;
       var available = radio.dataset.available !== "false";
       if (cta) cta.disabled = !available;
       if (label) {
