@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Animated Theme Toggler</title>
+<script>
+  // Apply the saved (or system) theme before first paint, so there's no flash.
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem("theme"); } catch (e) {}
+    var dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.classList.toggle("dark", dark);
+    document.documentElement.style.colorScheme = dark ? "dark" : "light";
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ---- Demo page only (not part of the component) ---- */
+  :root {
+    --demo-bg: #F4F4F2;
+    --demo-fg: #111111;
+    --demo-muted: #6E6E6A;
+    --demo-card: #FFFFFF;
+    --demo-line: rgba(17, 17, 17, 0.1);
+    --demo-accent: #C2410C;
+  }
+  html.dark {
+    --demo-bg: #0E0E0D;
+    --demo-fg: #F2F2EE;
+    --demo-muted: #9A9A94;
+    --demo-card: #1A1A18;
+    --demo-line: rgba(242, 242, 238, 0.1);
+    --demo-accent: #FB923C;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--demo-bg);
+    color: var(--demo-fg);
+    font: 300 15px/1.6 "Work Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .demo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--demo-line);
+  }
+  .demo-wordmark { font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; }
+
+  /* The centred toggle, as in the original demo */
+  .demo-center { display: flex; justify-content: center; padding: 24px; }
+
+  .demo-main {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 24px 20px 80px;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  }
+  .demo-card {
+    padding: 24px;
+    border: 1px solid var(--demo-line);
+    border-radius: 16px;
+    background: var(--demo-card);
+  }
+  .demo-card h2 {
+    margin: 0 0 12px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--demo-muted);
+  }
+  .demo-card p { margin: 0 0 10px; }
+  .demo-card strong { font-weight: 500; color: var(--demo-accent); }
+
+  @media (max-width: 640px) {
+    .demo-header { padding: 12px 16px; }
+  }
+</style>
+</head>
+<body>
+<header class="demo-header">
+  <span class="demo-wordmark">Nord</span>
+  <button class="ui-theme-toggle" type="button" data-ui-theme-toggle aria-pressed="false">
+    <svg class="ui-theme-toggle__icon ui-theme-toggle__moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    <svg class="ui-theme-toggle__icon ui-theme-toggle__sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    <span class="ui-theme-toggle__sr">Toggle theme</span>
+  </button>
+</header>
+
+<div class="demo-center">
+  <button class="ui-theme-toggle" type="button" data-ui-theme-toggle data-duration="700" aria-pressed="false">
+    <svg class="ui-theme-toggle__icon ui-theme-toggle__moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    <svg class="ui-theme-toggle__icon ui-theme-toggle__sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    <span class="ui-theme-toggle__sr">Toggle theme</span>
+  </button>
+</div>
+
+<main class="demo-main">
+  <section class="demo-card">
+    <h2>Try it</h2>
+    <p>Click either button. The new theme grows out of the button you clicked as a circle until it covers the page.</p>
+    <p>The centre one uses <strong>data-duration="700"</strong> for a slower reveal.</p>
+  </section>
+  <section class="demo-card">
+    <h2>Remembered</h2>
+    <p>Your choice is saved in <strong>localStorage</strong>. Reload the page and it comes back without a flash.</p>
+    <p>With nothing saved, the page follows your system setting.</p>
+  </section>
+  <section class="demo-card">
+    <h2>Fallback</h2>
+    <p>Browsers without the View Transitions API, and visitors who prefer reduced motion, get an instant switch.</p>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
