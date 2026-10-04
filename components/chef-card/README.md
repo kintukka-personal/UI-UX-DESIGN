@@ -24,7 +24,8 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
   1. The name types out letter by letter (BROOKE, a short pause, then SILK) behind a blinking gold caret.
   2. As the last letter lands, the portrait opens out from the centre of the face.
   3. The information then loads one row at a time:
-     - the awards, as one row: they fill in 0.1s apart, and each number counts up as it lands (0 → 3×, 0 → 1×, 0 → 1×, 0 → 2×)
+     - the lead award on its own: it drops in slightly larger, settles with a small bounce and counts 0 → 3×
+     - after a short hold, the other three awards, 0.1s apart, each counting up as it fills in (1×, 1×, 2×)
      - after a short pause, the meta row: ★ 0.0 → 5.0 and 0 → 60 reviews. When the rating reaches 5.0, gold sparkles fly into the star, and it jumps, turns gold and stays gold.
      - after a short pause, the tagline
      - after another short pause, the button
@@ -78,15 +79,15 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
         <span class="ui-chef__stat-num"><span data-ui-chef-count>3</span><sup>×</sup></span>
         <span class="ui-chef__stat-label"><span class="ui-chef__stat-kicker">World Food Championships</span><span>Australian Champion (1st)</span><span class="ui-chef__stat-sub">Dessert category – 2023, 2024, &amp; 2025</span></span>
       </li>
-      <li class="ui-chef__stat">
+      <li class="ui-chef__stat" data-ui-chef-pause="600">
         <span class="ui-chef__stat-num"><span data-ui-chef-count>1</span><sup>×</sup></span>
         <span class="ui-chef__stat-label"><span>World Food Championships (3rd)</span><span class="ui-chef__stat-sub">Dessert category, Indianapolis 2024</span></span>
       </li>
-      <li class="ui-chef__stat">
+      <li class="ui-chef__stat" data-ui-chef-join>
         <span class="ui-chef__stat-num"><span data-ui-chef-count>1</span><sup>×</sup></span>
         <span class="ui-chef__stat-label"><span>Australian Pro Chef of the Year (Finalist)</span><span class="ui-chef__stat-sub">2026</span></span>
       </li>
-      <li class="ui-chef__stat">
+      <li class="ui-chef__stat" data-ui-chef-join>
         <span class="ui-chef__stat-num"><span data-ui-chef-count>2</span><sup>×</sup></span>
         <span class="ui-chef__stat-label"><span>Best Sole Operator</span><span class="ui-chef__stat-sub">2025 &amp; 2026</span></span>
       </li>
@@ -113,7 +114,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
 <script src="script.js"></script>
 ```
 
-The awards are a list (`ui-chef__stats`). Each `ui-chef__stat` has a bracketed number and a label with a title and a `ui-chef__stat-sub` detail line. Add `ui-chef__stat--lead` to make one the lead award: its bracket, number and title are larger, and it can take a small gold `ui-chef__stat-kicker` line above the title. Every award's sizes come from a few custom properties on `.ui-chef__stat` (`--num-w`, `--num-h`, `--num-size`, `--sup-size`, `--arm`, `--title-size` and `--sub-size`, in design units). The lead class overrides them. A `<sup>` after the number (×) sits top right, and a `<sup class="ui-chef__stat-pre">` before it (for example "Top") sits top left. None of the current awards uses it. The number then drops and shrinks a little to clear it, so two digits fit. The list loads as one row of the intro, with `data-ui-chef-stagger="100"` starting each number 100ms after the last, matching the CSS stagger. Four awards fit on the jacket; for more, raise the list's `top` or tighten its `gap`.
+The awards are a list (`ui-chef__stats`). Each `ui-chef__stat` has a bracketed number and a label with a title and a `ui-chef__stat-sub` detail line. Add `ui-chef__stat--lead` to make one the lead award: its bracket, number and title are larger, and it can take a small gold `ui-chef__stat-kicker` line above the title. Every award's sizes come from a few custom properties on `.ui-chef__stat` (`--num-w`, `--num-h`, `--num-size`, `--sup-size`, `--arm`, `--title-size` and `--sub-size`, in design units). The lead class overrides them. A `<sup>` after the number (×) sits top right, and a `<sup class="ui-chef__stat-pre">` before it (for example "Top") sits top left. None of the current awards uses it. The number then drops and shrinks a little to clear it, so two digits fit. In the intro, each award is its own row. The second award has `data-ui-chef-pause="600"`, so it waits after the lead has counted. The third and fourth have `data-ui-chef-join`, so they load in the same step as the second, offset by the list's `data-ui-chef-stagger="100"` (ms). Four awards fit on the jacket; for more, raise the list's `top` or tighten its `gap`.
 
 The caret is the `ui-chef__caret` rect inside the name's SVG. Mark any number that should count with `data-ui-chef-count`, as in `<span data-ui-chef-count>2</span><sup>×</sup>`. The number written in the HTML is the one it ends on, and the one shown without the script. It counts up from 0 unless `data-ui-chef-count-from` gives another start. A start above the final number makes it count down, so a price like `from $<span data-ui-chef-count data-ui-chef-count-from="100">60</span>` counts down to 60. To add a short pause before a row loads, put `data-ui-chef-pause` on it with a time in milliseconds. The meta row uses `data-ui-chef-pause="300"`, and the tagline and button each use `200`.
 

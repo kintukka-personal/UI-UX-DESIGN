@@ -10,9 +10,11 @@
       As the portrait lands they load one at a time: the stat, then the meta
       row, the tagline and the button. A row's numbers start counting once
       the row has finished filling in, and the next row starts as they
-      settle. data-ui-chef-pause="300" on a row adds that many ms before it
-      loads, and data-ui-chef-stagger="100" starts its numbers 100ms apart
-      (the awards on the jacket use it, matching their staggered fill).
+      settle. Each award on the jacket is a row. data-ui-chef-pause="300" on a
+      row adds that many ms before it loads. data-ui-chef-join makes a row
+      load with the row before it instead of after, offset by its parent's
+      data-ui-chef-stagger (ms). The lead award lands alone, then after a
+      pause the other three come in together, 100ms apart.
 
    Counting: every [data-ui-chef-count] runs from data-ui-chef-count-from
    (default 0) to the number written in it, so it can count up (0 → 120) or
@@ -171,7 +173,18 @@
   }
 
   function rowsOf(card) {
-    return Array.prototype.slice.call(card.querySelectorAll(".ui-chef__stats, .ui-chef__body > *"));
+    return Array.prototype.slice.call(card.querySelectorAll(".ui-chef__stat, .ui-chef__body > *"));
+  }
+
+  // Groups rows into steps: a row with data-ui-chef-join loads in the same
+  // step as the row before it.
+  function stepsOf(card) {
+    var steps = [];
+    rowsOf(card).forEach(function (row) {
+      if (row.hasAttribute("data-ui-chef-join") && steps.length) steps[steps.length - 1].push(row);
+      else steps.push([row]);
+    });
+    return steps;
   }
 
   // Pins each number that counts up to the width of its final value, in em so
@@ -254,27 +267,30 @@
       // count settles (an ease-out count is ~97% there at 70% of its time), or
       // part-way through a row with no numbers, so there are no dead pauses.
       t += LAND_DELAY;
-      rowsOf(card).forEach(function (row) {
-        var numbers = row.querySelectorAll("[data-ui-chef-count]");
-        // A row can ask for a short extra pause before it loads
-        t += parseFloat(row.dataset.uiChefPause) || 0;
-        later(t, function () { row.classList.add("is-in"); });
-        if (!numbers.length) {
-          t += TEXT_HANDOFF;
-          return;
-        }
-        // Count only once the row has fully filled in, so the start ($100)
-        // is readable before it moves
-        t += ROW_FILL + COUNT_HOLD;
-        // A row can stagger its numbers (data-ui-chef-stagger, ms apart)
-        var stagger = parseFloat(row.dataset.uiChefStagger) || 0;
-        numbers.forEach(function (el, i) {
-          later(t + i * stagger, function () { count(el, timers); });
+      stepsOf(card).forEach(function (rows) {
+        // A step can ask for a short extra pause before it loads
+        t += parseFloat(rows[0].dataset.uiChefPause) || 0;
+        // Rows joined into one step come in this many ms apart
+        var stagger = parseFloat(rows[0].parentNode.dataset.uiChefStagger) || 0;
+        var lastCount = -1;
+        rows.forEach(function (row, k) {
+          var at = t + k * stagger;
+          later(at, function () { row.classList.add("is-in"); });
+          var numbers = row.querySelectorAll("[data-ui-chef-count]");
+          if (!numbers.length) return;
+          // Count only once the row has fully filled in, so the start ($100)
+          // is readable before it moves
+          var countAt = at + ROW_FILL + COUNT_HOLD;
+          later(countAt, function () {
+            numbers.forEach(function (el) { count(el, timers); });
+          });
+          var star = row.querySelector(".ui-chef__star");
+          if (star) later(countAt + COUNT_TIME + 60, function () { sparkle(card, star, timers); });
+          lastCount = countAt;
         });
-        t += (numbers.length - 1) * stagger;
-        var star = row.querySelector(".ui-chef__star");
-        if (star) later(t + COUNT_TIME + 60, function () { sparkle(card, star, timers); });
-        t += COUNT_TIME * COUNT_HANDOFF;
+        t = lastCount >= 0
+          ? lastCount + COUNT_TIME * COUNT_HANDOFF
+          : t + (rows.length - 1) * stagger + TEXT_HANDOFF;
       });
     });
   }
