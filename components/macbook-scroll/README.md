@@ -32,8 +32,8 @@ import { MacbookScroll } from "@/components/ui/macbook-scroll";
 
 <div className="w-full overflow-clip bg-white dark:bg-[#0B0B0F]">
   <MacbookScroll
-    title={<span>This Macbook is built with Tailwindcss. <br /> No kidding.</span>}
-    badge={<a href="https://peerlist.io/manuarora"><Badge className="h-10 w-10 -rotate-12" /></a>}
+    title={<span>Add the main hook of your <br /> software/app.</span>}
+    badge={<a href="https://www.google.com" className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-neutral-900">Click me</a>}
     src="/linear.webp"
   />
 </div>
@@ -48,8 +48,8 @@ Use `overflow-clip` on the wrapper, not `overflow-hidden`. An `overflow: hidden`
 | `src` | string | — | Screen image, cropped from the top left to fit 16:10 |
 | `alt` | string | `""` | Alt text for the screen image |
 | `children` | node | — | Render live content on the screen instead of `src` |
-| `title` | node | "This Macbook is built with Tailwindcss. No kidding." | Headline above the laptop |
-| `badge` | node | — | Sits in the bottom-left corner of the laptop base |
+| `title` | node | "Add the main hook of your software/app." | Headline above the laptop |
+| `badge` | node | — | Sits in the bottom-left corner of the laptop base, e.g. a call-to-action link. It stops taking clicks once the laptop has faded |
 | `showGradient` | boolean | `false` | Fades the bottom of the base into the page background |
 | `className` | string | `""` | Added to the outer `<section>` |
 

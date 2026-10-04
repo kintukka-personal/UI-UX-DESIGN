@@ -158,6 +158,7 @@ var MacbookScrollKit = (() => {
     const laptopScale = (0, import_react2.useTransform)(laptopT, [0, 1], [1, 0.86]);
     const laptopY = (0, import_react2.useTransform)(laptopT, [0, 1], [0, 70]);
     const laptopFilter = (0, import_react2.useTransform)(laptopT, (t) => blur(t * 8));
+    const laptopPointer = (0, import_react2.useTransform)(laptopT, (t) => t > 0.9 ? "none" : "auto");
     const afterglow = (0, import_react2.useTransform)(progress, [0.06, 0.16, 0.34], [0, 0.9, 0]);
     const transform = (0, import_react2.useTransform)([progress, land], ([p, l]) => screenTransform(p, l));
     const shadow = (0, import_react2.useTransform)(progress, [0.04, 0.2, 0.5, 0.6], [0, 1, 1, 0.6]);
@@ -199,9 +200,9 @@ var MacbookScrollKit = (() => {
               style: { top: layout == null ? void 0 : layout.titleTop, opacity: titleOpacity, y: titleY, filter: titleFilter },
               className: "absolute inset-x-0 px-4 text-center text-2xl font-bold text-neutral-800 sm:text-3xl dark:text-white",
               children: title != null ? title : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-                "This Macbook is built with Tailwindcss. ",
+                "Add the main hook of your ",
                 /* @__PURE__ */ (0, import_jsx_runtime.jsx)("br", {}),
-                " No kidding."
+                " software/app."
               ] })
             }
           ),
@@ -227,6 +228,7 @@ var MacbookScrollKit = (() => {
                       scale: laptopScale,
                       y: laptopY,
                       filter: laptopFilter,
+                      pointerEvents: laptopPointer,
                       transformOrigin: `50% ${LID_DEPTH}px`
                     },
                     children: [
@@ -507,63 +509,23 @@ var MacbookScrollKit = (() => {
         MacbookScroll,
         {
           title: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("span", { children: [
-            "This Macbook is built with Tailwindcss. ",
+            "Add the main hook of your ",
             /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("br", {}),
-            " No kidding."
+            " software/app."
           ] }),
-          badge: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("a", { href: "https://peerlist.io/manuarora", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Badge, { className: "h-10 w-10 -rotate-12" }) }),
+          badge: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+            "a",
+            {
+              href: "https://www.google.com",
+              className: "inline-flex items-center rounded-full bg-white px-4 py-2 text-xs font-semibold text-neutral-900 shadow-lg transition-colors hover:bg-neutral-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+              children: "Click me"
+            }
+          ),
           src,
           showGradient: false
         }
       ) })
     );
-  }
-  function Badge({ className }) {
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("svg", { width: "24", height: "24", viewBox: "0 0 56 56", fill: "none", xmlns: "http://www.w3.org/2000/svg", className, children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-        "path",
-        {
-          d: "M56 28C56 43.464 43.464 56 28 56C12.536 56 0 43.464 0 28C0 12.536 12.536 0 28 0C43.464 0 56 12.536 56 28Z",
-          fill: "#00AA45"
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-        "path",
-        {
-          fillRule: "evenodd",
-          clipRule: "evenodd",
-          d: "M28 54C42.3594 54 54 42.3594 54 28C54 13.6406 42.3594 2 28 2C13.6406 2 2 13.6406 2 28C2 42.3594 13.6406 54 28 54ZM28 56C43.464 56 56 43.464 56 28C56 12.536 43.464 0 28 0C12.536 0 0 12.536 0 28C0 43.464 12.536 56 28 56Z",
-          fill: "#219653"
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-        "path",
-        {
-          fillRule: "evenodd",
-          clipRule: "evenodd",
-          d: "M27.0769 12H15V46H24.3846V38.8889H27.0769C34.7305 38.8889 41 32.9048 41 25.4444C41 17.984 34.7305 12 27.0769 12ZM24.3846 29.7778V21.1111H27.0769C29.6194 21.1111 31.6154 23.0864 31.6154 25.4444C31.6154 27.8024 29.6194 29.7778 27.0769 29.7778H24.3846Z",
-          fill: "#24292E"
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-        "path",
-        {
-          fillRule: "evenodd",
-          clipRule: "evenodd",
-          d: "M18 11H29.0769C36.2141 11 42 16.5716 42 23.4444C42 30.3173 36.2141 35.8889 29.0769 35.8889H25.3846V43H18V11ZM25.3846 28.7778H29.0769C32.1357 28.7778 34.6154 26.39 34.6154 23.4444C34.6154 20.4989 32.1357 18.1111 29.0769 18.1111H25.3846V28.7778Z",
-          fill: "white"
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-        "path",
-        {
-          fillRule: "evenodd",
-          clipRule: "evenodd",
-          d: "M17 10H29.0769C36.7305 10 43 15.984 43 23.4444C43 30.9048 36.7305 36.8889 29.0769 36.8889H26.3846V44H17V10ZM19 12V42H24.3846V34.8889H29.0769C35.6978 34.8889 41 29.7298 41 23.4444C41 17.1591 35.6978 12 29.0769 12H19ZM24.3846 17.1111H29.0769C32.6521 17.1111 35.6154 19.9114 35.6154 23.4444C35.6154 26.9775 32.6521 29.7778 29.0769 29.7778H24.3846V17.1111ZM26.3846 19.1111V27.7778H29.0769C31.6194 27.7778 33.6154 25.8024 33.6154 23.4444C33.6154 21.0864 31.6194 19.1111 29.0769 19.1111H26.3846Z",
-          fill: "#24292E"
-        }
-      )
-    ] });
   }
   return __toCommonJS(stdin_exports);
 })();

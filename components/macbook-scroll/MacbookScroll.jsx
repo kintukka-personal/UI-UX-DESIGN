@@ -134,6 +134,7 @@ export function MacbookScroll({ src, alt = "", title, badge, showGradient = fals
   const laptopScale = useTransform(laptopT, [0, 1], [1, 0.86]);
   const laptopY = useTransform(laptopT, [0, 1], [0, 70]);
   const laptopFilter = useTransform(laptopT, (t) => blur(t * 8));
+  const laptopPointer = useTransform(laptopT, (t) => (t > 0.9 ? "none" : "auto")); // no invisible clicks on the badge
   const afterglow = useTransform(progress, [0.06, 0.16, 0.34], [0, 0.9, 0]);
 
   // Screen flight
@@ -180,7 +181,7 @@ export function MacbookScroll({ src, alt = "", title, badge, showGradient = fals
         >
           {title ?? (
             <span>
-              This Macbook is built with Tailwindcss. <br /> No kidding.
+              Add the main hook of your <br /> software/app.
             </span>
           )}
         </motion.h2>
@@ -204,6 +205,7 @@ export function MacbookScroll({ src, alt = "", title, badge, showGradient = fals
                 scale: laptopScale,
                 y: laptopY,
                 filter: laptopFilter,
+                pointerEvents: laptopPointer,
                 transformOrigin: `50% ${LID_DEPTH}px`,
               }}
             >
