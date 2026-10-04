@@ -10,12 +10,12 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
   - Portrait: Brooke from the head to just below the pocket, in her black chef's jacket. It fades into the green around the hem.
   - Awards: four bracketed stats stacked in white on the jacket, each with a title and a smaller detail line:
     - **Lead award**, larger and on three lines: `[3×]` World Food Championships (a small gold line), Australian Champion (1st), dessert category – 2023, 2024, & 2025
-    - `[1×]` World Food Championships (3rd): dessert category, Indianapolis 2024
+    - `[1×]` World Food Championships (3rd): dessert category – Indianapolis 2024
     - `[1×]` Australian Pro Chef of the Year (Finalist): 2026
     - `[2×]` Best Sole Operator: 2025 & 2026
 
     The bracket shows how many times, and the placing sits in brackets after the title. The lead award has a bigger bracket and title, so it stands out from the three smaller ones below it.
-  - Meta row: "Private chef – Catering" in gold on the left, and her Google rating (★ 5.0 · 60 reviews) on the right.
+  - Meta row: "Private chef & catering" in gold on the left, and her Google rating (★ 5.0 · 60 reviews) on the right.
   - Tagline: "Quality dining and fine food, brought directly to you." in tracked ivory uppercase, on one line. It's sized to fit the full width of the card, so a longer tagline needs a smaller `font-size` on `.ui-chef__tagline`.
   - Button: an ivory bar with "Book an experience" and the service area "Illawarra & Sydney" underneath it, plus a gold square with an arrow. It links to Dine In's experiences page, https://dine-in.com.au/experiences.
 - **Grid:** two faint gold hairlines divide the card into thirds, behind everything.
@@ -81,7 +81,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
       </li>
       <li class="ui-chef__stat" data-ui-chef-pause="600">
         <span class="ui-chef__stat-num"><span data-ui-chef-count>1</span><sup>×</sup></span>
-        <span class="ui-chef__stat-label"><span>World Food Championships (3rd)</span><span class="ui-chef__stat-sub">Dessert category, Indianapolis 2024</span></span>
+        <span class="ui-chef__stat-label"><span>World Food Championships (3rd)</span><span class="ui-chef__stat-sub">Dessert category – Indianapolis 2024</span></span>
       </li>
       <li class="ui-chef__stat" data-ui-chef-join>
         <span class="ui-chef__stat-num"><span data-ui-chef-count>1</span><sup>×</sup></span>
@@ -95,7 +95,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
 
     <div class="ui-chef__body">
       <p class="ui-chef__meta" data-ui-chef-pause="300">
-        <span class="ui-chef__role">Private chef – Catering</span>
+        <span class="ui-chef__role">Private chef & catering</span>
         <span class="ui-chef__proof"><b class="ui-chef__rating"><svg class="ui-chef__star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.85 5.8 6.4.93-4.63 4.5 1.1 6.37L12 17.4l-5.72 3l1.1-6.37-4.63-4.5 6.4-.93z"/></svg><span class="ui-chef__sr">Rated </span><span data-ui-chef-count>5.0</span></b> · <b data-ui-chef-count>60</b> reviews</span>
       </p>
       <p class="ui-chef__tagline" data-ui-chef-pause="200"><span>Quality dining and fine food, brought directly to you.</span></p>
