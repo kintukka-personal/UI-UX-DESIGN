@@ -5,7 +5,7 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
 ![Chef card preview](preview.png)
 
 - **Layout** (top to bottom):
-  - Top bar: a round gold monogram ("Brooke Silk") on the left, a two-line ivory menu button on the right.
+  - Top bar: a round gold monogram ("Dine In") on the left, a two-line ivory menu button on the right.
   - Name: "BROOKE / SILK" in gold, each line stretched to the full width. The lines touch, and the portrait covers their middle.
   - Portrait: Brooke from the head to just below the pocket, in her black chef's jacket. It fades into the green around the hem.
   - Awards: four bracketed stats stacked in white on the jacket, each with a title and a smaller detail line:
@@ -15,7 +15,7 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
     - `[2×]` Best Sole Operator: 2025 & 2026
 
     The bracket shows how many times, and the placing sits in brackets after the title. The lead award has a bigger bracket and title, so it stands out from the three smaller ones below it.
-  - Meta row: "Private chef · Dine In" in gold on the left, and her Google rating (★ 5.0 · 60 reviews) on the right.
+  - Meta row: "Private chef – Catering" in gold on the left, and her Google rating (★ 5.0 · 60 reviews) on the right.
   - Tagline: "Quality dining and fine food, brought directly to you." in tracked ivory uppercase.
   - Button: an ivory bar with "Book a dinner" and the service area "Illawarra & Sydney", plus a gold square with an arrow.
 - **Grid:** two faint gold hairlines divide the card into thirds, behind everything.
@@ -54,7 +54,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
     <span class="ui-chef__grid" aria-hidden="true"></span>
 
     <header class="ui-chef__bar">
-      <a class="ui-chef__mark" href="#">Brooke<br>Silk</a>
+      <a class="ui-chef__mark" href="#">Dine<br>In</a>
       <button class="ui-chef__menu" type="button" aria-label="Menu">
         <span></span><span></span>
       </button>
@@ -94,7 +94,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
 
     <div class="ui-chef__body">
       <p class="ui-chef__meta" data-ui-chef-pause="300">
-        <span class="ui-chef__role">Private chef · Dine In</span>
+        <span class="ui-chef__role">Private chef – Catering</span>
         <span class="ui-chef__proof"><b><svg class="ui-chef__star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.85 5.8 6.4.93-4.63 4.5 1.1 6.37L12 17.4l-5.72 3l1.1-6.37-4.63-4.5 6.4-.93z"/></svg><span class="ui-chef__sr">Rated </span><span data-ui-chef-count>5.0</span></b> · <b data-ui-chef-count>60</b> reviews</span>
       </p>
       <p class="ui-chef__tagline" data-ui-chef-pause="200"><span>Quality dining and fine food, brought directly to you.</span></p>
