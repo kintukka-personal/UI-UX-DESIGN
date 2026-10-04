@@ -443,29 +443,21 @@
     initDrain(hero, player);
   }
 
-  // ---------- "Discover" exit: down the drain, garage door, scroll ----------
+  // ---------- "Discover" exit: down the drain, then scroll ----------
   // The three sign-off pieces are dragged along curves into the button,
-  // shrinking and blurring as they bunch up. Their weight pulls a slatted
-  // door down behind them; the door shoves the button off the bottom edge,
-  // lands with a small bounce, and the page scrolls on to the product.
+  // speeding up, shrinking and blurring as they bunch together. The moment
+  // they hit it the button gives a press and the page snaps on to the product.
   function initDrain(hero, player) {
     var cue = hero.querySelector(".ui-reveal__cue");
     var target = document.querySelector(cue && cue.getAttribute("href"));
     var controls = hero.querySelector(".ui-reveal__controls");
-    var stageEl = hero.querySelector("[data-ui-reveal-stage]");
     if (!cue || !target) return;
-
-    var door = document.createElement("div");
-    door.className = "ui-reveal__door";
-    door.setAttribute("aria-hidden", "true");
-    door.innerHTML = '<span class="ui-reveal__door-rail"><i></i></span>';
-    hero.appendChild(door);
 
     var stage = player.stage;
     var pieces = [stage.endMark, stage.types[1].node, stage.endAcme];
     var busy = false;
 
-    var TRAVEL = 900, PUSH = 330, LAND = 220, SCROLL = 800;
+    var TRAVEL = 900, SCROLL = 460;
 
     function bezier(p0, p1, p2, p3, u) {
       var v = 1 - u;
@@ -478,22 +470,23 @@
       pieces.forEach(function (node) {
         node.style.translate = node.style.scale = node.style.filter = node.style.opacity = node.style.transformOrigin = "";
       });
-      cue.style.translate = cue.style.scale = cue.style.pointerEvents = "";
-      door.style.transform = "";
-      door.classList.remove("is-down");
-      stageEl.style.translate = "";
+      cue.style.scale = cue.style.pointerEvents = "";
       if (controls) controls.inert = false;
       busy = false;
     }
 
+    // Starts at full speed and brakes hard: sharp, not floaty
     function scrollToTarget() {
       var from = window.scrollY;
       var to = from + target.getBoundingClientRect().top;
       var t0 = 0;
       function step(now) {
         if (!t0) t0 = now;
-        var p = outCubic(seg(now - t0, 0, SCROLL));
+        var t = now - t0;
+        var p = outQuart(seg(t, 0, SCROLL));
         window.scrollTo(0, lerp(from, to, p));
+        // The button springs back from its press on the way out
+        cue.style.scale = n(lerp(0.9, 1, outCubic(seg(t, 0, 220))));
         if (p < 1) requestAnimationFrame(step); else finish();
       }
       requestAnimationFrame(step);
@@ -513,11 +506,8 @@
       if (controls) controls.inert = true;
       cue.style.pointerEvents = "none";
 
-      var heroBox = hero.getBoundingClientRect();
       var cueBox = cue.getBoundingClientRect();
-      var H = heroBox.height;
       var T = { x: cueBox.left + cueBox.width / 2, y: cueBox.top + cueBox.height * 0.45 };
-      var cueTop = cueBox.top - heroBox.top;
 
       // Each piece is anchored at its bottom centre and follows a curve into the button
       var paths = pieces.map(function (node, i) {
@@ -526,55 +516,30 @@
         var dx = T.x - A.x, dy = T.y - A.y;
         node.style.transformOrigin = node === stage.types[1].node ? "0 100%" : "50% 100%";
         return {
-          node: node, h: b.height, A: A,
+          node: node, A: A,
           c1: { x: A.x + dx * 0.32, y: A.y + dy * 0.12 },
           c2: { x: T.x, y: A.y + dy * 0.58 },
           delay: i === 1 ? 0 : 60
         };
       });
 
-      door.classList.add("is-down");
       var t0 = 0;
       function frame(now) {
         if (!t0) t0 = now;
         var t = now - t0;
-        var edge;
-
-        if (t < TRAVEL) {
-          var top = Infinity;
-          paths.forEach(function (p) {
-            var x = clamp01((t - p.delay) / (TRAVEL - p.delay));
-            var u = Math.pow(x, 1.8);                       // accelerating, like water finding the drain
-            var px = bezier(p.A.x, p.c1.x, p.c2.x, T.x, u);
-            var py = bezier(p.A.y, p.c1.y, p.c2.y, T.y, u);
-            var s = lerp(1, 0.28, u);
-            p.node.style.translate = n(px - p.A.x) + "px " + n(py - p.A.y) + "px";
-            p.node.style.scale = n(s);
-            p.node.style.filter = "blur(" + n(6 * seg(u, 0.3, 1)) + "px)";
-            p.node.style.opacity = n(1 - seg(u, 0.85, 1));
-            top = Math.min(top, py - heroBox.top - p.h * s);
-          });
-          // The door edge rides just above the pieces it is hanging from
-          edge = lerp(0, top - 6, outCubic(seg(t, 0, 260)));
-          var press = seg(t, TRAVEL - 120, TRAVEL);
-          cue.style.scale = n(1 - 0.08 * press);
-        } else if (t < TRAVEL + PUSH) {
-          paths.forEach(function (p) { p.node.style.opacity = "0"; });
-          var start = cueTop - 6;
-          edge = lerp(start, H, inCubic(seg(t, TRAVEL, TRAVEL + PUSH)));
-          cue.style.scale = "0.92";
-        } else {
-          // Landing: a short bounce off the floor and a nudge through the stage
-          var k = seg(t, TRAVEL + PUSH, TRAVEL + PUSH + LAND);
-          edge = H - Math.sin(k * Math.PI) * 14 * (1 - k);
-          stageEl.style.translate = "0 " + n(Math.sin(k * Math.PI) * 4) + "px";
-        }
-
-        door.style.transform = "translateY(" + n(edge - H) + "px)";
-        cue.style.translate = "0 " + n(Math.max(0, edge - cueTop)) + "px";
-
-        if (t < TRAVEL + PUSH + LAND) requestAnimationFrame(frame);
-        else { stageEl.style.translate = ""; scrollToTarget(); }
+        paths.forEach(function (p) {
+          var x = clamp01((t - p.delay) / (TRAVEL - p.delay));
+          var u = Math.pow(x, 1.8);                       // accelerating, like water finding the drain
+          var px = bezier(p.A.x, p.c1.x, p.c2.x, T.x, u);
+          var py = bezier(p.A.y, p.c1.y, p.c2.y, T.y, u);
+          p.node.style.translate = n(px - p.A.x) + "px " + n(py - p.A.y) + "px";
+          p.node.style.scale = n(lerp(1, 0.28, u));
+          p.node.style.filter = "blur(" + n(6 * seg(u, 0.3, 1)) + "px)";
+          p.node.style.opacity = n(1 - seg(u, 0.85, 1));
+        });
+        cue.style.scale = n(1 - 0.1 * seg(t, TRAVEL - 120, TRAVEL));
+        if (t < TRAVEL) requestAnimationFrame(frame);
+        else scrollToTarget();                            // no pause: the hit sends the page down
       }
       requestAnimationFrame(frame);
     });

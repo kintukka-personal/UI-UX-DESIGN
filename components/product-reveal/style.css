@@ -443,7 +443,7 @@
 
 .ui-reveal__cue {
   position: absolute;
-  z-index: 5;
+  z-index: 3;
   left: 50%;
   bottom: calc(clamp(10px, 2.6vmin, 22px) + 18px);
   display: inline-flex;
@@ -477,53 +477,6 @@
   visibility: visible;
   transform: translate(-50%, 0);
   transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s;
-}
-
-/* Garage door that closes over the hero on "Discover": the product
-   section's colour, horizontal slats, a bottom rail with a handle */
-.ui-reveal__door {
-  --ui-reveal-door: #140201;
-  position: absolute;
-  z-index: 4;
-  inset: 0;
-  transform: translateY(-100%);
-  visibility: hidden;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(180deg,
-      rgba(255, 255, 255, 0.07) 0 1px,
-      transparent 1px calc(var(--ui-reveal-slat) - 2px),
-      rgba(0, 0, 0, 0.35) calc(var(--ui-reveal-slat) - 2px) var(--ui-reveal-slat)),
-    linear-gradient(180deg, #1C0402, var(--ui-reveal-door));
-  background-position: 0 100%;
-  box-shadow: 0 18px 40px rgba(23, 6, 5, 0.32);
-  --ui-reveal-slat: clamp(44px, 8.5cqh, 76px);
-  will-change: transform;
-}
-
-.ui-reveal__door.is-down {
-  visibility: visible;
-}
-
-.ui-reveal__door-rail {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 12px;
-  background: #0B0100;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.ui-reveal__door-rail i {
-  position: absolute;
-  left: 50%;
-  top: -14px;
-  width: 56px;
-  height: 6px;
-  margin-left: -28px;
-  border-radius: 3px;
-  background: rgba(246, 233, 227, 0.32);
 }
 
 /* Phones: the cue moves to the left so it clears the controls */

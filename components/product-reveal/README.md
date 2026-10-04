@@ -16,11 +16,9 @@ A product-launch hero that rebuilds Jitter's free "Logo reveal" template as a we
    - The track flies outward and fades.
    - The mark and *acme* wipe in, and "RACING SHOES DESIGNED / & ENGINEERED IN ITALY" types out between them.
 
-When the reveal ends, a **Discover CO2** button appears. Clicking it runs the exit, which takes about 1.5s:
-- The mark, the mono line and *acme* are pulled along curves into the button, as if down a drain. They speed up, shrink and blur as they bunch together, so they never overlap awkwardly.
-- Their weight drags a slatted garage door down from the top of the hero, its bottom edge riding just above them.
-- When they reach the button, the door pushes the button off the bottom edge and lands with a small bounce.
-- The page then scrolls to the product section, which is the same colour as the door, and focus moves there. Off screen, the hero resets to the sign-off card.
+When the reveal ends, a **Discover CO2** button appears. Clicking it runs the exit:
+- The mark, the mono line and *acme* are pulled along curves into the button, as if down a drain (0.9s). They speed up, shrink and blur as they bunch together, so they never overlap awkwardly. The rest of the card stays still.
+- The moment they hit, the button gives a small press and the page snaps down to the product section in under half a second, starting at full speed and braking hard. Focus moves to the section, and off screen the hero resets to the sign-off card.
 
 Below the hero, the page has a product section. It shows a still of the poster next to the copy, specs, a price and a demo "Pre-order" button, then a footer.
 
