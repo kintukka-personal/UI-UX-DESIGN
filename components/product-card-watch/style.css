@@ -328,9 +328,51 @@
   text-transform: uppercase;
 }
 
+.ui-wcard__price-head {
+  display: flex;
+  align-items: center;
+  gap: calc(7 * var(--u));
+}
+
+/* Discount tag: a small pill in the ring colour (gold on Chrome, ivory on Onyx). */
+.ui-wcard__price-off {
+  padding: calc(3 * var(--u)) calc(7 * var(--u));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ui-wcard-ring) 18%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-wcard-ring) 45%, transparent);
+  color: var(--ui-wcard-ring);
+  font-size: calc(10 * var(--u));
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-wcard__price-row {
+  display: flex;
+  align-items: baseline;
+  gap: calc(10 * var(--u));
+  margin-top: calc(4 * var(--u));
+}
+
+/* The original price, struck through. */
+.ui-wcard__price-was {
+  color: var(--ui-wcard-muted);
+  font-size: calc(17 * var(--u));
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: line-through;
+  text-decoration-thickness: calc(1.5 * var(--u));
+  text-decoration-color: color-mix(in srgb, var(--ui-wcard-muted) 80%, transparent);
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+}
+
+.ui-wcard__price-off[hidden],
+.ui-wcard__price-was[hidden] { display: none; }
+
 .ui-wcard__price {
   display: block;
-  margin-top: calc(4 * var(--u));
   color: var(--ui-wcard-ink);
   font-size: calc(34 * var(--u));
   font-weight: 800;

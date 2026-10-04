@@ -7,7 +7,7 @@ The watch edition of the [product card](../product-card/), for the FOSLN ACIER q
   - Spec line: "Quartz watch" on the left, the brand "FOSLN" on the right.
   - Wordmark: "ACIER", edge to edge, sitting behind the watch. It's sized for five letters.
   - Watch: stands over the lower half of the wordmark, from the stage into the footer, over a soft contact shadow.
-  - Footer: "$249" on the left, the Chrome and Onyx swatches on the right, CTA underneath.
+  - Footer: the sale price on the left ("SALE −61%" over "$97" with "$249" struck through), the Chrome and Onyx swatches on the right, CTA underneath.
 - **Theme:** taken from a moody product shot of the watch on dark rock in low golden light:
   - a fine stone grain over the stage and footer
   - a warm glow from the upper left
@@ -80,7 +80,13 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
 
     <div class="ui-wcard__body">
       <div class="ui-wcard__row">
-        <p class="ui-wcard__price-label">Price <strong class="ui-wcard__price">$249</strong></p>
+        <p class="ui-wcard__price-label">
+          <span class="ui-wcard__price-head"><span class="ui-wcard__price-name">Sale</span> <span class="ui-wcard__price-off">−61%</span></span>
+          <span class="ui-wcard__price-row">
+            <strong class="ui-wcard__price">$97</strong>
+            <s class="ui-wcard__price-was"><span class="ui-wcard__sr">Was </span>$249</s>
+          </span>
+        </p>
         <fieldset class="ui-wcard__swatches">
           <legend class="ui-wcard__sr">Colour</legend>
           <label class="ui-wcard__swatch" style="--swatch: #8DB28F">
@@ -102,6 +108,8 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
   </div>
 </article>
 ```
+
+**Sale price:** the struck-through `ui-wcard__price-was` and the `ui-wcard__price-off` tag are optional. For full price, drop both, or give them `hidden`, and set the name to "Price". The tag picks up the selected swatch ring colour: gold on Chrome, ivory on Onyx.
 
 The swatches are real radio inputs, so arrow keys, focus and screen readers work without extra code. Each radio's `value` must match an image's `data-colorway`.
 
@@ -180,10 +188,11 @@ The `shopify/` folder turns the card into a theme section for a real product.
    - its card colours: stage, ombré, light glow, wordmark, spec line, the button's two gradient colours, and ring
 
    The preset comes with Chrome and Onyx. Values without a block use the theme's swatch colour, the variant image and the Chrome card colours. Products without a colour option show one image and no swatches.
-5. **Text.** The settings cover the wordmark, spec line, price label, button label, "Added", "Sold out" and an optional button note (empty by default, which keeps the label centred). The wordmark defaults to the first word of the product title. Short words of 3–5 letters fill the card best.
+5. **Text.** The settings cover the wordmark, spec line, price and sale labels, button label, "Added", "Sold out" and an optional button note (empty by default, which keeps the label centred). The wordmark defaults to the first word of the product title. Short words of 3–5 letters fill the card best.
 
 **What the connection does:**
 - Picking a swatch selects that colour's variant, updates the price, and shows "Sold out" (and disables the button) when it's unavailable.
+- **Sale prices come from Shopify.** When the selected variant's compare-at price is higher than its price, the card shows the sale label, a rounded discount tag (which can be turned off) and the compare-at price struck through. Switching to a variant at full price switches back to "Price".
 - Add to cart posts to Shopify's Cart AJAX API (`/cart/add.js`) while the product flies. The badge then shows the real cart count.
 - Shopify's errors, such as "All 1 Acier - Onyx are in your cart.", show on the button.
 - It refreshes a Dawn-style `#cart-icon-bubble` in the theme header and fires `ui-wcard:cart` on `document` with `{ cart }`, for themes that refresh their cart drawer some other way.

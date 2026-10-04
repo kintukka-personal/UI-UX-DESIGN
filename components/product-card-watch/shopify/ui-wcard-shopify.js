@@ -1,9 +1,11 @@
 /* UI Product Card (watch) — Shopify connection. Upload as assets/ui-wcard-shopify.js.
 
    - Swatches pick the variant: each swatch input carries data-variant-id,
-     data-price and data-available. Picking one updates the hidden variant
-     id, the price and the button (it reads "Sold out" and disables when the
-     variant is unavailable).
+     data-price and data-available (plus data-compare and data-off when the
+     variant is on sale). Picking one updates the hidden variant id, the
+     price, the struck-through compare-at price and discount tag, the price
+     label ("Price" or "Sale"), and the button (it reads "Sold out" and
+     disables when the variant is unavailable).
    - Add to cart adds the selected variant to the real cart through Shopify's
      Cart AJAX API (POST /cart/add.js), while the product flies. The badge
      then shows the real cart count. Errors (sold out, quantity limits) show
@@ -64,6 +66,11 @@
 
     var input = card.querySelector("[data-ui-wcard-variant]");
     var price = card.querySelector(".ui-wcard__price");
+    var was = card.querySelector(".ui-wcard__price-was");
+    var wasValue = card.querySelector("[data-ui-wcard-was]");
+    var off = card.querySelector(".ui-wcard__price-off");
+    var priceName = card.querySelector(".ui-wcard__price-name");
+    var showPercent = card.getAttribute("data-show-percent") !== "false";
     var cta = card.querySelector(".ui-wcard__cta");
     var label = card.querySelector(".ui-wcard__cta-add");
     var addHTML = label ? label.innerHTML : "";
@@ -74,6 +81,16 @@
       if (!radio || !radio.dataset.variantId) return;
       if (input) input.value = radio.dataset.variantId;
       if (price && radio.dataset.price) price.textContent = radio.dataset.price;
+      var compare = radio.dataset.compare;
+      if (was) was.hidden = !compare;
+      if (wasValue) wasValue.textContent = compare || "";
+      if (off) {
+        off.hidden = !(compare && showPercent);
+        off.textContent = compare ? "\u2212" + radio.dataset.off + "%" : "";
+      }
+      if (priceName) {
+        priceName.textContent = card.getAttribute(compare ? "data-sale-label" : "data-price-label") || priceName.textContent;
+      }
       var available = radio.dataset.available !== "false";
       if (cta) cta.disabled = !available;
       if (label) {
