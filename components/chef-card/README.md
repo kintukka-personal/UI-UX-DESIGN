@@ -11,8 +11,8 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
   - Awards: four bracketed stats stacked in white on the jacket, each with a title and a smaller detail line:
     - **Lead award**, larger and on three lines: `[3×]` World Food Championships (a small gold line), Australian Champion (1st), dessert category – 2023, 2024, & 2025
     - `[1×]` World Food Championships (3rd): dessert category – Indianapolis 2024
-    - `[1×]` Australian Pro Chef of the Year (Finalist): 2026
     - `[2×]` Best Sole Operator: 2025 & 2026
+    - `[1×]` Australian Pro Chef of the Year (Finalist): 2026
 
     The bracket shows how many times, and the placing sits in brackets after the title. The lead award has a bigger bracket and title, so it stands out from the three smaller ones below it.
   - Meta row: "Private chef & catering" in gold on the left, and her Google rating (★ 5.0 · 60 reviews) on the right.
@@ -25,7 +25,7 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
   2. As the last letter lands, the portrait opens out from the centre of the face.
   3. The information then loads one row at a time:
      - the lead award on its own: it drops in slightly larger and settles with a small bounce, showing 0×. After a beat it ticks up 1, 2, 3 at an even pace
-     - after a short hold, the other three awards, 0.1s apart. Each comes in at 0, holds for a beat and ticks up to 1×, 1× and 2×
+     - after a short hold, the other three awards, 0.1s apart. Each comes in at 0, holds for a beat and ticks up to 1×, 2× and 1×
      - after a short pause, the meta row: ★ 0.0 → 5.0 and 0 → 60 reviews. When the rating reaches 5.0, gold sparkles fly into the star, and it jumps, turns gold and stays gold. At the same moment the score turns gold, and the whole rating pops with a brief gold glow to call out the perfect score. Nothing else moves while this happens.
      - once the rating's pop has finished, and after a short pause, the tagline
      - after another short pause, the button
@@ -90,12 +90,12 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
         <span class="ui-chef__stat-label"><span>World Food Championships (3rd)</span><span class="ui-chef__stat-sub">Dessert category – Indianapolis 2024</span></span>
       </li>
       <li class="ui-chef__stat" data-ui-chef-join>
-        <span class="ui-chef__stat-num"><span data-ui-chef-count>1</span><sup>×</sup></span>
-        <span class="ui-chef__stat-label"><span>Australian Pro Chef of the Year (Finalist)</span><span class="ui-chef__stat-sub">2026</span></span>
-      </li>
-      <li class="ui-chef__stat" data-ui-chef-join>
         <span class="ui-chef__stat-num"><span data-ui-chef-count>2</span><sup>×</sup></span>
         <span class="ui-chef__stat-label"><span>Best Sole Operator</span><span class="ui-chef__stat-sub">2025 &amp; 2026</span></span>
+      </li>
+      <li class="ui-chef__stat" data-ui-chef-join>
+        <span class="ui-chef__stat-num"><span data-ui-chef-count>1</span><sup>×</sup></span>
+        <span class="ui-chef__stat-label"><span>Australian Pro Chef of the Year (Finalist)</span><span class="ui-chef__stat-sub">2026</span></span>
       </li>
     </ul>
 
