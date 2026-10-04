@@ -5,9 +5,11 @@
       caret. The letters are already laid out (the SVG text keeps its full
       textLength), so each one appears in its final place.
    2. The portrait opens out from the centre of the face.
-   3. The stat and footer rise in, and every [data-ui-prof-count] counts up
-      from zero to the number written in it (decimals are kept, so 4.9 counts
-      0.0 → 4.9).
+   3. Until then the stat and footer show as skeleton bars (style.css). As
+      the portrait lands they fill in, and every [data-ui-prof-count] counts
+      up from zero to the number written in it (decimals are kept, so 4.9
+      counts 0.0 → 4.9). Each number keeps its final width while it counts,
+      so nothing next to it shifts.
 
    The card is armed (hidden) before first paint, so nothing flashes. Without
    this script, or with reduced motion turned on, the card shows at rest.
@@ -91,7 +93,19 @@
     card.classList.add("is-armed");
     card.querySelectorAll(".ui-prof__name tspan").forEach(function (t) { t.classList.remove("is-on"); });
     card.querySelectorAll("[data-ui-prof-count]").forEach(function (el) {
-      el.textContent = (0).toFixed((el.dataset.uiProfTarget.split(".")[1] || "").length);
+      el.textContent = el.dataset.uiProfTarget;
+    });
+  }
+
+  // Pins each number to the width of its final value, in em so it still
+  // scales with the card. Measured after the fonts load.
+  function holdWidths(card) {
+    card.querySelectorAll("[data-ui-prof-count]").forEach(function (el) {
+      el.style.display = "inline-block";
+      el.style.minWidth = "";
+      el.style.textAlign = "right";
+      var em = el.getBoundingClientRect().width / parseFloat(getComputedStyle(el).fontSize);
+      el.style.minWidth = em.toFixed(3) + "em";
     });
   }
 
@@ -120,6 +134,7 @@
     }
 
     fontsReady(card).then(function () {
+      holdWidths(card);
       var t = TYPE_START;
       card.classList.add("is-typing", "is-caret-idle");
       placeCaret(lines[0], null);
@@ -142,10 +157,14 @@
       later(t, function () { card.classList.add("is-caret-idle"); });
       t += CARET_HOLD;
       later(t, function () {
+        // Still hidden in their skeletons, so dropping to zero isn't seen
+        card.querySelectorAll("[data-ui-prof-count]").forEach(function (el) {
+          el.textContent = (0).toFixed((el.dataset.uiProfTarget.split(".")[1] || "").length);
+        });
         card.classList.add("is-caret-out", "is-revealed");
         card.classList.remove("is-caret-idle");
       });
-      // Numbers start as their rows rise in (see --ui-prof-delay in style.css).
+      // Numbers start as their rows fill in (see --ui-prof-delay in style.css).
       card.querySelectorAll("[data-ui-prof-count]").forEach(function (el) {
         var row = el.closest(".ui-prof__stat, .ui-prof__body > *");
         var delay = row ? parseFloat(getComputedStyle(row).getPropertyValue("--ui-prof-delay")) * 1000 || 0 : 0;

@@ -13,11 +13,11 @@ An editorial profile card for a coach or trainer, with the person as the hero. T
   - Tagline: tracked uppercase, two lines.
   - Button: a black bar with "Book a session" and "from $60", plus a blue square with an arrow.
 - **Grid:** two faint hairlines divide the card into thirds, behind everything.
-- **Intro:** the first time the card scrolls into view, it plays in three beats:
+- **Intro:** the first time the card scrolls into view, it plays in three beats. From the first frame, the stat, meta row, tagline and button show as skeleton placeholders: bars in the exact shape of their text, in a faint tint of the ink, with a slow shine. That way the layout is already there, but nothing competes with the name.
   1. The name types out letter by letter (MAYA, a short pause, then ROSS) behind a blinking blue caret. Each letter appears in its final place, because the stretched layout is already set.
   2. When the caret fades, the portrait opens out from the centre of the face as a soft-edged circle. It fades in and settles from a slight zoom as it grows.
-  3. The stat and footer rise in, and the numbers count up from zero: 8 years, ★ 4.9 and 120 clients. Decimals are kept, so the rating counts 0.0 → 4.9.
-  The whole intro takes about 3 seconds, and `window.uiProf.play(card)` replays it. The demo has a "Replay intro" button.
+  3. As the portrait lands, the skeletons fill in from top to bottom: the stat, then the meta row, the tagline and the button, which turns from a pale block to black and blue. The numbers count up from zero as they appear: 8 years, ★ 4.9 and 120 clients. Decimals are kept, so the rating counts 0.0 → 4.9, and each number holds its final width so nothing beside it shifts.
+  The whole intro takes about 4 seconds, and `window.uiProf.play(card)` replays it. The demo has a "Replay intro" button.
 - **Hover:** hovering the monogram tilts it, hovering the menu shortens its bottom line, and hovering the button nudges the arrow out to the top right.
 - **Reduced motion, or no JavaScript:** the card shows at rest with the final numbers.
 - **Scaling:** every size comes from the card's width (390 design units, using container query units), so the whole layout scales as one piece from a 320px phone up to the 430px max width.
@@ -61,7 +61,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-prof`.
 
     <p class="ui-prof__stat">
       <span class="ui-prof__stat-num"><span data-ui-prof-count>8</span><sup>+</sup></span>
-      <span class="ui-prof__stat-label">Years<br>coaching</span>
+      <span class="ui-prof__stat-label"><span>Years<br>coaching</span></span>
     </p>
 
     <div class="ui-prof__body">
@@ -69,7 +69,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-prof`.
         <span class="ui-prof__role">Strength &amp; running coach</span>
         <span class="ui-prof__proof"><b>★ <span data-ui-prof-count>4.9</span></b> · <b data-ui-prof-count>120</b> clients</span>
       </p>
-      <p class="ui-prof__tagline">Train for the life you want to keep living.</p>
+      <p class="ui-prof__tagline"><span>Train for the life you want to keep living.</span></p>
       <a class="ui-prof__cta" href="#book">
         <span class="ui-prof__cta-label">Book a session <span class="ui-prof__cta-note">from $60</span></span>
         <span class="ui-prof__cta-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
@@ -96,6 +96,8 @@ Colours and fonts are custom properties on `.ui-prof`:
 | `--ui-prof-ink` | `#141416` | Tagline, menu and button |
 | `--ui-prof-muted` | `#6F6D68` | "clients" in the meta row |
 | `--ui-prof-cta-note` | `#8C8C90` | "from $60" |
+| `--ui-prof-skel` | ink at 7% | Skeleton bars during the intro |
+| `--ui-prof-skel-shine` | page at 75% | The shine that sweeps across them |
 | `--ui-prof-display` | Anton | Typeface for the name |
 | `--ui-prof-font` | Inter | Typeface for everything else |
 | `--ui-prof-radius` | `0` | Corner radius in design units |
