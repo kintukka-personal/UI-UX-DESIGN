@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MacBook Scroll</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+  @custom-variant dark (&:where(.dark, .dark *));
+</style>
+<style>
+  html, body { margin: 0; background: #0B0B0F; color: #e5e5e5; }
+  body { font-family: ui-sans-serif, -apple-system, "Segoe UI", Inter, Roboto, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .outro { min-height: 70vh; display: grid; place-items: center; color: #6b6b76; font-size: 14px; letter-spacing: .14em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="outro">End of the section</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/framer-motion@11.18.2/dist/framer-motion.js"></script>
+<script src="script.js"></script>
+<script>
+  ReactDOM.createRoot(document.getElementById("root")).render(
+    React.createElement(MacbookScrollDemo, { src: "images/screen.webp" })
+  );
+</script>
+</body>
+</html>
