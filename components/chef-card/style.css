@@ -185,6 +185,7 @@
   position: absolute;
   top: calc(var(--ui-chef-inset-top) + 384 * var(--u));
   left: calc(38 * var(--u));
+  right: calc(22 * var(--u));     /* long titles wrap rather than run off the card */
   z-index: 3;
   display: grid;
   gap: calc(10 * var(--u));
