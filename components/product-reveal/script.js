@@ -492,16 +492,56 @@
       requestAnimationFrame(step);
     }
 
+    function calm() { return !!(reduceMotion && reduceMotion.matches); }
+
+    function jump() {
+      target.scrollIntoView({ behavior: calm() ? "auto" : "smooth", block: "start" });
+      target.focus({ preventScroll: true });
+    }
+
+    // Scrolling down from the sign-off card does the same as clicking Discover
+    function atSignOff() {
+      return !calm() && stage.phase === "end" && !player.playing && hero.hasAttribute("data-done") &&
+        hero.getBoundingClientRect().top > -8 && window.scrollY < hero.offsetTop + 8;
+    }
+
+    function catchScroll(e) {
+      if (busy) { e.preventDefault(); return true; }   // hold the page still while the pieces drain
+      if (!atSignOff()) return false;
+      e.preventDefault();
+      drain();
+      return true;
+    }
+
+    window.addEventListener("wheel", function (e) {
+      if (busy || e.deltaY > 0) catchScroll(e);
+    }, { passive: false });
+
+    var touchY = null;
+    window.addEventListener("touchstart", function (e) { touchY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener("touchmove", function (e) {
+      if (busy) { e.preventDefault(); return; }
+      if (touchY !== null && touchY - e.touches[0].clientY > 10 && catchScroll(e)) touchY = null;
+    }, { passive: false });
+
+    window.addEventListener("keydown", function (e) {
+      var down = e.key === "PageDown" || e.key === "ArrowDown" || e.key === "End" || (e.key === " " && !e.shiftKey);
+      if (!down) return;
+      // Space and arrows belong to the focused control, if there is one
+      var el = e.target;
+      if (!busy && el && el.closest && el.closest("button, a, input, select, textarea, [contenteditable]")) return;
+      catchScroll(e);
+    });
+
     cue.addEventListener("click", function (e) {
       e.preventDefault();
       if (busy) return;
-      var calm = reduceMotion && reduceMotion.matches;
       // Only the sign-off card drains; anywhere else (or with reduced motion) go straight there
-      if (calm || stage.phase !== "end" || player.playing) {
-        target.scrollIntoView({ behavior: calm ? "auto" : "smooth", block: "start" });
-        target.focus({ preventScroll: true });
-        return;
-      }
+      if (calm() || stage.phase !== "end" || player.playing) { jump(); return; }
+      drain();
+    });
+
+    function drain() {
       busy = true;
       if (controls) controls.inert = true;
       cue.style.pointerEvents = "none";
@@ -514,7 +554,7 @@
         var b = node.getBoundingClientRect();
         var A = { x: b.left + b.width / 2, y: b.bottom };
         var dx = T.x - A.x, dy = T.y - A.y;
-        node.style.transformOrigin = node === stage.types[1].node ? "0 100%" : "50% 100%";
+        node.style.transformOrigin = "50% 100%";
         return {
           node: node, A: A,
           c1: { x: A.x + dx * 0.32, y: A.y + dy * 0.12 },
@@ -542,7 +582,7 @@
         else scrollToTarget();                            // no pause: the hit sends the page down
       }
       requestAnimationFrame(frame);
-    });
+    }
   }
 
   // Pre-order (demo): a toggled state announced to screen readers
