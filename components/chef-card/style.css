@@ -351,13 +351,13 @@
 }
 
 .ui-chef__tagline {
-  max-width: calc(234 * var(--u));
   margin: 0 0 calc(20 * var(--u));
-  font-size: calc(11.5 * var(--u));
+  font-size: calc(9.3 * var(--u));   /* small enough to keep the tagline on one line */
   font-weight: 700;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.1em;
   line-height: 1.6;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .ui-chef__cta {

@@ -16,7 +16,7 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
 
     The bracket shows how many times, and the placing sits in brackets after the title. The lead award has a bigger bracket and title, so it stands out from the three smaller ones below it.
   - Meta row: "Private chef – Catering" in gold on the left, and her Google rating (★ 5.0 · 60 reviews) on the right.
-  - Tagline: "Quality dining and fine food, brought directly to you." in tracked ivory uppercase.
+  - Tagline: "Quality dining and fine food, brought directly to you." in tracked ivory uppercase, on one line. It's sized to fit the full width of the card, so a longer tagline needs a smaller `font-size` on `.ui-chef__tagline`.
   - Button: an ivory bar with "Book a dinner" and the service area "Illawarra & Sydney", plus a gold square with an arrow.
 - **Grid:** two faint gold hairlines divide the card into thirds, behind everything.
 - **Colours:** Dine In green `#002E13` and gold `#DAA520`, both taken from the Dine In logo, with a warm ivory `#F4EFE1` for text and the button.
