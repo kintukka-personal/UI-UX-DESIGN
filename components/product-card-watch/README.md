@@ -12,7 +12,7 @@ The watch edition of the [product card](../product-card/), for the FOSLN ACIER q
   - a fine stone grain over the stage and footer
   - a warm glow from the upper left
   - a thin gold line where the stage meets the footer
-  - the watch photos themselves shot on dark rock in the same golden light
+  - the watch photos themselves shot on dark rock with warm rim light
 - **Colours:** two colourways, named after the dial:
   - **Chrome, golden hour:** stone black with an amber glow, a champagne wordmark, gold spec line and a gold button. It uses the chrome-dial photo.
   - **Onyx, after dark:** deeper and cooler, the glow down to an ember, an ivory wordmark and a silver button. It uses the black-dial photo.
@@ -204,6 +204,6 @@ The `shopify/` folder turns the card into a theme section for a real product.
 
 ## Product images
 
-Both cut-outs are transparent WebP files cut from a matched pair of product photos: the chrome-dial and black-dial watch, shot on dark rock in warm golden light from the same angle. They share one canvas (671 × 1191) with the watch in exactly the same place, so switching colourways only changes the dial. The photos are already warm, so `--ui-wcard-tone` is `none`. Set it to something like `sepia(0.16) saturate(1.15)` to warm a cooler studio shot.
+Both cut-outs are transparent WebP files cut from a matched pair of product photos: the chrome-dial and black-dial watch, shot on dark rock in warm golden light from the same angle. They share one canvas (671 × 1191) with the watch in exactly the same place, so switching colourways only changes the dial. The steel keeps its true silver, with warm rim light from the scene, so `--ui-wcard-tone` is `none`. Set it to something like `sepia(0.16) saturate(1.15)` if you want the steel itself warmed.
 
 To use another product, export a transparent PNG/WebP per colourway. If the aspect is different, update `aspect-ratio`, `width` and `top` on `.ui-wcard__media`. If the wordmark has a different number of letters, adjust `font-size` on `.ui-wcard__title`; it's 132 units for five letters, and the original card uses 140 for four.
