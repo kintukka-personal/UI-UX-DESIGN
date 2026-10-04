@@ -10,7 +10,8 @@
       As the portrait lands they load one at a time: the stat, then the meta
       row, the tagline and the button. A row's numbers start counting once
       the row has finished filling in, and the next row starts as they
-      settle.
+      settle. data-ui-prof-pause="300" on a row adds that many ms before it
+      loads.
 
    Counting: every [data-ui-prof-count] runs from data-ui-prof-count-from
    (default 0) to the number written in it, so it can count up (0 → 120) or
@@ -204,6 +205,8 @@
       t += LAND_DELAY;
       rowsOf(card).forEach(function (row) {
         var numbers = row.querySelectorAll("[data-ui-prof-count]");
+        // A row can ask for a short extra pause before it loads
+        t += parseFloat(row.dataset.uiProfPause) || 0;
         later(t, function () { row.classList.add("is-in"); });
         if (!numbers.length) {
           t += TEXT_HANDOFF;

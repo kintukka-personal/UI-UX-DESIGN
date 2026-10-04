@@ -18,7 +18,7 @@ An editorial profile card for a coach or trainer, with the person as the hero. T
   2. As the last letter lands, the portrait opens out from the centre of the face (the caret blinks a moment longer, then fades) as a soft-edged circle. It fades in and settles from a slight zoom as it grows.
   3. As the portrait lands, the information loads one row at a time. Each row fills in from its skeleton with a small settle. Its numbers wait until it has fully filled in, show their starting value for a moment, then count. The next row starts as soon as that count has all but settled, so there are no dead pauses:
      - the stat, with the years counting 0 → 8
-     - the meta row: role, ★ 0.0 → 4.9 and 0 → 120 clients
+     - after a short pause, the meta row: role, ★ 0.0 → 4.9 and 0 → 120 clients
      - the tagline
      - the button, which turns from a pale block to black and blue while the price counts down from $100 to $60
 
@@ -71,7 +71,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-prof`.
     </p>
 
     <div class="ui-prof__body">
-      <p class="ui-prof__meta">
+      <p class="ui-prof__meta" data-ui-prof-pause="300">
         <span class="ui-prof__role">Strength &amp; running coach</span>
         <span class="ui-prof__proof"><b>★ <span data-ui-prof-count>4.9</span></b> · <b data-ui-prof-count>120</b> clients</span>
       </p>
@@ -86,7 +86,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-prof`.
 <script src="script.js"></script>
 ```
 
-The caret is the `ui-prof__caret` rect inside the name's SVG. Mark any number that should count with `data-ui-prof-count`, as in `<span data-ui-prof-count>8</span><sup>+</sup>`. The number written in the HTML is the one it ends on, and the one shown without the script. It counts up from 0 unless `data-ui-prof-count-from` gives another start. A start above the final number makes it count down, as in `from $<span data-ui-prof-count data-ui-prof-count-from="100">60</span>`.
+The caret is the `ui-prof__caret` rect inside the name's SVG. Mark any number that should count with `data-ui-prof-count`, as in `<span data-ui-prof-count>8</span><sup>+</sup>`. The number written in the HTML is the one it ends on, and the one shown without the script. It counts up from 0 unless `data-ui-prof-count-from` gives another start. A start above the final number makes it count down, as in `from $<span data-ui-prof-count data-ui-prof-count-from="100">60</span>`. To add a short pause before a row loads, put `data-ui-prof-pause` on it with a time in milliseconds. The meta row uses `data-ui-prof-pause="300"`, so it waits until the 8 has finished counting.
 
 **Changing the name:** edit the two `<text>` lines and the hidden `ui-prof__sr` text. `textLength` stretches each line to the full width, whatever its length, so a short name gets wide letters and a long one gets narrow letters. Names of 4–6 letters per line look best.
 
