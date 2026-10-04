@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chef Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@200;300;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ---- Demo page only: a phone frame to show the card in context ---- */
+  :root { color-scheme: light; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 30%, #D9D3CB, #B7AEA4);
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    display: grid;
+    place-items: center;
+    padding: 40px 16px;
+    box-sizing: border-box;
+  }
+  main { width: 100%; display: grid; justify-items: center; }
+  .phone {
+    position: relative;
+    width: min(390px, 100%);
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 56px;
+    background: #121312;
+    box-shadow: 0 0 0 2px #2A2B2A, 0 40px 80px -30px rgba(40, 32, 24, 0.55);
+  }
+  .phone .ui-chef {
+    --ui-chef-radius: 46;
+    --ui-chef-inset-top: 46px;
+    max-width: none;
+  }
+  .phone__status {
+    position: absolute;
+    z-index: 5;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    height: 54px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 9% 0 11%;
+    box-sizing: border-box;
+    color: #F4EFE1;
+    font-size: 16px;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .phone__island {
+    position: absolute;
+    left: 50%;
+    top: 11px;
+    width: 32%;
+    height: 34px;
+    transform: translateX(-50%);
+    border-radius: 20px;
+    background: #000;
+  }
+  .phone__icons { display: flex; gap: 6px; align-items: center; }
+  .phone__icons svg { height: 12px; fill: currentColor; }
+  .replay {
+    display: block;
+    margin: 20px auto 0;
+    padding: 10px 18px;
+    border: 1px solid rgba(20, 20, 22, 0.25);
+    border-radius: 999px;
+    background: transparent;
+    color: #141416;
+    font: 600 13px/1 "Inter", "Helvetica Neue", Arial, sans-serif;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .replay:hover { background: rgba(20, 20, 22, 0.06); }
+  .replay:focus-visible { outline: 2px solid #DAA520; outline-offset: 3px; }
+  .phone__home {
+    position: absolute;
+    z-index: 5;
+    left: 50%;
+    bottom: 18px;
+    width: 134px;
+    height: 5px;
+    transform: translateX(-50%);
+    border-radius: 3px;
+    background: #F4EFE1;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="phone">
+    <div class="phone__status" aria-hidden="true">
+      <span>9:41</span>
+      <span class="phone__island"></span>
+      <span class="phone__icons">
+        <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <svg viewBox="0 0 16 12"><path d="M8 2.6c2.3 0 4.4.9 6 2.4l1.3-1.4A10.6 10.6 0 0 0 8 .7 10.6 10.6 0 0 0 .7 3.6L2 5c1.6-1.5 3.7-2.4 6-2.4zm0 3.7c1.3 0 2.5.5 3.4 1.3l1.3-1.4A6.8 6.8 0 0 0 8 4.4c-1.8 0-3.4.7-4.7 1.8l1.3 1.4c.9-.8 2.1-1.3 3.4-1.3zM8 8.2c-.7 0-1.3.3-1.8.7L8 11l1.8-2.1c-.5-.4-1.1-.7-1.8-.7z"/></svg>
+        <svg viewBox="0 0 27 12"><rect x="0.5" y="0.5" width="23" height="11" rx="3.5" fill="none" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="20" height="8" rx="2"/><path d="M25 4v4c.8-.3 1.3-1.1 1.3-2S25.8 4.3 25 4z" opacity="0.4"/></svg>
+      </span>
+    </div>
+
+    <!-- ===== Component ===== -->
+    <article class="ui-chef" data-ui-chef>
+      <div class="ui-chef__inner">
+        <span class="ui-chef__grid" aria-hidden="true"></span>
+
+        <header class="ui-chef__bar">
+          <a class="ui-chef__mark" href="#">Dine<br>In</a>
+          <button class="ui-chef__menu" type="button" aria-label="Menu">
+            <span></span><span></span>
+          </button>
+        </header>
+
+        <h2 class="ui-chef__name">
+          <svg viewBox="0 0 390 296" aria-hidden="true" focusable="false">
+            <text x="18" y="149" textLength="354" lengthAdjust="spacingAndGlyphs">BROOKE</text>
+            <text x="18" y="292" textLength="354" lengthAdjust="spacingAndGlyphs">SILK</text>
+            <rect class="ui-chef__caret" x="18" y="0" width="7" height="149"/>
+          </svg>
+          <span class="ui-chef__sr">Brooke Silk</span>
+        </h2>
+
+        <figure class="ui-chef__media">
+          <img class="ui-chef__img" src="images/brooke-silk.webp" width="818" height="1118" alt="Brooke Silk, smiling, in a black chef's jacket" decoding="async">
+        </figure>
+
+        <ul class="ui-chef__stats" data-ui-chef-stagger="100" aria-label="Awards">
+          <li class="ui-chef__stat ui-chef__stat--lead">
+            <span class="ui-chef__stat-num"><span data-ui-chef-count>3</span><sup>×</sup></span>
+            <span class="ui-chef__stat-label"><span class="ui-chef__stat-kicker">World Food Championships</span><span>Australian Champion (1st)</span><span class="ui-chef__stat-sub">Dessert category – 2023, 2024, &amp; 2025</span></span>
+          </li>
+          <li class="ui-chef__stat" data-ui-chef-pause="600">
+            <span class="ui-chef__stat-num"><span data-ui-chef-count>1</span><sup>×</sup></span>
+            <span class="ui-chef__stat-label"><span>World Food Championships (3rd)</span><span class="ui-chef__stat-sub">Dessert category – Indianapolis 2024</span></span>
+          </li>
+          <li class="ui-chef__stat" data-ui-chef-join>
+            <span class="ui-chef__stat-num"><span data-ui-chef-count>2</span><sup>×</sup></span>
+            <span class="ui-chef__stat-label"><span>Best Sole Operator</span><span class="ui-chef__stat-sub">2025 &amp; 2026</span></span>
+          </li>
+          <li class="ui-chef__stat" data-ui-chef-join>
+            <span class="ui-chef__stat-num"><span data-ui-chef-count>1</span><sup>×</sup></span>
+            <span class="ui-chef__stat-label"><span>Australian Pro Chef of the Year (Finalist)</span><span class="ui-chef__stat-sub">2026</span></span>
+          </li>
+        </ul>
+
+        <div class="ui-chef__body">
+          <p class="ui-chef__meta" data-ui-chef-pause="300">
+            <span class="ui-chef__role">Private chef &amp; catering</span>
+            <span class="ui-chef__proof"><b class="ui-chef__rating"><svg class="ui-chef__star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.85 5.8 6.4.93-4.63 4.5 1.1 6.37L12 17.4l-5.72 3l1.1-6.37-4.63-4.5 6.4-.93z"/></svg><span class="ui-chef__sr">Rated </span><span data-ui-chef-count>5.0</span></b> · <b data-ui-chef-count>60</b> reviews</span>
+          </p>
+          <p class="ui-chef__tagline" data-ui-chef-pause="200"><span>Quality dining and fine food, brought directly to you.</span></p>
+          <a class="ui-chef__cta" href="https://dine-in.com.au/experiences" data-ui-chef-pause="200">
+            <span class="ui-chef__cta-label">
+              <span class="ui-chef__cta-text">Book an experience</span>
+              <span class="ui-chef__cta-note">Illawarra &amp; Sydney</span>
+            </span>
+            <span class="ui-chef__cta-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </article>
+    <!-- ===== /Component ===== -->
+
+    <span class="phone__home" aria-hidden="true"></span>
+  </div>
+  <button class="replay" type="button" onclick="uiChef.play(document.querySelector('[data-ui-chef]'))">Replay intro</button>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
