@@ -11,7 +11,8 @@
       row, the tagline and the button. A row's numbers start counting once
       the row has finished filling in, and the next row starts as they
       settle. data-ui-chef-pause="300" on a row adds that many ms before it
-      loads.
+      loads, and data-ui-chef-stagger="100" starts its numbers 100ms apart
+      (the awards on the jacket use it, matching their staggered fill).
 
    Counting: every [data-ui-chef-count] runs from data-ui-chef-count-from
    (default 0) to the number written in it, so it can count up (0 → 120) or
@@ -170,7 +171,7 @@
   }
 
   function rowsOf(card) {
-    return Array.prototype.slice.call(card.querySelectorAll(".ui-chef__stat, .ui-chef__body > *"));
+    return Array.prototype.slice.call(card.querySelectorAll(".ui-chef__stats, .ui-chef__body > *"));
   }
 
   // Pins each number that counts up to the width of its final value, in em so
@@ -265,9 +266,12 @@
         // Count only once the row has fully filled in, so the start ($100)
         // is readable before it moves
         t += ROW_FILL + COUNT_HOLD;
-        later(t, function () {
-          numbers.forEach(function (el) { count(el, timers); });
+        // A row can stagger its numbers (data-ui-chef-stagger, ms apart)
+        var stagger = parseFloat(row.dataset.uiChefStagger) || 0;
+        numbers.forEach(function (el, i) {
+          later(t + i * stagger, function () { count(el, timers); });
         });
+        t += (numbers.length - 1) * stagger;
         var star = row.querySelector(".ui-chef__star");
         if (star) later(t + COUNT_TIME + 60, function () { sparkle(card, star, timers); });
         t += COUNT_TIME * COUNT_HANDOFF;

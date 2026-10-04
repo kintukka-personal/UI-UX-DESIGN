@@ -1,6 +1,6 @@
 # Chef Card
 
-The Dine In edition of the [profile card](../profile-card/), for private chef Brooke Silk. It has the same layout and intro, rebranded in Dine In's green and gold: "BROOKE / SILK" in gold on Dine In green, her cut-out portrait in front of the name, a bracketed stat on her chef's jacket, and a tagline and split "Book a dinner" button below.
+The Dine In edition of the [profile card](../profile-card/), for private chef Brooke Silk. It has the same layout and intro, rebranded in Dine In's green and gold: "BROOKE / SILK" in gold on Dine In green, her cut-out portrait in front of the name, her four awards stacked on her chef's jacket, and a tagline and split "Book a dinner" button below.
 
 ![Chef card preview](preview.png)
 
@@ -8,7 +8,11 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
   - Top bar: a round gold monogram ("Brooke Silk") on the left, a two-line ivory menu button on the right.
   - Name: "BROOKE / SILK" in gold, each line stretched to the full width. The lines touch, and the portrait covers their middle.
   - Portrait: Brooke from the head to just below the pocket, in her black chef's jacket. It fades into the green around the hem.
-  - Stat: `[2×] AUSTRALIAN DESSERT CHAMPION` in white on the jacket.
+  - Awards: four bracketed stats stacked in white on the jacket, each with a title and a smaller detail line:
+    - `[2×]` Australian dessert champion: first place, twice
+    - `[3rd]` World Food Championships: dessert
+    - `[2×]` Best Sole Operator: 2025 & 2026
+    - `[Top 3]` Wedding Industry Awards: wedding caterer, 2026
   - Meta row: "Private chef · Dine In" in gold on the left, and her Google rating (★ 5.0 · 60 reviews) on the right.
   - Tagline: "Quality dining and fine food, brought directly to you." in tracked ivory uppercase.
   - Button: an ivory bar with "Book a dinner" and the service area "Illawarra & Sydney", plus a gold square with an arrow.
@@ -18,7 +22,7 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
   1. The name types out letter by letter (BROOKE, a short pause, then SILK) behind a blinking gold caret.
   2. As the last letter lands, the portrait opens out from the centre of the face.
   3. The information then loads one row at a time:
-     - the stat counts 0 → 2
+     - the awards, as one row: they fill in 0.1s apart, and each number counts up as it lands (0 → 2, 0 → 3rd, 0 → 2, top 0 → 3)
      - after a short pause, the meta row: ★ 0.0 → 5.0 and 0 → 60 reviews. When the rating reaches 5.0, gold sparkles fly into the star, and it jumps, turns gold and stays gold.
      - after a short pause, the tagline
      - after another short pause, the button
@@ -67,10 +71,24 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
       <img class="ui-chef__img" src="images/brooke-silk.webp" width="818" height="1118" alt="Brooke Silk, smiling, in a black chef's jacket" decoding="async">
     </figure>
 
-    <p class="ui-chef__stat">
-      <span class="ui-chef__stat-num"><span data-ui-chef-count>2</span><sup>×</sup></span>
-      <span class="ui-chef__stat-label"><span>Australian dessert<br>champion</span></span>
-    </p>
+    <ul class="ui-chef__stats" data-ui-chef-stagger="100" aria-label="Awards">
+      <li class="ui-chef__stat">
+        <span class="ui-chef__stat-num"><span data-ui-chef-count>2</span><sup>×</sup></span>
+        <span class="ui-chef__stat-label"><span>Australian dessert champion</span><span class="ui-chef__stat-sub">First place, twice</span></span>
+      </li>
+      <li class="ui-chef__stat">
+        <span class="ui-chef__stat-num"><span data-ui-chef-count>3</span><sup>rd</sup></span>
+        <span class="ui-chef__stat-label"><span>World Food Championships</span><span class="ui-chef__stat-sub">Dessert</span></span>
+      </li>
+      <li class="ui-chef__stat">
+        <span class="ui-chef__stat-num"><span data-ui-chef-count>2</span><sup>×</sup></span>
+        <span class="ui-chef__stat-label"><span>Best Sole Operator</span><span class="ui-chef__stat-sub">2025 &amp; 2026</span></span>
+      </li>
+      <li class="ui-chef__stat">
+        <span class="ui-chef__stat-num"><sup class="ui-chef__stat-pre">Top</sup><span data-ui-chef-count>3</span></span>
+        <span class="ui-chef__stat-label"><span>Wedding Industry Awards</span><span class="ui-chef__stat-sub">Wedding caterer, 2026</span></span>
+      </li>
+    </ul>
 
     <div class="ui-chef__body">
       <p class="ui-chef__meta" data-ui-chef-pause="300">
@@ -92,6 +110,8 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
 </article>
 <script src="script.js"></script>
 ```
+
+The awards are a list (`ui-chef__stats`). Each `ui-chef__stat` has a bracketed number and a label with a title and a `ui-chef__stat-sub` detail line. A `<sup>` after the number (×, rd) sits top right, and a `<sup class="ui-chef__stat-pre">` before it (Top) sits top left. The list loads as one row of the intro, with `data-ui-chef-stagger="100"` starting each number 100ms after the last, matching the CSS stagger. Four awards fit on the jacket; for more, raise the list's `top` or tighten its `gap`.
 
 The caret is the `ui-chef__caret` rect inside the name's SVG. Mark any number that should count with `data-ui-chef-count`, as in `<span data-ui-chef-count>2</span><sup>×</sup>`. The number written in the HTML is the one it ends on, and the one shown without the script. It counts up from 0 unless `data-ui-chef-count-from` gives another start. A start above the final number makes it count down, so a price like `from $<span data-ui-chef-count data-ui-chef-count-from="100">60</span>` counts down to 60. To add a short pause before a row loads, put `data-ui-chef-pause` on it with a time in milliseconds. The meta row uses `data-ui-chef-pause="300"`, and the tagline and button each use `200`.
 

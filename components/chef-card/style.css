@@ -179,27 +179,35 @@
   mask-image: linear-gradient(to right, transparent, #000 7%);
 }
 
-/* ---- Stat on the shirt ------------------------------------------------- */
+/* ---- Awards on the jacket -------------------------------------------- */
 
-.ui-chef__stat {
+.ui-chef__stats {
   position: absolute;
-  top: calc(var(--ui-chef-inset-top) + 440 * var(--u));
-  left: calc(72 * var(--u));
+  top: calc(var(--ui-chef-inset-top) + 384 * var(--u));
+  left: calc(38 * var(--u));
   z-index: 3;
-  display: flex;
-  align-items: center;
+  display: grid;
   gap: calc(10 * var(--u));
   margin: 0;
+  padding: 0;
+  list-style: none;
   color: #FFFFFF;
+}
+
+.ui-chef__stat {
+  display: flex;
+  align-items: center;
+  gap: calc(12 * var(--u));
 }
 
 .ui-chef__stat-num {
   position: relative;
+  flex: none;
   display: grid;
   place-items: center;
-  width: calc(74 * var(--u));
-  height: calc(72 * var(--u));
-  font-size: calc(56 * var(--u));
+  width: calc(58 * var(--u));
+  height: calc(42 * var(--u));
+  font-size: calc(30 * var(--u));
   font-weight: 200;
   letter-spacing: -0.04em;
   line-height: 1;
@@ -213,28 +221,50 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: calc(9 * var(--u));
+  width: calc(6 * var(--u));
   border: 1.5px solid currentColor;
 }
 
 .ui-chef__stat-num::before { left: 0; border-right: 0; }
 .ui-chef__stat-num::after { right: 0; border-left: 0; }
 
+/* Superscript after the number (×, rd) and, for "Top 3", a small word before it */
 .ui-chef__stat-num sup {
   position: absolute;
-  top: calc(6 * var(--u));
-  right: calc(12 * var(--u));
-  font-size: calc(22 * var(--u));
+  top: calc(5 * var(--u));
+  right: calc(7 * var(--u));
+  font-size: calc(12 * var(--u));
   font-weight: 300;
+  letter-spacing: 0;
   line-height: 1;
 }
 
+.ui-chef__stat-num .ui-chef__stat-pre {
+  right: auto;
+  left: calc(8 * var(--u));
+  top: calc(6 * var(--u));
+  font-size: calc(7 * var(--u));
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 .ui-chef__stat-label {
-  font-size: calc(11 * var(--u));
+  display: grid;
+  justify-items: start;
+  gap: calc(4 * var(--u));
+  font-size: calc(10 * var(--u));
   font-weight: 600;
   letter-spacing: 0.12em;
-  line-height: 1.5;
+  line-height: 1.15;
   text-transform: uppercase;
+}
+
+.ui-chef__stat-sub {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: calc(8.5 * var(--u));
+  font-weight: 500;
+  letter-spacing: 0.1em;
 }
 
 /* ---- Footer ------------------------------------------------------------ */
@@ -394,10 +424,11 @@
 /* Skeleton: until it loads, each row of information (the stat, the meta row,
    the tagline and the button) is a quiet placeholder in the exact shape of
    its text: a faint tint of the ink with a slow shine. script.js loads the
-   rows one at a time with .is-in, each starting as the one before settles,
+   rows one at a time with .is-in (the awards on the jacket count as one row,
+   staggered), each starting as the one before settles,
    and the row fills in with its real colours as it lifts into place. */
-.ui-chef.is-armed :is(.ui-chef__stat, .ui-chef__body > *).is-in,
-.ui-chef.is-armed :is(.ui-chef__stat, .ui-chef__body > *).is-in :is(*, *::before, *::after) {
+.ui-chef.is-armed :is(.ui-chef__stats, .ui-chef__body > *).is-in,
+.ui-chef.is-armed :is(.ui-chef__stats, .ui-chef__body > *).is-in :is(*, *::before, *::after) {
   /* Only on the way in: arming (or replaying) switches to the skeleton at once */
   transition:
     color 0.4s ease,
@@ -405,15 +436,24 @@
     transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.ui-chef.is-armed :is(.ui-chef__stat, .ui-chef__body > *).is-in {
+/* The awards fill in one after another (matches data-ui-chef-stagger) */
+.ui-chef__stats > :nth-child(2) { --ui-chef-stagger: 0.1s; }
+.ui-chef__stats > :nth-child(3) { --ui-chef-stagger: 0.2s; }
+.ui-chef__stats > :nth-child(4) { --ui-chef-stagger: 0.3s; }
+
+.ui-chef.is-armed .ui-chef__stats.is-in > * :is(*, *::before, *::after) {
+  transition-delay: var(--ui-chef-stagger, 0s);
+}
+
+.ui-chef.is-armed :is(.ui-chef__stats, .ui-chef__body > *).is-in {
   animation: ui-chef-land 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.ui-chef.is-armed :is(.ui-chef__stat, .ui-chef__body > *):not(.is-in) :is(*, *::before, *::after) {
+.ui-chef.is-armed :is(.ui-chef__stats, .ui-chef__body > *):not(.is-in) :is(*, *::before, *::after) {
   color: transparent;
 }
 
-.ui-chef.is-armed :is(.ui-chef__stat, .ui-chef__body > *):not(.is-in) :is(.ui-chef__stat-num, .ui-chef__stat-label > span, .ui-chef__role, .ui-chef__proof, .ui-chef__tagline > span),
+.ui-chef.is-armed :is(.ui-chef__stats, .ui-chef__body > *):not(.is-in) :is(.ui-chef__stat-num, .ui-chef__stat-label > span, .ui-chef__role, .ui-chef__proof, .ui-chef__tagline > span),
 .ui-chef.is-armed .ui-chef__cta:not(.is-in) {
   background-color: var(--ui-chef-skel);
   background-image: linear-gradient(100deg, transparent 35%, var(--ui-chef-skel-shine) 50%, transparent 65%);
@@ -423,7 +463,7 @@
   animation: ui-chef-shimmer 1.8s linear infinite;
 }
 
-.ui-chef.is-armed :is(.ui-chef__stat, .ui-chef__body > *):not(.is-in) :is(.ui-chef__stat-num, .ui-chef__stat-label > span, .ui-chef__role, .ui-chef__proof, .ui-chef__tagline > span) {
+.ui-chef.is-armed :is(.ui-chef__stats, .ui-chef__body > *):not(.is-in) :is(.ui-chef__stat-num, .ui-chef__stat-label > span, .ui-chef__role, .ui-chef__proof, .ui-chef__tagline > span) {
   border-radius: calc(3 * var(--u));
 }
 
