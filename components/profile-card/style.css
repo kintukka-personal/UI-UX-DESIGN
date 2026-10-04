@@ -322,34 +322,79 @@
 
 /* ---- Entrance ---------------------------------------------------------- */
 
-.ui-prof__name text,
-.ui-prof__media,
-.ui-prof__stat,
-.ui-prof__body > * {
-  animation: ui-prof-rise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+/* script.js arms the card (.is-armed) before it is painted, then plays:
+   1. the name types out letter by letter behind a blinking caret
+   2. the portrait opens out from the centre of the face (.is-revealed)
+   3. the stat and footer rise in while the numbers count up
+   Without the script, or with reduced motion, the card simply shows at rest. */
+
+@property --ui-prof-reveal {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
 }
 
-.ui-prof__name text { transform-box: fill-box; }
-.ui-prof__name text + text { animation-delay: 0.08s; }
-.ui-prof__media { animation-name: ui-prof-portrait; animation-duration: 1s; animation-delay: 0.18s; }
-.ui-prof__stat { animation-delay: 0.45s; }
-.ui-prof__body > :nth-child(1) { animation-delay: 0.5s; }
-.ui-prof__body > :nth-child(2) { animation-delay: 0.56s; }
-.ui-prof__body > :nth-child(3) { animation-delay: 0.62s; }
-
-@keyframes ui-prof-rise {
-  from { opacity: 0; transform: translateY(18px); }
+.ui-prof__caret {
+  fill: var(--ui-prof-accent);
+  opacity: 0;
 }
 
-@keyframes ui-prof-portrait {
-  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+.ui-prof.is-typing .ui-prof__caret { opacity: 1; }
+.ui-prof.is-caret-idle .ui-prof__caret { animation: ui-prof-blink 1s steps(1) infinite; }
+.ui-prof.is-caret-out .ui-prof__caret { opacity: 0; transition: opacity 0.3s ease; }
+
+.ui-prof.is-armed .ui-prof__name tspan { fill-opacity: 0; }
+.ui-prof.is-armed .ui-prof__name tspan.is-on { fill-opacity: 1; }
+
+/* The portrait is masked by a soft-edged circle centred on the face; the
+   circle grows from nothing to past the corners. */
+.ui-prof__media {
+  -webkit-mask-image: radial-gradient(circle at 50% 30%, #000 var(--ui-prof-reveal), transparent calc(var(--ui-prof-reveal) + 22%));
+  mask-image: radial-gradient(circle at 50% 30%, #000 var(--ui-prof-reveal), transparent calc(var(--ui-prof-reveal) + 22%));
+}
+
+.ui-prof.is-armed .ui-prof__media {
+  --ui-prof-reveal: -22%;
+  opacity: 0;
+  transform: scale(1.06);
+  transform-origin: 50% 30%;
+}
+
+.ui-prof.is-armed.is-revealed .ui-prof__media {
+  --ui-prof-reveal: 100%;
+  opacity: 1;
+  transform: none;
+  transition:
+    --ui-prof-reveal 1.3s cubic-bezier(0.45, 0, 0.2, 1),
+    opacity 0.5s ease,
+    transform 1.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ui-prof.is-armed .ui-prof__stat,
+.ui-prof.is-armed .ui-prof__body > * {
+  opacity: 0;
+  transform: translateY(calc(18 * var(--u)));
+}
+
+.ui-prof.is-armed.is-revealed .ui-prof__stat,
+.ui-prof.is-armed.is-revealed .ui-prof__body > * {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.6s ease var(--ui-prof-delay), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) var(--ui-prof-delay);
+}
+
+.ui-prof__stat { --ui-prof-delay: 0.55s; }
+.ui-prof__body > :nth-child(1) { --ui-prof-delay: 0.7s; }
+.ui-prof__body > :nth-child(2) { --ui-prof-delay: 0.78s; }
+.ui-prof__body > :nth-child(3) { --ui-prof-delay: 0.86s; }
+
+[data-ui-prof-count] { font-variant-numeric: tabular-nums; }
+
+@keyframes ui-prof-blink {
+  50% { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ui-prof__name text,
-  .ui-prof__media,
-  .ui-prof__stat,
-  .ui-prof__body > * { animation: none; }
   .ui-prof__mark,
   .ui-prof__menu span,
   .ui-prof__cta-arrow svg { transition: none; }

@@ -13,17 +13,24 @@ An editorial profile card for a coach or trainer, with the person as the hero. T
   - Tagline: tracked uppercase, two lines.
   - Button: a black bar with "Book a session" and "from $60", plus a blue square with an arrow.
 - **Grid:** two faint hairlines divide the card into thirds, behind everything.
-- **Motion:** on load, the name lines rise in, then the portrait, the stat and the footer, staggered. Hovering the monogram tilts it, hovering the menu shortens its bottom line, and hovering the button nudges the arrow out to the top right. With reduced motion turned on, nothing moves.
+- **Intro:** the first time the card scrolls into view, it plays in three beats:
+  1. The name types out letter by letter (MAYA, a short pause, then ROSS) behind a blinking blue caret. Each letter appears in its final place, because the stretched layout is already set.
+  2. When the caret fades, the portrait opens out from the centre of the face as a soft-edged circle. It fades in and settles from a slight zoom as it grows.
+  3. The stat and footer rise in, and the numbers count up from zero: 8 years, ★ 4.9 and 120 clients. Decimals are kept, so the rating counts 0.0 → 4.9.
+  The whole intro takes about 3 seconds, and `window.uiProf.play(card)` replays it. The demo has a "Replay intro" button.
+- **Hover:** hovering the monogram tilts it, hovering the menu shortens its bottom line, and hovering the button nudges the arrow out to the top right.
+- **Reduced motion, or no JavaScript:** the card shows at rest with the final numbers.
 - **Scaling:** every size comes from the card's width (390 design units, using container query units), so the whole layout scales as one piece from a 320px phone up to the 430px max width.
 
-Plain HTML and CSS, no JavaScript. Classes are prefixed `ui-prof`. Open `index.html` for the demo, which shows the card in a phone frame.
+Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-prof`. Open `index.html` for the demo, which shows the card in a phone frame.
 
 ## Files
 
 | File | What it is |
 | --- | --- |
 | `index.html` | Demo page: the card inside a phone frame with a status bar |
-| `style.css` | Component styles |
+| `style.css` | Component styles, including the intro states |
+| `script.js` | The intro: typewriter name, portrait reveal and count-ups |
 | `images/maya-ross.webp` | Transparent portrait cut-out that fades out at the bottom (818 × 1118) |
 | `preview.png` | Screenshot of the demo |
 
@@ -43,6 +50,7 @@ Plain HTML and CSS, no JavaScript. Classes are prefixed `ui-prof`. Open `index.h
       <svg viewBox="0 0 390 296" aria-hidden="true" focusable="false">
         <text x="18" y="149" textLength="354" lengthAdjust="spacingAndGlyphs">MAYA</text>
         <text x="18" y="292" textLength="354" lengthAdjust="spacingAndGlyphs">ROSS</text>
+        <rect class="ui-prof__caret" x="18" y="0" width="7" height="149"/>
       </svg>
       <span class="ui-prof__sr">Maya Ross</span>
     </h2>
@@ -52,14 +60,14 @@ Plain HTML and CSS, no JavaScript. Classes are prefixed `ui-prof`. Open `index.h
     </figure>
 
     <p class="ui-prof__stat">
-      <span class="ui-prof__stat-num">8<sup>+</sup></span>
+      <span class="ui-prof__stat-num"><span data-ui-prof-count>8</span><sup>+</sup></span>
       <span class="ui-prof__stat-label">Years<br>coaching</span>
     </p>
 
     <div class="ui-prof__body">
       <p class="ui-prof__meta">
         <span class="ui-prof__role">Strength &amp; running coach</span>
-        <span class="ui-prof__proof"><b>★ 4.9</b> · <b>120</b> clients</span>
+        <span class="ui-prof__proof"><b>★ <span data-ui-prof-count>4.9</span></b> · <b data-ui-prof-count>120</b> clients</span>
       </p>
       <p class="ui-prof__tagline">Train for the life you want to keep living.</p>
       <a class="ui-prof__cta" href="#book">
@@ -69,7 +77,10 @@ Plain HTML and CSS, no JavaScript. Classes are prefixed `ui-prof`. Open `index.h
     </div>
   </div>
 </article>
+<script src="script.js"></script>
 ```
+
+The caret is the `ui-prof__caret` rect inside the name's SVG. Mark any number that should count up with `data-ui-prof-count`, as in `<span data-ui-prof-count>8</span><sup>+</sup>`. The number written in the HTML is the one it counts up to, and the one shown without the script.
 
 **Changing the name:** edit the two `<text>` lines and the hidden `ui-prof__sr` text. `textLength` stretches each line to the full width, whatever its length, so a short name gets wide letters and a long one gets narrow letters. Names of 4–6 letters per line look best.
 
