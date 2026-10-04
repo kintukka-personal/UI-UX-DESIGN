@@ -1,6 +1,6 @@
 /* ==========================================================================
    UI Spot Me Rate — the app rating screen, rebranded for Spot Me
-   A back arrow and progress bar, the Spot Me wordmark, "Hey, bestie!!", five
+   A back arrow and progress bar, "Hey, bestie!!", five
    gold stars between two laurels, the avatar inside the crush ring, and a
    "Rate Spot Me" button. It fills its container, so give the parent the
    screen's height.
@@ -96,33 +96,15 @@
   background: var(--ui-spot-rate-brand);
 }
 
-/* ---- Wordmark, title + copy ---- */
+/* ---- Title + copy ---- */
 
 .ui-spot-rate__intro {
-  margin-top: 18px;
+  margin-top: 28px;
   text-align: center;
 }
 
-/* "Sp" + the ring-and-heart "o" + "t Me", as in the Spot Me logo. */
-.ui-spot-rate__logo {
-  display: inline-flex;
-  align-items: baseline;
-  margin: 0;
-  color: var(--ui-spot-rate-ink);
-  font: 900 30px/1 var(--ui-spot-rate-display);
-  letter-spacing: -0.01em;
-  white-space: pre;
-}
-.ui-spot-rate__logo-o {
-  display: inline-block;
-  width: 0.62em;
-  height: 0.64em;
-  margin: 0 0.02em;
-  overflow: visible;
-}
-
 .ui-spot-rate__title {
-  margin: 18px 0 0;
+  margin: 0;
   font: 900 34px/1.1 var(--ui-spot-rate-display);
   letter-spacing: -0.015em;
 }

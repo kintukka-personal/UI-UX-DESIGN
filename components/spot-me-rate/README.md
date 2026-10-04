@@ -1,12 +1,11 @@
 # Spot Me Rating Screen
 
-The [app rating screen](../rate-screen/) rebranded for Spot Me, a secret diary for your gym crush. It's a full screen, not a popup, with the light "Blush Diary" look: Spot Me's maroon and crush-ring red on blush pink, its wordmark, and the avatar inside the crush ring.
+The [app rating screen](../rate-screen/) rebranded for Spot Me, a secret diary for your gym crush. It's a full screen, not a popup, with the light "Blush Diary" look: Spot Me's maroon and crush-ring red on blush pink, and the avatar inside the crush ring.
 
 ![Spot Me rating screen preview](preview.png)
 
 - **Layout** (top to bottom):
   - Top bar: a back arrow and a red progress bar, almost full.
-  - The Spot Me wordmark. Its "o" is the crush ring, red with a maroon heart on top, built from text and inline SVG.
   - Title "Hey, bestie!!" in heavy Nunito, and "Help us grow with a quick rating. We love compliments!" in DM Sans.
   - Five gold stars between two gold laurel branches, kept from the original screen for now.
   - The avatar from the "Everyone has a gym crush" artwork in a pink circle, inside the crush ring. The ring is three-quarters full, with the heart at its top left.
@@ -17,7 +16,7 @@ The [app rating screen](../rate-screen/) rebranded for Spot Me, a secret diary f
   3. **I rated!** fires `ui-spot-rate:done`, **Not now** fires `ui-spot-rate:skip`, and the back arrow fires `ui-spot-rate:back`.
 - **Motion:** the laurels grow in and the stars pop in one after another. Then the ring fills to three-quarters and the heart pops on at the end of it. After that the heart gives a little beat every few seconds, and the avatar bobs gently. Reduced motion turns all of it off.
 - **Fit:** the screen fills its container and respects the safe-area insets. The ring shrinks to fit shorter phones (it's tested down to an iPhone SE).
-- Plain HTML, CSS and vanilla JS. The wordmark's "o", the stars, laurels, ring and avatar are all inline SVG, so there are no image files.
+- Plain HTML, CSS and vanilla JS. The stars, laurels, ring and avatar are all inline SVG, so there are no image files.
 
 Open `index.html` for the demo. On a laptop it sits in a phone frame, and the line under the frame shows each event as it fires. On a phone it fills the screen.
 
@@ -52,7 +51,7 @@ Set these on `.ui-spot-rate`.
 | Token | Default | Purpose |
 | --- | --- | --- |
 | `--ui-spot-rate-bg` | `#FEF0F1` | Screen background (blush) |
-| `--ui-spot-rate-ink` | `#8B1235` | Wordmark, title, back arrow and heart (maroon) |
+| `--ui-spot-rate-ink` | `#8B1235` | Title, back arrow and heart (maroon) |
 | `--ui-spot-rate-muted` | `#A27080` | Line under the title and "Not now" |
 | `--ui-spot-rate-brand` | `#E31E4A` | Button, progress fill and ring (crush red) |
 | `--ui-spot-rate-brand-ink` | `#FFFFFF` | Button text |
@@ -60,8 +59,6 @@ Set these on `.ui-spot-rate`.
 | `--ui-spot-rate-avatar-bg` | `#FFE1E7` | Circle behind the avatar |
 | `--ui-spot-rate-gold` | `#FDB913` | Stars |
 | `--ui-spot-rate-laurel` | `#F6BE2E` | Laurel branches |
-| `--ui-spot-rate-display` | `"Nunito", …` | Wordmark, title and button |
+| `--ui-spot-rate-display` | `"Nunito", …` | Title and button |
 | `--ui-spot-rate-font` | `"DM Sans", …` | Body text |
 | `--ui-spot-rate-radius` | `999px` | Button corner radius |
-
-The wordmark's "o" uses fixed colours (`#E31E4A` ring, the text colour for the heart), set in its SVG.
