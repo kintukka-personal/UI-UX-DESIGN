@@ -1,0 +1,339 @@
+/* ==========================================================================
+   UI Spot Me Rate — the app rating screen, rebranded for Spot Me
+   A back arrow and progress bar, "Hey, bestie!!", five
+   gold stars between two laurels, the avatar inside the crush ring, and a
+   "Rate Spot Me" button. It fills its container, so give the parent the
+   screen's height.
+
+   Tapping "Rate Spot Me" fires `ui-spot-rate:request` (open the native review
+   sheet there), then the button becomes "I rated!" with a "Not now" link. At
+   the same time the heart rides round the ring until it's full, and pink
+   confetti bursts out of it.
+   ========================================================================== */
+
+.ui-spot-rate {
+  --ui-spot-rate-bg: #FEF0F1;
+  --ui-spot-rate-ink: #8B1235;
+  --ui-spot-rate-muted: #A27080;
+  --ui-spot-rate-brand: #E31E4A;
+  --ui-spot-rate-brand-ink: #FFFFFF;
+  --ui-spot-rate-track: #F9CFD9;
+  --ui-spot-rate-avatar-bg: #FFE1E7;
+  --ui-spot-rate-gold: #FDB913;
+  --ui-spot-rate-laurel: #F6BE2E;
+  --ui-spot-rate-display: "Nunito", "Arial Rounded MT Bold", "Helvetica Neue", Arial, sans-serif;
+  --ui-spot-rate-font: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+  --ui-spot-rate-progress: 96%;
+  --ui-spot-rate-radius: 999px;
+
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 14px)
+    calc(env(safe-area-inset-right, 0px) + 20px)
+    calc(env(safe-area-inset-bottom, 0px) + 20px)
+    calc(env(safe-area-inset-left, 0px) + 20px);
+  overflow: hidden;
+  background: var(--ui-spot-rate-bg);
+  color: var(--ui-spot-rate-ink);
+  font-family: var(--ui-spot-rate-font);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ui-spot-rate *,
+.ui-spot-rate *::before,
+.ui-spot-rate *::after { box-sizing: inherit; }
+
+/* ---- Top bar: back arrow + progress ---- */
+
+.ui-spot-rate__top {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+}
+
+.ui-spot-rate__back {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 0 0 -8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--ui-spot-rate-ink);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+.ui-spot-rate__back:hover { background: rgba(227, 30, 74, 0.08); }
+.ui-spot-rate__back svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ui-spot-rate__progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--ui-spot-rate-track);
+  overflow: hidden;
+}
+.ui-spot-rate__progress span {
+  display: block;
+  width: var(--ui-spot-rate-progress);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ui-spot-rate-brand);
+}
+
+/* ---- Title + copy ---- */
+
+.ui-spot-rate__intro {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.ui-spot-rate__title {
+  margin: 0;
+  font: 900 34px/1.1 var(--ui-spot-rate-display);
+  letter-spacing: -0.015em;
+}
+
+.ui-spot-rate__text {
+  max-width: 290px;
+  margin: 10px auto 0;
+  color: var(--ui-spot-rate-muted);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* ---- Hero: stars in laurels + avatar in the ring ---- */
+
+.ui-spot-rate__hero {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 3.5vh, 30px);
+  padding: 18px 0;
+}
+
+.ui-spot-rate__badge {
+  flex: none;
+  display: block;
+  width: min(100%, 300px);
+  height: auto;
+  overflow: visible;
+}
+
+.ui-spot-rate__laurel { fill: var(--ui-spot-rate-laurel); }
+.ui-spot-rate__stem {
+  fill: none;
+  stroke: var(--ui-spot-rate-laurel);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ui-spot-rate__star {
+  fill: var(--ui-spot-rate-gold);
+  stroke: var(--ui-spot-rate-gold);
+  stroke-width: 7;
+  stroke-linejoin: round;
+}
+
+.ui-spot-rate__avatar {
+  flex: 1 1 0;
+  display: block;
+  width: 100%;
+  min-height: 150px;
+  max-height: 290px;
+  overflow: visible;
+}
+
+.ui-spot-rate__ring-track,
+.ui-spot-rate__ring-fill {
+  fill: none;
+  stroke-width: 34;
+}
+.ui-spot-rate__ring-track { stroke: var(--ui-spot-rate-track); }
+.ui-spot-rate__ring-fill {
+  stroke: var(--ui-spot-rate-brand);
+  stroke-linecap: round;
+  /* 2πr for r = 168, and 75% of it filled */
+  stroke-dasharray: 1055.6;
+  stroke-dashoffset: 263.9;
+}
+.ui-spot-rate__face-bg { fill: var(--ui-spot-rate-avatar-bg); }
+.ui-spot-rate__heart { fill: var(--ui-spot-rate-ink); }
+
+/* After the first tap the ring is full and the heart has moved round to
+   where the fill starts. (These are the end states; the motion is below.) */
+.ui-spot-rate.is-asked .ui-spot-rate__ring-fill { stroke-dashoffset: 0; }
+.ui-spot-rate__orbit {
+  transform-box: view-box;
+  transform-origin: 200px 200px;
+}
+.ui-spot-rate.is-asked .ui-spot-rate__orbit { transform: rotate(90deg); }
+
+/* Confetti layer, filled by script.js when the ring completes. */
+.ui-spot-rate__confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ui-spot-rate__confetti i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform, opacity;
+}
+
+/* ---- Actions ---- */
+
+.ui-spot-rate__actions {
+  display: grid;
+  gap: 2px;
+}
+
+.ui-spot-rate__cta {
+  width: 100%;
+  height: 56px;
+  margin: 0;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--ui-spot-rate-radius);
+  background: var(--ui-spot-rate-brand);
+  color: var(--ui-spot-rate-brand-ink);
+  font: 800 17px/1 var(--ui-spot-rate-display);
+  letter-spacing: 0.005em;
+  box-shadow: 0 10px 22px -12px rgba(227, 30, 74, 0.75);
+  cursor: pointer;
+  transition: transform 120ms ease, filter 150ms ease;
+}
+.ui-spot-rate__cta:hover { filter: brightness(1.06); }
+.ui-spot-rate__cta:active { transform: scale(0.98); }
+.ui-spot-rate__cta-label { display: inline-block; }
+.ui-spot-rate.is-asked .ui-spot-rate__cta-label { animation: ui-spot-rate-swap 260ms ease both; }
+
+.ui-spot-rate__skip {
+  justify-self: center;
+  margin: 0;
+  padding: 10px 16px 0;
+  border: 0;
+  background: none;
+  color: var(--ui-spot-rate-muted);
+  font: 500 14px/1.4 var(--ui-spot-rate-font);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.ui-spot-rate__skip[hidden] { display: none; }
+.ui-spot-rate__skip:not([hidden]) { animation: ui-spot-rate-fade 260ms ease both; }
+
+.ui-spot-rate__back:focus-visible,
+.ui-spot-rate__cta:focus-visible,
+.ui-spot-rate__skip:focus-visible {
+  outline: 2px solid var(--ui-spot-rate-brand);
+  outline-offset: 3px;
+}
+
+/* ---- Motion ---- */
+
+/* Laurels grow in, then the stars pop in one after another. */
+.ui-spot-rate__laurel use {
+  transform-box: fill-box;
+  transform-origin: 70% 95%;
+  animation: ui-spot-rate-grow 600ms cubic-bezier(.2, .8, .2, 1) both;
+}
+.ui-spot-rate__star {
+  transform-box: fill-box;
+  transform-origin: 50% 55%;
+  animation: ui-spot-rate-pop 520ms cubic-bezier(.3, 1.5, .5, 1) both;
+  animation-delay: calc(250ms + var(--i, 0) * 110ms);
+}
+
+/* The ring fills to 75%, the heart pops on, then beats now and then.
+   The avatar bobs gently. */
+.ui-spot-rate__ring-fill { animation: ui-spot-rate-fill 1100ms cubic-bezier(.3, .7, .2, 1) 400ms both; }
+.ui-spot-rate__heart {
+  transform-box: fill-box;
+  transform-origin: 50% 60%;
+  animation:
+    ui-spot-rate-pop 520ms cubic-bezier(.3, 1.5, .5, 1) 1350ms both,
+    ui-spot-rate-beat 2.4s ease-in-out 2.2s infinite;
+}
+.ui-spot-rate__face { animation: ui-spot-rate-bob 3s ease-in-out infinite; }
+
+/* After the first tap: the heart rides round the top of the ring, the fill
+   following it, until the ring is full. Then the heart gives a big pop and
+   script.js fires the confetti. */
+.ui-spot-rate.is-asked .ui-spot-rate__ring-fill { animation: ui-spot-rate-complete 1200ms cubic-bezier(.5, 0, .25, 1) 150ms both; }
+.ui-spot-rate.is-asked .ui-spot-rate__orbit { animation: ui-spot-rate-orbit 1200ms cubic-bezier(.5, 0, .25, 1) 150ms both; }
+.ui-spot-rate__heart-pop {
+  transform-box: fill-box;
+  transform-origin: 50% 60%;
+}
+.ui-spot-rate.is-complete .ui-spot-rate__heart-pop { animation: ui-spot-rate-cheer 650ms cubic-bezier(.3, 1.6, .5, 1) both; }
+
+@keyframes ui-spot-rate-grow {
+  from { opacity: 0; transform: scale(0.8) rotate(-8deg); }
+}
+@keyframes ui-spot-rate-pop {
+  0% { opacity: 0; transform: scale(0) rotate(-40deg); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes ui-spot-rate-fill {
+  from { stroke-dashoffset: 1055.6; }
+}
+@keyframes ui-spot-rate-complete {
+  from { stroke-dashoffset: 263.9; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes ui-spot-rate-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(90deg); }
+}
+@keyframes ui-spot-rate-cheer {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.55) rotate(-10deg); }
+  100% { transform: scale(1); }
+}
+@keyframes ui-spot-rate-beat {
+  0%, 30%, 100% { transform: scale(1); }
+  10% { transform: scale(1.18); }
+  20% { transform: scale(1.06); }
+}
+@keyframes ui-spot-rate-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes ui-spot-rate-swap {
+  from { opacity: 0; transform: translateY(6px); }
+}
+@keyframes ui-spot-rate-fade {
+  from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-spot-rate *,
+  .ui-spot-rate *::before,
+  .ui-spot-rate *::after { animation: none !important; transition: none !important; }
+}
