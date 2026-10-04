@@ -17,7 +17,7 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
     The bracket shows how many times, and the placing sits in brackets after the title. The lead award has a bigger bracket and title, so it stands out from the three smaller ones below it.
   - Meta row: "Private chef – Catering" in gold on the left, and her Google rating (★ 5.0 · 60 reviews) on the right.
   - Tagline: "Quality dining and fine food, brought directly to you." in tracked ivory uppercase, on one line. It's sized to fit the full width of the card, so a longer tagline needs a smaller `font-size` on `.ui-chef__tagline`.
-  - Button: an ivory bar with "Book an experience" and the service area "Illawarra & Sydney" underneath it, plus a gold square with an arrow.
+  - Button: an ivory bar with "Book an experience" and the service area "Illawarra & Sydney" underneath it, plus a gold square with an arrow. It links to Dine In's experiences page, https://dine-in.com.au/experiences.
 - **Grid:** two faint gold hairlines divide the card into thirds, behind everything.
 - **Colours:** Dine In green `#002E13` and gold `#DAA520`, both taken from the Dine In logo, with a warm ivory `#F4EFE1` for text and the button.
 - **Intro:** the same as the profile card, played the first time the card scrolls into view. Until their turn, the stat, meta row, tagline and button show as skeleton bars in a faint ivory tint.
@@ -99,7 +99,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
         <span class="ui-chef__proof"><b><svg class="ui-chef__star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.85 5.8 6.4.93-4.63 4.5 1.1 6.37L12 17.4l-5.72 3l1.1-6.37-4.63-4.5 6.4-.93z"/></svg><span class="ui-chef__sr">Rated </span><span data-ui-chef-count>5.0</span></b> · <b data-ui-chef-count>60</b> reviews</span>
       </p>
       <p class="ui-chef__tagline" data-ui-chef-pause="200"><span>Quality dining and fine food, brought directly to you.</span></p>
-      <a class="ui-chef__cta" href="#book" data-ui-chef-pause="200">
+      <a class="ui-chef__cta" href="https://dine-in.com.au/experiences" data-ui-chef-pause="200">
         <span class="ui-chef__cta-label">
           Book an experience
           <span class="ui-chef__cta-note">Illawarra &amp; Sydney</span>
