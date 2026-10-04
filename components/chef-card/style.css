@@ -183,22 +183,43 @@
 
 .ui-chef__stats {
   position: absolute;
-  top: calc(var(--ui-chef-inset-top) + 384 * var(--u));
+  top: calc(var(--ui-chef-inset-top) + 388 * var(--u));
   left: calc(38 * var(--u));
   right: calc(22 * var(--u));     /* long titles wrap rather than run off the card */
   z-index: 3;
   display: grid;
-  gap: calc(10 * var(--u));
+  gap: calc(8 * var(--u));
   margin: 0;
   padding: 0;
   list-style: none;
   color: #FFFFFF;
 }
 
+/* Each award is sized from a few numbers (design units). The lead award,
+   the most prominent, is larger and takes a third line; the rest step down
+   so it stands out. */
 .ui-chef__stat {
+  --num-w: 46;
+  --num-h: 34;
+  --num-size: 23;
+  --sup-size: 10;
+  --arm: 5;
+  --title-size: 9;
+  --sub-size: 7.5;
   display: flex;
   align-items: center;
-  gap: calc(12 * var(--u));
+  gap: calc(11 * var(--u));
+}
+
+.ui-chef__stat--lead {
+  --num-w: 70;
+  --num-h: 64;
+  --num-size: 46;
+  --sup-size: 16;
+  --arm: 8;
+  --title-size: 12.5;
+  --sub-size: 8.5;
+  margin-bottom: calc(6 * var(--u));
 }
 
 .ui-chef__stat-num {
@@ -206,9 +227,9 @@
   flex: none;
   display: grid;
   place-items: center;
-  width: calc(58 * var(--u));
-  height: calc(42 * var(--u));
-  font-size: calc(30 * var(--u));
+  width: calc(var(--num-w) * var(--u));
+  height: calc(var(--num-h) * var(--u));
+  font-size: calc(var(--num-size) * var(--u));
   font-weight: 200;
   letter-spacing: -0.04em;
   line-height: 1;
@@ -222,19 +243,19 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: calc(6 * var(--u));
+  width: calc(var(--arm) * var(--u));
   border: 1.5px solid currentColor;
 }
 
 .ui-chef__stat-num::before { left: 0; border-right: 0; }
 .ui-chef__stat-num::after { right: 0; border-left: 0; }
 
-/* Superscript after the number (×, rd) and, for "Top 3", a small word before it */
+/* Superscript after the number (×) and, optionally, a small word before it */
 .ui-chef__stat-num sup {
   position: absolute;
-  top: calc(5 * var(--u));
-  right: calc(7 * var(--u));
-  font-size: calc(12 * var(--u));
+  top: calc(var(--num-h) * 0.12 * var(--u));
+  right: calc(var(--arm) * 1.2 * var(--u));
+  font-size: calc(var(--sup-size) * var(--u));
   font-weight: 300;
   letter-spacing: 0;
   line-height: 1;
@@ -242,9 +263,8 @@
 
 .ui-chef__stat-num .ui-chef__stat-pre {
   right: auto;
-  left: calc(8 * var(--u));
-  top: calc(6 * var(--u));
-  font-size: calc(7 * var(--u));
+  left: calc(var(--arm) * 1.4 * var(--u));
+  font-size: calc(var(--sup-size) * 0.6 * var(--u));
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -252,25 +272,37 @@
 
 /* With a word before it, the number drops a little and shrinks to clear it */
 .ui-chef__stat-num:has(.ui-chef__stat-pre) {
-  padding-top: calc(9 * var(--u));
+  padding-top: calc(var(--num-h) * 0.2 * var(--u));
   box-sizing: border-box;
-  font-size: calc(25 * var(--u));
+  font-size: calc(var(--num-size) * 0.82 * var(--u));
 }
 
 .ui-chef__stat-label {
   display: grid;
   justify-items: start;
-  gap: calc(4 * var(--u));
-  font-size: calc(10 * var(--u));
+  gap: calc(3.5 * var(--u));
+  font-size: calc(var(--title-size) * var(--u));
   font-weight: 600;
   letter-spacing: 0.12em;
   line-height: 1.15;
   text-transform: uppercase;
 }
 
+.ui-chef__stat--lead .ui-chef__stat-label {
+  gap: calc(5 * var(--u));
+  letter-spacing: 0.08em;
+}
+
+/* The lead award's first line: who awarded it, small and in gold */
+.ui-chef__stat-kicker {
+  color: var(--ui-chef-accent);
+  font-size: calc(8.5 * var(--u));
+  letter-spacing: 0.16em;
+}
+
 .ui-chef__stat-sub {
   color: rgba(255, 255, 255, 0.68);
-  font-size: calc(8.5 * var(--u));
+  font-size: calc(var(--sub-size) * var(--u));
   font-weight: 500;
   letter-spacing: 0.1em;
 }
