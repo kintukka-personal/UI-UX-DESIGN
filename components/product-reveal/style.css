@@ -232,48 +232,56 @@
 }
 
 /* Sign-off card */
+/* Sign-off card: the mark, the copy and the wordmark sit on one row,
+   centred on the frame (so on the mid-edge markers' line) */
 .ui-reveal__end {
   position: absolute;
   inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--px) * 64);
   color: var(--ui-reveal-ink);
   opacity: 0;
 }
 
 .ui-reveal__end-mark {
-  position: absolute;
-  left: 16.9%;
-  top: 48%;
+  flex: none;
   width: 8.9%;
   height: auto;
   fill: var(--ui-reveal-ink);
 }
 
 .ui-reveal__end-copy {
-  position: absolute;
-  left: 50%;
-  top: 49%;
+  --ls: 0.04em;
+  flex: none;
   margin: 0;
-  transform: translateX(-50%);
+  /* Fixed to the longest line, so typing never shifts the row */
+  width: calc(21ch + 21 * var(--ls));
   font-family: var(--ui-reveal-mono);
   font-size: max(8px, calc(var(--px) * 9.5));
   line-height: 1.2;
-  letter-spacing: 0.04em;
-  min-width: 22ch;
+  letter-spacing: var(--ls);
 }
 
 .ui-reveal__end-acme {
-  position: absolute;
-  left: 66%;
-  top: 47.3%;
+  flex: none;
   font-size: calc(var(--px) * 64);
+  /* Optical centre: the x-height sits low in the line box */
+  position: relative;
+  top: -0.05em;
 }
 
 /* Narrow frames: the small mono copy is held at a legible size,
    so give it a little more room */
 @container (max-width: 480px) {
+  .ui-reveal__end {
+    gap: calc(var(--px) * 44);
+  }
+
   .ui-reveal__end-copy {
+    --ls: 0.02em;
     font-size: 7.5px;
-    letter-spacing: 0.02em;
   }
 }
 

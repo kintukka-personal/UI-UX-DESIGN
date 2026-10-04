@@ -14,7 +14,12 @@ A product-launch hero that rebuilds Jitter's free "Logo reveal" template as a we
    - Just before the cut, the wordmark stretches past the edges of the frame.
 3. **Sign-off (4.57 to 6.8s), hard cut to white**
    - The track flies outward and fades.
-   - The mark and *acme* wipe in, and "RACING SHOES DESIGNED / & ENGINEERED IN ITALY" types out between them.
+   - The mark and *acme* wipe in, and "RACING SHOES DESIGNED / & ENGINEERED IN ITALY" types out between them. The three sit on one row, centred in the screen on the line of the mid-edge markers.
+
+When the reveal ends, a **Discover CO2** button appears. Clicking it runs the exit, and so does scrolling down from the sign-off card (mouse wheel, trackpad, swipe, or Page Down, Down arrow, Space or End):
+- The mark, the mono line and *acme* are pulled along curves into the button, as if down a drain (0.9s). They speed up, shrink and blur as they bunch together, so they never overlap awkwardly. The rest of the card stays still.
+- The page holds still while they move, so the exit and a scroll gesture never fight.
+- The moment they hit, the button gives a small press and the page snaps down to the product section in under half a second, starting at full speed and braking hard. Focus moves to the section, and off screen the hero resets to the sign-off card.
 
 Below the hero, the page has a product section. It shows a still of the poster next to the copy, specs, a price and a demo "Pre-order" button, then a footer.
 
@@ -47,7 +52,7 @@ The two images come from the supplied poster. The baked-in wordmark, small type 
 
 - The animated stage is `aria-hidden`. A visually hidden `<h1>` gives its meaning: "CO2 by acme. Racing shoes designed and engineered in Italy."
 - It runs for 6.8s, so there are **Pause/Play** and **Replay** buttons (WCAG 2.2.2). They are 44px targets with labels that update ("Pause animation", "Play animation", "Play animation from the start") and a visible focus ring.
-- **Reduced motion:** nothing plays on its own. The hero shows the settled poster, the grain stops, and the Play button runs the full reveal only on request. If the setting turns on while the reveal is playing, it stops on the poster.
+- **Reduced motion:** nothing plays on its own. The hero shows the settled poster, the grain stops, and the Play button runs the full reveal only on request. If the setting turns on while the reveal is playing, it stops on the poster. With reduced motion, Discover skips the exit and jumps straight to the product section, and scrolling is never taken over.
 - A skip link jumps to the product details. The product section uses a real heading, a `<dl>` for the specs and a native button, and the "Pre-order" result is announced through a polite live region.
 - Text contrast is 7:1 or higher on the dark sections. The tiny mono labels never go below 7.5px, even when the frame is phone-sized.
 - In forced-colours mode, the controls get system borders.

@@ -439,6 +439,150 @@
       stages.forEach(function (s) { if (s !== player.stage) s.render(T_STILL); });
       player.stage.render(player.t);
     });
+
+    initDrain(hero, player);
+  }
+
+  // ---------- "Discover" exit: down the drain, then scroll ----------
+  // The three sign-off pieces are dragged along curves into the button,
+  // speeding up, shrinking and blurring as they bunch together. The moment
+  // they hit it the button gives a press and the page snaps on to the product.
+  function initDrain(hero, player) {
+    var cue = hero.querySelector(".ui-reveal__cue");
+    var target = document.querySelector(cue && cue.getAttribute("href"));
+    var controls = hero.querySelector(".ui-reveal__controls");
+    if (!cue || !target) return;
+
+    var stage = player.stage;
+    var pieces = [stage.endMark, stage.types[1].node, stage.endAcme];
+    var busy = false;
+
+    var TRAVEL = 900, SCROLL = 460;
+
+    function bezier(p0, p1, p2, p3, u) {
+      var v = 1 - u;
+      return v * v * v * p0 + 3 * v * v * u * p1 + 3 * v * u * u * p2 + u * u * u * p3;
+    }
+
+    function finish() {
+      target.focus({ preventScroll: true });
+      // Put the hero back the way it was, ready for the next visit (it is off screen now)
+      pieces.forEach(function (node) {
+        node.style.translate = node.style.scale = node.style.filter = node.style.opacity = node.style.transformOrigin = "";
+      });
+      cue.style.scale = cue.style.pointerEvents = "";
+      if (controls) controls.inert = false;
+      busy = false;
+    }
+
+    // Starts at full speed and brakes hard: sharp, not floaty
+    function scrollToTarget() {
+      var from = window.scrollY;
+      var to = from + target.getBoundingClientRect().top;
+      var t0 = 0;
+      function step(now) {
+        if (!t0) t0 = now;
+        var t = now - t0;
+        var p = outQuart(seg(t, 0, SCROLL));
+        window.scrollTo(0, lerp(from, to, p));
+        // The button springs back from its press on the way out
+        cue.style.scale = n(lerp(0.9, 1, outCubic(seg(t, 0, 220))));
+        if (p < 1) requestAnimationFrame(step); else finish();
+      }
+      requestAnimationFrame(step);
+    }
+
+    function calm() { return !!(reduceMotion && reduceMotion.matches); }
+
+    function jump() {
+      target.scrollIntoView({ behavior: calm() ? "auto" : "smooth", block: "start" });
+      target.focus({ preventScroll: true });
+    }
+
+    // Scrolling down from the sign-off card does the same as clicking Discover
+    function atSignOff() {
+      return !calm() && stage.phase === "end" && !player.playing && hero.hasAttribute("data-done") &&
+        hero.getBoundingClientRect().top > -8 && window.scrollY < hero.offsetTop + 8;
+    }
+
+    function catchScroll(e) {
+      if (busy) { e.preventDefault(); return true; }   // hold the page still while the pieces drain
+      if (!atSignOff()) return false;
+      e.preventDefault();
+      drain();
+      return true;
+    }
+
+    window.addEventListener("wheel", function (e) {
+      if (busy || e.deltaY > 0) catchScroll(e);
+    }, { passive: false });
+
+    var touchY = null;
+    window.addEventListener("touchstart", function (e) { touchY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener("touchmove", function (e) {
+      if (busy) { e.preventDefault(); return; }
+      if (touchY !== null && touchY - e.touches[0].clientY > 10 && catchScroll(e)) touchY = null;
+    }, { passive: false });
+
+    window.addEventListener("keydown", function (e) {
+      var down = e.key === "PageDown" || e.key === "ArrowDown" || e.key === "End" || (e.key === " " && !e.shiftKey);
+      if (!down) return;
+      // Space and arrows belong to the focused control, if there is one
+      var el = e.target;
+      if (!busy && el && el.closest && el.closest("button, a, input, select, textarea, [contenteditable]")) return;
+      catchScroll(e);
+    });
+
+    cue.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (busy) return;
+      // Only the sign-off card drains; anywhere else (or with reduced motion) go straight there
+      if (calm() || stage.phase !== "end" || player.playing) { jump(); return; }
+      drain();
+    });
+
+    function drain() {
+      busy = true;
+      if (controls) controls.inert = true;
+      cue.style.pointerEvents = "none";
+
+      var cueBox = cue.getBoundingClientRect();
+      var T = { x: cueBox.left + cueBox.width / 2, y: cueBox.top + cueBox.height * 0.45 };
+
+      // Each piece is anchored at its bottom centre and follows a curve into the button
+      var paths = pieces.map(function (node, i) {
+        var b = node.getBoundingClientRect();
+        var A = { x: b.left + b.width / 2, y: b.bottom };
+        var dx = T.x - A.x, dy = T.y - A.y;
+        node.style.transformOrigin = "50% 100%";
+        return {
+          node: node, A: A,
+          c1: { x: A.x + dx * 0.32, y: A.y + dy * 0.12 },
+          c2: { x: T.x, y: A.y + dy * 0.58 },
+          delay: i === 1 ? 0 : 60
+        };
+      });
+
+      var t0 = 0;
+      function frame(now) {
+        if (!t0) t0 = now;
+        var t = now - t0;
+        paths.forEach(function (p) {
+          var x = clamp01((t - p.delay) / (TRAVEL - p.delay));
+          var u = Math.pow(x, 1.8);                       // accelerating, like water finding the drain
+          var px = bezier(p.A.x, p.c1.x, p.c2.x, T.x, u);
+          var py = bezier(p.A.y, p.c1.y, p.c2.y, T.y, u);
+          p.node.style.translate = n(px - p.A.x) + "px " + n(py - p.A.y) + "px";
+          p.node.style.scale = n(lerp(1, 0.28, u));
+          p.node.style.filter = "blur(" + n(6 * seg(u, 0.3, 1)) + "px)";
+          p.node.style.opacity = n(1 - seg(u, 0.85, 1));
+        });
+        cue.style.scale = n(1 - 0.1 * seg(t, TRAVEL - 120, TRAVEL));
+        if (t < TRAVEL) requestAnimationFrame(frame);
+        else scrollToTarget();                            // no pause: the hit sends the page down
+      }
+      requestAnimationFrame(frame);
+    }
   }
 
   // Pre-order (demo): a toggled state announced to screen readers
