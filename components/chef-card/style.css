@@ -188,7 +188,7 @@
   right: calc(22 * var(--u));     /* long titles wrap rather than run off the card */
   z-index: 3;
   display: grid;
-  gap: calc(8 * var(--u));
+  gap: calc(14 * var(--u));
   margin: 0;
   padding: 0;
   list-style: none;
@@ -219,7 +219,7 @@
   --arm: 8;
   --title-size: 12.5;
   --sub-size: 8.5;
-  margin-bottom: calc(6 * var(--u));
+  margin-bottom: calc(4 * var(--u));
 }
 
 .ui-chef__stat-num {
