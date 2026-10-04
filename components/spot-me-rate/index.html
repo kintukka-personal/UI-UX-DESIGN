@@ -96,7 +96,7 @@
       </svg>
 
       <!-- The avatar inside the crush ring, with the heart at the top left -->
-      <svg class="ui-spot-rate__avatar" viewBox="0 0 400 400" aria-hidden="true">
+      <svg class="ui-spot-rate__avatar" viewBox="0 0 400 400" aria-hidden="true" data-ui-spot-rate-ring>
         <defs>
           <clipPath id="ui-spot-rate-face"><circle cx="150" cy="150" r="150"/></clipPath>
         </defs>
@@ -131,8 +131,13 @@
           </g>
         </g>
 
-        <g transform="translate(116 56) rotate(-28)">
-          <path class="ui-spot-rate__heart" d="M0 26C-30 8 -38 -10 -30 -22C-23 -32 -8 -32 0 -18C8 -32 23 -32 30 -22C38 -10 30 8 0 26Z"/>
+        <!-- After the first tap the heart rides round the ring until it's full -->
+        <g class="ui-spot-rate__orbit">
+          <g transform="translate(116 55) rotate(-28)">
+            <g class="ui-spot-rate__heart-pop">
+              <path class="ui-spot-rate__heart" d="M0 26C-30 8 -38 -10 -30 -22C-23 -32 -8 -32 0 -18C8 -32 23 -32 30 -22C38 -10 30 8 0 26Z"/>
+            </g>
+          </g>
         </g>
       </svg>
     </div>

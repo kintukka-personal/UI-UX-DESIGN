@@ -12,9 +12,9 @@ The [app rating screen](../rate-screen/) rebranded for Spot Me, a secret diary f
   - A full-width red pill button, "Rate Spot Me".
 - **Flow:**
   1. Tapping **Rate Spot Me** fires `ui-spot-rate:request`. That's where the app opens the native review prompt (`SKStoreReviewController` / `requestReview` on iOS, the In-App Review API on Android).
-  2. The button then reads **I rated!**, and an underlined **Not now** link appears under it.
+  2. The button then reads **I rated!**, and an underlined **Not now** link appears under it. At the same time the heart rides round the top of the ring, filling the rest of it in behind it. When the ring is full the heart gives a big pop and pink confetti bursts out of the ring and falls across the screen, to celebrate the rating.
   3. **I rated!** fires `ui-spot-rate:done`, **Not now** fires `ui-spot-rate:skip`, and the back arrow fires `ui-spot-rate:back`.
-- **Motion:** the laurels grow in and the stars pop in one after another. Then the ring fills to three-quarters and the heart pops on at the end of it. After that the heart gives a little beat every few seconds, and the avatar bobs gently. Reduced motion turns all of it off.
+- **Motion:** the laurels grow in and the stars pop in one after another. Then the ring fills to three-quarters and the heart pops on at the end of it. After that the heart gives a little beat every few seconds, and the avatar bobs gently. Reduced motion turns all of it off: after the first tap the ring just shows full, with no confetti.
 - **Fit:** the screen fills its container and respects the safe-area insets. The ring shrinks to fit shorter phones (it's tested down to an iPhone SE).
 - Plain HTML, CSS and vanilla JS. The stars, laurels, ring and avatar are all inline SVG, so there are no image files.
 
@@ -42,7 +42,9 @@ On the web, set `data-store-url="https://apps.apple.com/app/id…"` on the scree
 | `data-store-url` | none | Store page to open on the first tap |
 | `style="--ui-spot-rate-progress: 96%"` on `.ui-spot-rate__progress` | `96%` | How full the progress bar is. Update `aria-valuenow` to match |
 
-`window.uiSpotRate.reset(screen)` puts the button back to **Rate Spot Me** and hides **Not now**. `window.uiSpotRate.init(screen)` sets up a screen added after the page loaded.
+The screen gets `.is-asked` after the first tap and `.is-complete` once the ring is full, which is when the confetti fires. The confetti is plain `<i>` pieces animated with the Web Animations API in a `.ui-spot-rate__confetti` layer, removed as each one lands.
+
+`window.uiSpotRate.reset(screen)` puts the button back to **Rate Spot Me**, hides **Not now**, and refills the ring to three-quarters. `window.uiSpotRate.init(screen)` sets up a screen added after the page loaded.
 
 ## Tokens
 
