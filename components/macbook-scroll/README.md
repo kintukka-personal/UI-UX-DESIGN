@@ -33,7 +33,7 @@ import { MacbookScroll } from "@/components/ui/macbook-scroll";
 <div className="w-full overflow-clip bg-white dark:bg-[#0B0B0F]">
   <MacbookScroll
     title={<span>Add the main hook of your <br /> software/app.</span>}
-    badge={<a href="https://www.google.com" className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-neutral-900">Click me</a>}
+    badge={<a href="https://www.google.com" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 -rotate-12 items-center justify-center rounded-full bg-white text-[9px] font-semibold text-neutral-900">Click<br />me</a>}
     src="/linear.webp"
   />
 </div>
