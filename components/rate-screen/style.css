@@ -1,0 +1,287 @@
+/* ==========================================================================
+   UI Rate Screen — a full-screen "How is Cloey doing?" app rating step
+   A back arrow and progress bar, a title and line of copy, five gold stars
+   between two laurels, the cheering panda mascot, and a "Rate Cloey" button.
+   It fills its container, so give the parent the screen's height.
+
+   Tapping "Rate Cloey" fires `ui-rate:request` (open the native review sheet
+   there), then the button becomes "I rated" with a "Not now" link below.
+   ========================================================================== */
+
+.ui-rate {
+  --ui-rate-bg: #FDF8F8;
+  --ui-rate-ink: #2E2626;
+  --ui-rate-muted: #A79F9F;
+  --ui-rate-brand: #45161C;
+  --ui-rate-brand-ink: #FFFFFF;
+  --ui-rate-track: #F0E6E6;
+  --ui-rate-gold: #FDB913;
+  --ui-rate-laurel: #F6BE2E;
+  --ui-rate-skip: #BDB5B5;
+  --ui-rate-font: "Poppins", "Helvetica Neue", Arial, sans-serif;
+  --ui-rate-progress: 96%;
+  --ui-rate-radius: 10px;
+
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 14px)
+    calc(env(safe-area-inset-right, 0px) + 20px)
+    calc(env(safe-area-inset-bottom, 0px) + 20px)
+    calc(env(safe-area-inset-left, 0px) + 20px);
+  overflow: hidden;
+  background: var(--ui-rate-bg);
+  color: var(--ui-rate-ink);
+  font-family: var(--ui-rate-font);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ui-rate *,
+.ui-rate *::before,
+.ui-rate *::after { box-sizing: inherit; }
+
+/* ---- Top bar: back arrow + progress ---- */
+
+.ui-rate__top {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+}
+
+.ui-rate__back {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin: 0 0 0 -8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--ui-rate-ink);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+.ui-rate__back:hover { background: rgba(69, 22, 28, 0.06); }
+.ui-rate__back svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ui-rate__progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--ui-rate-track);
+  overflow: hidden;
+}
+.ui-rate__progress span {
+  display: block;
+  width: var(--ui-rate-progress);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ui-rate-brand);
+}
+
+/* ---- Title + copy ---- */
+
+.ui-rate__intro {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.ui-rate__title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.ui-rate__text {
+  max-width: 300px;
+  margin: 12px auto 0;
+  color: var(--ui-rate-muted);
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+/* ---- Hero: stars in laurels + mascot ---- */
+
+.ui-rate__hero {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 4vh, 36px);
+  padding: 20px 0;
+}
+
+.ui-rate__badge {
+  flex: none;
+  display: block;
+  width: min(100%, 330px);
+  height: auto;
+  overflow: visible;
+}
+
+.ui-rate__laurel { fill: var(--ui-rate-laurel); }
+.ui-rate__stem {
+  fill: none;
+  stroke: var(--ui-rate-laurel);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ui-rate__star {
+  fill: var(--ui-rate-gold);
+  stroke: var(--ui-rate-gold);
+  stroke-width: 7;
+  stroke-linejoin: round;
+}
+
+.ui-rate__mascot {
+  flex: 1 1 0;
+  display: block;
+  width: 100%;
+  min-height: 140px;
+  max-height: 300px;
+  overflow: visible;
+}
+
+.ui-rate__eye {
+  fill: var(--ui-rate-gold);
+  stroke: #E89C00;
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+.ui-rate__sparkle {
+  fill: none;
+  stroke: var(--ui-rate-gold);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+/* ---- Actions ---- */
+
+.ui-rate__actions {
+  display: grid;
+  gap: 4px;
+}
+
+.ui-rate__cta {
+  width: 100%;
+  height: 54px;
+  margin: 0;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--ui-rate-radius);
+  background: var(--ui-rate-brand);
+  color: var(--ui-rate-brand-ink);
+  font: 600 16px/1 var(--ui-rate-font);
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 150ms ease;
+}
+.ui-rate__cta:hover { filter: brightness(1.12); }
+.ui-rate__cta:active { transform: scale(0.98); }
+.ui-rate__cta-label { display: inline-block; }
+.ui-rate.is-asked .ui-rate__cta-label { animation: ui-rate-swap 260ms ease both; }
+
+.ui-rate__skip {
+  justify-self: center;
+  margin: 0;
+  padding: 10px 16px 0;
+  border: 0;
+  background: none;
+  color: var(--ui-rate-skip);
+  font: 500 14px/1.4 var(--ui-rate-font);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.ui-rate__skip[hidden] { display: none; }
+.ui-rate__skip:not([hidden]) { animation: ui-rate-fade 260ms ease both; }
+
+.ui-rate__back:focus-visible,
+.ui-rate__cta:focus-visible,
+.ui-rate__skip:focus-visible {
+  outline: 2px solid var(--ui-rate-brand);
+  outline-offset: 3px;
+}
+
+/* ---- Motion ---- */
+
+/* Laurels grow in, then the stars pop in one after another. */
+.ui-rate__laurel use {
+  transform-box: fill-box;
+  transform-origin: 70% 95%;
+  animation: ui-rate-grow 600ms cubic-bezier(.2, .8, .2, 1) both;
+}
+.ui-rate__star {
+  transform-box: fill-box;
+  transform-origin: 50% 55%;
+  animation: ui-rate-pop 520ms cubic-bezier(.3, 1.5, .5, 1) both;
+  animation-delay: calc(250ms + var(--i, 0) * 110ms);
+}
+
+/* The panda bobs, cheers with both arms and its star eyes twinkle. */
+.ui-rate__panda { animation: ui-rate-bob 2.8s ease-in-out infinite; }
+.ui-rate__arm {
+  transform-box: view-box;
+  animation: ui-rate-cheer 1.4s ease-in-out infinite;
+}
+.ui-rate__arm--left { transform-origin: 118px 300px; }
+.ui-rate__arm--right { transform-origin: 302px 300px; animation-direction: reverse; }
+.ui-rate__twinkle {
+  transform-box: fill-box;
+  transform-origin: 50% 55%;
+  animation: ui-rate-twinkle 1.4s ease-in-out infinite;
+}
+
+@keyframes ui-rate-grow {
+  from { opacity: 0; transform: scale(0.8) rotate(-8deg); }
+}
+@keyframes ui-rate-pop {
+  0% { opacity: 0; transform: scale(0) rotate(-40deg); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes ui-rate-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes ui-rate-cheer {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+@keyframes ui-rate-twinkle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12) rotate(8deg); }
+}
+@keyframes ui-rate-swap {
+  from { opacity: 0; transform: translateY(6px); }
+}
+@keyframes ui-rate-fade {
+  from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-rate *,
+  .ui-rate *::before,
+  .ui-rate *::after { animation: none !important; transition: none !important; }
+}
