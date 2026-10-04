@@ -1,7 +1,7 @@
 /* ==========================================================================
    UI Spot Me Rate — the app rating screen, rebranded for Spot Me
    A back arrow and progress bar, "Hey, bestie!!", five
-   gold stars in a burst of confetti and hearts, the avatar inside the crush ring, and a
+   gold stars between two laurels, the avatar inside the crush ring, and a
    "Rate Spot Me" button. It fills its container, so give the parent the
    screen's height.
 
@@ -18,7 +18,7 @@
   --ui-spot-rate-track: #F9CFD9;
   --ui-spot-rate-avatar-bg: #FFE1E7;
   --ui-spot-rate-gold: #FDB913;
-  --ui-spot-rate-pink: #FF8FB1;
+  --ui-spot-rate-laurel: #F6BE2E;
   --ui-spot-rate-display: "Nunito", "Arial Rounded MT Bold", "Helvetica Neue", Arial, sans-serif;
   --ui-spot-rate-font: "DM Sans", "Helvetica Neue", Arial, sans-serif;
   --ui-spot-rate-progress: 96%;
@@ -118,7 +118,7 @@
   line-height: 1.5;
 }
 
-/* ---- Hero: stars in confetti + avatar in the ring ---- */
+/* ---- Hero: stars in laurels + avatar in the ring ---- */
 
 .ui-spot-rate__hero {
   flex: 1 1 auto;
@@ -139,10 +139,14 @@
   overflow: visible;
 }
 
-.ui-spot-rate__bit--ink { fill: var(--ui-spot-rate-ink); }
-.ui-spot-rate__bit--brand { fill: var(--ui-spot-rate-brand); }
-.ui-spot-rate__bit--pink { fill: var(--ui-spot-rate-pink); }
-.ui-spot-rate__bit--gold { fill: var(--ui-spot-rate-gold); }
+.ui-spot-rate__laurel { fill: var(--ui-spot-rate-laurel); }
+.ui-spot-rate__stem {
+  fill: none;
+  stroke: var(--ui-spot-rate-laurel);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
 .ui-spot-rate__star {
   fill: var(--ui-spot-rate-gold);
@@ -227,14 +231,11 @@
 
 /* ---- Motion ---- */
 
-/* The confetti and hearts burst in, then drift gently; the stars pop in
-   one after another. */
-.ui-spot-rate__bit {
+/* Laurels grow in, then the stars pop in one after another. */
+.ui-spot-rate__laurel use {
   transform-box: fill-box;
-  transform-origin: center;
-  animation:
-    ui-spot-rate-burst 560ms cubic-bezier(.3, 1.4, .5, 1) calc(var(--i, 0) * 50ms) both,
-    ui-spot-rate-drift 3.2s ease-in-out calc(600ms + var(--i, 0) * 50ms) infinite;
+  transform-origin: 70% 95%;
+  animation: ui-spot-rate-grow 600ms cubic-bezier(.2, .8, .2, 1) both;
 }
 .ui-spot-rate__star {
   transform-box: fill-box;
@@ -255,13 +256,8 @@
 }
 .ui-spot-rate__face { animation: ui-spot-rate-bob 3s ease-in-out infinite; }
 
-@keyframes ui-spot-rate-burst {
-  0% { opacity: 0; transform: translateY(14px) scale(0); }
-  100% { opacity: 1; transform: none; }
-}
-@keyframes ui-spot-rate-drift {
-  0%, 100% { transform: translateY(0) rotate(0); }
-  50% { transform: translateY(-6px) rotate(8deg); }
+@keyframes ui-spot-rate-grow {
+  from { opacity: 0; transform: scale(0.8) rotate(-8deg); }
 }
 @keyframes ui-spot-rate-pop {
   0% { opacity: 0; transform: scale(0) rotate(-40deg); }

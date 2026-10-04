@@ -7,16 +7,16 @@ The [app rating screen](../rate-screen/) rebranded for Spot Me, a secret diary f
 - **Layout** (top to bottom):
   - Top bar: a back arrow and a red progress bar, almost full.
   - Title "Hey, bestie!!" in heavy Nunito, and "Help us grow with a quick rating. We love compliments!" in DM Sans.
-  - Five gold stars in a burst of Spot Me confetti: tilted pink and red confetti pieces, maroon, red and pink hearts, and little gold and pink sparkles, like the confetti in the "One tap. Spotted." artwork.
+  - Five gold stars between two gold laurel branches, kept from the original screen for now.
   - The avatar from the "Everyone has a gym crush" artwork in a pink circle, inside the crush ring. The ring is three-quarters full, with the heart at its top left.
   - A full-width red pill button, "Rate Spot Me".
 - **Flow:**
   1. Tapping **Rate Spot Me** fires `ui-spot-rate:request`. That's where the app opens the native review prompt (`SKStoreReviewController` / `requestReview` on iOS, the In-App Review API on Android).
   2. The button then reads **I rated!**, and an underlined **Not now** link appears under it.
   3. **I rated!** fires `ui-spot-rate:done`, **Not now** fires `ui-spot-rate:skip`, and the back arrow fires `ui-spot-rate:back`.
-- **Motion:** the confetti and hearts burst in and the stars pop in one after another. Then the ring fills to three-quarters and the heart pops on at the end of it. After that the confetti drifts, the heart gives a little beat every few seconds, and the avatar bobs gently. Reduced motion turns all of it off.
+- **Motion:** the laurels grow in and the stars pop in one after another. Then the ring fills to three-quarters and the heart pops on at the end of it. After that the heart gives a little beat every few seconds, and the avatar bobs gently. Reduced motion turns all of it off.
 - **Fit:** the screen fills its container and respects the safe-area insets. The ring shrinks to fit shorter phones (it's tested down to an iPhone SE).
-- Plain HTML, CSS and vanilla JS. The stars, confetti, ring and avatar are all inline SVG, so there are no image files.
+- Plain HTML, CSS and vanilla JS. The stars, laurels, ring and avatar are all inline SVG, so there are no image files.
 
 Open `index.html` for the demo. On a laptop it sits in a phone frame, and the line under the frame shows each event as it fires. On a phone it fills the screen.
 
@@ -57,8 +57,8 @@ Set these on `.ui-spot-rate`.
 | `--ui-spot-rate-brand-ink` | `#FFFFFF` | Button text |
 | `--ui-spot-rate-track` | `#F9CFD9` | Progress track and the empty part of the ring |
 | `--ui-spot-rate-avatar-bg` | `#FFE1E7` | Circle behind the avatar |
-| `--ui-spot-rate-gold` | `#FDB913` | Stars and gold sparkles |
-| `--ui-spot-rate-pink` | `#FF8FB1` | Pink confetti, hearts and sparkles |
+| `--ui-spot-rate-gold` | `#FDB913` | Stars |
+| `--ui-spot-rate-laurel` | `#F6BE2E` | Laurel branches |
 | `--ui-spot-rate-display` | `"Nunito", …` | Title and button |
 | `--ui-spot-rate-font` | `"DM Sans", …` | Body text |
 | `--ui-spot-rate-radius` | `999px` | Button corner radius |
