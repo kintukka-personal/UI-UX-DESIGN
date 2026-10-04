@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CO2 Product Reveal</title>
+<meta name="description" content="CO2 by acme: a product reveal landing page with a kinetic logo build, a poster reveal and a sign-off card.">
+<meta name="theme-color" content="#2E0000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter+Tight:wght@400;500;600;700&display=swap">
+<link rel="preload" as="image" href="images/co2-shoe.webp" type="image/webp">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="ui-reveal-page">
+
+<a class="ui-reveal-skip" href="#product">Skip to product details</a>
+
+<main>
+  <!-- ================= Hero: the reveal ================= -->
+  <section class="ui-reveal" data-ui-reveal aria-labelledby="ui-reveal-title">
+    <h1 id="ui-reveal-title" class="ui-reveal__sr">CO2 by acme. Racing shoes designed and engineered in Italy.</h1>
+
+    <div class="ui-reveal__stage" data-ui-reveal-stage aria-hidden="true">
+      <div class="ui-reveal__bg"></div>
+      <div class="ui-reveal__terrain"></div>
+
+      <div class="ui-reveal__frame">
+        <!-- Track (behind the shoe) -->
+        <svg class="ui-reveal__svg" viewBox="0 0 720 900" focusable="false">
+          <g class="ui-reveal__track" data-track></g>
+          <circle class="ui-reveal__ring" data-ring cx="360" cy="450" r="0"></circle>
+        </svg>
+
+        <!-- Shoe: the main cut-out plus two ghosts for the zoom smear -->
+        <div class="ui-reveal__shoe" data-shoe>
+          <img class="ui-reveal__ghost" data-ghost src="images/co2-shoe.webp" alt="" width="1272" height="972" decoding="async">
+          <img class="ui-reveal__ghost" data-ghost src="images/co2-shoe.webp" alt="" width="1272" height="972" decoding="async">
+          <img class="ui-reveal__shoe-img" src="images/co2-shoe.webp" alt="" width="1272" height="972" decoding="async" fetchpriority="high">
+        </div>
+
+        <!-- Logo mark (intro) -->
+        <svg class="ui-reveal__svg" viewBox="0 0 720 900" focusable="false">
+          <g class="ui-reveal__logo" data-logo></g>
+        </svg>
+
+        <!-- Wordmark -->
+        <svg class="ui-reveal__co2" data-co2 viewBox="0 0 561 100" focusable="false">
+          <g data-co2-group>
+            <path data-part="c" d="M178 0H50A50 50 0 0 0 50 100H178V76H50A26 26 0 0 1 50 24H178Z"/>
+            <path data-part="o" transform="translate(186 0)" fill-rule="evenodd" d="M50 0H136A50 50 0 0 1 136 100H50A50 50 0 0 1 50 0ZM50 24A26 26 0 0 0 50 76H136A26 26 0 0 0 136 24Z"/>
+            <path data-part="2a" transform="translate(380 0)" d="M0 0H147A34 34 0 0 1 147 68H28V44H147A10 10 0 0 0 147 24H0Z"/>
+            <path data-part="2b" transform="translate(380 0)" d="M28 44A28 28 0 0 0 0 72V100H181V72H28Z"/>
+          </g>
+        </svg>
+
+        <p class="ui-reveal__acme" data-acme>acme<sup>©©</sup></p>
+        <p class="ui-reveal__meta" data-meta>
+          <span class="ui-reveal__year">20<br>26</span>
+          <span class="ui-reveal__type" data-type="DESIGNED &amp; CRAFTED&#10;IN ITALY">DESIGNED &amp; CRAFTED
+IN ITALY</span>
+        </p>
+
+        <div class="ui-reveal__hud" data-hud></div>
+
+        <!-- Sign-off card -->
+        <div class="ui-reveal__end" data-end>
+          <svg class="ui-reveal__end-mark" data-end-mark viewBox="247 396 222 107" focusable="false">
+            <path d="M292 396H317V432A35 35 0 0 1 282 467H247V442H282A10 10 0 0 0 292 432Z"/>
+            <path d="M328 396H353V432A71 71 0 0 1 282 503H247V478H282A46 46 0 0 0 328 432Z"/>
+            <g transform="matrix(-1 0 0 1 716 0)">
+              <path d="M292 396H317V432A35 35 0 0 1 282 467H247V442H282A10 10 0 0 0 292 432Z"/>
+              <path d="M328 396H353V432A71 71 0 0 1 282 503H247V478H282A46 46 0 0 0 328 432Z"/>
+            </g>
+          </svg>
+          <p class="ui-reveal__end-copy ui-reveal__type" data-type="RACING SHOES DESIGNED&#10;&amp; ENGINEERED IN ITALY">RACING SHOES DESIGNED
+&amp; ENGINEERED IN ITALY</p>
+          <p class="ui-reveal__end-acme" data-end-acme>acme<sup>©©</sup></p>
+        </div>
+      </div>
+
+      <div class="ui-reveal__markers" data-markers>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="ui-reveal__grain"></div>
+      <div class="ui-reveal__progress" data-progress></div>
+    </div>
+
+    <div class="ui-reveal__controls">
+      <button class="ui-reveal__btn" type="button" data-ui-reveal-toggle aria-label="Pause animation">
+        <svg class="ui-reveal__icon ui-reveal__icon--pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+        <svg class="ui-reveal__icon ui-reveal__icon--play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.2v13.6L19 12z"/></svg>
+      </button>
+      <button class="ui-reveal__btn" type="button" data-ui-reveal-replay aria-label="Replay animation">
+        <svg class="ui-reveal__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5a7 7 0 1 1-6.93 8h2.02A5 5 0 1 0 12 7v3L7.5 6 12 2z"/></svg>
+      </button>
+    </div>
+
+    <a class="ui-reveal__cue" href="#product">
+      <span>Discover CO2</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 4h2v12.2l4.6-4.6 1.4 1.4-7 7-7-7 1.4-1.4 4.6 4.6z"/></svg>
+    </a>
+  </section>
+
+  <!-- ================= Product ================= -->
+  <section class="ui-reveal-product" id="product" aria-labelledby="ui-reveal-product-title" tabindex="-1">
+    <figure class="ui-reveal-product__poster" data-ui-reveal-poster>
+      <img class="ui-reveal-product__fallback" src="images/co2-shoe.webp" alt="" width="1272" height="972" loading="lazy">
+      <figcaption class="ui-reveal__sr">The CO2 racing shoe in white, its orange-lit foam sole floating above red Martian ground.</figcaption>
+    </figure>
+
+    <div class="ui-reveal-product__copy">
+      <p class="ui-reveal-product__eyebrow"><span>Drop 01</span><span>2026</span></p>
+      <h2 id="ui-reveal-product-title" class="ui-reveal-product__title">CO2 <span>racing shoe</span></h2>
+      <p class="ui-reveal-product__lede">A carbon-plated racer on a full-length foam midsole, shaped for race pace and the long road home. Designed and crafted in Italy.</p>
+
+      <dl class="ui-reveal-product__specs">
+        <div><dt>Weight</dt><dd>198 g</dd></div>
+        <div><dt>Drop</dt><dd>8 mm</dd></div>
+        <div><dt>Stack</dt><dd>39 / 31 mm</dd></div>
+        <div><dt>Plate</dt><dd>Full-length carbon</dd></div>
+      </dl>
+
+      <div class="ui-reveal-product__buy">
+        <p class="ui-reveal-product__price"><span class="ui-reveal__sr">Price:</span>€260</p>
+        <button class="ui-reveal-product__cta" type="button" data-ui-reveal-preorder>
+          <span data-label>Pre-order</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13.2 5.6 19.6 12l-6.4 6.4-1.4-1.4 4-4H4v-2h11.8l-4-4z"/></svg>
+        </button>
+      </div>
+      <p class="ui-reveal-product__note" role="status" aria-live="polite" data-ui-reveal-status></p>
+    </div>
+  </section>
+</main>
+
+<footer class="ui-reveal-footer">
+  <p>© 2026 acme</p>
+  <p>Racing shoes designed &amp; engineered in Italy</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
