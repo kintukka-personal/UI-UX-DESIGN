@@ -20,3 +20,4 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Chef card](components/chef-card/) | The profile card rebranded for Dine In's Brooke Silk: gold on Dine In green, with her four awards on the jacket, her Google rating and a "Book an experience" button |
 | [Animated theme toggler](components/theme-toggler/) | Light/dark switch where the new theme grows out of the button as a circle, using the View Transitions API. A plain-JS rebuild of Magic UI's React component |
 | [App rating screen](components/rate-screen/) | Full-screen "How is Cloey doing?" onboarding step: five gold stars in laurels, a cheering panda, and a "Rate Cloey" button that fires the native review prompt, then becomes "I rated" with a "Not now" link |
+| [Spot Me rating screen](components/spot-me-rate/) | The app rating screen rebranded for Spot Me: "Hey, bestie!!" under the wordmark, stars in laurels, the avatar inside the crush ring, and a "Rate Spot Me" button |
