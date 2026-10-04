@@ -24,7 +24,9 @@
 
    Rating star: once the numbers in a row with a .ui-chef__star have finished
    counting, gold sparkles fly in from around the star. As they arrive it
-   jumps, turns gold (.is-gold) and stays gold.
+   jumps, turns gold (.is-gold) and stays gold, and the rating around it
+   (.is-perfect) turns its score gold and pops with a gold glow. The rows
+   after it wait until that has finished.
 
    The card is armed (hidden) before first paint, so nothing flashes. Without
    this script, or with reduced motion turned on, the card shows at rest.
@@ -46,6 +48,7 @@
   var SPARKLES = 9;       // sparkles that fly into the rating star
   var SPARKLE_TIME = 560; // ms for each sparkle's flight
   var SPARKLE_SPREAD = 220; // ms over which the sparkles set off
+  var PERFECT_TIME = 900; // ms the rating's gold pop takes (matches style.css); later rows wait for it
 
   function splitLetters(text) {
     if (text.dataset.split) return;
@@ -122,7 +125,10 @@
       })(el);
     }
     timers.list.push(setTimeout(function () {
-      if (!timers.stopped) star.classList.add("is-gold");
+      if (timers.stopped) return;
+      star.classList.add("is-gold");
+      var proof = star.closest(".ui-chef__proof");
+      if (proof) proof.classList.add("is-perfect");
     }, last + SPARKLE_TIME - 40));
   }
 
@@ -166,6 +172,7 @@
     card.querySelectorAll(".ui-chef__name tspan").forEach(function (t) { t.classList.remove("is-on"); });
     rowsOf(card).forEach(function (row) { row.classList.remove("is-in"); });
     card.querySelectorAll(".ui-chef__star").forEach(function (star) { star.classList.remove("is-gold"); });
+    card.querySelectorAll(".ui-chef__proof").forEach(function (el) { el.classList.remove("is-perfect"); });
     card.querySelectorAll(".ui-chef__sparkle").forEach(function (el) { el.remove(); });
     card.querySelectorAll("[data-ui-chef-count]").forEach(function (el) {
       el.textContent = el.dataset.uiChefTarget;
@@ -273,6 +280,7 @@
         // Rows joined into one step come in this many ms apart
         var stagger = parseFloat(rows[0].parentNode.dataset.uiChefStagger) || 0;
         var lastCount = -1;
+        var starDone = 0;
         rows.forEach(function (row, k) {
           var at = t + k * stagger;
           later(at, function () { row.classList.add("is-in"); });
@@ -285,12 +293,19 @@
             numbers.forEach(function (el) { count(el, timers); });
           });
           var star = row.querySelector(".ui-chef__star");
-          if (star) later(countAt + COUNT_TIME + 60, function () { sparkle(card, star, timers); });
           lastCount = countAt;
+          if (star) {
+            var sparkleAt = countAt + COUNT_TIME + 60;
+            later(sparkleAt, function () { sparkle(card, star, timers); });
+            // The next step waits until the star has landed and the rating
+            // has finished its gold pop
+            starDone = Math.max(starDone, sparkleAt + SPARKLE_SPREAD + SPARKLE_TIME + PERFECT_TIME);
+          }
         });
         t = lastCount >= 0
           ? lastCount + COUNT_TIME * COUNT_HANDOFF
           : t + (rows.length - 1) * stagger + TEXT_HANDOFF;
+        t = Math.max(t, starDone);
       });
     });
   }

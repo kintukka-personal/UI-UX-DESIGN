@@ -26,11 +26,11 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
   3. The information then loads one row at a time:
      - the lead award on its own: it drops in slightly larger, settles with a small bounce and counts 0 → 3×
      - after a short hold, the other three awards, 0.1s apart, each counting up as it fills in (1×, 1×, 2×)
-     - after a short pause, the meta row: ★ 0.0 → 5.0 and 0 → 60 reviews. When the rating reaches 5.0, gold sparkles fly into the star, and it jumps, turns gold and stays gold.
-     - after a short pause, the tagline
+     - after a short pause, the meta row: ★ 0.0 → 5.0 and 0 → 60 reviews. When the rating reaches 5.0, gold sparkles fly into the star, and it jumps, turns gold and stays gold. At the same moment the score turns gold, and the whole rating pops with a brief gold glow to call out the perfect score. Nothing else moves while this happens.
+     - once the rating's pop has finished, and after a short pause, the tagline
      - after another short pause, the button
 
-  The whole intro takes about 7 seconds, and `window.uiChef.play(card)` replays it. The demo has a "Replay intro" button.
+  The whole intro takes about 10 seconds, and `window.uiChef.play(card)` replays it. The demo has a "Replay intro" button.
 - **Hover:** hovering the monogram tilts it, hovering the menu shortens its bottom line, and hovering the button nudges the arrow out to the top right.
 - **Reduced motion, or no JavaScript:** the card shows at rest with the final numbers and a gold star.
 - **Scaling:** every size comes from the card's width (390 design units, using container query units), so the whole layout scales as one piece from a 320px phone up to the 430px max width.
@@ -96,7 +96,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
     <div class="ui-chef__body">
       <p class="ui-chef__meta" data-ui-chef-pause="300">
         <span class="ui-chef__role">Private chef – Catering</span>
-        <span class="ui-chef__proof"><b><svg class="ui-chef__star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.85 5.8 6.4.93-4.63 4.5 1.1 6.37L12 17.4l-5.72 3l1.1-6.37-4.63-4.5 6.4-.93z"/></svg><span class="ui-chef__sr">Rated </span><span data-ui-chef-count>5.0</span></b> · <b data-ui-chef-count>60</b> reviews</span>
+        <span class="ui-chef__proof"><b class="ui-chef__rating"><svg class="ui-chef__star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.85 5.8 6.4.93-4.63 4.5 1.1 6.37L12 17.4l-5.72 3l1.1-6.37-4.63-4.5 6.4-.93z"/></svg><span class="ui-chef__sr">Rated </span><span data-ui-chef-count>5.0</span></b> · <b data-ui-chef-count>60</b> reviews</span>
       </p>
       <p class="ui-chef__tagline" data-ui-chef-pause="200"><span>Quality dining and fine food, brought directly to you.</span></p>
       <a class="ui-chef__cta" href="https://dine-in.com.au/experiences" data-ui-chef-pause="200">

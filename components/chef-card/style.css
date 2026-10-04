@@ -337,6 +337,9 @@
 
 .ui-chef__proof b { color: var(--ui-chef-ink); font-weight: 700; }
 
+/* A perfect rating is worth showing off: the score is gold, like its star */
+.ui-chef__proof .ui-chef__rating { color: var(--ui-chef-gold); }
+
 .ui-chef__star {
   display: inline-block;
   width: 1.25em;
@@ -526,6 +529,18 @@
   animation: ui-chef-star-pop 0.7s cubic-bezier(0.3, 1.4, 0.5, 1);
 }
 
+/* Until the star lands, the score is plain ivory. When it lands, the score
+   turns gold and the rating pops with a brief gold glow, on its own, before
+   the tagline and button come in. */
+.ui-chef.is-armed .is-in .ui-chef__proof:not(.is-perfect) .ui-chef__rating {
+  color: var(--ui-chef-ink);
+}
+
+.ui-chef.is-armed .ui-chef__proof.is-perfect {
+  transform-origin: 100% 50%;
+  animation: ui-chef-perfect 0.9s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
 .ui-chef__sparkle {
   position: absolute;
   z-index: 4;
@@ -554,6 +569,12 @@
   35% { transform: translateY(-0.45em) scale(1.8) rotate(-14deg); filter: drop-shadow(0 0 0.35em var(--ui-chef-gold)); }
   70% { transform: translateY(0.05em) scale(0.92) rotate(5deg); }
   100% { transform: none; }
+}
+
+@keyframes ui-chef-perfect {
+  0% { transform: none; text-shadow: none; }
+  35% { transform: scale(1.14); text-shadow: 0 0 0.7em color-mix(in srgb, var(--ui-chef-gold) 80%, transparent); }
+  100% { transform: none; text-shadow: none; }
 }
 
 @keyframes ui-chef-shimmer {
