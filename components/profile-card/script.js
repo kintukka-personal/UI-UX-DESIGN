@@ -7,8 +7,8 @@
    2. The portrait opens out from the centre of the face.
    3. Until then the stat and footer rows show as skeleton bars (style.css).
       As the portrait lands they load one at a time: the stat, then the meta
-      row, the tagline and the button. Each row waits for the one before it
-      to finish counting.
+      row, the tagline and the button. A row's numbers start counting once
+      the row has finished filling in, and the next row waits for them.
 
    Counting: every [data-ui-prof-count] runs from data-ui-prof-count-from
    (default 0) to the number written in it, so it can count up (0 → 120) or
@@ -29,7 +29,8 @@
   var CARET_HOLD = 450;   // caret blinks this long after the last letter
   var COUNT_TIME = 1000;  // ms for each number to count
   var LAND_DELAY = 900;   // ms after the portrait starts opening that the first row loads
-  var ROW_FILL = 550;     // ms a row takes to fill in when it has nothing to count
+  var ROW_FILL = 600;     // ms a row takes to fill in from its skeleton (matches style.css)
+  var COUNT_HOLD = 200;   // ms the starting number shows, fully in, before it counts
   var ROW_GAP = 120;      // ms between one row finishing and the next starting
 
   function splitLetters(text) {
@@ -190,15 +191,23 @@
       });
 
       // Rows load one after another as the portrait lands. A row with
-      // numbers counts them as it fills in, and the next row waits for it.
+      // numbers counts them once it has filled in, and the next row waits
+      // for the count to finish.
       t += LAND_DELAY;
       rowsOf(card).forEach(function (row) {
         var numbers = row.querySelectorAll("[data-ui-prof-count]");
-        later(t, function () {
-          row.classList.add("is-in");
-          numbers.forEach(function (el) { count(el, timers); });
-        });
-        t += (numbers.length ? COUNT_TIME : ROW_FILL) + ROW_GAP;
+        later(t, function () { row.classList.add("is-in"); });
+        t += ROW_FILL;
+        if (numbers.length) {
+          // Count only once the row has fully filled in, so the start ($100)
+          // is readable before it moves
+          t += COUNT_HOLD;
+          later(t, function () {
+            numbers.forEach(function (el) { count(el, timers); });
+          });
+          t += COUNT_TIME;
+        }
+        t += ROW_GAP;
       });
     });
   }
