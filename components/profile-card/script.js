@@ -5,11 +5,16 @@
       caret. The letters are already laid out (the SVG text keeps its full
       textLength), so each one appears in its final place.
    2. The portrait opens out from the centre of the face.
-   3. Until then the stat and footer show as skeleton bars (style.css). As
-      the portrait lands they fill in, and every [data-ui-prof-count] counts
-      up from zero to the number written in it (decimals are kept, so 4.9
-      counts 0.0 → 4.9). Each number keeps its final width while it counts,
-      so nothing next to it shifts.
+   3. Until then the stat and footer rows show as skeleton bars (style.css).
+      As the portrait lands they load one at a time: the stat, then the meta
+      row, the tagline and the button. Each row waits for the one before it
+      to finish counting.
+
+   Counting: every [data-ui-prof-count] runs from data-ui-prof-count-from
+   (default 0) to the number written in it, so it can count up (0 → 120) or
+   down (100 → 60). Decimals are kept, so 4.9 counts 0.0 → 4.9. A number
+   that counts up keeps its final width while it runs, so nothing next to it
+   shifts.
 
    The card is armed (hidden) before first paint, so nothing flashes. Without
    this script, or with reduced motion turned on, the card shows at rest.
@@ -22,7 +27,10 @@
   var TYPE_STEP = 115;    // ms per letter
   var LINE_PAUSE = 240;   // extra pause before the second line
   var CARET_HOLD = 450;   // caret blinks this long after the last letter
-  var COUNT_TIME = 1100;  // ms for each number to count up
+  var COUNT_TIME = 1000;  // ms for each number to count
+  var LAND_DELAY = 900;   // ms after the portrait starts opening that the first row loads
+  var ROW_FILL = 550;     // ms a row takes to fill in when it has nothing to count
+  var ROW_GAP = 120;      // ms between one row finishing and the next starting
 
   function splitLetters(text) {
     if (text.dataset.split) return;
@@ -40,15 +48,23 @@
     return 1 - Math.pow(1 - t, 3);
   }
 
-  function countUp(el, timers) {
-    var target = el.dataset.uiProfTarget;
-    var decimals = (target.split(".")[1] || "").length;
-    var end = parseFloat(target);
+  function decimalsOf(el) {
+    return (el.dataset.uiProfTarget.split(".")[1] || "").length;
+  }
+
+  function countFrom(el) {
+    return parseFloat(el.dataset.uiProfCountFrom) || 0;
+  }
+
+  function count(el, timers) {
+    var decimals = decimalsOf(el);
+    var from = countFrom(el);
+    var end = parseFloat(el.dataset.uiProfTarget);
     var start = performance.now();
     function frame(now) {
       if (timers.stopped) return;
       var t = Math.min(1, (now - start) / COUNT_TIME);
-      el.textContent = (end * easeOut(t)).toFixed(decimals);
+      el.textContent = (from + (end - from) * easeOut(t)).toFixed(decimals);
       if (t < 1) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
@@ -92,15 +108,23 @@
     card.classList.remove("is-revealed", "is-typing", "is-caret-idle", "is-caret-out");
     card.classList.add("is-armed");
     card.querySelectorAll(".ui-prof__name tspan").forEach(function (t) { t.classList.remove("is-on"); });
+    rowsOf(card).forEach(function (row) { row.classList.remove("is-in"); });
     card.querySelectorAll("[data-ui-prof-count]").forEach(function (el) {
       el.textContent = el.dataset.uiProfTarget;
     });
   }
 
-  // Pins each number to the width of its final value, in em so it still
-  // scales with the card. Measured after the fonts load.
+  function rowsOf(card) {
+    return Array.prototype.slice.call(card.querySelectorAll(".ui-prof__stat, .ui-prof__body > *"));
+  }
+
+  // Pins each number that counts up to the width of its final value, in em so
+  // it still scales with the card. Measured after the fonts load. A number
+  // that counts down only narrows once (100 → 99), so it is left free rather
+  // than leaving a gap beside its final value.
   function holdWidths(card) {
     card.querySelectorAll("[data-ui-prof-count]").forEach(function (el) {
+      if (countFrom(el) > parseFloat(el.dataset.uiProfTarget)) return;
       el.style.display = "inline-block";
       el.style.minWidth = "";
       el.style.textAlign = "right";
@@ -157,18 +181,24 @@
       later(t, function () { card.classList.add("is-caret-idle"); });
       t += CARET_HOLD;
       later(t, function () {
-        // Still hidden in their skeletons, so dropping to zero isn't seen
+        // Still hidden in their skeletons, so jumping to the start isn't seen
         card.querySelectorAll("[data-ui-prof-count]").forEach(function (el) {
-          el.textContent = (0).toFixed((el.dataset.uiProfTarget.split(".")[1] || "").length);
+          el.textContent = countFrom(el).toFixed(decimalsOf(el));
         });
         card.classList.add("is-caret-out", "is-revealed");
         card.classList.remove("is-caret-idle");
       });
-      // Numbers start as their rows fill in (see --ui-prof-delay in style.css).
-      card.querySelectorAll("[data-ui-prof-count]").forEach(function (el) {
-        var row = el.closest(".ui-prof__stat, .ui-prof__body > *");
-        var delay = row ? parseFloat(getComputedStyle(row).getPropertyValue("--ui-prof-delay")) * 1000 || 0 : 0;
-        later(t + delay + 100, function () { countUp(el, timers); });
+
+      // Rows load one after another as the portrait lands. A row with
+      // numbers counts them as it fills in, and the next row waits for it.
+      t += LAND_DELAY;
+      rowsOf(card).forEach(function (row) {
+        var numbers = row.querySelectorAll("[data-ui-prof-count]");
+        later(t, function () {
+          row.classList.add("is-in");
+          numbers.forEach(function (el) { count(el, timers); });
+        });
+        t += (numbers.length ? COUNT_TIME : ROW_FILL) + ROW_GAP;
       });
     });
   }

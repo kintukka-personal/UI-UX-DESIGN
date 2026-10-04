@@ -327,8 +327,8 @@
 /* script.js arms the card (.is-armed) before it is painted, then plays:
    1. the name types out letter by letter behind a blinking caret
    2. the portrait opens out from the centre of the face (.is-revealed)
-   3. the stat and footer, shown until then as skeleton bars, fill in
-      while the numbers count up
+   3. the stat, meta row, tagline and button, shown until then as skeleton
+      bars, load one after another while their numbers count
    Without the script, or with reduced motion, the card simply shows at rest. */
 
 @property --ui-prof-reveal {
@@ -373,23 +373,30 @@
     transform 1.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Skeleton: until the portrait lands, the stat and footer are quiet
-   placeholder bars in the exact shape of their text (a faint tint of the ink
-   with a slow shine). Each one then fills in with its real colours, top to
-   bottom, on its own --ui-prof-delay. */
-.ui-prof.is-armed.is-revealed :is(.ui-prof__stat, .ui-prof__body) :is(*, *::before, *::after) {
+/* Skeleton: until it loads, each row of information (the stat, the meta row,
+   the tagline and the button) is a quiet placeholder in the exact shape of
+   its text: a faint tint of the ink with a slow shine. script.js loads the
+   rows one at a time with .is-in, each waiting for the one before to finish
+   counting, and the row fills in with its real colours as it settles. */
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *).is-in,
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *).is-in :is(*, *::before, *::after) {
   /* Only on the way in: arming (or replaying) switches to the skeleton at once */
   transition:
-    color 0.5s ease var(--ui-prof-delay),
-    background-color 0.5s ease var(--ui-prof-delay),
+    color 0.5s ease,
+    background-color 0.5s ease,
     transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.ui-prof.is-armed:not(.is-revealed) :is(.ui-prof__stat, .ui-prof__body) :is(*, *::before, *::after) {
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *).is-in {
+  animation: ui-prof-land 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *):not(.is-in) :is(*, *::before, *::after) {
   color: transparent;
 }
 
-.ui-prof.is-armed:not(.is-revealed) :is(.ui-prof__stat-num, .ui-prof__stat-label > span, .ui-prof__role, .ui-prof__proof, .ui-prof__tagline > span, .ui-prof__cta) {
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *):not(.is-in) :is(.ui-prof__stat-num, .ui-prof__stat-label > span, .ui-prof__role, .ui-prof__proof, .ui-prof__tagline > span),
+.ui-prof.is-armed .ui-prof__cta:not(.is-in) {
   background-color: var(--ui-prof-skel);
   background-image: linear-gradient(100deg, transparent 35%, var(--ui-prof-skel-shine) 50%, transparent 65%);
   background-size: 300% 100%;
@@ -398,22 +405,20 @@
   animation: ui-prof-shimmer 1.8s linear infinite;
 }
 
-.ui-prof.is-armed:not(.is-revealed) :is(.ui-prof__stat-num, .ui-prof__stat-label > span, .ui-prof__role, .ui-prof__proof, .ui-prof__tagline > span) {
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *):not(.is-in) :is(.ui-prof__stat-num, .ui-prof__stat-label > span, .ui-prof__role, .ui-prof__proof, .ui-prof__tagline > span) {
   border-radius: calc(3 * var(--u));
 }
 
-.ui-prof.is-armed:not(.is-revealed) .ui-prof__cta-arrow { background-color: var(--ui-prof-skel); }
-
-/* The portrait takes about 1.3s to open out; the information loads as it lands */
-.ui-prof__stat { --ui-prof-delay: 0.9s; }
-.ui-prof__body > :nth-child(1) { --ui-prof-delay: 1.05s; }
-.ui-prof__body > :nth-child(2) { --ui-prof-delay: 1.15s; }
-.ui-prof__body > :nth-child(3) { --ui-prof-delay: 1.25s; }
+.ui-prof.is-armed .ui-prof__cta:not(.is-in) .ui-prof__cta-arrow { background-color: var(--ui-prof-skel); }
 
 [data-ui-prof-count] { font-variant-numeric: tabular-nums; }
 
 @keyframes ui-prof-blink {
   50% { opacity: 0; }
+}
+
+@keyframes ui-prof-land {
+  from { transform: translateY(calc(8 * var(--u))); }
 }
 
 @keyframes ui-prof-shimmer {
