@@ -376,19 +376,19 @@
 /* Skeleton: until it loads, each row of information (the stat, the meta row,
    the tagline and the button) is a quiet placeholder in the exact shape of
    its text: a faint tint of the ink with a slow shine. script.js loads the
-   rows one at a time with .is-in, each waiting for the one before to finish
-   counting, and the row fills in with its real colours as it settles. */
+   rows one at a time with .is-in, each starting as the one before settles,
+   and the row fills in with its real colours as it lifts into place. */
 .ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *).is-in,
 .ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *).is-in :is(*, *::before, *::after) {
   /* Only on the way in: arming (or replaying) switches to the skeleton at once */
   transition:
-    color 0.5s ease,
-    background-color 0.5s ease,
+    color 0.4s ease,
+    background-color 0.4s ease,
     transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *).is-in {
-  animation: ui-prof-land 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: ui-prof-land 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *):not(.is-in) :is(*, *::before, *::after) {

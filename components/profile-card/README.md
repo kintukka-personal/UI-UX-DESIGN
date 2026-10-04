@@ -16,14 +16,14 @@ An editorial profile card for a coach or trainer, with the person as the hero. T
 - **Intro:** the first time the card scrolls into view, it plays in three beats. From the first frame, the stat, meta row, tagline and button show as skeleton placeholders: bars in the exact shape of their text, in a faint tint of the ink, with a slow shine. That way the layout is already there, but nothing competes with the name.
   1. The name types out letter by letter (MAYA, a short pause, then ROSS) behind a blinking blue caret. Each letter appears in its final place, because the stretched layout is already set.
   2. When the caret fades, the portrait opens out from the centre of the face as a soft-edged circle. It fades in and settles from a slight zoom as it grows.
-  3. As the portrait lands, the information loads one row at a time. Each row fills in from its skeleton with a small settle. Its numbers wait until it has fully filled in, show their starting value for a moment, then count. The next row waits until they finish:
+  3. As the portrait lands, the information loads one row at a time. Each row fills in from its skeleton with a small settle. Its numbers wait until it has fully filled in, show their starting value for a moment, then count. The next row starts as soon as that count has all but settled, so there are no dead pauses:
      - the stat, with the years counting 0 → 8
      - the meta row: role, ★ 0.0 → 4.9 and 0 → 120 clients
      - the tagline
      - the button, which turns from a pale block to black and blue while the price counts down from $100 to $60
 
      Decimals are kept, and a number that counts up holds its final width, so nothing beside it shifts.
-  The whole intro takes about 9 seconds, and `window.uiProf.play(card)` replays it. The demo has a "Replay intro" button.
+  The whole intro takes about 6.5 seconds, and `window.uiProf.play(card)` replays it. The demo has a "Replay intro" button.
 - **Hover:** hovering the monogram tilts it, hovering the menu shortens its bottom line, and hovering the button nudges the arrow out to the top right.
 - **Reduced motion, or no JavaScript:** the card shows at rest with the final numbers.
 - **Scaling:** every size comes from the card's width (390 design units, using container query units), so the whole layout scales as one piece from a 320px phone up to the 430px max width.

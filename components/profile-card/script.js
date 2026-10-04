@@ -8,7 +8,8 @@
    3. Until then the stat and footer rows show as skeleton bars (style.css).
       As the portrait lands they load one at a time: the stat, then the meta
       row, the tagline and the button. A row's numbers start counting once
-      the row has finished filling in, and the next row waits for them.
+      the row has finished filling in, and the next row starts as they
+      settle.
 
    Counting: every [data-ui-prof-count] runs from data-ui-prof-count-from
    (default 0) to the number written in it, so it can count up (0 → 120) or
@@ -27,11 +28,12 @@
   var TYPE_STEP = 115;    // ms per letter
   var LINE_PAUSE = 240;   // extra pause before the second line
   var CARET_HOLD = 450;   // caret blinks this long after the last letter
-  var COUNT_TIME = 1000;  // ms for each number to count
-  var LAND_DELAY = 900;   // ms after the portrait starts opening that the first row loads
-  var ROW_FILL = 600;     // ms a row takes to fill in from its skeleton (matches style.css)
-  var COUNT_HOLD = 200;   // ms the starting number shows, fully in, before it counts
-  var ROW_GAP = 120;      // ms between one row finishing and the next starting
+  var COUNT_TIME = 800;   // ms for each number to count
+  var LAND_DELAY = 700;   // ms after the portrait starts opening that the first row loads
+  var ROW_FILL = 450;     // ms a row takes to fill in from its skeleton (matches style.css)
+  var COUNT_HOLD = 150;   // ms the starting number shows, fully in, before it counts
+  var COUNT_HANDOFF = 0.7; // the next row starts this far into a count (it has all but settled by then)
+  var TEXT_HANDOFF = 250; // ms into a row with no numbers that the next row starts
 
   function splitLetters(text) {
     if (text.dataset.split) return;
@@ -191,23 +193,24 @@
       });
 
       // Rows load one after another as the portrait lands. A row with
-      // numbers counts them once it has filled in, and the next row waits
-      // for the count to finish.
+      // numbers counts them once it has filled in. The next row starts as that
+      // count settles (an ease-out count is ~97% there at 70% of its time), or
+      // part-way through a row with no numbers, so there are no dead pauses.
       t += LAND_DELAY;
       rowsOf(card).forEach(function (row) {
         var numbers = row.querySelectorAll("[data-ui-prof-count]");
         later(t, function () { row.classList.add("is-in"); });
-        t += ROW_FILL;
-        if (numbers.length) {
-          // Count only once the row has fully filled in, so the start ($100)
-          // is readable before it moves
-          t += COUNT_HOLD;
-          later(t, function () {
-            numbers.forEach(function (el) { count(el, timers); });
-          });
-          t += COUNT_TIME;
+        if (!numbers.length) {
+          t += TEXT_HANDOFF;
+          return;
         }
-        t += ROW_GAP;
+        // Count only once the row has fully filled in, so the start ($100)
+        // is readable before it moves
+        t += ROW_FILL + COUNT_HOLD;
+        later(t, function () {
+          numbers.forEach(function (el) { count(el, timers); });
+        });
+        t += COUNT_TIME * COUNT_HANDOFF;
       });
     });
   }
