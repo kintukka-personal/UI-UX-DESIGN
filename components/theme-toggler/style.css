@@ -1,0 +1,73 @@
+/* ==========================================================================
+   UI Theme Toggler — light/dark switch with a circular reveal
+   Click the button and the new theme grows out of it as a circle until it
+   covers the page. Uses the View Transitions API; browsers without it (or
+   visitors who prefer reduced motion) get an instant switch.
+
+   The theme is a `dark` class on <html>, so style your site with
+   `html.dark …` or `.dark …` selectors.
+   ========================================================================== */
+
+.ui-theme-toggle {
+  --ui-theme-toggle-size: 40px;
+  --ui-theme-toggle-icon: 20px;
+  --ui-theme-toggle-stroke: 2;
+  --ui-theme-toggle-hover: rgba(127, 127, 127, 0.14);
+  --ui-theme-toggle-radius: 999px;
+
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: var(--ui-theme-toggle-size);
+  height: var(--ui-theme-toggle-size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ui-theme-toggle-radius);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 150ms ease;
+}
+
+.ui-theme-toggle:hover { background: var(--ui-theme-toggle-hover); }
+
+.ui-theme-toggle:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.ui-theme-toggle__icon {
+  grid-area: 1 / 1;
+  width: var(--ui-theme-toggle-icon);
+  height: var(--ui-theme-toggle-icon);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--ui-theme-toggle-stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Light theme shows the moon (switch to dark); dark theme shows the sun. */
+.ui-theme-toggle__sun { display: none; }
+html.dark .ui-theme-toggle__sun { display: block; }
+html.dark .ui-theme-toggle__moon { display: none; }
+
+.ui-theme-toggle__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The circular reveal. Scoped to a class that only exists while the toggle
+   is running, so other view transitions on your site keep their defaults. */
+html.ui-theme-transition::view-transition-old(root),
+html.ui-theme-transition::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}

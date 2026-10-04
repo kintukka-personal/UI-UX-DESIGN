@@ -17,3 +17,4 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Numeric text (React)](components/numeric-text-react/) | React component: changed digits roll as an odometer, with an optional motion blur that follows the digit's speed |
 | [Product card](components/product-card/) | Editorial product hero: giant wordmark, a floating cut-out over a two-tone stage, colourway swatches that retint the card, and an animated Add to bag. Includes a Shopify section |
 | [Profile card](components/profile-card/) | Editorial coach profile: a giant two-line name behind a cut-out portrait, a bracketed stat on the shirt, and a split "Book a session" button |
+| [Animated theme toggler](components/theme-toggler/) | Light/dark switch where the new theme grows out of the button as a circle, using the View Transitions API. A plain-JS rebuild of Magic UI's React component |
