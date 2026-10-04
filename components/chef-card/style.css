@@ -201,8 +201,8 @@
 .ui-chef__stat {
   --num-w: 46;
   --num-h: 34;
-  --num-size: 23;
-  --sup-size: 10;
+  --num-size: 20;
+  --sup-size: 9;
   --arm: 5;
   --title-size: 9;
   --sub-size: 7.5;
@@ -214,8 +214,8 @@
 .ui-chef__stat--lead {
   --num-w: 70;
   --num-h: 64;
-  --num-size: 46;
-  --sup-size: 16;
+  --num-size: 38;
+  --sup-size: 13;
   --arm: 8;
   --title-size: 12.5;
   --sub-size: 8.5;
@@ -225,15 +225,22 @@
 .ui-chef__stat-num {
   position: relative;
   flex: none;
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: calc(var(--num-w) * var(--u));
   height: calc(var(--num-h) * var(--u));
   font-size: calc(var(--num-size) * var(--u));
-  font-weight: 200;
-  letter-spacing: -0.04em;
   line-height: 1;
-  font-variant-numeric: lining-nums;
+}
+
+/* The count is one tight unit, "3×": the number in the name's display face
+   and gold, the × small and ivory right beside it, centred in the bracket */
+.ui-chef__stat-num [data-ui-chef-count] {
+  color: var(--ui-chef-accent);
+  font-family: var(--ui-chef-display);
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 /* Square brackets drawn as two open boxes */
@@ -252,11 +259,10 @@
 
 /* Superscript after the number (×) and, optionally, a small word before it */
 .ui-chef__stat-num sup {
-  position: absolute;
-  top: calc(var(--num-h) * 0.12 * var(--u));
-  right: calc(var(--arm) * 1.2 * var(--u));
+  align-self: flex-start;
+  margin: calc(var(--num-h) * 0.27 * var(--u)) 0 0 calc(var(--num-size) * 0.04 * var(--u));
   font-size: calc(var(--sup-size) * var(--u));
-  font-weight: 300;
+  font-weight: 600;
   letter-spacing: 0;
   line-height: 1;
 }
