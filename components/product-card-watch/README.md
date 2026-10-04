@@ -46,6 +46,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
 | `style.css` | Component styles and the Chrome and Onyx themes |
 | `script.js` | Swatches, add to cart, entrance and pointer parallax |
 | `images/acier-*.webp` | Transparent watch cut-outs, chrome and black dial, on the same 671 × 1191 canvas |
+| `images/swatch-*.webp` | Round crops of each dial (128 × 128), used as the colour swatches |
 | `shopify/ui-wcard.liquid` | Shopify section: the card for a real product, with one block per colourway |
 | `shopify/ui-wcard-shopify.js` | Shopify connection: variants, real add to cart, header cart count |
 
@@ -88,7 +89,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
         </p>
         <fieldset class="ui-wcard__swatches">
           <legend class="ui-wcard__sr">Colour</legend>
-          <label class="ui-wcard__swatch" style="--swatch: #8DB28F">
+          <label class="ui-wcard__swatch" style="--swatch: url(images/swatch-chrome.webp) center / cover">
             <input type="radio" name="acier-colour" value="chrome" checked>
             <span class="ui-wcard__dot" aria-hidden="true"></span>
             <span class="ui-wcard__swatch-name">Chrome</span>
@@ -109,6 +110,8 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
 ```
 
 **Sale price:** the struck-through `ui-wcard__price-was` is optional. For full price, drop it and put a label above the price instead: `<span class="ui-wcard__price-head">Price</span>` as the first child of the paragraph.
+
+**Swatches** show the dials themselves. `--swatch` takes any CSS background, here a round crop of each dial, so each swatch is a tiny watch face with its hands and steel bezel. A plain colour or gradient works too.
 
 The swatches are real radio inputs, so arrow keys, focus and screen readers work without extra code. Each radio's `value` must match an image's `data-colorway`.
 
@@ -182,7 +185,7 @@ The `shopify/` folder turns the card into a theme section for a real product.
 2. **Section.** Add `shopify/ui-wcard.liquid` to `sections/`.
 3. **Product page.** In the theme editor, open a product template and add the **UI product card (watch)** section. It uses that page's product. You can hide the theme's own product section, or keep it below for the full description. On any other page, pick a product in the section settings.
 4. **Colourways.** The section reads the product's colour option ("Color", "Colour" or "Dial" by default; change it in the settings). It adds one swatch per value. Each **Colourway** block matches one value by name and sets:
-   - its swatch colour
+   - its swatch colour, or a swatch image (a square crop of the dial) shown instead
    - a **cut-out image**: a transparent PNG or WebP, portrait, with the product filling the frame
    - its card colours: stage, ombré, light glow, wordmark, spec line, the button's two gradient colours, and ring
 
