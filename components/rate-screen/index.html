@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>App Rating Screen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ---- Demo page only (not part of the component) ---- */
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 16px;
+    min-height: 100dvh;
+    background: #EDE5E5;
+    font: 400 13px/1.5 "Poppins", "Helvetica Neue", Arial, sans-serif;
+    color: #6F6565;
+  }
+
+  /* A phone-sized frame on larger screens; the full screen on a phone. */
+  .demo-phone {
+    width: 390px;
+    height: min(844px, calc(100dvh - 96px));
+    min-height: 600px;
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 0 0 10px #1C1416, 0 30px 60px -20px rgba(40, 10, 15, 0.45);
+  }
+
+  .demo-log { margin: 0; min-height: 1.5em; text-align: center; }
+  .demo-log code { color: #45161C; font-weight: 500; }
+
+  @media (max-width: 500px), (max-height: 700px) and (max-width: 900px) {
+    body { display: block; }
+    .demo-phone { width: 100%; height: 100dvh; min-height: 0; border-radius: 0; box-shadow: none; }
+    .demo-log { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-phone">
+  <main class="ui-rate" data-ui-rate data-done-label="I rated" aria-labelledby="ui-rate-title">
+    <header class="ui-rate__top">
+      <button class="ui-rate__back" type="button" data-ui-rate-back aria-label="Back">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <div class="ui-rate__progress" role="progressbar" aria-label="Onboarding progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="96" style="--ui-rate-progress: 96%"><span></span></div>
+    </header>
+
+    <div class="ui-rate__intro">
+      <h1 class="ui-rate__title" id="ui-rate-title">How is Cloey doing?</h1>
+      <p class="ui-rate__text">Help us grow with a quick rating. Cloey loves compliments!</p>
+    </div>
+
+    <div class="ui-rate__hero">
+      <!-- Five gold stars between two laurel branches -->
+      <svg class="ui-rate__badge" viewBox="0 0 718 270" role="img" aria-label="Five stars">
+        <defs>
+          <g id="ui-rate-laurel">
+            <path class="ui-rate__stem" d="M136.1 247.0Q123.1 243.0 118.1 235.0L111.0 233.8L104.1 232.0L97.3 229.8L90.7 227.1L84.3 223.9L78.1 220.2L72.2 216.2L66.7 211.7L61.4 206.8L56.5 201.6L52.0 196.0L47.9 190.2L44.3 184.0L41.1 177.6L38.3 171.0L36.1 164.2L34.3 157.3L33.0 150.3L32.3 143.1L32.0 136.0L32.3 128.9L33.0 121.7L34.3 114.7L36.1 107.8L38.3 101.0L41.1 94.4L44.3 88.0L47.9 81.8L52.0 76.0L56.5 70.4L61.4 65.2L66.7 60.3L72.2 55.8L78.1 51.8L84.3 48.1L90.7 44.9L97.3 42.2L104.1 40.0L111.0 38.2L118.1 37.0"/>
+            <path d="M0 0C10 -10 30 -10 39 0C30 10 10 10 0 0" transform="translate(106.9 232.8) rotate(-207.4)"/>
+            <path d="M0 0C8 -9 24 -9 33 0C24 9 8 9 0 0" transform="translate(97.3 229.8) rotate(-119.7)"/>
+            <path d="M0 0C10 -11 30 -11 40 0C30 11 10 11 0 0" transform="translate(78.7 220.6) rotate(-189.8)"/>
+            <path d="M0 0C8 -9 25 -9 33 0C25 9 8 9 0 0" transform="translate(70.5 214.9) rotate(-102.1)"/>
+            <path d="M0 0C10 -11 31 -11 41 0C31 11 10 11 0 0" transform="translate(55.6 200.5) rotate(-172.2)"/>
+            <path d="M0 0C9 -9 26 -9 34 0C26 9 9 9 0 0" transform="translate(49.5 192.6) rotate(-84.4)"/>
+            <path d="M0 0C11 -11 32 -11 42 0C32 11 11 11 0 0" transform="translate(39.6 174.3) rotate(-154.6)"/>
+            <path d="M0 0C9 -9 26 -9 35 0C26 9 9 9 0 0" transform="translate(36.3 164.9) rotate(-66.8)"/>
+            <path d="M0 0C11 -11 33 -11 43 0C33 11 11 11 0 0" transform="translate(32.4 144.6) rotate(-136.9)"/>
+            <path d="M0 0C9 -9 27 -9 36 0C27 9 9 9 0 0" transform="translate(32.0 134.6) rotate(-49.2)"/>
+            <path d="M0 0C11 -12 33 -12 44 0C33 12 11 12 0 0" transform="translate(34.5 114.0) rotate(-119.3)"/>
+            <path d="M0 0C9 -10 28 -10 37 0C28 10 9 10 0 0" transform="translate(37.1 104.4) rotate(-31.6)"/>
+            <path d="M0 0C11 -12 34 -12 45 0C34 12 11 12 0 0" transform="translate(45.7 85.5) rotate(-101.7)"/>
+            <path d="M0 0C9 -10 28 -10 38 0C28 10 9 10 0 0" transform="translate(51.2 77.1) rotate(-13.9)"/>
+            <path d="M0 0C12 -12 35 -12 46 0C35 12 12 12 0 0" transform="translate(65.0 61.7) rotate(-84.0)"/>
+            <path d="M0 0C10 -10 29 -10 38 0C29 10 10 10 0 0" transform="translate(72.8 55.4) rotate(3.7)"/>
+            <path d="M0 0C12 -12 36 -12 47 0C36 12 12 12 0 0" transform="translate(90.7 44.9) rotate(-66.4)"/>
+            <path d="M0 0C10 -10 29 -10 39 0C29 10 10 10 0 0" transform="translate(100.0 41.3) rotate(21.3)"/>
+            <path d="M0 0C12 -13 36 -13 48 0C36 13 12 13 0 0" transform="translate(118.1 37.0) rotate(-8.0)"/>
+          </g>
+        </defs>
+        <g class="ui-rate__laurel"><use href="#ui-rate-laurel"/></g>
+        <g class="ui-rate__laurel" transform="translate(718 0) scale(-1 1)"><use href="#ui-rate-laurel" style="animation-delay: 60ms"/></g>
+        <g transform="translate(145 138)"><path class="ui-rate__star" style="--i: 0" d="M0.0 -40.0L10.6 -14.6L38.0 -12.4L17.1 5.6L23.5 32.4L0.0 18.0L-23.5 32.4L-17.1 5.6L-38.0 -12.4L-10.6 -14.6Z"/></g>
+        <g transform="translate(252 138)"><path class="ui-rate__star" style="--i: 1" d="M0.0 -40.0L10.6 -14.6L38.0 -12.4L17.1 5.6L23.5 32.4L0.0 18.0L-23.5 32.4L-17.1 5.6L-38.0 -12.4L-10.6 -14.6Z"/></g>
+        <g transform="translate(359 138)"><path class="ui-rate__star" style="--i: 2" d="M0.0 -40.0L10.6 -14.6L38.0 -12.4L17.1 5.6L23.5 32.4L0.0 18.0L-23.5 32.4L-17.1 5.6L-38.0 -12.4L-10.6 -14.6Z"/></g>
+        <g transform="translate(466 138)"><path class="ui-rate__star" style="--i: 3" d="M0.0 -40.0L10.6 -14.6L38.0 -12.4L17.1 5.6L23.5 32.4L0.0 18.0L-23.5 32.4L-17.1 5.6L-38.0 -12.4L-10.6 -14.6Z"/></g>
+        <g transform="translate(573 138)"><path class="ui-rate__star" style="--i: 4" d="M0.0 -40.0L10.6 -14.6L38.0 -12.4L17.1 5.6L23.5 32.4L0.0 18.0L-23.5 32.4L-17.1 5.6L-38.0 -12.4L-10.6 -14.6Z"/></g>
+      </svg>
+
+      <!-- Cloey the panda, arms up, with star eyes and a grey scarf -->
+      <svg class="ui-rate__mascot" viewBox="0 0 420 620" aria-hidden="true">
+        <defs>
+          <clipPath id="ui-rate-head"><ellipse cx="210" cy="138" rx="139" ry="103"/></clipPath>
+        </defs>
+        <g class="ui-rate__panda" stroke-linejoin="round">
+          <g class="ui-rate__arm ui-rate__arm--left" fill="none" stroke-linecap="round">
+            <path d="M118 300L52 152" stroke="#121212" stroke-width="78"/>
+            <path d="M118 300L52 152" stroke="#262626" stroke-width="66"/>
+          </g>
+          <g class="ui-rate__arm ui-rate__arm--right" fill="none" stroke-linecap="round">
+            <path d="M302 300L368 152" stroke="#121212" stroke-width="78"/>
+            <path d="M302 300L368 152" stroke="#262626" stroke-width="66"/>
+          </g>
+
+          <!-- Body, legs and belly -->
+          <path d="M122 222C90 252 80 308 81 368C82 436 94 494 116 534L116 588Q116 610 138 610L184 610Q204 610 204 590L204 566Q210 554 216 566L216 590Q216 610 236 610L282 610Q304 610 304 588L304 534C326 494 338 436 339 368C340 308 330 252 298 222Z" fill="#262626" stroke="#121212" stroke-width="6"/>
+          <ellipse cx="210" cy="392" rx="70" ry="126" fill="#FFFFFF"/>
+          <path d="M244 596l7-13M256 598l7-13M268 598l6-11" fill="none" stroke="#8C8C8C" stroke-width="3.5" stroke-linecap="round"/>
+
+          <!-- Scarf: hanging tail, then the band around the neck -->
+          <path d="M284 236L332 224L354 340L310 352Z" fill="#6E6E6E" stroke="#1A1A1A" stroke-width="5"/>
+          <path d="M297 296L341 286" fill="none" stroke="#585858" stroke-width="3" stroke-linecap="round"/>
+          <path d="M94 212C138 264 282 264 326 212L332 242C288 296 132 296 88 242Z" fill="#6E6E6E" stroke="#1A1A1A" stroke-width="5"/>
+
+          <!-- Head -->
+          <circle cx="105" cy="50" r="40" fill="#262626" stroke="#121212" stroke-width="6"/>
+          <circle cx="315" cy="50" r="40" fill="#262626" stroke="#121212" stroke-width="6"/>
+          <ellipse cx="210" cy="138" rx="142" ry="106" fill="#262626"/>
+          <path clip-path="url(#ui-rate-head)" d="M60 176C60 110 92 78 145 80C180 82 200 100 210 122C220 100 240 82 275 80C328 78 360 110 360 176L360 260L60 260Z" fill="#FFFFFF"/>
+          <ellipse cx="210" cy="138" rx="142" ry="106" fill="none" stroke="#121212" stroke-width="6"/>
+
+          <!-- Star eyes with little sparkles -->
+          <g class="ui-rate__eyes">
+            <g transform="translate(150 142)"><g class="ui-rate__twinkle">
+              <path class="ui-rate__eye" transform="scale(1.75)" d="M0.0 -15.0L4.0 -5.5L14.3 -4.6L6.5 2.1L8.8 12.1L0.0 6.8L-8.8 12.1L-6.5 2.1L-14.3 -4.6L-4.0 -5.5Z"/>
+              <path class="ui-rate__sparkle" d="M-28 -24l-6-6M-6 -36l-1-8M30 -16l7-4"/>
+            </g></g>
+            <g transform="translate(270 142)"><g class="ui-rate__twinkle" style="animation-delay: -0.7s">
+              <path class="ui-rate__eye" transform="scale(1.75)" d="M0.0 -15.0L4.0 -5.5L14.3 -4.6L6.5 2.1L8.8 12.1L0.0 6.8L-8.8 12.1L-6.5 2.1L-14.3 -4.6L-4.0 -5.5Z"/>
+              <path class="ui-rate__sparkle" d="M28 -24l6-6M6 -36l1-8M-30 -16l-7-4"/>
+            </g></g>
+          </g>
+
+          <!-- Nose and mouth -->
+          <path d="M198 166Q210 159 222 166Q219 177 210 179Q201 177 198 166Z" fill="#1A1A1A"/>
+          <path d="M210 179V185M196 187Q203 195 210 186Q217 195 224 187" fill="none" stroke="#1A1A1A" stroke-width="4" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+
+    <footer class="ui-rate__actions">
+      <button class="ui-rate__cta" type="button" data-ui-rate-cta><span class="ui-rate__cta-label">Rate Cloey</span></button>
+      <button class="ui-rate__skip" type="button" data-ui-rate-skip hidden>Not now</button>
+    </footer>
+  </main>
+</div>
+
+<p class="demo-log" id="demo-log">Tap <strong>Rate Cloey</strong> to see the events this screen fires.</p>
+
+<script src="script.js"></script>
+<script>
+  // Demo only: show each event, and start over after "I rated" or "Not now".
+  (function () {
+    var log = document.getElementById("demo-log");
+    var screen = document.querySelector("[data-ui-rate]");
+    var notes = {
+      request: "open the App Store / Play Store review prompt here",
+      done: "the user says they rated, so go to the next step",
+      skip: "the user skipped, so go to the next step",
+      back: "go back to the previous onboarding step"
+    };
+    Object.keys(notes).forEach(function (name) {
+      screen.addEventListener("ui-rate:" + name, function () {
+        log.innerHTML = "<code>ui-rate:" + name + "</code> — " + notes[name];
+        if (name === "done" || name === "skip") {
+          setTimeout(function () { window.uiRate.reset(screen); }, 1200);
+        }
+      });
+    });
+  })();
+</script>
+</body>
+</html>
