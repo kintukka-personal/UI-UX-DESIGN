@@ -31,6 +31,12 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
      - after another short pause, the button
 
   The whole intro takes about 10 seconds, and `window.uiChef.play(card)` replays it. The demo has a "Replay intro" button.
+- **Invitation:** once everything has loaded, the Book an experience button plays a gentle loop every 5 seconds to draw the eye:
+  1. A warm gold-and-white sheen sweeps across the ivory bar.
+  2. As it reaches the gold square, the arrow slips out through the top-right corner, and a fresh one glides back in from the bottom-left. A tiny sparkle twinkles in the corner as it lands.
+  3. A thin gold ring ripples out from the button and fades.
+
+  Then it rests for about 3.5 seconds. Hovering over the button or focusing it pauses the loop, and reduced motion turns it off. It starts 1.4 seconds after the last row comes in (`IDLE_DELAY` in `script.js`), when the card gets `.is-idle`.
 - **Hover:** hovering the monogram tilts it, hovering the menu shortens its bottom line, and hovering the button nudges the arrow out to the top right.
 - **Reduced motion, or no JavaScript:** the card shows at rest with the final numbers and a gold star.
 - **Scaling:** every size comes from the card's width (390 design units, using container query units), so the whole layout scales as one piece from a 320px phone up to the 430px max width.
@@ -95,13 +101,13 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-chef`,
 
     <div class="ui-chef__body">
       <p class="ui-chef__meta" data-ui-chef-pause="300">
-        <span class="ui-chef__role">Private chef & catering</span>
+        <span class="ui-chef__role">Private chef &amp; catering</span>
         <span class="ui-chef__proof"><b class="ui-chef__rating"><svg class="ui-chef__star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.85 5.8 6.4.93-4.63 4.5 1.1 6.37L12 17.4l-5.72 3l1.1-6.37-4.63-4.5 6.4-.93z"/></svg><span class="ui-chef__sr">Rated </span><span data-ui-chef-count>5.0</span></b> · <b data-ui-chef-count>60</b> reviews</span>
       </p>
       <p class="ui-chef__tagline" data-ui-chef-pause="200"><span>Quality dining and fine food, brought directly to you.</span></p>
       <a class="ui-chef__cta" href="https://dine-in.com.au/experiences" data-ui-chef-pause="200">
         <span class="ui-chef__cta-label">
-          Book an experience
+          <span class="ui-chef__cta-text">Book an experience</span>
           <span class="ui-chef__cta-note">Illawarra &amp; Sydney</span>
         </span>
         <span class="ui-chef__cta-arrow" aria-hidden="true">

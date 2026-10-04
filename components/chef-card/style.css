@@ -364,6 +364,7 @@
 }
 
 .ui-chef__cta {
+  position: relative;
   display: flex;
   align-items: stretch;
   height: calc(61 * var(--u));
@@ -395,6 +396,7 @@
 }
 
 .ui-chef__cta-arrow {
+  position: relative;
   display: grid;
   place-items: center;
   width: calc(61 * var(--u));
@@ -415,6 +417,62 @@
 
 .ui-chef__cta:hover .ui-chef__cta-arrow svg { transform: translate(calc(3 * var(--u)), calc(-3 * var(--u))); }
 .ui-chef__cta:active { transform: scale(0.99); }
+
+/* ---- Invitation: once the intro has finished (.is-idle), the button plays a
+   gentle loop every 5s to draw the eye. A warm sheen sweeps across the
+   ivory bar; as it reaches the gold square the arrow slips out through the
+   top-right corner and a fresh one glides in from the bottom-left with a
+   tiny sparkle; then a soft gold ring ripples out from the button. Hover
+   pauses it (the arrow does its usual nudge instead). */
+.ui-chef__cta-label { position: relative; overflow: hidden; }
+.ui-chef__cta-label > * { position: relative; }
+
+.ui-chef__cta-label::before,
+.ui-chef__cta::after,
+.ui-chef__cta-arrow::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* The sheen: a soft band of warm light */
+.ui-chef__cta-label::before {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, color-mix(in srgb, var(--ui-chef-accent) 22%, transparent) 40%, rgba(255, 255, 255, 0.75) 55%, transparent);
+  transform: translateX(-120%) skewX(-12deg);
+}
+
+/* The ripple: a thin gold ring that grows out from the whole button */
+.ui-chef__cta::after {
+  inset: 0;
+  outline: 1.5px solid var(--ui-chef-accent);
+  outline-offset: 0;
+}
+
+/* The sparkle in the gold square's top-right corner */
+.ui-chef__cta-arrow::after {
+  top: calc(9 * var(--u));
+  right: calc(9 * var(--u));
+  width: calc(9 * var(--u));
+  height: calc(9 * var(--u));
+  background: var(--ui-chef-cta-fg);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  transform: scale(0);
+}
+
+.ui-chef.is-idle .ui-chef__cta-label::before { animation: ui-chef-cta-sheen 5s ease-in-out 0.2s infinite; }
+.ui-chef.is-idle .ui-chef__cta::after { animation: ui-chef-cta-ripple 5s ease-out 0.2s infinite; }
+.ui-chef.is-idle .ui-chef__cta-arrow::after { animation: ui-chef-cta-sparkle 5s ease-out 0.2s infinite; }
+.ui-chef.is-idle .ui-chef__cta-arrow svg { animation: ui-chef-cta-arrow 5s cubic-bezier(0.5, 0, 0.3, 1) 0.2s infinite; }
+
+.ui-chef.is-idle .ui-chef__cta:is(:hover, :focus-visible) .ui-chef__cta-label::before,
+.ui-chef.is-idle .ui-chef__cta:is(:hover, :focus-visible) .ui-chef__cta-arrow svg,
+.ui-chef.is-idle .ui-chef__cta:is(:hover, :focus-visible)::after,
+.ui-chef.is-idle .ui-chef__cta:is(:hover, :focus-visible) .ui-chef__cta-arrow::after { animation: none; }
 
 /* ---- Entrance ---------------------------------------------------------- */
 
@@ -577,6 +635,33 @@
   100% { transform: none; text-shadow: none; }
 }
 
+/* One 5s cycle, shared by the four parts of the button's invitation */
+@keyframes ui-chef-cta-sheen {
+  0% { opacity: 1; transform: translateX(-120%) skewX(-12deg); }
+  18% { opacity: 1; transform: translateX(260%) skewX(-12deg); }
+  18.01%, 100% { opacity: 0; transform: translateX(260%) skewX(-12deg); }
+}
+
+@keyframes ui-chef-cta-arrow {
+  0%, 15% { transform: none; opacity: 1; }
+  21% { transform: translate(150%, -150%); opacity: 1; }
+  21.01% { transform: translate(-150%, 150%); opacity: 0; }
+  23% { opacity: 1; }
+  30%, 100% { transform: none; opacity: 1; }
+}
+
+@keyframes ui-chef-cta-sparkle {
+  0%, 24% { opacity: 0; transform: scale(0) rotate(0deg); }
+  28% { opacity: 1; transform: scale(1.1) rotate(45deg); }
+  36%, 100% { opacity: 0; transform: scale(0) rotate(90deg); }
+}
+
+@keyframes ui-chef-cta-ripple {
+  0%, 24% { opacity: 0; outline-offset: 0; }
+  25% { opacity: 0.9; outline-offset: 0; }
+  46%, 100% { opacity: 0; outline-offset: calc(12 * var(--u)); }
+}
+
 @keyframes ui-chef-shimmer {
   from { background-position: 100% 0; }
   to { background-position: 0 0; }
@@ -586,4 +671,8 @@
   .ui-chef__mark,
   .ui-chef__menu span,
   .ui-chef__cta-arrow svg { transition: none; }
+  .ui-chef.is-idle .ui-chef__cta-label::before,
+  .ui-chef.is-idle .ui-chef__cta::after,
+  .ui-chef.is-idle .ui-chef__cta-arrow::after,
+  .ui-chef.is-idle .ui-chef__cta-arrow svg { animation: none; }
 }

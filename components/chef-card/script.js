@@ -31,6 +31,10 @@
    (.is-perfect) turns its score gold and pops with a gold glow. The rows
    after it wait until that has finished.
 
+   Invitation: when everything has loaded, the card gets .is-idle and the
+   Book button plays a gentle 5s loop (sheen, arrow out and back in with a
+   sparkle, a gold ripple). See style.css.
+
    The card is armed (hidden) before first paint, so nothing flashes. Without
    this script, or with reduced motion turned on, the card shows at rest.
    window.uiChef.play(card) replays the intro; window.uiChef.init(card) sets up
@@ -52,6 +56,7 @@
   var SPARKLES = 9;       // sparkles that fly into the rating star
   var SPARKLE_TIME = 560; // ms for each sparkle's flight
   var SPARKLE_SPREAD = 220; // ms over which the sparkles set off
+  var IDLE_DELAY = 1400;  // ms after the last row comes in that the button's invitation loop starts
   var PERFECT_TIME = 900; // ms the rating's gold pop takes (matches style.css); later rows wait for it
 
   function splitLetters(text) {
@@ -187,7 +192,7 @@
       timers.stopped = true;
     }
     card._uiChefTimers = { list: [], stopped: false };
-    card.classList.remove("is-revealed", "is-typing", "is-caret-idle", "is-caret-out");
+    card.classList.remove("is-revealed", "is-typing", "is-caret-idle", "is-caret-out", "is-idle");
     card.classList.add("is-armed");
     card.querySelectorAll(".ui-chef__name tspan").forEach(function (t) { t.classList.remove("is-on"); });
     rowsOf(card).forEach(function (row) { row.classList.remove("is-in"); });
@@ -327,6 +332,9 @@
           : t + (rows.length - 1) * stagger + TEXT_HANDOFF;
         t = Math.max(t, starDone);
       });
+
+      // Once everything has loaded, the button starts its gentle invitation loop
+      later(t + IDLE_DELAY, function () { card.classList.add("is-idle"); });
     });
   }
 
