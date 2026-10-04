@@ -12,7 +12,7 @@
   the section settings. Each "Colourway" block matches one value of the
   product's colour option and sets its swatch, transparent cut-out image and
   card colours. Values without a block use the theme swatch colour, the
-  variant image and the default (Chrome) card colours.
+  variant image and the default (Chrome, golden hour) card colours.
 {%- endcomment -%}
 
 {{ 'ui-wcard.css' | asset_url | stylesheet_tag }}
@@ -170,7 +170,9 @@
               --ui-wcard-stage-top: {{ b.settings.stage_top }};
               --ui-wcard-title: {{ b.settings.title }};
               --ui-wcard-specs: {{ b.settings.specs }};
+              --ui-wcard-glow: {{ b.settings.glow }};
               --ui-wcard-cta-bg: {{ b.settings.cta_bg }};
+              --ui-wcard-cta-bg-2: {{ b.settings.cta_bg_2 }};
               --ui-wcard-ring: {{ b.settings.ring }};
             }
           {%- endcapture -%}
@@ -209,7 +211,9 @@
             --ui-wcard-stage-top: {{ b.settings.stage_top }};
             --ui-wcard-title: {{ b.settings.title }};
             --ui-wcard-specs: {{ b.settings.specs }};
+            --ui-wcard-glow: {{ b.settings.glow }};
             --ui-wcard-cta-bg: {{ b.settings.cta_bg }};
+            --ui-wcard-cta-bg-2: {{ b.settings.cta_bg_2 }};
             --ui-wcard-ring: {{ b.settings.ring }};
           }
         {%- endcapture -%}
@@ -324,13 +328,15 @@
         {"type": "color", "id": "swatch", "label": "Swatch", "default": "#C9CDD2"},
         {"type": "image_picker", "id": "image", "label": "Cut-out image", "info": "A transparent PNG or WebP of the product, portrait, with the product filling the frame. Falls back to the variant image."},
         {"type": "header", "content": "Card colours"},
-        {"type": "color", "id": "stage_1", "label": "Stage glow (centre)", "default": "#5B626B"},
-        {"type": "color", "id": "stage_2", "label": "Stage (edges)", "default": "#343940"},
-        {"type": "color", "id": "stage_top", "label": "Stage top (ombré)", "default": "#191C20"},
-        {"type": "color", "id": "title", "label": "Wordmark and icons", "default": "#DCE0E4"},
-        {"type": "color", "id": "specs", "label": "Spec line", "default": "#9AA2AB"},
-        {"type": "color", "id": "cta_bg", "label": "Button", "default": "#1E2227"},
-        {"type": "color", "id": "ring", "label": "Selected swatch ring", "default": "#3A3F46"}
+        {"type": "color", "id": "stage_1", "label": "Stage glow (centre)", "default": "#3A2F22"},
+        {"type": "color", "id": "stage_2", "label": "Stage (edges)", "default": "#14110E"},
+        {"type": "color", "id": "stage_top", "label": "Stage top (ombré)", "default": "#070605"},
+        {"type": "color", "id": "glow", "label": "Light glow (upper left)", "default": "#C99A4E"},
+        {"type": "color", "id": "title", "label": "Wordmark and icons", "default": "#EADBB9"},
+        {"type": "color", "id": "specs", "label": "Spec line", "default": "#B5935A"},
+        {"type": "color", "id": "cta_bg", "label": "Button (light end)", "default": "#DDBB76"},
+        {"type": "color", "id": "cta_bg_2", "label": "Button (dark end)", "default": "#A27A3C"},
+        {"type": "color", "id": "ring", "label": "Selected swatch ring", "default": "#CFAE6C"}
       ]
     }
   ],
@@ -338,8 +344,8 @@
     {
       "name": "UI product card (watch)",
       "blocks": [
-        {"type": "colourway", "settings": {"value": "Chrome", "swatch": "#C9CDD2", "stage_1": "#5B626B", "stage_2": "#343940", "stage_top": "#191C20", "title": "#DCE0E4", "specs": "#9AA2AB", "cta_bg": "#1E2227", "ring": "#3A3F46"}},
-        {"type": "colourway", "settings": {"value": "Onyx", "swatch": "#18191B", "stage_1": "#3A3C40", "stage_2": "#18191C", "stage_top": "#070809", "title": "#ECECEC", "specs": "#8C8F94", "cta_bg": "#0D0E10", "ring": "#111214"}}
+        {"type": "colourway", "settings": {"value": "Chrome", "swatch": "#C9CDD2", "stage_1": "#3A2F22", "stage_2": "#14110E", "stage_top": "#070605", "glow": "#C99A4E", "title": "#EADBB9", "specs": "#B5935A", "cta_bg": "#DDBB76", "cta_bg_2": "#A27A3C", "ring": "#CFAE6C"}},
+        {"type": "colourway", "settings": {"value": "Onyx", "swatch": "#18191B", "stage_1": "#24221F", "stage_2": "#0C0B0A", "stage_top": "#030303", "glow": "#6E5534", "title": "#E4E1DA", "specs": "#8F8A80", "cta_bg": "#E9E4DA", "cta_bg_2": "#A9A399", "ring": "#D9D3C7"}}
       ]
     }
   ]

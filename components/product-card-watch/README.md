@@ -1,6 +1,6 @@
 # Product Card (watch)
 
-The watch edition of the [product card](../product-card/), for the FOSLN ACIER quartz watch. It has the same layout, build-in, colourway switching and fly-to-cart as the original, set up for a tall product. A brushed-steel stage holds a giant "ACIER", the watch stands in front of it and crosses into a cool off-white footer, and the footer carries the price, two dial swatches and a full-width "Add to cart" button.
+The watch edition of the [product card](../product-card/), for the FOSLN ACIER quartz watch. It has the same layout, build-in, colourway switching and fly-to-cart as the original, set up for a tall product. The look is golden hour on dark volcanic stone. A near-black stage, lit by a warm glow from the upper left, holds a champagne "ACIER". The watch stands in front of it and crosses into a dark stone footer, which carries the price, two dial swatches and a gold "Add to cart" button.
 
 - **Layout:**
   - Top row: back button, plus a cart button with a count badge.
@@ -8,11 +8,16 @@ The watch edition of the [product card](../product-card/), for the FOSLN ACIER q
   - Wordmark: "ACIER", edge to edge, sitting behind the watch. It's sized for five letters.
   - Watch: stands over the lower half of the wordmark, from the stage into the footer, over a soft contact shadow.
   - Footer: "$249" on the left, the Chrome and Onyx swatches on the right, CTA underneath.
+- **Theme:** taken from a moody product shot of the watch on dark rock in low golden light:
+  - a fine stone grain over the stage and footer
+  - a warm glow from the upper left
+  - a thin gold line where the stage meets the footer
+  - the steel warmed slightly, as it would be in that light
 - **Colours:** two colourways, named after the dial:
-  - **Chrome:** the brushed-steel slate stage and the chrome sunray dial.
-  - **Onyx:** a near-black stage and the black sunray dial.
+  - **Chrome, golden hour:** stone black with an amber glow, a champagne wordmark, gold spec line and a gold button. The chrome dial is warmed slightly.
+  - **Onyx, after dark:** deeper and cooler, the glow down to an ember, an ivory wordmark and a silver button. It has the black dial and no warming.
 
-  Picking one crossfades the watch photo and retints the stage, wordmark and button.
+  Picking one crossfades the watch photo and blends every colour across.
 - **Button:** one centred "Add to cart" label with a small cart icon, and no side note. After an add it reads "✓ Added". If the add fails, the error message takes the label's place for a few seconds. When the dial is sold out it reads "Sold out" and dims. A short note on the right (such as "Free returns") is still possible: add a `.ui-wcard__cta-note` span, and the label moves left to make room.
 - **Add to cart:** the watch lifts off the stage, shrinks and arcs into the cart icon in about 0.76s. Because it's tall, it shrinks by its height, so it stays inside the card. When it lands:
   - the cart icon gives a little wobble
@@ -106,13 +111,17 @@ Colours live in custom properties on `.ui-wcard`. Each colourway overrides the s
 
 ```css
 .ui-wcard[data-colorway="onyx"] {
-  --ui-wcard-stage-1: #3A3C40;   /* centre of the stage glow */
-  --ui-wcard-stage-2: #18191C;   /* stage edges */
-  --ui-wcard-stage-top: #070809; /* ombré: the top third darkens to this */
-  --ui-wcard-title: #ECECEC;     /* wordmark, icons, badge */
-  --ui-wcard-specs: #8C8F94;     /* spec line */
-  --ui-wcard-cta-bg: #0D0E10;    /* Add to cart */
-  --ui-wcard-ring: #111214;      /* selected swatch ring */
+  --ui-wcard-stage-1: #24221F;   /* warm lift behind the watch */
+  --ui-wcard-stage-2: #0C0B0A;   /* stage */
+  --ui-wcard-stage-top: #030303; /* ombré: the top third darkens to this */
+  --ui-wcard-glow: #6E5534;      /* the light from the upper left */
+  --ui-wcard-title: #E4E1DA;     /* wordmark, icons, badge */
+  --ui-wcard-specs: #8F8A80;     /* spec line */
+  --ui-wcard-cta-bg: #E9E4DA;    /* button gradient, light end */
+  --ui-wcard-cta-bg-2: #A9A399;  /* button gradient, dark end */
+  --ui-wcard-ring: #D9D3C7;      /* selected swatch ring */
+  --ui-wcard-seam: rgba(220, 212, 198, 0.3); /* line between stage and footer */
+  --ui-wcard-tone: none;         /* filter on the watch photo; Chrome warms it */
 }
 ```
 
@@ -121,8 +130,9 @@ These properties are registered with `@property`, so switching colourways blends
 | Property | Default | What it does |
 | --- | --- | --- |
 | `--ui-wcard-font` | Manrope | Typeface for everything |
-| `--ui-wcard-body-bg` | `#ECEDEF` | Cool off-white footer |
-| `--ui-wcard-ink` | `#15181C` | Price and swatch labels |
+| `--ui-wcard-body-bg` | `#16130F` | Dark stone footer (a fine grain sits on top) |
+| `--ui-wcard-ink` | `#F1E8D6` | Price and swatch labels |
+| `--ui-wcard-cta-fg` | `#1A140B` | Button text, dark on the gold |
 | `--ui-wcard-radius` | `28` | Corner radius in design units |
 | `--ui-wcard-inset-top` | `0px` | Extra top padding when the card sits under a status bar |
 
@@ -167,7 +177,7 @@ The `shopify/` folder turns the card into a theme section for a real product.
 4. **Colourways.** The section reads the product's colour option ("Color", "Colour" or "Dial" by default; change it in the settings). It adds one swatch per value. Each **Colourway** block matches one value by name and sets:
    - its swatch colour
    - a **cut-out image**: a transparent PNG or WebP, portrait, with the product filling the frame
-   - its card colours: stage, ombré, wordmark, spec line, button and ring
+   - its card colours: stage, ombré, light glow, wordmark, spec line, the button's two gradient colours, and ring
 
    The preset comes with Chrome and Onyx. Values without a block use the theme's swatch colour, the variant image and the Chrome card colours. Products without a colour option show one image and no swatches.
 5. **Text.** The settings cover the wordmark, spec line, price label, button label, "Added", "Sold out" and an optional button note (empty by default, which keeps the label centred). The wordmark defaults to the first word of the product title. Short words of 3–5 letters fill the card best.
