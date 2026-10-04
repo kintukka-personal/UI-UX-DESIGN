@@ -231,9 +231,9 @@
 .ui-wcard__media {
   position: absolute;
   top: calc(var(--ui-wcard-inset-top) + 150 * var(--u));
-  left: calc(82 * var(--u));
-  width: calc(230 * var(--u));
-  aspect-ratio: 687 / 1253;
+  left: calc(78 * var(--u));
+  width: calc(237 * var(--u));
+  aspect-ratio: 709 / 1253;
   margin: 0;
   z-index: 2;
   pointer-events: none;

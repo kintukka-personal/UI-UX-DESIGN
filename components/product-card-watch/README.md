@@ -15,7 +15,7 @@ The watch edition of the [product card](../product-card/), for the FOSLN ACIER q
   - the steel warmed slightly, as it would be in that light
 - **Colours:** two colourways, named after the dial:
   - **Chrome, golden hour:** stone black with an amber glow, a champagne wordmark, gold spec line and a gold button. The chrome dial is warmed slightly.
-  - **Onyx, after dark:** deeper and cooler, the glow down to an ember, an ivory wordmark and a silver button. It has the black dial and no warming.
+  - **Onyx, after dark:** deeper and cooler, the glow down to an ember, an ivory wordmark and a silver button. It uses the black-dial photo, with no warming.
 
   Picking one crossfades the watch photo and blends every colour across.
 - **Button:** one centred "Add to cart" label with a small cart icon, and no side note. After an add it reads "✓ Added". If the add fails, the error message takes the label's place for a few seconds. When the dial is sold out it reads "Sold out" and dims. A short note on the right (such as "Free returns") is still possible: add a `.ui-wcard__cta-note` span, and the label moves left to make room.
@@ -45,7 +45,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
 | `index.html` | Demo page: the card inside a phone frame with a status bar |
 | `style.css` | Component styles and the Chrome and Onyx themes |
 | `script.js` | Swatches, add to cart, entrance and pointer parallax |
-| `images/acier-*.webp` | Transparent watch cut-outs, chrome and black dial (687 × 1253) |
+| `images/acier-*.webp` | Transparent watch cut-outs, chrome and black dial, on the same 709 × 1253 canvas |
 | `shopify/ui-wcard.liquid` | Shopify section: the card for a real product, with one block per colourway |
 | `shopify/ui-wcard-shopify.js` | Shopify connection: variants, real add to cart, header cart count |
 
@@ -196,6 +196,6 @@ The `shopify/` folder turns the card into a theme section for a real product.
 
 ## Product images
 
-The cut-outs are transparent WebP files with the watch filling the frame (687 × 1253). The Onyx image is the chrome photo with the dial recoloured: a black sunray that keeps the brushed streaks, polished steel hands, and white lume. Swap in a real photo of the black-dial watch when you have one.
+Both cut-outs are transparent WebP files cut from product photos: the chrome-dial watch and the black-dial watch. They share one canvas (709 × 1253) with the watch scaled to the same height and centred, so the crossfade between colourways stays steady.
 
 To use another product, export a transparent PNG/WebP per colourway. If the aspect is different, update `aspect-ratio`, `width` and `top` on `.ui-wcard__media`. If the wordmark has a different number of letters, adjust `font-size` on `.ui-wcard__title`; it's 132 units for five letters, and the original card uses 140 for four.
