@@ -249,6 +249,13 @@
   text-transform: uppercase;
 }
 
+/* With a word before it, the number drops a little and shrinks to clear it */
+.ui-chef__stat-num:has(.ui-chef__stat-pre) {
+  padding-top: calc(9 * var(--u));
+  box-sizing: border-box;
+  font-size: calc(25 * var(--u));
+}
+
 .ui-chef__stat-label {
   display: grid;
   justify-items: start;
