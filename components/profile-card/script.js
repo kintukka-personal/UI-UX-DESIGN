@@ -19,6 +19,10 @@
    that counts up keeps its final width while it runs, so nothing next to it
    shifts.
 
+   Rating star: once the numbers in a row with a .ui-prof__star have finished
+   counting, gold sparkles fly in from around the star. As they arrive it
+   jumps, turns gold (.is-gold) and stays gold.
+
    The card is armed (hidden) before first paint, so nothing flashes. Without
    this script, or with reduced motion turned on, the card shows at rest.
    window.uiProf.play(card) replays the intro; window.uiProf.init(card) sets up
@@ -36,6 +40,9 @@
   var COUNT_HOLD = 150;   // ms the starting number shows, fully in, before it counts
   var COUNT_HANDOFF = 0.7; // the next row starts this far into a count (it has all but settled by then)
   var TEXT_HANDOFF = 250; // ms into a row with no numbers that the next row starts
+  var SPARKLES = 9;       // sparkles that fly into the rating star
+  var SPARKLE_TIME = 560; // ms for each sparkle's flight
+  var SPARKLE_SPREAD = 220; // ms over which the sparkles set off
 
   function splitLetters(text) {
     if (text.dataset.split) return;
@@ -73,6 +80,47 @@
       if (t < 1) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
+  }
+
+  // Gold sparkles appear around the star, then curve into it. The star turns
+  // gold as the last one arrives.
+  function sparkle(card, star, timers) {
+    var inner = card.querySelector(".ui-prof__inner");
+    var box = inner.getBoundingClientRect();
+    var r = star.getBoundingClientRect();
+    var u = box.width / 390;
+    var cx = r.left + r.width / 2 - box.left;
+    var cy = r.top + r.height / 2 - box.top;
+    var last = 0;
+    for (var i = 0; i < SPARKLES; i++) {
+      var angle = (i / SPARKLES) * Math.PI * 2 + Math.random() * 0.5;
+      var dist = (34 + Math.random() * 34) * u;
+      var dx = Math.cos(angle) * dist;
+      var dy = Math.sin(angle) * dist * 0.8;
+      if (dy > 0) dy *= 0.35; // mostly above and beside, clear of the tagline below
+      var delay = Math.random() * SPARKLE_SPREAD;
+      last = Math.max(last, delay);
+      var el = document.createElement("span");
+      el.className = "ui-prof__sparkle";
+      el.setAttribute("aria-hidden", "true");
+      el.style.setProperty("--s", ((6 + Math.random() * 6) * u).toFixed(1) + "px");
+      el.style.left = cx + "px";
+      el.style.top = cy + "px";
+      inner.appendChild(el);
+      // Twinkle in where it starts, then accelerate into the star, spinning
+      // and shrinking. The side-step at the midpoint curves the path.
+      el.animate([
+        { transform: "translate(" + dx + "px," + dy + "px) scale(0) rotate(0deg)", opacity: 0, easing: "ease-out" },
+        { offset: 0.3, transform: "translate(" + dx + "px," + dy + "px) scale(1.1) rotate(45deg)", opacity: 1, easing: "cubic-bezier(0.55, 0, 0.8, 0.4)" },
+        { offset: 0.65, transform: "translate(" + (dx * 0.45 - dy * 0.25) + "px," + (dy * 0.45 + dx * 0.25) + "px) scale(0.8) rotate(140deg)", opacity: 1, easing: "cubic-bezier(0.4, 0, 1, 1)" },
+        { transform: "translate(0,0) scale(0.25) rotate(220deg)", opacity: 0.6 }
+      ], { duration: SPARKLE_TIME, delay: delay, fill: "both" }).onfinish = (function (node) {
+        return function () { node.remove(); };
+      })(el);
+    }
+    timers.list.push(setTimeout(function () {
+      if (!timers.stopped) star.classList.add("is-gold");
+    }, last + SPARKLE_TIME - 40));
   }
 
   function fontsReady(card) {
@@ -114,6 +162,8 @@
     card.classList.add("is-armed");
     card.querySelectorAll(".ui-prof__name tspan").forEach(function (t) { t.classList.remove("is-on"); });
     rowsOf(card).forEach(function (row) { row.classList.remove("is-in"); });
+    card.querySelectorAll(".ui-prof__star").forEach(function (star) { star.classList.remove("is-gold"); });
+    card.querySelectorAll(".ui-prof__sparkle").forEach(function (el) { el.remove(); });
     card.querySelectorAll("[data-ui-prof-count]").forEach(function (el) {
       el.textContent = el.dataset.uiProfTarget;
     });
@@ -218,6 +268,8 @@
         later(t, function () {
           numbers.forEach(function (el) { count(el, timers); });
         });
+        var star = row.querySelector(".ui-prof__star");
+        if (star) later(t + COUNT_TIME + 60, function () { sparkle(card, star, timers); });
         t += COUNT_TIME * COUNT_HANDOFF;
       });
     });

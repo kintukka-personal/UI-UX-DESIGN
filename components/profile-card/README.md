@@ -19,11 +19,12 @@ An editorial profile card for a coach or trainer, with the person as the hero. T
   3. As the portrait lands, the information loads one row at a time. Each row fills in from its skeleton with a small settle. Its numbers wait until it has fully filled in, show their starting value for a moment, then count. The next row starts as soon as that count has all but settled, so there are no dead pauses:
      - the stat, with the years counting 0 → 8
      - after a short pause, the meta row: role, ★ 0.0 → 4.9 and 0 → 120 clients
+       When the rating reaches 4.9, gold sparkles gather around the star and fly into it. The star jumps, turns from an outline to solid gold, and stays gold.
      - after a short pause, the tagline
      - after another short pause, the button, which turns from a pale block to black and blue while the price counts down from $100 to $60
 
      Decimals are kept, and a number that counts up holds its final width, so nothing beside it shifts.
-  The whole intro takes about 6.5 seconds, and `window.uiProf.play(card)` replays it. The demo has a "Replay intro" button.
+  The whole intro takes about 7 seconds, and `window.uiProf.play(card)` replays it. The demo has a "Replay intro" button.
 - **Hover:** hovering the monogram tilts it, hovering the menu shortens its bottom line, and hovering the button nudges the arrow out to the top right.
 - **Reduced motion, or no JavaScript:** the card shows at rest with the final numbers.
 - **Scaling:** every size comes from the card's width (390 design units, using container query units), so the whole layout scales as one piece from a 320px phone up to the 430px max width.
@@ -73,7 +74,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-prof`.
     <div class="ui-prof__body">
       <p class="ui-prof__meta" data-ui-prof-pause="300">
         <span class="ui-prof__role">Strength &amp; running coach</span>
-        <span class="ui-prof__proof"><b>★ <span data-ui-prof-count>4.9</span></b> · <b data-ui-prof-count>120</b> clients</span>
+        <span class="ui-prof__proof"><b><svg class="ui-prof__star" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.85 5.8 6.4.93-4.63 4.5 1.1 6.37L12 17.4l-5.72 3l1.1-6.37-4.63-4.5 6.4-.93z"/></svg><span class="ui-prof__sr">Rated </span><span data-ui-prof-count>4.9</span></b> · <b data-ui-prof-count>120</b> clients</span>
       </p>
       <p class="ui-prof__tagline" data-ui-prof-pause="200"><span>Train for the life you want to keep living.</span></p>
       <a class="ui-prof__cta" href="#book" data-ui-prof-pause="200">
@@ -102,6 +103,8 @@ Colours and fonts are custom properties on `.ui-prof`:
 | `--ui-prof-ink` | `#141416` | Tagline, menu and button |
 | `--ui-prof-muted` | `#6F6D68` | "clients" in the meta row |
 | `--ui-prof-cta-note` | `#8C8C90` | "from $60" |
+| `--ui-prof-gold` | `#F5B301` | Rating star fill and the sparkles |
+| `--ui-prof-gold-edge` | `#D99500` | Rating star outline |
 | `--ui-prof-skel` | ink at 7% | Skeleton bars during the intro |
 | `--ui-prof-skel-shine` | page at 75% | The shine that sweeps across them |
 | `--ui-prof-display` | Anton | Typeface for the name |
