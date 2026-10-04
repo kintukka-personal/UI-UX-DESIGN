@@ -24,8 +24,8 @@ The Dine In edition of the [profile card](../profile-card/), for private chef Br
   1. The name types out letter by letter (BROOKE, a short pause, then SILK) behind a blinking gold caret.
   2. As the last letter lands, the portrait opens out from the centre of the face.
   3. The information then loads one row at a time:
-     - the lead award on its own: it drops in slightly larger, settles with a small bounce and counts 0 → 3×
-     - after a short hold, the other three awards, 0.1s apart, each counting up as it fills in (1×, 1×, 2×)
+     - the lead award on its own: it drops in slightly larger and settles with a small bounce, showing 0×. After a beat it ticks up 1, 2, 3 at an even pace
+     - after a short hold, the other three awards, 0.1s apart. Each comes in at 0, holds for a beat and ticks up to 1×, 1× and 2×
      - after a short pause, the meta row: ★ 0.0 → 5.0 and 0 → 60 reviews. When the rating reaches 5.0, gold sparkles fly into the star, and it jumps, turns gold and stays gold. At the same moment the score turns gold, and the whole rating pops with a brief gold glow to call out the perfect score. Nothing else moves while this happens.
      - once the rating's pop has finished, and after a short pause, the tagline
      - after another short pause, the button

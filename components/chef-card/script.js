@@ -18,7 +18,10 @@
 
    Counting: every [data-ui-chef-count] runs from data-ui-chef-count-from
    (default 0) to the number written in it, so it can count up (0 → 120) or
-   down (100 → 60). Decimals are kept, so 4.9 counts 0.0 → 4.9. A number
+   down (100 → 60). Each shows its starting value for a beat once its row
+   has filled in, then counts. Small whole numbers (up to 10 steps) tick
+   through every value at an even pace; larger ones and decimals glide with
+   an ease-out. Decimals are kept, so 4.9 counts 0.0 → 4.9. A number
    that counts up keeps its final width while it runs, so nothing next to it
    shifts.
 
@@ -42,7 +45,8 @@
   var COUNT_TIME = 800;   // ms for each number to count
   var LAND_DELAY = 700;   // ms after the caret fades that the first row loads
   var ROW_FILL = 450;     // ms a row takes to fill in from its skeleton (matches style.css)
-  var COUNT_HOLD = 150;   // ms the starting number shows, fully in, before it counts
+  var COUNT_HOLD = 400;   // ms the starting number (0) shows, fully in, before it counts
+  var STEP_TIME = 220;    // ms per step when a small whole number ticks up (0 → 1 → 2 → 3)
   var COUNT_HANDOFF = 0.7; // the next row starts this far into a count (it has all but settled by then)
   var TEXT_HANDOFF = 250; // ms into a row with no numbers that the next row starts
   var SPARKLES = 9;       // sparkles that fly into the rating star
@@ -78,6 +82,22 @@
     var decimals = decimalsOf(el);
     var from = countFrom(el);
     var end = parseFloat(el.dataset.uiChefTarget);
+    var steps = Math.abs(end - from);
+    // Small whole numbers tick through every value at an even pace, like a
+    // counter, rather than rushing to the end and hanging there
+    if (!decimals && steps <= 10) {
+      var dir = end > from ? 1 : -1;
+      var i = 0;
+      (function tick() {
+        timers.list.push(setTimeout(function () {
+          if (timers.stopped) return;
+          i += 1;
+          el.textContent = String(from + dir * i);
+          if (i < steps) tick();
+        }, STEP_TIME));
+      })();
+      return;
+    }
     var start = performance.now();
     function frame(now) {
       if (timers.stopped) return;
