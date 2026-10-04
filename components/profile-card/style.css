@@ -1,0 +1,479 @@
+/* ==========================================================================
+   UI Profile Card — editorial coach profile with the person front and centre
+   A giant two-line name sits behind a cut-out portrait; a bracketed stat
+   rests on the shirt, and a tagline plus a split "Book a session" button
+   close the card. Everything is sized from the card's own width (390 design
+   units), so the whole composition scales as one piece.
+   ========================================================================== */
+
+.ui-prof {
+  --ui-prof-font: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --ui-prof-display: "Anton", "Impact", "Arial Narrow Bold", sans-serif;
+  --ui-prof-bg: #F3F1EA;           /* cream page */
+  --ui-prof-grid: #E4E1D9;         /* faint column lines */
+  --ui-prof-accent: #2640E0;       /* name, monogram, arrow tile */
+  --ui-prof-on-accent: #FFFFFF;
+  --ui-prof-ink: #141416;          /* tagline, menu, CTA */
+  --ui-prof-muted: #6F6D68;
+  --ui-prof-cta-fg: #FFFFFF;
+  --ui-prof-cta-note: #8C8C90;
+  --ui-prof-gold: #F5B301;         /* the rating star once it lands */
+  --ui-prof-gold-edge: #D99500;
+  --ui-prof-skel: color-mix(in srgb, var(--ui-prof-ink) 7%, transparent);       /* skeleton bars */
+  --ui-prof-skel-shine: color-mix(in srgb, var(--ui-prof-bg) 75%, transparent); /* the shine that sweeps them */
+  --ui-prof-radius: 0;             /* design units */
+  --ui-prof-inset-top: 0px;        /* room for a status bar, if the card sits under one */
+
+  container-type: inline-size;
+  width: 100%;
+  max-width: 430px;
+  font-family: var(--ui-prof-font);
+  color: var(--ui-prof-ink);
+}
+
+.ui-prof__inner {
+  --u: calc(100cqw / 390);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(var(--ui-prof-inset-top) + 797 * var(--u));
+  overflow: hidden;
+  border-radius: calc(var(--ui-prof-radius) * var(--u));
+  background: var(--ui-prof-bg);
+  isolation: isolate;
+}
+
+.ui-prof__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Two hairlines split the card into thirds, behind everything */
+.ui-prof__grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(var(--ui-prof-grid), var(--ui-prof-grid)) calc(130 * var(--u)) 0 / 1px 100% no-repeat,
+    linear-gradient(var(--ui-prof-grid), var(--ui-prof-grid)) calc(260 * var(--u)) 0 / 1px 100% no-repeat;
+}
+
+/* ---- Top bar ----------------------------------------------------------- */
+
+.ui-prof__bar {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(var(--ui-prof-inset-top) + 14 * var(--u)) calc(22 * var(--u)) 0;
+}
+
+.ui-prof__mark {
+  display: grid;
+  place-items: center;
+  width: calc(54 * var(--u));
+  height: calc(54 * var(--u));
+  border-radius: 50%;
+  background: var(--ui-prof-accent);
+  color: var(--ui-prof-on-accent);
+  font-size: calc(11 * var(--u));
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.25s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.ui-prof__mark:hover { transform: rotate(-8deg) scale(1.04); }
+
+.ui-prof__menu {
+  display: grid;
+  align-content: center;
+  justify-items: end;
+  gap: calc(7 * var(--u));
+  width: calc(44 * var(--u));
+  height: calc(44 * var(--u));
+  margin-right: calc(-8 * var(--u));
+  padding: 0 calc(8 * var(--u));
+  border: 0;
+  background: transparent;
+  color: var(--ui-prof-ink);
+  cursor: pointer;
+}
+
+.ui-prof__menu span {
+  display: block;
+  width: calc(26 * var(--u));
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: width 0.25s ease;
+}
+
+.ui-prof__menu:hover span:last-child { width: calc(17 * var(--u)); }
+
+.ui-prof__mark:focus-visible,
+.ui-prof__menu:focus-visible,
+.ui-prof__cta:focus-visible {
+  outline: 2px solid var(--ui-prof-accent);
+  outline-offset: 3px;
+}
+
+/* ---- Name -------------------------------------------------------------- */
+
+/* SVG text with textLength, so each line is stretched to the same width
+   whatever the name, and scales with the card without any script. */
+.ui-prof__name {
+  position: absolute;
+  top: calc(var(--ui-prof-inset-top) + 78 * var(--u));
+  left: 0;
+  width: 100%;
+  margin: 0;
+  z-index: 1;
+  line-height: 0;
+}
+
+.ui-prof__name svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.ui-prof__name text {
+  fill: var(--ui-prof-accent);
+  font-family: var(--ui-prof-display);
+  font-size: 173px;
+  font-weight: 400;
+}
+
+/* ---- Portrait ---------------------------------------------------------- */
+
+.ui-prof__media {
+  position: absolute;
+  top: calc(var(--ui-prof-inset-top) + 100 * var(--u));
+  left: calc(8 * var(--u));
+  width: calc(366 * var(--u));
+  aspect-ratio: 818 / 1118;
+  margin: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.ui-prof__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 0;
+  /* The photo was cropped where the arm leaves the frame; soften that edge */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%);
+  mask-image: linear-gradient(to right, transparent, #000 7%);
+}
+
+/* ---- Stat on the shirt ------------------------------------------------- */
+
+.ui-prof__stat {
+  position: absolute;
+  top: calc(var(--ui-prof-inset-top) + 440 * var(--u));
+  left: calc(72 * var(--u));
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  margin: 0;
+  color: #FFFFFF;
+}
+
+.ui-prof__stat-num {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(74 * var(--u));
+  height: calc(72 * var(--u));
+  font-size: calc(56 * var(--u));
+  font-weight: 200;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+}
+
+/* Square brackets drawn as two open boxes */
+.ui-prof__stat-num::before,
+.ui-prof__stat-num::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(9 * var(--u));
+  border: 1.5px solid currentColor;
+}
+
+.ui-prof__stat-num::before { left: 0; border-right: 0; }
+.ui-prof__stat-num::after { right: 0; border-left: 0; }
+
+.ui-prof__stat-num sup {
+  position: absolute;
+  top: calc(6 * var(--u));
+  right: calc(12 * var(--u));
+  font-size: calc(22 * var(--u));
+  font-weight: 300;
+  line-height: 1;
+}
+
+.ui-prof__stat-label {
+  font-size: calc(11 * var(--u));
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+/* ---- Footer ------------------------------------------------------------ */
+
+.ui-prof__body {
+  position: relative;
+  z-index: 3;
+  margin-top: auto;
+  padding: 0 calc(22 * var(--u)) calc(46 * var(--u));
+}
+
+.ui-prof__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0 0 calc(12 * var(--u));
+  font-size: calc(10 * var(--u));
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.ui-prof__role { color: var(--ui-prof-accent); }
+
+.ui-prof__proof {
+  color: var(--ui-prof-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-prof__proof b { color: var(--ui-prof-ink); font-weight: 700; }
+
+.ui-prof__star {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  margin-right: 0.3em;
+  vertical-align: -0.28em;
+  overflow: visible;
+  fill: var(--ui-prof-gold);
+  stroke: var(--ui-prof-gold-edge);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+
+.ui-prof__tagline {
+  max-width: calc(234 * var(--u));
+  margin: 0 0 calc(20 * var(--u));
+  font-size: calc(11.5 * var(--u));
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.ui-prof__cta {
+  display: flex;
+  align-items: stretch;
+  height: calc(61 * var(--u));
+  background: var(--ui-prof-ink);
+  color: var(--ui-prof-cta-fg);
+  text-decoration: none;
+}
+
+.ui-prof__cta-label {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 calc(18 * var(--u)) 0 calc(22 * var(--u));
+  font-size: calc(15 * var(--u));
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.ui-prof__cta-note {
+  color: var(--ui-prof-cta-note);
+  font-size: calc(13 * var(--u));
+  font-weight: 500;
+}
+
+.ui-prof__cta-arrow {
+  display: grid;
+  place-items: center;
+  width: calc(61 * var(--u));
+  overflow: hidden;
+  background: var(--ui-prof-accent);
+}
+
+.ui-prof__cta-arrow svg {
+  width: calc(18 * var(--u));
+  height: calc(18 * var(--u));
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ui-prof__cta:hover .ui-prof__cta-arrow svg { transform: translate(calc(3 * var(--u)), calc(-3 * var(--u))); }
+.ui-prof__cta:active { transform: scale(0.99); }
+
+/* ---- Entrance ---------------------------------------------------------- */
+
+/* script.js arms the card (.is-armed) before it is painted, then plays:
+   1. the name types out letter by letter behind a blinking caret
+   2. the portrait opens out from the centre of the face (.is-revealed)
+   3. the stat, meta row, tagline and button, shown until then as skeleton
+      bars, load one after another while their numbers count
+   Without the script, or with reduced motion, the card simply shows at rest. */
+
+@property --ui-prof-reveal {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+.ui-prof__caret {
+  fill: var(--ui-prof-accent);
+  opacity: 0;
+}
+
+.ui-prof.is-typing .ui-prof__caret { opacity: 1; }
+.ui-prof.is-caret-idle .ui-prof__caret { animation: ui-prof-blink 1s steps(1) infinite; }
+.ui-prof.is-caret-out .ui-prof__caret { opacity: 0; transition: opacity 0.3s ease; }
+
+.ui-prof.is-armed .ui-prof__name tspan { fill-opacity: 0; }
+.ui-prof.is-armed .ui-prof__name tspan.is-on { fill-opacity: 1; }
+
+/* The portrait is masked by a soft-edged circle centred on the face; the
+   circle grows from nothing to past the corners. */
+.ui-prof__media {
+  -webkit-mask-image: radial-gradient(circle at 50% 30%, #000 var(--ui-prof-reveal), transparent calc(var(--ui-prof-reveal) + 22%));
+  mask-image: radial-gradient(circle at 50% 30%, #000 var(--ui-prof-reveal), transparent calc(var(--ui-prof-reveal) + 22%));
+}
+
+.ui-prof.is-armed .ui-prof__media {
+  --ui-prof-reveal: -22%;
+  opacity: 0;
+  transform: scale(1.06);
+  transform-origin: 50% 30%;
+}
+
+.ui-prof.is-armed.is-revealed .ui-prof__media {
+  --ui-prof-reveal: 100%;
+  opacity: 1;
+  transform: none;
+  transition:
+    --ui-prof-reveal 1.3s cubic-bezier(0.45, 0, 0.2, 1),
+    opacity 0.5s ease,
+    transform 1.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Skeleton: until it loads, each row of information (the stat, the meta row,
+   the tagline and the button) is a quiet placeholder in the exact shape of
+   its text: a faint tint of the ink with a slow shine. script.js loads the
+   rows one at a time with .is-in, each starting as the one before settles,
+   and the row fills in with its real colours as it lifts into place. */
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *).is-in,
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *).is-in :is(*, *::before, *::after) {
+  /* Only on the way in: arming (or replaying) switches to the skeleton at once */
+  transition:
+    color 0.4s ease,
+    background-color 0.4s ease,
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *).is-in {
+  animation: ui-prof-land 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *):not(.is-in) :is(*, *::before, *::after) {
+  color: transparent;
+}
+
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *):not(.is-in) :is(.ui-prof__stat-num, .ui-prof__stat-label > span, .ui-prof__role, .ui-prof__proof, .ui-prof__tagline > span),
+.ui-prof.is-armed .ui-prof__cta:not(.is-in) {
+  background-color: var(--ui-prof-skel);
+  background-image: linear-gradient(100deg, transparent 35%, var(--ui-prof-skel-shine) 50%, transparent 65%);
+  background-size: 300% 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  animation: ui-prof-shimmer 1.8s linear infinite;
+}
+
+.ui-prof.is-armed :is(.ui-prof__stat, .ui-prof__body > *):not(.is-in) :is(.ui-prof__stat-num, .ui-prof__stat-label > span, .ui-prof__role, .ui-prof__proof, .ui-prof__tagline > span) {
+  border-radius: calc(3 * var(--u));
+}
+
+.ui-prof.is-armed .ui-prof__cta:not(.is-in) .ui-prof__cta-arrow { background-color: var(--ui-prof-skel); }
+
+[data-ui-prof-count] { font-variant-numeric: tabular-nums; }
+
+/* The rating star is an outline in the ink colour (so it hides in the
+   skeleton like the text) until the rating has counted up. Then gold
+   sparkles fly into it, and it jumps, turns gold and stays gold. */
+.ui-prof.is-armed .ui-prof__star:not(.is-gold) {
+  fill: transparent;
+  stroke: currentColor;
+}
+
+.ui-prof.is-armed .ui-prof__star.is-gold {
+  transition: fill 0.12s ease, stroke 0.12s ease;
+  animation: ui-prof-star-pop 0.7s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.ui-prof__sparkle {
+  position: absolute;
+  z-index: 4;
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  width: var(--s);
+  height: var(--s);
+  background: var(--ui-prof-gold);
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  pointer-events: none;
+}
+
+@keyframes ui-prof-blink {
+  50% { opacity: 0; }
+}
+
+@keyframes ui-prof-land {
+  from { transform: translateY(calc(8 * var(--u))); }
+}
+
+@keyframes ui-prof-star-pop {
+  0% { transform: none; }
+  35% { transform: translateY(-0.45em) scale(1.8) rotate(-14deg); filter: drop-shadow(0 0 0.35em var(--ui-prof-gold)); }
+  70% { transform: translateY(0.05em) scale(0.92) rotate(5deg); }
+  100% { transform: none; }
+}
+
+@keyframes ui-prof-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-prof__mark,
+  .ui-prof__menu span,
+  .ui-prof__cta-arrow svg { transition: none; }
+}

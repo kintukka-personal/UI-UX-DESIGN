@@ -16,3 +16,4 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Number roll](components/number-roll/) | Odometer-style digit strips that roll through every number in between, with per-column stagger and selectable easing |
 | [Numeric text (React)](components/numeric-text-react/) | React component: changed digits roll as an odometer, with an optional motion blur that follows the digit's speed |
 | [Product card](components/product-card/) | Editorial product hero: giant wordmark, a floating cut-out over a two-tone stage, colourway swatches that retint the card, and an animated Add to bag. Includes a Shopify section |
+| [Profile card](components/profile-card/) | Editorial coach profile: a giant two-line name behind a cut-out portrait, a bracketed stat on the shirt, and a split "Book a session" button |
