@@ -15,7 +15,7 @@ An editorial profile card for a coach or trainer, with the person as the hero. T
 - **Grid:** two faint hairlines divide the card into thirds, behind everything.
 - **Intro:** the first time the card scrolls into view, it plays in three beats. From the first frame, the stat, meta row, tagline and button show as skeleton placeholders: bars in the exact shape of their text, in a faint tint of the ink, with a slow shine. That way the layout is already there, but nothing competes with the name.
   1. The name types out letter by letter (MAYA, a short pause, then ROSS) behind a blinking blue caret. Each letter appears in its final place, because the stretched layout is already set.
-  2. When the caret fades, the portrait opens out from the centre of the face as a soft-edged circle. It fades in and settles from a slight zoom as it grows.
+  2. As the last letter lands, the portrait opens out from the centre of the face (the caret blinks a moment longer, then fades) as a soft-edged circle. It fades in and settles from a slight zoom as it grows.
   3. As the portrait lands, the information loads one row at a time. Each row fills in from its skeleton with a small settle. Its numbers wait until it has fully filled in, show their starting value for a moment, then count. The next row starts as soon as that count has all but settled, so there are no dead pauses:
      - the stat, with the years counting 0 → 8
      - the meta row: role, ★ 0.0 → 4.9 and 0 → 120 clients

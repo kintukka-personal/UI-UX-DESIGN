@@ -4,7 +4,8 @@
    1. The name types out one letter at a time, line by line, behind a blinking
       caret. The letters are already laid out (the SVG text keeps its full
       textLength), so each one appears in its final place.
-   2. The portrait opens out from the centre of the face.
+   2. As the last letter lands, the portrait opens out from the centre of
+      the face.
    3. Until then the stat and footer rows show as skeleton bars (style.css).
       As the portrait lands they load one at a time: the stat, then the meta
       row, the tagline and the button. A row's numbers start counting once
@@ -29,7 +30,7 @@
   var LINE_PAUSE = 240;   // extra pause before the second line
   var CARET_HOLD = 450;   // caret blinks this long after the last letter
   var COUNT_TIME = 800;   // ms for each number to count
-  var LAND_DELAY = 700;   // ms after the portrait starts opening that the first row loads
+  var LAND_DELAY = 700;   // ms after the caret fades that the first row loads
   var ROW_FILL = 450;     // ms a row takes to fill in from its skeleton (matches style.css)
   var COUNT_HOLD = 150;   // ms the starting number shows, fully in, before it counts
   var COUNT_HANDOFF = 0.7; // the next row starts this far into a count (it has all but settled by then)
@@ -181,14 +182,18 @@
         });
       });
 
-      later(t, function () { card.classList.add("is-caret-idle"); });
-      t += CARET_HOLD;
+      // The portrait starts opening as the last letter lands, while the caret
+      // blinks a moment longer before it fades.
       later(t, function () {
         // Still hidden in their skeletons, so jumping to the start isn't seen
         card.querySelectorAll("[data-ui-prof-count]").forEach(function (el) {
           el.textContent = countFrom(el).toFixed(decimalsOf(el));
         });
-        card.classList.add("is-caret-out", "is-revealed");
+        card.classList.add("is-caret-idle", "is-revealed");
+      });
+      t += CARET_HOLD;
+      later(t, function () {
+        card.classList.add("is-caret-out");
         card.classList.remove("is-caret-idle");
       });
 
