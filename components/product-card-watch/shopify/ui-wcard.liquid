@@ -234,7 +234,7 @@
             <button class="ui-wcard__icon" type="button" aria-label="Back" data-ui-wcard-back data-fallback="{{ fallback_url }}">
               <svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
             </button>
-            <a class="ui-wcard__icon" href="{{ routes.cart_url }}" aria-label="Bag, {{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %}" data-ui-wcard-bag>
+            <a class="ui-wcard__icon" href="{{ routes.cart_url }}" aria-label="Cart, {{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %}" data-ui-wcard-bag>
               <svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
               <span class="ui-wcard__badge" aria-hidden="true">{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}</span>
             </a>
@@ -275,7 +275,7 @@
 
           <button class="ui-wcard__cta" type="submit" {% unless current.available %}disabled{% endunless %}>
             <span class="ui-wcard__cta-labels">
-              <span class="ui-wcard__cta-add">{% if current.available %}{{ section.settings.cta_label | escape }}{% else %}{{ section.settings.sold_out_label | escape }}{% endif %}</span>
+              <span class="ui-wcard__cta-add">{% if current.available %}<svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>{{ section.settings.cta_label | escape }}{% else %}{{ section.settings.sold_out_label | escape }}{% endif %}</span>
               <span class="ui-wcard__cta-done" aria-hidden="true">
                 <svg viewBox="0 0 16 16"><path d="M3 8.5l3.2 3.2L13 5"/></svg>{{ section.settings.added_label | escape }}
               </span>
@@ -303,10 +303,10 @@
     {"type": "text", "id": "option_name", "label": "Colour option name", "default": "Color, Colour, Dial", "info": "The product option the swatches use. Separate alternatives with commas."},
     {"type": "header", "content": "Text"},
     {"type": "text", "id": "price_label", "label": "Price label", "default": "Price"},
-    {"type": "text", "id": "cta_label", "label": "Button label", "default": "Add to bag"},
+    {"type": "text", "id": "cta_label", "label": "Button label", "default": "Add to cart"},
     {"type": "text", "id": "added_label", "label": "Added label", "default": "Added"},
     {"type": "text", "id": "sold_out_label", "label": "Sold out label", "default": "Sold out"},
-    {"type": "text", "id": "cta_note", "label": "Button note", "default": "Free returns"},
+    {"type": "text", "id": "cta_note", "label": "Button note", "info": "Optional short line on the right of the button, such as \"Free returns\". Leave empty for a centred label."},
     {"type": "header", "content": "Layout"},
     {"type": "checkbox", "id": "show_bar", "label": "Show back and bag buttons", "default": true},
     {"type": "range", "id": "max_width", "label": "Card width", "min": 320, "max": 560, "step": 10, "unit": "px", "default": 430},

@@ -78,15 +78,18 @@
 
     function updateBag() {
       if (badge) badge.textContent = count > 0 ? count : "";
-      if (bag) bag.setAttribute("aria-label", "Bag, " + count + (count === 1 ? " item" : " items"));
+      if (bag) bag.setAttribute("aria-label", "Cart, " + count + (count === 1 ? " item" : " items"));
     }
 
     var media = card.querySelector(".ui-wcard__media");
     var inner = card.querySelector(".ui-wcard__inner");
     var flying = false;
 
+    // Errors show in the note if there is one, otherwise in place of the label.
     var note = card.querySelector(".ui-wcard__cta-note");
+    var addLabel = card.querySelector(".ui-wcard__cta-add");
     var noteText = note ? note.textContent : "";
+    var labelHTML = "";
     var noteTimer;
 
     // Count the item, bump the badge, flip the button. Runs when the product lands.
@@ -108,7 +111,7 @@
           ], { duration: 460, easing: "ease-out" });
         }
       }
-      if (status) status.textContent = "Added to bag. " + count + (count === 1 ? " item" : " items") + " in your bag.";
+      if (status) status.textContent = "Added to cart. " + count + (count === 1 ? " item" : " items") + " in your cart.";
       cta.classList.add("is-added");
       clearTimeout(addedTimer);
       addedTimer = setTimeout(function () { cta.classList.remove("is-added"); }, 1800);
@@ -120,12 +123,20 @@
 
     // The add failed (sold out, network): say why on the button and shake it.
     function failAdd(message) {
-      message = message || "Couldn't add to bag. Please try again.";
+      message = message || "Couldn't add to cart. Please try again.";
       if (status) status.textContent = message;
+      clearTimeout(noteTimer);
       if (note) {
         note.textContent = message;
-        clearTimeout(noteTimer);
         noteTimer = setTimeout(function () { note.textContent = noteText; }, 2800);
+      } else if (addLabel) {
+        if (!cta.classList.contains("is-error")) labelHTML = addLabel.innerHTML;
+        addLabel.textContent = message;
+        cta.classList.add("is-error");
+        noteTimer = setTimeout(function () {
+          addLabel.innerHTML = labelHTML;
+          cta.classList.remove("is-error");
+        }, 2800);
       }
       if (!reduceMotion.matches && cta.animate) {
         cta.animate([

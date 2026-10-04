@@ -369,7 +369,7 @@
 .ui-wcard__cta {
   position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 100%;
   height: calc(56 * var(--u));
@@ -381,6 +381,7 @@
   background: var(--ui-wcard-cta-bg);
   color: var(--ui-wcard-cta-fg);
   font: 700 calc(15 * var(--u)) / 1 var(--ui-wcard-font);
+  letter-spacing: 0.01em;
   cursor: pointer;
   box-shadow: 0 calc(12 * var(--u)) calc(24 * var(--u)) calc(-12 * var(--u)) rgba(20, 32, 24, 0.5);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -397,13 +398,22 @@
   box-shadow: none;
 }
 
+/* One centred label. A note (optional, e.g. from the Shopify section)
+   moves the label left and sits on the right. */
+.ui-wcard__cta:has(.ui-wcard__cta-note) { justify-content: space-between; }
+
 .ui-wcard__cta-labels {
   position: relative;
   display: grid;
+  justify-items: center;
   flex: none;
-  text-align: left;
+  max-width: 100%;
+  text-align: center;
   white-space: nowrap;
 }
+
+/* An error message takes the label's place and may wrap. */
+.ui-wcard__cta.is-error .ui-wcard__cta-labels { flex: 1 1 auto; white-space: normal; line-height: 1.25; }
 
 .ui-wcard__cta-labels > span {
   grid-area: 1 / 1;
@@ -415,6 +425,7 @@
 
 .ui-wcard__cta-done { opacity: 0; transform: translateY(110%); }
 
+.ui-wcard__cta-add svg,
 .ui-wcard__cta-done svg {
   width: calc(16 * var(--u));
   height: calc(16 * var(--u));

@@ -1,9 +1,9 @@
 # Product Card (watch)
 
-The watch edition of the [product card](../product-card/), for the FOSLN ACIER quartz watch. It has the same layout, build-in, colourway switching and fly-to-bag as the original, set up for a tall product. A brushed-steel stage holds a giant "ACIER", the watch stands in front of it and crosses into a cool off-white footer, and the footer carries the price, two dial swatches and a full-width "Add to bag" button.
+The watch edition of the [product card](../product-card/), for the FOSLN ACIER quartz watch. It has the same layout, build-in, colourway switching and fly-to-cart as the original, set up for a tall product. A brushed-steel stage holds a giant "ACIER", the watch stands in front of it and crosses into a cool off-white footer, and the footer carries the price, two dial swatches and a full-width "Add to cart" button.
 
 - **Layout:**
-  - Top row: back button, plus a bag button with a count badge.
+  - Top row: back button, plus a cart button with a count badge.
   - Spec line: "Quartz watch" on the left, the brand "FOSLN" on the right.
   - Wordmark: "ACIER", edge to edge, sitting behind the watch. It's sized for five letters.
   - Watch: stands over the lower half of the wordmark, from the stage into the footer, over a soft contact shadow.
@@ -13,8 +13,9 @@ The watch edition of the [product card](../product-card/), for the FOSLN ACIER q
   - **Onyx:** a near-black stage and the black sunray dial.
 
   Picking one crossfades the watch photo and retints the stage, wordmark and button.
-- **Add to bag:** the watch lifts off the stage, shrinks and arcs into the bag icon in about 0.76s. Because it's tall, it shrinks by its height, so it stays inside the card. When it lands:
-  - the bag icon gives a little wobble
+- **Button:** one centred "Add to cart" label with a small cart icon, and no side note. After an add it reads "✓ Added". If the add fails, the error message takes the label's place for a few seconds. When the dial is sold out it reads "Sold out" and dims. A short note on the right (such as "Free returns") is still possible: add a `.ui-wcard__cta-note` span, and the label moves left to make room.
+- **Add to cart:** the watch lifts off the stage, shrinks and arcs into the cart icon in about 0.76s. Because it's tall, it shrinks by its height, so it stays inside the card. When it lands:
+  - the cart icon gives a little wobble
   - the badge counts up with a bump
   - the label flips to "✓ Added"
   - a screen-reader status announces it
@@ -23,7 +24,7 @@ The watch edition of the [product card](../product-card/), for the FOSLN ACIER q
   0.23s after landing, the watch regrows in place from a soft blur. Clicks during the flight are ignored. With reduced motion turned on, the item is counted straight away and nothing flies.
 - **Motion:**
   - On first view, everything builds left to right with one move: each piece shoots out from behind the one before it, staying hidden until it clears it, then overshoots a touch, squashes and locks in. Each lock sets off the next piece, one every 95ms (tune it with `--ui-wcard-beat`).
-  - The order is: A, C, I, E, R, with the spec line alongside; then price, Chrome, Onyx and Add to bag; and finally the watch drops in. The script counts the letters and swatches, so a different word or more colourways keep the order.
+  - The order is: A, C, I, E, R, with the spec line alongside; then price, Chrome, Onyx and Add to cart; and finally the watch drops in. The script counts the letters and swatches, so a different word or more colourways keep the order.
   - The word gives a small recoil on each letter's hit.
   - The watch then floats gently, with its shadow breathing.
   - With a mouse, the watch drifts slightly as the pointer moves while the wordmark stays still.
@@ -38,7 +39,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
 | --- | --- |
 | `index.html` | Demo page: the card inside a phone frame with a status bar |
 | `style.css` | Component styles and the Chrome and Onyx themes |
-| `script.js` | Swatches, add to bag, entrance and pointer parallax |
+| `script.js` | Swatches, add to cart, entrance and pointer parallax |
 | `images/acier-*.webp` | Transparent watch cut-outs, chrome and black dial (687 × 1253) |
 | `shopify/ui-wcard.liquid` | Shopify section: the card for a real product, with one block per colourway |
 | `shopify/ui-wcard-shopify.js` | Shopify connection: variants, real add to cart, header cart count |
@@ -52,7 +53,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
 
     <header class="ui-wcard__bar">
       <button class="ui-wcard__icon" type="button" aria-label="Back">…</button>
-      <button class="ui-wcard__icon" type="button" aria-label="Bag, 1 item" data-ui-wcard-bag>
+      <button class="ui-wcard__icon" type="button" aria-label="Cart, 1 item" data-ui-wcard-bag>
         …<span class="ui-wcard__badge" aria-hidden="true">1</span>
       </button>
     </header>
@@ -87,10 +88,9 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
       </div>
       <button class="ui-wcard__cta" type="button">
         <span class="ui-wcard__cta-labels">
-          <span class="ui-wcard__cta-add">Add to bag</span>
+          <span class="ui-wcard__cta-add"><svg viewBox="0 0 24 24">…</svg>Add to cart</span>
           <span class="ui-wcard__cta-done" aria-hidden="true"><svg>…</svg>Added</span>
         </span>
-        <span class="ui-wcard__cta-note">Free returns</span>
       </button>
       <p class="ui-wcard__sr" role="status" aria-live="polite" data-ui-wcard-status></p>
     </div>
@@ -111,7 +111,7 @@ Colours live in custom properties on `.ui-wcard`. Each colourway overrides the s
   --ui-wcard-stage-top: #070809; /* ombré: the top third darkens to this */
   --ui-wcard-title: #ECECEC;     /* wordmark, icons, badge */
   --ui-wcard-specs: #8C8F94;     /* spec line */
-  --ui-wcard-cta-bg: #0D0E10;    /* Add to bag */
+  --ui-wcard-cta-bg: #0D0E10;    /* Add to cart */
   --ui-wcard-ring: #111214;      /* selected swatch ring */
 }
 ```
@@ -148,8 +148,8 @@ window.uiWcardAdd = function ({ card, colorway }) {
 };
 ```
 
-- **The badge waits for it.** If the request is still running when the product reaches the bag, the count goes up when it resolves.
-- **On failure,** reject with an `Error`. Its message replaces the button note for a few seconds, the button gives a short shake, the product comes back and nothing is counted.
+- **The badge waits for it.** If the request is still running when the product reaches the cart icon, the count goes up when it resolves.
+- **On failure,** reject with an `Error`. Its message takes the place of the button label for a few seconds, the button gives a short shake, the product comes back and nothing is counted.
 - **Without the hook,** the count simply goes up by one.
 
 A disabled button (`disabled` attribute) ignores clicks, and the card dims it.
@@ -170,18 +170,18 @@ The `shopify/` folder turns the card into a theme section for a real product.
    - its card colours: stage, ombré, wordmark, spec line, button and ring
 
    The preset comes with Chrome and Onyx. Values without a block use the theme's swatch colour, the variant image and the Chrome card colours. Products without a colour option show one image and no swatches.
-5. **Text.** The settings cover the wordmark, spec line, price label, button label, "Added", "Sold out" and the button note. The wordmark defaults to the first word of the product title. Short words of 3–5 letters fill the card best.
+5. **Text.** The settings cover the wordmark, spec line, price label, button label, "Added", "Sold out" and an optional button note (empty by default, which keeps the label centred). The wordmark defaults to the first word of the product title. Short words of 3–5 letters fill the card best.
 
 **What the connection does:**
 - Picking a swatch selects that colour's variant, updates the price, and shows "Sold out" (and disables the button) when it's unavailable.
-- Add to bag posts to Shopify's Cart AJAX API (`/cart/add.js`) while the product flies. The badge then shows the real cart count.
+- Add to cart posts to Shopify's Cart AJAX API (`/cart/add.js`) while the product flies. The badge then shows the real cart count.
 - Shopify's errors, such as "All 1 Acier - Onyx are in your cart.", show on the button.
 - It refreshes a Dawn-style `#cart-icon-bubble` in the theme header and fires `ui-wcard:cart` on `document` with `{ cart }`, for themes that refresh their cart drawer some other way.
 - Without JavaScript, the button is a normal product form submit.
 
 **Limits:**
 - The swatches handle one option. On products with more options, such as size, each colour adds its first available variant.
-- The bag icon links to `/cart`.
+- The cart icon links to `/cart`.
 - The back button goes back if the visitor came from the store, otherwise to the product's first collection.
 
 ## Product images

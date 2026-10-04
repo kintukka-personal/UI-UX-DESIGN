@@ -4,7 +4,7 @@
      data-price and data-available. Picking one updates the hidden variant
      id, the price and the button (it reads "Sold out" and disables when the
      variant is unavailable).
-   - Add to bag adds the selected variant to the real cart through Shopify's
+   - Add to cart adds the selected variant to the real cart through Shopify's
      Cart AJAX API (POST /cart/add.js), while the product flies. The badge
      then shows the real cart count. Errors (sold out, quantity limits) show
      on the button and nothing is counted.
@@ -19,7 +19,7 @@
   function getJSON(url, options) {
     return fetch(url, options).then(function (res) {
       return res.json().then(function (data) {
-        if (!res.ok) throw new Error(data.description || data.message || "Couldn't add to bag. Please try again.");
+        if (!res.ok) throw new Error(data.description || data.message || "Couldn't add to cart. Please try again.");
         return data;
       });
     });
@@ -66,7 +66,7 @@
     var price = card.querySelector(".ui-wcard__price");
     var cta = card.querySelector(".ui-wcard__cta");
     var label = card.querySelector(".ui-wcard__cta-add");
-    var addText = label ? label.textContent : "";
+    var addHTML = label ? label.innerHTML : "";
     var soldOutText = card.getAttribute("data-sold-out-label") || "Sold out";
     var form = card.querySelector("[data-ui-wcard-form]");
 
@@ -76,7 +76,10 @@
       if (price && radio.dataset.price) price.textContent = radio.dataset.price;
       var available = radio.dataset.available !== "false";
       if (cta) cta.disabled = !available;
-      if (label) label.textContent = available ? addText : soldOutText;
+      if (label) {
+        if (available) label.innerHTML = addHTML;
+        else label.textContent = soldOutText;
+      }
     }
 
     card.querySelectorAll(".ui-wcard__swatch input").forEach(function (radio) {
