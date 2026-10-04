@@ -116,6 +116,10 @@
           endif
           if b
             assign swatch = b.settings.swatch
+            if b.settings.swatch_image != blank
+              assign swatch_src = b.settings.swatch_image | image_url: width: 128
+              assign swatch = 'url(' | append: swatch_src | append: ') center / cover'
+            endif
             if b.settings.image != blank
               assign img = b.settings.image
             endif
@@ -336,6 +340,7 @@
       "settings": [
         {"type": "text", "id": "value", "label": "Colour value", "default": "Chrome", "info": "Must match the product's colour option value exactly (case doesn't matter)."},
         {"type": "color", "id": "swatch", "label": "Swatch", "default": "#C9CDD2"},
+        {"type": "image_picker", "id": "swatch_image", "label": "Swatch image (optional)", "info": "A square crop of the dial. Shown as the round swatch instead of the colour."},
         {"type": "image_picker", "id": "image", "label": "Cut-out image", "info": "A transparent PNG or WebP of the product, portrait, with the product filling the frame. Falls back to the variant image."},
         {"type": "header", "content": "Card colours"},
         {"type": "color", "id": "stage_1", "label": "Stage glow (centre)", "default": "#3A2F22"},

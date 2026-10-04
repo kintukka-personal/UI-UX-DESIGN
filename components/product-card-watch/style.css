@@ -24,7 +24,7 @@
   --ui-wcard-cta-fg: #1A140B;
   --ui-wcard-ring: #CFAE6C;
   --ui-wcard-seam: rgba(214, 178, 108, 0.45);
-  --ui-wcard-tone: sepia(0.16) saturate(1.15);   /* warms the steel to match the light */
+  --ui-wcard-tone: none;           /* optional filter on the watch photo, e.g. sepia(0.16) to warm a cool shot */
   --ui-wcard-radius: 28;           /* design units */
   --ui-wcard-inset-top: 0px;       /* room for a status bar, if the card sits under one */
 
@@ -233,7 +233,7 @@
   top: calc(var(--ui-wcard-inset-top) + 150 * var(--u));
   left: calc(78 * var(--u));
   width: calc(237 * var(--u));
-  aspect-ratio: 709 / 1253;
+  aspect-ratio: 671 / 1191;
   margin: 0;
   z-index: 2;
   pointer-events: none;

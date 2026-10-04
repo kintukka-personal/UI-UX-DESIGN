@@ -12,10 +12,10 @@ The watch edition of the [product card](../product-card/), for the FOSLN ACIER q
   - a fine stone grain over the stage and footer
   - a warm glow from the upper left
   - a thin gold line where the stage meets the footer
-  - the steel warmed slightly, as it would be in that light
+  - the watch photos themselves shot on dark rock with warm rim light
 - **Colours:** two colourways, named after the dial:
-  - **Chrome, golden hour:** stone black with an amber glow, a champagne wordmark, gold spec line and a gold button. The chrome dial is warmed slightly.
-  - **Onyx, after dark:** deeper and cooler, the glow down to an ember, an ivory wordmark and a silver button. It uses the black-dial photo, with no warming.
+  - **Chrome, golden hour:** stone black with an amber glow, a champagne wordmark, gold spec line and a gold button. It uses the chrome-dial photo.
+  - **Onyx, after dark:** deeper and cooler, the glow down to an ember, an ivory wordmark and a silver button. It uses the black-dial photo.
 
   Picking one crossfades the watch photo and blends every colour across.
 - **Button:** one centred "Add to cart" label with a small cart icon, and no side note. After an add it reads "✓ Added". If the add fails, the error message takes the label's place for a few seconds. When the dial is sold out it reads "Sold out" and dims. A short note on the right (such as "Free returns") is still possible: add a `.ui-wcard__cta-note` span, and the label moves left to make room.
@@ -45,7 +45,8 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
 | `index.html` | Demo page: the card inside a phone frame with a status bar |
 | `style.css` | Component styles and the Chrome and Onyx themes |
 | `script.js` | Swatches, add to cart, entrance and pointer parallax |
-| `images/acier-*.webp` | Transparent watch cut-outs, chrome and black dial, on the same 709 × 1253 canvas |
+| `images/acier-*.webp` | Transparent watch cut-outs, chrome and black dial, on the same 671 × 1191 canvas |
+| `images/swatch-*.webp` | Round crops of each dial (128 × 128), used as the colour swatches |
 | `shopify/ui-wcard.liquid` | Shopify section: the card for a real product, with one block per colourway |
 | `shopify/ui-wcard-shopify.js` | Shopify connection: variants, real add to cart, header cart count |
 
@@ -88,7 +89,7 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
         </p>
         <fieldset class="ui-wcard__swatches">
           <legend class="ui-wcard__sr">Colour</legend>
-          <label class="ui-wcard__swatch" style="--swatch: #8DB28F">
+          <label class="ui-wcard__swatch" style="--swatch: url(images/swatch-chrome.webp) center / cover">
             <input type="radio" name="acier-colour" value="chrome" checked>
             <span class="ui-wcard__dot" aria-hidden="true"></span>
             <span class="ui-wcard__swatch-name">Chrome</span>
@@ -110,6 +111,8 @@ Plain HTML, CSS and vanilla JS, no dependencies. Classes are prefixed `ui-wcard`
 
 **Sale price:** the struck-through `ui-wcard__price-was` is optional. For full price, drop it and put a label above the price instead: `<span class="ui-wcard__price-head">Price</span>` as the first child of the paragraph.
 
+**Swatches** show the dials themselves. `--swatch` takes any CSS background, here a round crop of each dial, so each swatch is a tiny watch face with its hands and steel bezel. A plain colour or gradient works too.
+
 The swatches are real radio inputs, so arrow keys, focus and screen readers work without extra code. Each radio's `value` must match an image's `data-colorway`.
 
 ## Theming
@@ -128,7 +131,7 @@ Colours live in custom properties on `.ui-wcard`. Each colourway overrides the s
   --ui-wcard-cta-bg-2: #A9A399;  /* button gradient, dark end */
   --ui-wcard-ring: #D9D3C7;      /* selected swatch ring */
   --ui-wcard-seam: rgba(220, 212, 198, 0.3); /* line between stage and footer */
-  --ui-wcard-tone: none;         /* filter on the watch photo; Chrome warms it */
+  --ui-wcard-tone: none;         /* optional filter on the watch photo, e.g. sepia(0.16) */
 }
 ```
 
@@ -182,7 +185,7 @@ The `shopify/` folder turns the card into a theme section for a real product.
 2. **Section.** Add `shopify/ui-wcard.liquid` to `sections/`.
 3. **Product page.** In the theme editor, open a product template and add the **UI product card (watch)** section. It uses that page's product. You can hide the theme's own product section, or keep it below for the full description. On any other page, pick a product in the section settings.
 4. **Colourways.** The section reads the product's colour option ("Color", "Colour" or "Dial" by default; change it in the settings). It adds one swatch per value. Each **Colourway** block matches one value by name and sets:
-   - its swatch colour
+   - its swatch colour, or a swatch image (a square crop of the dial) shown instead
    - a **cut-out image**: a transparent PNG or WebP, portrait, with the product filling the frame
    - its card colours: stage, ombré, light glow, wordmark, spec line, the button's two gradient colours, and ring
 
@@ -204,6 +207,6 @@ The `shopify/` folder turns the card into a theme section for a real product.
 
 ## Product images
 
-Both cut-outs are transparent WebP files cut from a matched pair of product photos, the chrome-dial and black-dial watch shot from the same angle. They share one canvas (709 × 1253) with the watch in exactly the same place, so switching colourways only changes the dial.
+Both cut-outs are transparent WebP files cut from a matched pair of product photos: the chrome-dial and black-dial watch, shot on dark rock in warm golden light from the same angle. They share one canvas (671 × 1191) with the watch in exactly the same place, so switching colourways only changes the dial. The steel keeps its true silver, with warm rim light from the scene, so `--ui-wcard-tone` is `none`. Set it to something like `sepia(0.16) saturate(1.15)` if you want the steel itself warmed.
 
 To use another product, export a transparent PNG/WebP per colourway. If the aspect is different, update `aspect-ratio`, `width` and `top` on `.ui-wcard__media`. If the wordmark has a different number of letters, adjust `font-size` on `.ui-wcard__title`; it's 132 units for five letters, and the original card uses 140 for four.
