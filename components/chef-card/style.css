@@ -374,8 +374,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: calc(12 * var(--u));
   padding: 0 calc(18 * var(--u)) 0 calc(22 * var(--u));
-  font-size: calc(15 * var(--u));
+  font-size: calc(14 * var(--u));
   font-weight: 600;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -384,7 +385,7 @@
 .ui-chef__cta-note {
   white-space: nowrap;
   color: var(--ui-chef-cta-note);
-  font-size: calc(13 * var(--u));
+  font-size: calc(11.5 * var(--u));
   font-weight: 500;
 }
 
