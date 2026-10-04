@@ -196,6 +196,6 @@ The `shopify/` folder turns the card into a theme section for a real product.
 
 ## Product images
 
-Both cut-outs are transparent WebP files cut from product photos: the chrome-dial watch and the black-dial watch. They share one canvas (709 × 1253) with the watch scaled to the same height and centred, so the crossfade between colourways stays steady.
+Both cut-outs are transparent WebP files cut from a matched pair of product photos, the chrome-dial and black-dial watch shot from the same angle. They share one canvas (709 × 1253) with the watch in exactly the same place, so switching colourways only changes the dial.
 
 To use another product, export a transparent PNG/WebP per colourway. If the aspect is different, update `aspect-ratio`, `width` and `top` on `.ui-wcard__media`. If the wordmark has a different number of letters, adjust `font-size` on `.ui-wcard__title`; it's 132 units for five letters, and the original card uses 140 for four.
