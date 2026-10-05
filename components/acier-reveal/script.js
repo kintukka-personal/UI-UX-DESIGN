@@ -837,22 +837,38 @@
     } };
   }
 
-  // Add to bag (demo): the light locks in with a glint, the label rolls over,
-  // a lap of light runs round the dial, and screen readers hear the result
+  // Add to bag (demo): the light runs to the end of the bar, and when it lands
+  // the bar pops, rings and glints, the label rolls over and a lap of light
+  // runs round the dial. Screen readers hear the result.
   var cta = document.querySelector("[data-ui-acier-add]");
   var status = document.querySelector("[data-ui-acier-status]");
   if (cta) {
+    var landTimer = 0, clearTimer = 0;
     cta.addEventListener("click", function () {
       var on = !cta.hasAttribute("data-added");
-      cta.toggleAttribute("data-added", on);
+      if (on) {
+        // Run the light on from wherever the hover pulse has it right now
+        cta.style.setProperty("--ui-acier-p", getComputedStyle(cta).getPropertyValue("--ui-acier-p"));
+        cta.toggleAttribute("data-added", true);
+        void cta.offsetWidth;
+        cta.style.setProperty("--ui-acier-p", "100%");
+      } else {
+        cta.toggleAttribute("data-added", false);
+        cta.style.removeProperty("--ui-acier-p");   // ease back to the hover reach, or empty
+      }
       cta.querySelector("[data-label-add]").setAttribute("aria-hidden", on ? "true" : "false");
       cta.querySelector("[data-label-done]").setAttribute("aria-hidden", on ? "false" : "true");
+      clearTimeout(landTimer); clearTimeout(clearTimer);
+      cta.classList.remove("is-landed");
+      cta.classList.toggle("is-running", on);   // its glowing edge leads the light to the end
       if (on) {
-        cta.classList.remove("is-glint");
-        void cta.offsetWidth;   // restart the glint
-        cta.classList.add("is-glint");
-        setTimeout(function () { cta.classList.remove("is-glint"); }, 950);
-        if (bench) bench.sweep();
+        landTimer = setTimeout(function () {
+          cta.classList.remove("is-running");
+          void cta.offsetWidth;   // restart the landing
+          cta.classList.add("is-landed");
+          if (bench) bench.sweep();
+          clearTimer = setTimeout(function () { cta.classList.remove("is-landed"); }, 950);
+        }, calm() ? 0 : 600);
       }
       if (status) status.textContent = on ? "Acier added to your bag." : "Acier removed from your bag.";
       cta.dispatchEvent(new CustomEvent("ui-acier:add", { bubbles: true, detail: { added: on } }));

@@ -997,22 +997,19 @@
   font-variant-numeric: tabular-nums;
 }
 
-.ui-acier-product__save {
-  align-self: center;
-  padding: 5px 9px 4px;
-  border: 1px solid rgba(201, 205, 209, 0.35);
-  border-radius: 999px;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #E7E9EB;
+/* ---- Add to bag: a dark bar with a steel edge.
+   Hover: white steel fills about a third of it and pushes towards the end in
+   a pulse, teasing the press. Click: it runs all the way, and the bar reacts
+   when it lands. The label is blended so it is dark wherever the light is. */
+
+@property --ui-acier-p {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
 }
 
-/* ---- Add to bag: a dark bar with a steel edge. A band of light fills it on
-   hover; adding locks the fill in and rolls the label over. ---- */
-
 .ui-acier-cta {
+  --ui-acier-p: 0%;
   position: relative;
   display: flex;
   align-items: center;
@@ -1020,7 +1017,6 @@
   width: 100%;
   height: 60px;
   padding: 0 22px 0 24px;
-  overflow: hidden;
   isolation: isolate;
   border: 1px solid rgba(201, 205, 209, 0.38);
   border-radius: 12px;
@@ -1029,11 +1025,7 @@
   font: 600 16px/1 "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
   letter-spacing: 0.02em;
   cursor: pointer;
-  transition: border-color 0.3s ease, transform 0.15s ease;
-}
-
-.ui-acier-cta:active {
-  transform: scale(0.99);
+  transition: --ui-acier-p 0.5s cubic-bezier(0.55, 0, 0.25, 1), border-color 0.3s ease;
 }
 
 .ui-acier-cta:focus-visible {
@@ -1041,69 +1033,85 @@
   outline-offset: 4px;
 }
 
-/* The light: brushed white steel, sweeping in from the left */
-.ui-acier-cta__fill {
+/* Hover: fill to about a third, then push towards the end and ease back */
+.ui-acier-cta:hover:not([data-added]),
+.ui-acier-cta:focus-visible:not([data-added]) {
+  --ui-acier-p: 36%;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.ui-acier-cta:hover:not([data-added]) {
+  animation: ui-acier-cta-tease 1.3s cubic-bezier(0.45, 0, 0.3, 1) 0.5s infinite;
+}
+
+@keyframes ui-acier-cta-tease {
+  0%, 100% { --ui-acier-p: 36%; }
+  38%      { --ui-acier-p: 47%; }
+  52%      { --ui-acier-p: 44%; }
+  64%      { --ui-acier-p: 46%; }
+}
+
+/* Click: run the light all the way */
+.ui-acier-cta[data-added] {
+  --ui-acier-p: 100%;
+  border-color: rgba(255, 255, 255, 0.9);
+  transition: --ui-acier-p 0.6s cubic-bezier(0.7, 0, 0.3, 1), border-color 0.3s ease;
+}
+
+.ui-acier-cta__fill,
+.ui-acier-cta__edge {
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+/* The light: brushed white steel, clipped to the current reach */
+.ui-acier-cta__fill {
+  left: 0;
+  right: 0;
   z-index: -1;
+  border-radius: 11px;
   background:
     linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 45%, rgba(255, 255, 255, 0) 55%) -150% 0 / 60% 100% no-repeat,
     linear-gradient(180deg, #F5F6F7, #C9CDD1);
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  transition: transform 0.55s cubic-bezier(0.65, 0, 0.25, 1);
+  clip-path: inset(0 calc(100% - var(--ui-acier-p)) 0 0);
 }
 
-.ui-acier-cta:hover .ui-acier-cta__fill,
-.ui-acier-cta:focus-visible .ui-acier-cta__fill,
-.ui-acier-cta[data-added] .ui-acier-cta__fill {
-  transform: scaleX(1);
+/* Its leading edge glows while it is reaching */
+.ui-acier-cta__edge {
+  left: var(--ui-acier-p);
+  z-index: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: #FFFFFF;
+  box-shadow: 0 0 12px 3px rgba(255, 255, 255, 0.55), 0 0 28px 6px rgba(255, 255, 255, 0.18);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.ui-acier-cta:hover,
-.ui-acier-cta[data-added] {
-  border-color: rgba(255, 255, 255, 0.85);
+.ui-acier-cta:hover:not([data-added]) .ui-acier-cta__edge,
+.ui-acier-cta:focus-visible:not([data-added]) .ui-acier-cta__edge,
+.ui-acier-cta.is-running .ui-acier-cta__edge {
+  opacity: 1;
 }
 
-/* A glint runs across the steel when the watch goes in the bag */
-.ui-acier-cta.is-glint .ui-acier-cta__fill {
-  animation: ui-acier-cta-glint 0.9s ease-out;
-}
-
-@keyframes ui-acier-cta-glint {
-  from { background-position: -150% 0, 0 0; }
-  to   { background-position: 250% 0, 0 0; }
-}
-
-/* Text and icon flip to dark over the light */
+/* Label and icon: white on the dark bar, dark wherever the light is */
 .ui-acier-cta__labels,
 .ui-acier-cta__icon {
-  transition: color 0.3s ease 0.08s;
-}
-
-.ui-acier-cta:hover .ui-acier-cta__labels,
-.ui-acier-cta:hover .ui-acier-cta__icon,
-.ui-acier-cta:focus-visible .ui-acier-cta__labels,
-.ui-acier-cta:focus-visible .ui-acier-cta__icon,
-.ui-acier-cta[data-added] .ui-acier-cta__labels,
-.ui-acier-cta[data-added] .ui-acier-cta__icon {
-  color: #121314;
+  position: relative;
+  z-index: 1;
+  mix-blend-mode: difference;
 }
 
 .ui-acier-cta__icon {
   width: 22px;
   height: 22px;
   flex: none;
-  transition: color 0.3s ease 0.08s, transform 0.35s ease;
 }
 
-.ui-acier-cta:hover .ui-acier-cta__icon {
-  transform: translateY(-2px);
-}
-
-/* Two labels in a window: the new one rolls up as the old one leaves */
+/* Two labels in a window: the new one rolls up once the light has landed */
 .ui-acier-cta__labels {
-  position: relative;
   display: grid;
   justify-items: start;
   overflow: hidden;
@@ -1135,6 +1143,10 @@
   transform: rotate(-45deg);
 }
 
+.ui-acier-cta[data-added] .ui-acier-cta__label {
+  transition-delay: 0.5s;
+}
+
 .ui-acier-cta[data-added] .ui-acier-cta__label:not(.ui-acier-cta__label--done) {
   transform: translateY(-110%);
   opacity: 0;
@@ -1143,6 +1155,55 @@
 .ui-acier-cta[data-added] .ui-acier-cta__label--done {
   transform: none;
   opacity: 1;
+}
+
+/* The landing: the bar pops, a ring of light bursts out, the bag jumps and a
+   glint runs across the steel */
+.ui-acier-cta::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.ui-acier-cta.is-landed {
+  animation: ui-acier-cta-pop 0.55s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.ui-acier-cta.is-landed::after {
+  animation: ui-acier-cta-ring 0.9s ease-out;
+}
+
+.ui-acier-cta.is-landed .ui-acier-cta__icon {
+  animation: ui-acier-cta-bag 0.7s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.ui-acier-cta.is-landed .ui-acier-cta__fill {
+  animation: ui-acier-cta-glint 0.9s ease-out;
+}
+
+@keyframes ui-acier-cta-pop {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.025); }
+  100% { transform: scale(1); }
+}
+
+@keyframes ui-acier-cta-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6), 0 0 24px 4px rgba(255, 255, 255, 0.35); }
+  100% { box-shadow: 0 0 0 16px rgba(255, 255, 255, 0), 0 0 24px 4px rgba(255, 255, 255, 0); }
+}
+
+@keyframes ui-acier-cta-bag {
+  0%   { transform: translateY(0) rotate(0); }
+  30%  { transform: translateY(-9px) rotate(-10deg); }
+  60%  { transform: translateY(1px) rotate(4deg); }
+  100% { transform: translateY(0) rotate(0); }
+}
+
+@keyframes ui-acier-cta-glint {
+  from { background-position: -150% 0, 0 0; }
+  to   { background-position: 250% 0, 0 0; }
 }
 
 /* ---- Arrival: when the page lands here, the dial, the watch and the copy
@@ -1230,13 +1291,15 @@
     transition: none;
   }
 
-  .ui-acier-cta.is-glint .ui-acier-cta__fill,
+  .ui-acier-cta,
+  .ui-acier-cta::after,
+  .ui-acier-cta__fill,
+  .ui-acier-cta__icon,
   .ui-acier-bench.is-sweep .ui-acier-bench__dial line {
     animation: none !important;
   }
 
-  .ui-acier-cta__fill,
-  .ui-acier-cta__icon {
+  .ui-acier-cta__edge {
     transition: none;
   }
 }
