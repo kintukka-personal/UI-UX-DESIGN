@@ -30,3 +30,4 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | Site | Description |
 | --- | --- |
 | [Dine In (baseline)](sites/dine-in-baseline/) | The untouched baseline: a plain HTML/CSS/JS rebuild of dine-in.com.au, with every page, menu, form and the shop, kept as the reference to compare component experiments against before upgrading the real site |
+| [Dine In (v2)](sites/dine-in-v2/) | The working copy of the baseline, where components get added. First change: the Chef card in the homepage "Meet Chef Brooke Silk" panel |
