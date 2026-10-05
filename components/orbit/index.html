@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orbit</title>
+<meta name="description" content="Rico: seven highlights on a wheel of cards that swings around a point below the screen. Kinetic type, a turning glass coin and a glitching mark.">
+<meta name="theme-color" content="#DEDFE2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter+Tight:wght@400;700;800&display=swap">
+<link rel="preload" as="image" href="images/portrait.webp" type="image/webp">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="ui-orbit-page">
+
+<main>
+  <section class="ui-orbit" data-ui-orbit aria-roledescription="carousel" aria-labelledby="ui-orbit-title">
+    <h1 id="ui-orbit-title" class="ui-orbit__sr">Rico: seven highlights</h1>
+    <p class="ui-orbit__sr" id="ui-orbit-help">Use the left and right arrow keys, or select a side card, to turn the wheel.</p>
+
+    <div class="ui-orbit__stage" data-stage>
+      <!-- The wheel's hub sits at the pivot, far below the centre card -->
+      <div class="ui-orbit__wheel" data-wheel>
+
+        <!-- 1. Ember: a lacquered red ring on black -->
+        <div class="ui-orbit__item" data-item data-title="Ember" role="group" aria-roledescription="slide" aria-label="1 of 7">
+          <button class="ui-orbit__card ui-orbit__card--art ui-orbit__card--ember" type="button" aria-label="Ember: a lacquered red ring floating on black" aria-describedby="ui-orbit-help">
+            <svg class="ui-orbit__art" viewBox="0 0 236 382" preserveAspectRatio="xMidYMid slice" focusable="false" aria-hidden="true">
+              <defs>
+                <radialGradient id="ui-orbit-ember-bg" cx=".55" cy=".45" r=".8">
+                  <stop offset="0" stop-color="#19161a"/>
+                  <stop offset="1" stop-color="#030303"/>
+                </radialGradient>
+                <linearGradient id="ui-orbit-ember-ring" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#2a0306"/>
+                  <stop offset=".38" stop-color="#7d0c13"/>
+                  <stop offset=".5" stop-color="#d8433d"/>
+                  <stop offset=".6" stop-color="#9c121b"/>
+                  <stop offset="1" stop-color="#1c0204"/>
+                </linearGradient>
+                <filter id="ui-orbit-ember-glow" x="-40%" y="-80%" width="180%" height="260%">
+                  <feGaussianBlur stdDeviation="9"/>
+                </filter>
+              </defs>
+              <rect width="236" height="382" fill="url(#ui-orbit-ember-bg)"/>
+              <g transform="rotate(-24 118 214)">
+                <ellipse cx="118" cy="214" rx="84" ry="30" fill="none" stroke="#a3101a" stroke-opacity=".22" stroke-width="30" filter="url(#ui-orbit-ember-glow)"/>
+                <ellipse cx="118" cy="214" rx="84" ry="30" fill="none" stroke="url(#ui-orbit-ember-ring)" stroke-width="22"/>
+                <ellipse cx="114" cy="206" rx="80" ry="26" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="1.5"/>
+              </g>
+            </svg>
+          </button>
+        </div>
+
+        <!-- 2. Glass coin turning over a ticker -->
+        <div class="ui-orbit__item" data-item data-title="Ledger" role="group" aria-roledescription="slide" aria-label="2 of 7">
+          <button class="ui-orbit__card ui-orbit__card--coin" type="button" aria-label="Ledger: a glass coin turning over USD, XRP, BTC and ETH" aria-describedby="ui-orbit-help">
+            <span class="ui-orbit__ticker" aria-hidden="true">
+              <span class="ui-orbit__word" data-word-old>USD</span>
+              <span class="ui-orbit__word" data-word-new></span>
+            </span>
+            <span class="ui-orbit__coinwrap" aria-hidden="true">
+              <span class="ui-orbit__coin" data-coin>
+                <span class="ui-orbit__face ui-orbit__face--front"></span>
+                <span class="ui-orbit__face ui-orbit__face--back"></span>
+              </span>
+            </span>
+          </button>
+        </div>
+
+        <!-- 3. Eclipse: a small sphere between two lit planets -->
+        <div class="ui-orbit__item" data-item data-title="Eclipse" role="group" aria-roledescription="slide" aria-label="3 of 7">
+          <button class="ui-orbit__card ui-orbit__card--art ui-orbit__card--sphere" type="button" aria-label="Eclipse: a small sphere caught between two planets lit at the rim" aria-describedby="ui-orbit-help">
+            <svg class="ui-orbit__art" viewBox="0 0 236 382" preserveAspectRatio="xMidYMid slice" focusable="false" aria-hidden="true">
+              <defs>
+                <linearGradient id="ui-orbit-band" x1="0" y1="0" x2="1" y2=".4">
+                  <stop offset="0" stop-color="#202021"/>
+                  <stop offset=".55" stop-color="#48484a"/>
+                  <stop offset="1" stop-color="#333335"/>
+                </linearGradient>
+                <radialGradient id="ui-orbit-top" cx="-20" cy="-60" r="272" gradientUnits="userSpaceOnUse">
+                  <stop offset=".72" stop-color="#050505"/>
+                  <stop offset=".93" stop-color="#121213"/>
+                  <stop offset=".985" stop-color="#3c3c3e"/>
+                  <stop offset="1" stop-color="#6c6c6e"/>
+                </radialGradient>
+                <linearGradient id="ui-orbit-top-glow" x1="1" y1="0" x2="0" y2=".7">
+                  <stop offset="0" stop-color="#fff" stop-opacity=".9"/>
+                  <stop offset=".45" stop-color="#fff" stop-opacity=".35"/>
+                  <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+                </linearGradient>
+                <radialGradient id="ui-orbit-low" cx="360" cy="580" r="426" gradientUnits="userSpaceOnUse">
+                  <stop offset=".7" stop-color="#030303"/>
+                  <stop offset=".92" stop-color="#0d0d0e"/>
+                  <stop offset=".99" stop-color="#2c2c2e"/>
+                  <stop offset="1" stop-color="#5a5a5c"/>
+                </radialGradient>
+                <linearGradient id="ui-orbit-low-glow" x1="1" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#fff" stop-opacity=".6"/>
+                  <stop offset=".5" stop-color="#fff" stop-opacity=".12"/>
+                  <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+                </linearGradient>
+                <radialGradient id="ui-orbit-ball" cx=".38" cy=".6" r=".72" fx=".3" fy=".7">
+                  <stop offset="0" stop-color="#1a1a1b"/>
+                  <stop offset=".55" stop-color="#3b3b3d"/>
+                  <stop offset=".85" stop-color="#7c7c7e"/>
+                  <stop offset="1" stop-color="#c4c4c6"/>
+                </radialGradient>
+                <filter id="ui-orbit-soft" x="-10%" y="-10%" width="120%" height="120%">
+                  <feGaussianBlur stdDeviation="1.4"/>
+                </filter>
+              </defs>
+              <rect width="236" height="382" fill="url(#ui-orbit-band)"/>
+              <circle cx="360" cy="580" r="426" fill="url(#ui-orbit-low)"/>
+              <circle cx="360" cy="580" r="425" fill="none" stroke="url(#ui-orbit-low-glow)" stroke-width="2.2" filter="url(#ui-orbit-soft)"/>
+              <circle cx="-20" cy="-60" r="270" fill="url(#ui-orbit-top)"/>
+              <circle cx="-20" cy="-60" r="269" fill="none" stroke="url(#ui-orbit-top-glow)" stroke-width="2.6" filter="url(#ui-orbit-soft)"/>
+              <circle cx="119" cy="188" r="25" fill="url(#ui-orbit-ball)"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- 4. Portrait -->
+        <div class="ui-orbit__item" data-item data-title="Profile" role="group" aria-roledescription="slide" aria-label="4 of 7">
+          <button class="ui-orbit__card ui-orbit__card--photo" type="button" aria-label="Profile: a black and white portrait in profile" aria-describedby="ui-orbit-help">
+            <img src="images/portrait.webp" alt="" width="470" height="762" decoding="async" fetchpriority="high" draggable="false">
+          </button>
+        </div>
+
+        <!-- 5. Kinetic type: the words scroll up the card on a loop -->
+        <div class="ui-orbit__item" data-item data-title="Bodywork" role="group" aria-roledescription="slide" aria-label="5 of 7">
+          <button class="ui-orbit__card ui-orbit__card--type" type="button" aria-label="Bodywork: the words Body, Work, 197 and Now scrolling up the card" aria-describedby="ui-orbit-help">
+            <span class="ui-orbit__scroll" data-scroll aria-hidden="true">
+              <span>BODY</span><span>WORK</span><span>197</span><span>NOW</span>
+              <span>BODY</span><span>WORK</span><span>197</span><span>NOW</span>
+              <span>BODY</span><span>WORK</span><span>197</span><span>NOW</span>
+            </span>
+          </button>
+        </div>
+
+        <!-- 6. A white mark on black that glitches in short bursts -->
+        <div class="ui-orbit__item" data-item data-title="Signal" role="group" aria-roledescription="slide" aria-label="6 of 7">
+          <button class="ui-orbit__card ui-orbit__card--mark" type="button" aria-label="Signal: a white mark on black that glitches now and then" aria-describedby="ui-orbit-help">
+            <span class="ui-orbit__glitch" data-glitch aria-hidden="true">
+              <!-- Five copies, each clipped to one band, slide apart during a burst -->
+              <span class="ui-orbit__band"><svg viewBox="0 0 120 40" focusable="false"><path d="M6 33L36 7H56L26 33ZM42 33L72 7H114L84 33Z"/></svg></span>
+              <span class="ui-orbit__band"><svg viewBox="0 0 120 40" focusable="false"><path d="M6 33L36 7H56L26 33ZM42 33L72 7H114L84 33Z"/></svg></span>
+              <span class="ui-orbit__band"><svg viewBox="0 0 120 40" focusable="false"><path d="M6 33L36 7H56L26 33ZM42 33L72 7H114L84 33Z"/></svg></span>
+              <span class="ui-orbit__band"><svg viewBox="0 0 120 40" focusable="false"><path d="M6 33L36 7H56L26 33ZM42 33L72 7H114L84 33Z"/></svg></span>
+              <span class="ui-orbit__band"><svg viewBox="0 0 120 40" focusable="false"><path d="M6 33L36 7H56L26 33ZM42 33L72 7H114L84 33Z"/></svg></span>
+            </span>
+          </button>
+        </div>
+
+        <!-- 7. Wayfinding: a yellow sign seen close up -->
+        <div class="ui-orbit__item" data-item data-title="Park" role="group" aria-roledescription="slide" aria-label="7 of 7">
+          <button class="ui-orbit__card ui-orbit__card--art ui-orbit__card--park" type="button" aria-label="Park: the word Park on a yellow sign, seen close up" aria-describedby="ui-orbit-help">
+            <svg class="ui-orbit__art" viewBox="0 0 236 382" preserveAspectRatio="xMidYMid slice" focusable="false" aria-hidden="true">
+              <defs>
+                <linearGradient id="ui-orbit-wall" x1="0" y1="0" x2=".3" y2="1">
+                  <stop offset="0" stop-color="#e6e6e7"/>
+                  <stop offset="1" stop-color="#b9b9bb"/>
+                </linearGradient>
+                <linearGradient id="ui-orbit-yellow" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#f0c53a"/>
+                  <stop offset=".6" stop-color="#e6b628"/>
+                  <stop offset="1" stop-color="#c99a17"/>
+                </linearGradient>
+              </defs>
+              <rect width="236" height="382" fill="url(#ui-orbit-wall)"/>
+              <path d="M0 190L236 252V382H0Z" fill="url(#ui-orbit-yellow)"/>
+              <path d="M0 318L104 382H0Z" fill="#b8890f" opacity=".55"/>
+              <text x="0" y="0" transform="translate(-2 250) rotate(60)" font-family="Inter Tight, Helvetica Neue, Arial, sans-serif" font-weight="800" font-size="108" letter-spacing="-4" fill="#121212">Park</text>
+              <path d="M180 264L236 250V336L170 356Z" fill="#3f6fae"/>
+              <path d="M170 356L236 336V382H150Z" fill="#14181f"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- The hub: a grey disc centred on the pivot, in front of the cards' feet -->
+      <div class="ui-orbit__hub" aria-hidden="true"></div>
+    </div>
+
+    <footer class="ui-orbit__bar">
+      <svg class="ui-orbit__logo" viewBox="0 0 64 16" role="img" aria-label="rico">
+        <g fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 15V4H10"/>
+          <path d="M14 4V15"/>
+          <path d="M29.2 6.1A5.5 5.5 0 1 0 29.2 12.9"/>
+          <circle cx="38" cy="9.5" r="5.5"/>
+          <circle cx="49.4" cy="13" r="1.9" stroke-width=".6"/>
+        </g>
+        <path d="M48.8 14.1V11.9H49.6A.6 .6 0 0 1 49.6 13.1H48.8M49.5 13.1L50.1 14.1" fill="none" stroke="currentColor" stroke-width=".45"/>
+      </svg>
+      <span class="ui-orbit__label">Orbit</span>
+      <span class="ui-orbit__count" aria-hidden="true">5-01 (LITE)</span>
+
+      <div class="ui-orbit__controls">
+        <button class="ui-orbit__nav" type="button" data-prev>Previous highlight</button>
+        <button class="ui-orbit__nav" type="button" data-next>Next highlight</button>
+        <button class="ui-orbit__play" type="button" data-play>
+          <span class="ui-orbit__play-icon" aria-hidden="true"></span>
+          <span data-play-label>Pause</span><span class="ui-orbit__sr"> the animation</span>
+        </button>
+      </div>
+    </footer>
+
+    <p class="ui-orbit__sr" data-live aria-live="polite" aria-atomic="true"></p>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+/* ==========================================================================
+   Orbit
+   Rebuilt from Jitter's free "Orbit" template (rico., 5-01 LITE)
+   Classes are prefixed ui-orbit. Plain CSS, no dependencies.
+   ========================================================================== */
+
+.ui-orbit {
+  /* Palette, sampled from the source video */
+  --ui-orbit-bg: #dedfe2;            /* backdrop */
+  --ui-orbit-hub-top: #a3a3a6;       /* the hub where it meets the centre card */
+  --ui-orbit-hub-low: #707073;       /* the hub at the footer line */
+  --ui-orbit-hub-deep: #59595c;      /* further down, on tall screens */
+  --ui-orbit-ink: #0b0b0c;
+  --ui-orbit-bar-ink: #fff;
+
+  /* Type */
+  --ui-orbit-sans: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ui-orbit-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Geometry. Everything is measured in source pixels of the 960 x 720 frame
+     and scaled by --u: the height decides on wide screens, and on narrow ones
+     the centre card takes 60% of the width. */
+  --u: min(calc(100vh / 720), calc(100vw / 393));
+  --cy: max(calc(var(--u) * 359), 47vh);  /* the centre card's middle */
+  --card-w: calc(var(--u) * 236);
+  --card-h: calc(var(--u) * 382);         /* the part above the hub */
+  --card-full: calc(var(--u) * 432);      /* the rest stands behind the hub */
+  --reach: calc(var(--u) * 1082);         /* pivot to the top of a card */
+  --hub-r: calc(var(--u) * 699);          /* the hub meets the cards' feet */
+  --radius: calc(var(--u) * 10);
+
+  position: relative;
+  height: 100vh;
+  min-height: 360px;
+  overflow: hidden;
+  background: var(--ui-orbit-bg);
+  color: var(--ui-orbit-bar-ink);
+  font-family: var(--ui-orbit-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+@supports (height: 100svh) {
+  .ui-orbit {
+    --u: min(calc(100svh / 720), calc(100vw / 393));
+    --cy: max(calc(var(--u) * 359), 47svh);
+    height: 100svh;
+  }
+}
+
+.ui-orbit-page {
+  margin: 0;
+  background: #dedfe2;
+}
+
+.ui-orbit__sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------- Stage */
+
+.ui-orbit__stage {
+  position: absolute;
+  inset: 0;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ui-orbit.is-dragging .ui-orbit__stage { cursor: grabbing; }
+
+/* The wheel is a zero-size point at the pivot: (50%, centre card + 891u) */
+.ui-orbit__wheel {
+  position: absolute;
+  top: calc(var(--cy) + var(--u) * 891);
+  left: 50%;
+  width: 0;
+  height: 0;
+  z-index: 1;
+}
+
+/* Every card stands on the hub's rim and turns about the pivot */
+.ui-orbit__item {
+  position: absolute;
+  top: calc(var(--reach) * -1);
+  left: calc(var(--card-w) / -2);
+  width: var(--card-w);
+  height: var(--card-full);
+  transform-origin: 50% var(--reach);
+  will-change: transform;
+}
+
+/* ---------------------------------------------------------------- Cards */
+
+.ui-orbit__card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #111;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  isolation: isolate;
+}
+
+.ui-orbit__item.is-centre .ui-orbit__card { cursor: default; }
+
+.ui-orbit__card:focus { outline: none; }
+
+.ui-orbit__card:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, .9);
+}
+
+/* Card art fills the part above the hub and 12px past it, which covers the
+   corners where the hub curves away; the button's own colour runs on below */
+.ui-orbit__card img,
+.ui-orbit__art {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: calc(var(--card-h) + var(--u) * 12);
+  object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.ui-orbit__card--photo { background: #3a3a3b; }
+.ui-orbit__card--sphere { background: #050505; }
+.ui-orbit__card--ember { background: #050505; }
+.ui-orbit__card--park { background: #b98c12; }
+
+/* Kinetic type: heavy caps on a grey plate, scrolling up */
+.ui-orbit__card--type {
+  background: linear-gradient(100deg, #c8c8ca 0%, #b8b8bb 55%, #a6a6a9 100%);
+}
+
+.ui-orbit__scroll {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--ui-orbit-ink);
+  font-family: var(--ui-orbit-sans);
+  font-size: calc(var(--u) * 73);
+  font-weight: 700;
+  line-height: calc(var(--u) * 62);
+  letter-spacing: -.012em;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.ui-orbit__scroll > span { display: block; }
+
+/* Mark card: black, with a white mark that glitches */
+.ui-orbit__card--mark { background: #000; }
+
+.ui-orbit__glitch {
+  position: absolute;
+  top: calc(var(--card-h) / 2);
+  left: 50%;
+  width: calc(var(--u) * 112);
+  height: calc(var(--u) * 37);
+  margin: calc(var(--u) * -18) 0 0 calc(var(--u) * -56);
+}
+
+.ui-orbit__band {
+  position: absolute;
+  inset: 0;
+  will-change: transform, clip-path;
+}
+
+.ui-orbit__band svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: #ececec;
+}
+
+/* Five horizontal bands that add up to the whole mark */
+.ui-orbit__band:nth-child(1) { clip-path: inset(0 -40% 80% -40%); }
+.ui-orbit__band:nth-child(2) { clip-path: inset(20% -40% 60% -40%); }
+.ui-orbit__band:nth-child(3) { clip-path: inset(40% -40% 40% -40%); }
+.ui-orbit__band:nth-child(4) { clip-path: inset(60% -40% 20% -40%); }
+.ui-orbit__band:nth-child(5) { clip-path: inset(80% -40% 0 -40%); }
+
+/* ---------------------------------------------------------------- Coin card */
+
+.ui-orbit__card--coin {
+  background: linear-gradient(205deg, #fafafa 0%, #ececed 45%, #d2d2d4 100%);
+}
+
+.ui-orbit__ticker {
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--card-h);
+  z-index: 1;
+}
+
+.ui-orbit__word {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ui-orbit-ink);
+  font-family: var(--ui-orbit-sans);
+  font-size: calc(var(--u) * 40);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.ui-orbit__coinwrap {
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--card-h);
+  z-index: 2;
+  perspective: calc(var(--u) * 620);
+  pointer-events: none;
+}
+
+.ui-orbit__coin {
+  --d: calc(var(--u) * 140);  /* diameter */
+  --t: calc(var(--u) * 13);   /* thickness */
+  position: absolute;
+  top: calc(50% - var(--d) / 2);
+  left: calc(50% - var(--d) / 2);
+  width: var(--d);
+  height: var(--d);
+  transform-style: preserve-3d;
+}
+
+.ui-orbit__face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  /* Clear glass: two hairline rims, a soft glare */
+  border: 1px solid rgba(24, 26, 32, .34);
+  box-shadow:
+    inset 0 0 0 calc(var(--u) * 2) rgba(255, 255, 255, .55),
+    inset 0 0 0 calc(var(--u) * 3) rgba(30, 32, 40, .14);
+  background:
+    linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .26) 38%, transparent 46%),
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, .05), rgba(255, 255, 255, .15) 70%, rgba(180, 186, 198, .12));
+}
+
+.ui-orbit__face--front { transform: translateZ(calc(var(--t) / 2)); }
+.ui-orbit__face--back { transform: rotateY(180deg) translateZ(calc(var(--t) / 2)); }
+
+/* Reeded rim: built from facets by script.js */
+.ui-orbit__facet {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--t);
+  margin-left: calc(var(--t) / -2);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ---------------------------------------------------------------- Hub */
+
+.ui-orbit__hub {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--cy) + var(--card-h) / 2);
+  left: calc(50% - var(--hub-r));
+  width: calc(var(--hub-r) * 2);
+  height: calc(var(--hub-r) * 2);
+  border-radius: 50%;
+  background: linear-gradient(to bottom,
+    var(--ui-orbit-hub-top) 0,
+    var(--ui-orbit-hub-low) calc(var(--u) * 169),
+    var(--ui-orbit-hub-deep) calc(var(--u) * 420),
+    var(--ui-orbit-hub-deep) 100%);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- Footer */
+
+.ui-orbit__bar {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: clamp(52px, calc(var(--u) * 52), 72px);
+  padding-bottom: env(safe-area-inset-bottom);
+  pointer-events: none;
+}
+
+.ui-orbit__bar > * {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: auto;
+}
+
+.ui-orbit__logo {
+  left: clamp(16px, 2.5vw, 40px);
+  width: auto;
+  height: clamp(14px, 1.6vw, 22px);
+  color: #f4f4f5;
+  overflow: visible;
+  /* Keeps the wordmark legible where it crosses a pale card */
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, .35));
+}
+
+.ui-orbit__label,
+.ui-orbit__count {
+  font-family: var(--ui-orbit-mono);
+  font-size: clamp(11px, 1vw, 14px);
+  line-height: 1;
+  letter-spacing: .01em;
+  color: var(--ui-orbit-bar-ink);
+  white-space: nowrap;
+}
+
+.ui-orbit__label { left: 47.9%; }
+.ui-orbit__count { left: 67.5%; font-variant-numeric: tabular-nums; }
+
+.ui-orbit__controls {
+  right: clamp(16px, 2vw, 32px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Pause sits where the source has its dark badge */
+.ui-orbit__play,
+.ui-orbit__nav {
+  display: inline-flex;
+  align-items: center;
+  gap: .6em;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 4px;
+  background: #19191b;
+  color: #fff;
+  font-family: var(--ui-orbit-mono);
+  font-size: clamp(12px, 1vw, 14px);
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color .2s, border-color .2s;
+}
+
+.ui-orbit__play:hover,
+.ui-orbit__nav:hover {
+  background: #2b2b2e;
+  border-color: rgba(255, 255, 255, .4);
+}
+
+.ui-orbit__play:focus-visible,
+.ui-orbit__nav:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Pause bars, or a play triangle once paused */
+.ui-orbit__play-icon {
+  position: relative;
+  width: 8px;
+  height: 9px;
+  border-left: 2.5px solid currentColor;
+  border-right: 2.5px solid currentColor;
+  box-sizing: border-box;
+}
+
+.ui-orbit__play.is-paused .ui-orbit__play-icon {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid currentColor;
+  border-right: 0;
+}
+
+/* Previous / Next stay out of the picture until keyboard focus reaches them */
+.ui-orbit__nav:not(:focus-visible) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Phones: the counter makes way for the Pause button */
+@media (max-width: 560px) {
+  .ui-orbit__count { display: none; }
+  .ui-orbit__label { left: 50%; transform: translate(-50%, -50%); }
+}
+
+@media (forced-colors: active) {
+  .ui-orbit__card { border: 1px solid CanvasText; }
+  .ui-orbit__play, .ui-orbit__nav { border-color: ButtonText; }
+}
