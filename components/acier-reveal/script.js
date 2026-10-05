@@ -160,7 +160,7 @@
     for (var i = 0; i < 60; i++) {
       var hour = i % 5 === 0, len = hour ? 30 : 14;
       var line = el("line", { x1: 0, x2: 0, y1: -RING_R, y2: -RING_R, "stroke-width": hour ? 4 : 1.6, transform: "rotate(" + i * 6 + ")" }, ring);
-      this.ticks.push({ node: line, len: len, at: 0.42 + 0.9 * Math.pow(i / 60, 0.6) });
+      this.ticks.push({ node: line, len: len, at: 0.75 + 0.6 * Math.pow(i / 60, 0.6) });   // after FOSLN has started decoding
     }
     // The intro's hands are the watch's hands, in ink, drawn in ring units:
     // photo px x (frame px per photo px) / (ring scale on the dial)
@@ -325,8 +325,8 @@
 
     // The brand decodes at the centre, one letter locking at a time, holds,
     // and clears just before the seconds hand grows out of the same spot
-    this.hz.textContent = decode("FOSLN", t, 0.2, 1.05);
-    this.hz.style.opacity = t < 0.15 ? 0 : n(1 - seg(t, 1.2, 1.4));
+    this.hz.textContent = decode("FOSLN", t, 0.08, 1.0);
+    this.hz.style.opacity = t < 0.04 ? 0 : n(1 - seg(t, 1.2, 1.4));
 
     // Ticks count in around it, faster and faster
     for (i = 0; i < 60; i++) {
