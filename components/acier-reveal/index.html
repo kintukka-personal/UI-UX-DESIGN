@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0B0B0C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Libre+Baskerville:wght@700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
 <link rel="preload" as="image" href="images/acier-watch.webp" type="image/webp">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -96,21 +96,35 @@ QUARTZ MOVEMENT</p>
   </section>
 
   <!-- ================= Product ================= -->
-  <section class="ui-acier-product" id="product" aria-labelledby="ui-acier-product-title" tabindex="-1">
-    <figure class="ui-acier-product__poster" data-ui-acier-poster>
-      <img class="ui-acier-product__fallback" src="images/acier-watch.webp" alt="" width="1064" height="1756" loading="lazy">
+  <section class="ui-acier-product" id="product" aria-labelledby="ui-acier-product-title" tabindex="-1" data-ui-acier-bench>
+    <!-- The bench: the live watch under a light you move, in front of a giant
+         dial that keeps the real seconds -->
+    <figure class="ui-acier-bench" data-bench>
+      <div class="ui-acier-bench__stage" aria-hidden="true">
+        <svg class="ui-acier-bench__dial" data-bench-dial viewBox="-100 -100 200 200" focusable="false"></svg>
+        <div class="ui-acier-bench__watch" data-bench-watch>
+          <img class="ui-acier-bench__img" src="images/acier-watch.webp" alt="" width="1064" height="1756" loading="lazy" decoding="async">
+          <div class="ui-acier-bench__light" data-bench-light></div>
+          <svg class="ui-acier-bench__hands" data-bench-hands viewBox="0 0 532 878" focusable="false"></svg>
+        </div>
+        <div class="ui-acier-bench__floor"></div>
+      </div>
       <figcaption class="ui-acier__sr">The Acier watch in brushed steel with a plain onyx dial, on its integrated link bracelet, its hands showing your local time.</figcaption>
     </figure>
 
     <div class="ui-acier-product__copy">
       <h2 id="ui-acier-product-title" class="ui-acier__sr">Acier quartz watch by FOSLN</h2>
-      <p class="ui-acier-product__lede">A steel case flowing into a steel link bracelet, and an onyx dial with nothing on it but the hands. The quartz movement keeps it true to the second.</p>
+      <p class="ui-acier-product__statement" data-arrive>A steel case flowing into a steel link bracelet, and an onyx dial with <em>nothing on it but the hands.</em></p>
+      <p class="ui-acier-product__aside" data-arrive>The quartz movement keeps it true to the second.</p>
 
-      <div class="ui-acier-product__buy">
+      <div class="ui-acier-product__buy" data-arrive>
         <p class="ui-acier-product__price"><span class="ui-acier__sr">Price:</span>$97</p>
-        <button class="ui-acier-product__cta" type="button" data-ui-acier-add>
-          <span data-label>Add to bag</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13.2 5.6 19.6 12l-6.4 6.4-1.4-1.4 4-4H4v-2h11.8l-4-4z"/></svg>
+        <button class="ui-acier-cta" type="button" data-ui-acier-add>
+          <span class="ui-acier-cta__labels">
+            <span class="ui-acier-cta__label" data-label-add>Add to bag</span>
+            <span class="ui-acier-cta__label ui-acier-cta__label--done" data-label-done aria-hidden="true">In your bag</span>
+          </span>
+          <span class="ui-acier-cta__crown" aria-hidden="true"><span class="ui-acier-cta__tread"></span></span>
         </button>
       </div>
       <p class="ui-acier-product__note" role="status" aria-live="polite" data-ui-acier-status></p>

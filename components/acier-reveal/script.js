@@ -527,21 +527,7 @@
   var player = null;
   function calm() { return !!(reduceMotion && reduceMotion.matches); }
 
-  // Product section: a still of the poster, built from a copy of the hero stage
   var hero = document.querySelector("[data-ui-acier]");
-  var posterHost = document.querySelector("[data-ui-acier-poster]");
-  if (hero && posterHost) {
-    var wrap = document.createElement("div");
-    wrap.className = "ui-acier ui-acier--poster";
-    wrap.setAttribute("aria-hidden", "true");
-    wrap.appendChild(hero.querySelector("[data-ui-acier-stage]").cloneNode(true));
-    var fallback = posterHost.querySelector(".ui-acier-product__fallback");
-    if (fallback) fallback.remove();
-    posterHost.insertBefore(wrap, posterHost.firstChild);
-    var still = new Stage(wrap);
-    stages.push(still);
-    still.render(T_STILL);
-  }
 
   if (hero) {
     player = new Player(new Stage(hero), {
@@ -578,13 +564,16 @@
     initDrain(hero, player);
   }
 
-  // The real clock: every stage's hands
+  var bench = initBench();
+
+  // The real clock: every stage's hands, and the bench
   function clock() {
     var d = new Date(), ms = d.getMilliseconds(), seconds = !calm();
     stages.forEach(function (s) {
       if (player && s === player.stage && player.userPaused) return;   // Pause also stops the watch
       s.setHands(d, ms, seconds);
     });
+    if (bench) bench.tick(d, ms, seconds);
     if (seconds) requestAnimationFrame(clock);
     else setTimeout(clock, 1000);
   }
@@ -759,14 +748,108 @@
     }
   }
 
-  // Add to bag (demo): announced to screen readers
+  // ---------- The bench (product section) ----------
+  // The live watch under a light that follows the pointer (a gentle sway on
+  // touch), tilting a few degrees in 3D, in front of a giant dial whose tick
+  // for the current second glows with a short fading trail.
+  function initBench() {
+    var section = document.querySelector("[data-ui-acier-bench]");
+    if (!section) return null;
+    var fig = section.querySelector("[data-bench]");
+    var stage = section.querySelector(".ui-acier-bench__stage");
+    var dial = section.querySelector("[data-bench-dial]");
+    var hands = buildHands(section.querySelector("[data-bench-hands]"), "ui-acier-bench-h", false, HANDS_C.x, HANDS_C.y);
+
+    // 60 ticks on a 100-unit dial
+    var ticks = [];
+    for (var i = 0; i < 60; i++) {
+      var hour = i % 5 === 0;
+      var line = el("line", { x1: 0, x2: 0, y1: -96, y2: hour ? -86 : -91, transform: "rotate(" + i * 6 + ")" }, dial);
+      if (hour) line.setAttribute("class", "is-hour");
+      line.style.setProperty("--i", i);
+      ticks.push(line);
+    }
+
+    // Pointer light and tilt, eased towards the target every frame
+    var cur = { x: 0.5, y: 0.35 }, aim = { x: 0.5, y: 0.35 }, lit = 0.45, litAim = 0.45, hover = false;
+    stage.addEventListener("pointermove", function (e) {
+      var r = stage.getBoundingClientRect();
+      aim.x = clamp01((e.clientX - r.left) / r.width);
+      aim.y = clamp01((e.clientY - r.top) / r.height);
+      hover = e.pointerType === "mouse";
+      litAim = 0.95;
+    });
+    stage.addEventListener("pointerleave", function () { hover = false; litAim = 0.45; });
+
+    var last = -1;
+    function tick(d, ms, live) {
+      var s = d.getSeconds();
+      hands.hour.setAttribute("transform", "rotate(" + n(30 * (d.getHours() % 12 + d.getMinutes() / 60 + s / 3600)) + ")");
+      hands.minute.setAttribute("transform", "rotate(" + n(6 * (d.getMinutes() + s / 60)) + ")");
+      hands.second.setAttribute("transform", "rotate(" + n(6 * (live ? s - 1 + outBack(clamp01(ms / 90), 2.2) : s)) + ")");
+      hands.second.style.display = live ? "" : "none";
+
+      // The dial keeps the real seconds: this second bright, the last few fading
+      if (s !== last) {
+        last = s;
+        for (var k = 0; k < 60; k++) {
+          var age = (s - k + 60) % 60;
+          ticks[k].style.opacity = age === 0 ? 1 : age < 7 ? n(0.13 + 0.55 * Math.pow(1 - age / 7, 2)) : "";
+        }
+      }
+
+      if (calm()) return;
+      // With no pointer over it, the light drifts and the watch sways a little
+      var t = performance.now() / 1000;
+      if (!hover) { aim.x = 0.5 + 0.22 * Math.sin(t * 0.45); aim.y = 0.32 + 0.1 * Math.sin(t * 0.31 + 1); }
+      cur.x += (aim.x - cur.x) * 0.08;
+      cur.y += (aim.y - cur.y) * 0.08;
+      lit += (litAim - lit) * 0.06;
+      stage.style.setProperty("--lx", n(cur.x * 100) + "%");
+      stage.style.setProperty("--ly", n(cur.y * 100) + "%");
+      stage.style.setProperty("--rx", n((0.5 - cur.y) * 9) + "deg");
+      stage.style.setProperty("--ry", n((cur.x - 0.5) * 12) + "deg");
+      stage.style.setProperty("--dx", n((0.5 - cur.x) * 14) + "px");
+      stage.style.setProperty("--dy", n((0.5 - cur.y) * 10) + "px");
+      stage.style.setProperty("--lit", n(lit));
+      stage.style.setProperty("--plx", n(50 + (cur.x - 0.5) * 30) + "%");   // the pool under the watch follows only a little
+      stage.style.setProperty("--ply", n(45 + (cur.y - 0.35) * 20) + "%");
+    }
+
+    // Arrival: the dial, the watch and the copy come in when the section is
+    // reached, and reset once it has left the screen, ready for the next visit
+    if (!calm() && "IntersectionObserver" in window) {
+      section.setAttribute("data-arrival", "");
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting && en.intersectionRatio > 0.3) section.classList.add("is-in");
+          else if (!en.isIntersecting) section.classList.remove("is-in");
+        });
+      }, { threshold: [0, 0.3] }).observe(section);
+    }
+
+    return { tick: tick, sweep: function () {
+      if (calm()) return;
+      fig.classList.remove("is-sweep");
+      void fig.offsetWidth;   // restart the lap
+      fig.classList.add("is-sweep");
+      setTimeout(function () { fig.classList.remove("is-sweep"); }, 1600);
+    } };
+  }
+
+  // Add to bag (demo): the crown winds, the label rolls over, a lap of light
+  // runs round the dial, and the result is announced to screen readers
   var cta = document.querySelector("[data-ui-acier-add]");
   var status = document.querySelector("[data-ui-acier-status]");
   if (cta) {
     cta.addEventListener("click", function () {
       var on = !cta.hasAttribute("data-added");
       cta.toggleAttribute("data-added", on);
-      cta.querySelector("[data-label]").textContent = on ? "Added" : "Add to bag";
+      cta.querySelector("[data-label-add]").setAttribute("aria-hidden", on ? "true" : "false");
+      cta.querySelector("[data-label-done]").setAttribute("aria-hidden", on ? "false" : "true");
+      cta.classList.add("is-winding");
+      setTimeout(function () { cta.classList.remove("is-winding"); }, 520);
+      if (on && bench) bench.sweep();
       if (status) status.textContent = on ? "Acier added to your bag." : "Acier removed from your bag.";
       cta.dispatchEvent(new CustomEvent("ui-acier:add", { bubbles: true, detail: { added: on } }));
     });

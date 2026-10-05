@@ -25,7 +25,12 @@ When it ends, the watch's **crown** appears at the bottom: the knurled winder fr
 
 **Light beams** guide the eye to the crown. A faint track runs from under each sign-off piece to the top of the crown, along the same curve that piece will drain down. White pulses of light, each a bright glowing head with a soft tail, run along them in a loop: the outer two slightly after the middle one, speeding up as they go, like water finding the drain. Each time they arrive, the crown's grooves turn one notch and a ring of light breathes out from it. The beams fade out the moment the exit starts. With reduced motion only the faint tracks show and the crown stays still.
 
-The **product section** shows a still of the poster, with hands and the local-time callout still live. Beside it are a short description, a price and a demo "Add to bag". The name, brand, time and specs are already on the poster, so the copy doesn't repeat them.
+The **product section** is a watchmaker's bench:
+- **The watch, large and live**, on its own: no name or callouts, since the hero already showed them. Its hands keep local time. It tilts a few degrees in 3D towards the pointer, and a light follows the pointer across the steel, masked by the photo so it only lands on metal. With no pointer over it, the light drifts and the watch sways gently.
+- **A giant dial behind it:** the intro's 60-tick ring, faint, centred on the watch's own dial, with a touch of parallax. The tick for the current second glows, with a trail that fades over six seconds, so the section keeps the real time.
+- **Copy:** the description is a large serif statement, ending in italics on "nothing on it but the hands", with the quartz line as a small mono note.
+- **Price and Add to bag:** the price is set in brushed steel. Add to bag is a steel bar with the watch's crown on its end, the same tread as the hero's crown. The crown winds on hover. On click it spins fast, the label rolls up to "In your bag", a lap of light runs round the giant dial, and the result is announced. Clicking again removes it.
+- **Arrival:** when the drain lands here, or the section is scrolled into view, the dial turns in, the watch rises out of a blur, and the copy follows, each in turn. It resets once the section is off screen, ready for the next visit.
 
 Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-acier`.
 
@@ -36,7 +41,7 @@ Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-a
 | `index.html` | The landing page: the reveal hero, the product section and the footer |
 | `style.css` | Stage layout, phase styles, controls and the landing page around them |
 | `script.js` | The timeline, the steel letters, the hands and real clock, callouts, the player, the beams and the crown exit |
-| `images/acier-watch.webp` | The watch cut out of the supplied photo, printed hands removed, upscaled 2× (1064 × 1756) |
+| `images/acier-watch.webp` | The watch cut out of the supplied photo, printed hands removed, upscaled 2× (1064 × 1756). Used by the hero and the bench |
 | `preview.png` | The poster beat |
 
 ## How it is built
