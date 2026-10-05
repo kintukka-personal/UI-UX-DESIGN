@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Acier by FOSLN</title>
+<meta name="description" content="FOSLN Acier quartz watch: a launch page that ticks in a watch dial, assembles the name link by link and shows the watch running on your local time.">
+<meta name="theme-color" content="#0B0B0C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="preload" as="image" href="images/acier-watch.webp" type="image/webp">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="ui-acier-page">
+
+<a class="ui-acier-skip" href="#product">Skip to product details</a>
+
+<main>
+  <!-- ================= Hero: the reveal ================= -->
+  <section class="ui-acier" data-ui-acier aria-labelledby="ui-acier-title">
+    <h1 id="ui-acier-title" class="ui-acier__sr">Acier by FOSLN. A stainless steel quartz watch.</h1>
+
+    <div class="ui-acier__stage" data-ui-acier-stage aria-hidden="true">
+      <div class="ui-acier__bg"></div>
+
+      <div class="ui-acier__frame">
+        <!-- 2. Poster: one "camera" group that the dial zoom pushes into -->
+        <div class="ui-acier__camera" data-camera>
+          <svg class="ui-acier__word" data-word viewBox="0 0 504 100" focusable="false"></svg>
+
+          <div class="ui-acier__watch" data-watch>
+            <img class="ui-acier__watch-img" src="images/acier-watch.webp" alt="" width="1064" height="1756" decoding="async" fetchpriority="high">
+            <div class="ui-acier__sheen" data-sheen></div>
+            <svg class="ui-acier__hands" data-hands viewBox="0 0 532 878" focusable="false"></svg>
+          </div>
+
+          <svg class="ui-acier__svg ui-acier__leaders" data-leaders viewBox="0 0 720 900" focusable="false"></svg>
+          <div class="ui-acier__labels" data-labels></div>
+        </div>
+
+        <p class="ui-acier__brand" data-brand>FOSLN</p>
+        <p class="ui-acier__meta ui-acier__type" data-meta data-type="QUARTZ WATCH&#10;Nº 01 / 2026">QUARTZ WATCH
+Nº 01 / 2026</p>
+
+        <!-- 3. Sign-off -->
+        <div class="ui-acier__end" data-end>
+          <svg class="ui-acier__plate" data-plate viewBox="0 0 240 64" focusable="false">
+            <rect class="ui-acier__plate-body" x="1" y="1" width="238" height="62" rx="5"/>
+            <path class="ui-acier__plate-rule" d="M22 25H70M170 25H218"/>
+            <text class="ui-acier__plate-name" x="120" y="33" text-anchor="middle">FOSLN</text>
+            <text class="ui-acier__plate-sub" x="120" y="50" text-anchor="middle">QUARTZ WATCH</text>
+          </svg>
+          <p class="ui-acier__end-copy ui-acier__type" data-type="STAINLESS STEEL&#10;QUARTZ MOVEMENT">STAINLESS STEEL
+QUARTZ MOVEMENT</p>
+          <svg class="ui-acier__end-word" data-end-word viewBox="0 0 504 100" focusable="false"></svg>
+        </div>
+      </div>
+
+      <!-- 1. Quartz, on its own paper layer so it can dissolve into the watch -->
+      <div class="ui-acier__intro" data-intro>
+        <div class="ui-acier__frame">
+          <!-- The brand decoding at the centre, the minute ring and the hands -->
+          <svg class="ui-acier__svg ui-acier__quartz" viewBox="0 0 720 900" focusable="false">
+            <g data-ring></g>
+            <text class="ui-acier__hz" data-hz x="361.5" y="450" text-anchor="middle" dominant-baseline="central">FOSLN</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="ui-acier__markers" data-markers>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="ui-acier__grain"></div>
+      <div class="ui-acier__progress" data-progress></div>
+    </div>
+
+    <!-- Light beams guiding the eye from the sign-off down to the crown -->
+    <svg class="ui-acier__beams" data-beams aria-hidden="true" focusable="false"></svg>
+
+    <div class="ui-acier__controls">
+      <button class="ui-acier__btn" type="button" data-ui-acier-toggle aria-label="Pause animation">
+        <svg class="ui-acier__icon ui-acier__icon--pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+        <svg class="ui-acier__icon ui-acier__icon--play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.2v13.6L19 12z"/></svg>
+      </button>
+      <button class="ui-acier__btn" type="button" data-ui-acier-replay aria-label="Replay animation">
+        <svg class="ui-acier__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5a7 7 0 1 1-6.93 8h2.02A5 5 0 1 0 12 7v3L7.5 6 12 2z"/></svg>
+      </button>
+    </div>
+
+    <!-- The watch's crown: the beams wind it, and scrolling or a tap sets the page going -->
+    <a class="ui-acier__cue" href="#product" aria-label="Wind down: scroll to the Acier product details">
+      <span class="ui-acier__crown" data-crown aria-hidden="true"><span class="ui-acier__crown-clip"><span class="ui-acier__crown-wind"><span class="ui-acier__crown-tread"></span></span></span><i></i></span>
+      <span class="ui-acier__cue-label" aria-hidden="true">Wind down</span>
+    </a>
+  </section>
+
+  <!-- ================= Product ================= -->
+  <section class="ui-acier-product" id="product" aria-labelledby="ui-acier-product-title" tabindex="-1" data-ui-acier-bench>
+    <!-- The bench: the live watch under a light you move, in front of a giant
+         dial that keeps the real seconds -->
+    <figure class="ui-acier-bench" data-bench>
+      <div class="ui-acier-bench__stage" aria-hidden="true">
+        <svg class="ui-acier-bench__dial" data-bench-dial viewBox="-100 -100 200 200" focusable="false"></svg>
+        <div class="ui-acier-bench__watch" data-bench-watch>
+          <img class="ui-acier-bench__img" src="images/acier-watch.webp" alt="" width="1064" height="1756" loading="lazy" decoding="async">
+          <div class="ui-acier-bench__light" data-bench-light></div>
+          <svg class="ui-acier-bench__hands" data-bench-hands viewBox="0 0 532 878" focusable="false"></svg>
+        </div>
+        <div class="ui-acier-bench__floor"></div>
+      </div>
+      <figcaption class="ui-acier__sr">The Acier watch in brushed steel with a plain onyx dial, on its integrated link bracelet, its hands showing your local time.</figcaption>
+    </figure>
+
+    <div class="ui-acier-product__copy">
+      <h2 id="ui-acier-product-title" class="ui-acier__sr">Acier quartz watch by FOSLN</h2>
+      <p class="ui-acier-product__statement" data-arrive>A steel case flowing into a steel link bracelet, and an onyx dial with <em>nothing on it but the hands.</em></p>
+      <p class="ui-acier-product__aside" data-arrive>The quartz movement keeps it true to the second.</p>
+
+      <div class="ui-acier-product__buy" data-arrive>
+        <p class="ui-acier-product__pricing">
+          <span class="ui-acier__sr">Sale price </span><span class="ui-acier-product__price">$97</span>
+          <span class="ui-acier__sr">, was </span><s class="ui-acier-product__was">$225</s>
+        </p>
+        <button class="ui-acier-cta" type="button" data-ui-acier-add>
+          <span class="ui-acier-cta__fill" aria-hidden="true"></span>
+          <span class="ui-acier-cta__edge" aria-hidden="true"></span>
+          <span class="ui-acier-cta__labels">
+            <span class="ui-acier-cta__label" data-label-add>Add to bag</span>
+            <span class="ui-acier-cta__label ui-acier-cta__label--done" data-label-done aria-hidden="true">In your bag</span>
+          </span>
+          <svg class="ui-acier-cta__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 8h11l-.8 11.2a1.5 1.5 0 0 1-1.5 1.3H8.8a1.5 1.5 0 0 1-1.5-1.3zM9 8V6.8a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <p class="ui-acier__sr" role="status" aria-live="polite" data-ui-acier-status></p>
+    </div>
+  </section>
+</main>
+
+<footer class="ui-acier-footer">
+  <p>© 2026 FOSLN</p>
+  <p>Acier · Stainless steel · Quartz</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

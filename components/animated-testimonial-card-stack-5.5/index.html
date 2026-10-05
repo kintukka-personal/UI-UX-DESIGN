@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Animated testimonial card stack-5.5</title>
+<meta name="description" content="Mango: what customers say. Testimonials arrive one at a time as frosted glass cards that stack over a sunlit studio photo.">
+<meta name="theme-color" content="#9c5a24">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,700&display=swap">
+<link rel="preload" as="image" href="images/studio.webp" imagesrcset="images/studio-1152.webp 1152w, images/studio.webp 1728w" imagesizes="(max-aspect-ratio: 1152/712) calc(100vh * 1152 / 712), 100vw" type="image/webp">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="st-page">
+
+<main>
+  <section class="st" data-st aria-roledescription="carousel" aria-labelledby="st-title">
+    <h1 id="st-title" class="st__sr">What teams say about Mango</h1>
+
+    <header class="st__bar">
+      <a class="st__logo" href="#st-title" aria-label="Mango">
+        <svg class="st__mark" viewBox="0 0 20 20" focusable="false" aria-hidden="true">
+          <circle cx="10" cy="2.5" r="2.3"/>
+          <circle cx="17.5" cy="10" r="2.3"/>
+          <circle cx="10" cy="17.5" r="2.3"/>
+          <circle cx="2.5" cy="10" r="2.3"/>
+          <rect x="3.2" y="3.8" width="6" height="3.4" rx="1.7" transform="rotate(45 6.2 5.5)"/>
+          <rect x="10.8" y="3.8" width="6" height="3.4" rx="1.7" transform="rotate(-45 13.8 5.5)"/>
+          <rect x="10.8" y="12.8" width="6" height="3.4" rx="1.7" transform="rotate(45 13.8 14.5)"/>
+          <rect x="3.2" y="12.8" width="6" height="3.4" rx="1.7" transform="rotate(-45 6.2 14.5)"/>
+        </svg>
+        <span class="st__wordmark" aria-hidden="true">Mango</span>
+      </a>
+      <p class="st__url">buildmango.co</p>
+    </header>
+
+    <!-- Rotation controls come first in the reading order (APG carousel pattern) -->
+    <div class="st__controls" role="group" aria-label="Testimonial controls">
+      <button class="st__btn" type="button" data-play aria-label="Pause testimonials">
+        <svg class="st__icon st__icon--pause" viewBox="0 0 16 16" focusable="false" aria-hidden="true"><rect x="3.5" y="3" width="3" height="10" rx="1"/><rect x="9.5" y="3" width="3" height="10" rx="1"/></svg>
+        <svg class="st__icon st__icon--play" viewBox="0 0 16 16" focusable="false" aria-hidden="true"><path d="M5 3.2v9.6a.8.8 0 0 0 1.2.7l7.6-4.8a.8.8 0 0 0 0-1.4L6.2 2.5A.8.8 0 0 0 5 3.2Z"/></svg>
+      </button>
+      <button class="st__btn" type="button" data-prev aria-label="Previous testimonial">
+        <svg class="st__icon" viewBox="0 0 16 16" focusable="false" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="st__count" data-count aria-hidden="true">1 / 3</span>
+      <button class="st__btn" type="button" data-next aria-label="Next testimonial">
+        <svg class="st__icon" viewBox="0 0 16 16" focusable="false" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <div class="st__stage" data-stage>
+      <!-- The camera: the photo and the cards zoom out together -->
+      <div class="st__world" data-world>
+        <img class="st__photo" data-photo
+             src="images/studio.webp"
+             srcset="images/studio-1152.webp 1152w, images/studio.webp 1728w"
+             sizes="(max-aspect-ratio: 1152/712) calc(100vh * 1152 / 712), 100vw"
+             width="1728" height="1068" alt="" decoding="async" fetchpriority="high">
+
+        <div class="st__stack" data-stack>
+          <div class="st__card" data-card role="group" aria-roledescription="slide" aria-label="1 of 3">
+            <div class="st__glass" data-glass aria-hidden="true"></div>
+            <figure class="st__body" data-body>
+              <blockquote class="st__quote" data-quote>
+                <p>Mango's AI templates save us hours and make every campaign feel personalized. Highly recommend!</p>
+              </blockquote>
+              <figcaption class="st__by">
+                <img class="st__avatar" data-avatar src="images/avatar-john.webp" width="126" height="126" alt="" decoding="async">
+                <span class="st__who" data-who><span class="st__name">John Doe,</span> <span class="st__role">CEO of Acme</span></span>
+                <svg class="st__heart" data-heart viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.2c-.4 0-.8-.1-1.1-.4C5.2 16.4 2 13.1 2 9.1 2 6 4.4 3.6 7.4 3.6c1.8 0 3.5.9 4.6 2.3 1.1-1.4 2.8-2.3 4.6-2.3 3 0 5.4 2.4 5.4 5.5 0 4-3.2 7.3-8.9 11.7-.3.3-.7.4-1.1.4Z"/></svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="st__card" data-card role="group" aria-roledescription="slide" aria-label="2 of 3">
+            <div class="st__glass" data-glass aria-hidden="true"></div>
+            <figure class="st__body" data-body>
+              <blockquote class="st__quote" data-quote>
+                <p>We built a full launch kit in one afternoon. Every format, every size, and it all looks like us.</p>
+              </blockquote>
+              <figcaption class="st__by">
+                <span class="st__avatar st__avatar--initials" data-avatar aria-hidden="true">PR</span>
+                <span class="st__who" data-who><span class="st__name">Priya Raman,</span> <span class="st__role">Brand Lead at Northwind</span></span>
+                <svg class="st__heart" data-heart viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.2c-.4 0-.8-.1-1.1-.4C5.2 16.4 2 13.1 2 9.1 2 6 4.4 3.6 7.4 3.6c1.8 0 3.5.9 4.6 2.3 1.1-1.4 2.8-2.3 4.6-2.3 3 0 5.4 2.4 5.4 5.5 0 4-3.2 7.3-8.9 11.7-.3.3-.7.4-1.1.4Z"/></svg>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="st__card" data-card role="group" aria-roledescription="slide" aria-label="3 of 3">
+            <div class="st__glass" data-glass aria-hidden="true"></div>
+            <figure class="st__body" data-body>
+              <blockquote class="st__quote" data-quote>
+                <p>Our ads finally feel like one family. Clients notice, and the team ships twice as fast.</p>
+              </blockquote>
+              <figcaption class="st__by">
+                <span class="st__avatar st__avatar--initials" data-avatar aria-hidden="true">MS</span>
+                <span class="st__who" data-who><span class="st__name">Marco Silva,</span> <span class="st__role">Growth Lead at Lumen</span></span>
+                <svg class="st__heart" data-heart viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.2c-.4 0-.8-.1-1.1-.4C5.2 16.4 2 13.1 2 9.1 2 6 4.4 3.6 7.4 3.6c1.8 0 3.5.9 4.6 2.3 1.1-1.4 2.8-2.3 4.6-2.3 3 0 5.4 2.4 5.4 5.5 0 4-3.2 7.3-8.9 11.7-.3.3-.7.4-1.1.4Z"/></svg>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="st__sr" data-live aria-live="polite" aria-atomic="true"></p>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1323 @@
+/* ==========================================================================
+   UI Acier Reveal: a launch hero for the FOSLN Acier quartz watch
+   Three beats, joined by match cuts:
+     1. quartz  FOSLN decodes at the centre while the minute ring ticks in
+                around it; the hands join one by one and the ring shrinks onto
+                the exact size of the watch dial.
+     2. poster  cut to the watch, hands set to your local time and ticking.
+                "ACIER" assembles in brushed steel, link by link, a light
+                sweeps across, callouts draw in, then the camera dives into
+                the black dial.
+     3. end     out of the black: the FOSLN plate, the specs and the name.
+   Laid out on a 720 x 900 frame and scaled with container query units.
+   ========================================================================== */
+
+.ui-acier {
+  --ui-acier-paper: #ECECE9;
+  --ui-acier-ink: #121314;
+  --ui-acier-onyx: #0B0B0C;
+  --ui-acier-graphite: #1B1C1F;
+  --ui-acier-steel: #C9CDD1;
+  --ui-acier-steel-dim: #8C9197;
+  --ui-acier-light: #F4F5F6;
+
+  --ui-acier-sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --ui-acier-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --ui-acier-serif: "Libre Baskerville", Georgia, Baskerville, "Times New Roman", serif;
+
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 480px;
+  overflow: hidden;
+  background: var(--ui-acier-paper);
+  color: var(--ui-acier-ink);
+  font-family: var(--ui-acier-sans);
+  isolation: isolate;
+}
+
+.ui-acier__sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Stage ---------- */
+
+.ui-acier__stage {
+  --ui-acier-inset: clamp(10px, 2.6cqmin, 22px);
+  position: absolute;
+  inset: 0;
+  container-type: size;
+  background: var(--ui-acier-paper);
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.ui-acier__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--ui-acier-paper);
+}
+
+/* The 720 x 900 design frame. 1 design px = 100cqw / 720 inside it. */
+.ui-acier__frame {
+  --px: calc(100cqw / 720);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(100cqw, 80cqh);
+  aspect-ratio: 4 / 5;
+  transform: translate(-50%, -50%);
+  container-type: inline-size;
+}
+
+.ui-acier__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* ---------- 1. Quartz ---------- */
+
+/* Its own paper layer over the poster, so the ring and the ink hands can
+   dissolve straight into the watch */
+.ui-acier__intro {
+  position: absolute;
+  inset: 0;
+  background: var(--ui-acier-paper);
+}
+
+/* Same box as the watch photo, so the ink hands sit exactly on its dial */
+.ui-acier__ink-watch {
+  position: absolute;
+  left: 26.6%;
+  top: 9.22%;
+  width: 48.44%;
+  aspect-ratio: 532 / 878;
+  opacity: 0;
+}
+
+.ui-acier__quartz line {
+  stroke: var(--ui-acier-ink);
+  stroke-linecap: butt;
+}
+
+/* The brand decodes at the centre, one letter locking at a time, set
+   exactly like the FOSLN wordmark on the poster (same serif, weight, tracking) */
+.ui-acier__hz {
+  font-family: var(--ui-acier-serif);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  fill: var(--ui-acier-ink);
+}
+
+/* ---------- 2. Poster ---------- */
+
+.ui-acier__camera {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 40%;   /* the dial centre, (360, 360) */
+  opacity: 0;
+  will-change: transform;
+}
+
+.ui-acier__word {
+  position: absolute;
+  left: 8.89%;
+  top: 75%;
+  width: 82.22%;
+  height: auto;
+  aspect-ratio: 504 / 100;
+  overflow: visible;
+}
+
+.ui-acier__watch {
+  position: absolute;
+  left: 26.6%;
+  top: 9.22%;
+  width: 48.44%;
+  aspect-ratio: 532 / 878;
+  transform-origin: 48.31% 48.12%;
+  /* On the wrapper, so the shadow is not clipped by the photo's mask */
+  filter: drop-shadow(0 calc(var(--px) * 28) calc(var(--px) * 30) rgba(0, 0, 0, 0.55));
+}
+
+.ui-acier__watch-img,
+.ui-acier__hands,
+.ui-acier__sheen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ui-acier__watch-img {
+  display: block;
+  -webkit-user-drag: none;
+  /* The photo's bracelet is cropped flat; let both ends dissolve into the dark */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 var(--ui-acier-fade, 9%), #000 calc(100% - var(--ui-acier-fade, 9%)), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 var(--ui-acier-fade, 9%), #000 calc(100% - var(--ui-acier-fade, 9%)), transparent 100%);
+}
+
+/* A band of light that only lands on the steel: masked by the photo itself */
+.ui-acier__sheen {
+  --x: -60%;
+  background: linear-gradient(105deg, transparent 0%, transparent calc(50% + var(--x) - 14%), rgba(255, 255, 255, 0.5) calc(50% + var(--x)), transparent calc(50% + var(--x) + 14%), transparent 100%);
+  -webkit-mask: url("images/acier-watch.webp") center / 100% 100% no-repeat;
+  mask: url("images/acier-watch.webp") center / 100% 100% no-repeat;
+  mix-blend-mode: overlay;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ui-acier__hands {
+  overflow: visible;
+}
+
+.ui-acier__leaders path {
+  fill: none;
+  stroke: var(--ui-acier-steel);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.ui-acier__leaders circle {
+  fill: var(--ui-acier-light);
+}
+
+.ui-acier__label {
+  position: absolute;
+  margin: 0;
+  transform: translateY(-50%);
+  font-family: var(--ui-acier-mono);
+  font-size: max(8px, calc(var(--px) * 9.5));
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  color: var(--ui-acier-steel);
+  white-space: pre;
+}
+
+.ui-acier__label--left {
+  right: 83.33%;
+  text-align: right;
+}
+
+.ui-acier__label--right {
+  left: 83.33%;
+}
+
+.ui-acier__label b {
+  font-weight: 500;
+  color: var(--ui-acier-light);
+}
+
+.ui-acier__brand,
+.ui-acier__meta {
+  position: absolute;
+  top: 4.2%;
+  margin: 0;
+  opacity: 0;
+}
+
+.ui-acier__brand {
+  left: 8.89%;
+  font-family: var(--ui-acier-serif);
+  font-weight: 700;
+  font-size: calc(var(--px) * 22);
+  letter-spacing: 0.12em;
+  line-height: 1;
+  color: var(--ui-acier-light);
+}
+
+.ui-acier__meta {
+  right: 8.89%;
+  text-align: right;
+  font-family: var(--ui-acier-mono);
+  font-size: max(8px, calc(var(--px) * 9.5));
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  color: var(--ui-acier-steel);
+}
+
+.ui-acier__type {
+  white-space: pre;
+}
+
+/* ---------- 3. Sign-off ---------- */
+
+.ui-acier__end {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--px) * 52);
+  opacity: 0;
+}
+
+.ui-acier__plate {
+  flex: none;
+  width: calc(var(--px) * 170);
+  height: auto;
+  overflow: visible;
+}
+
+.ui-acier__plate-body {
+  fill: #050506;
+  stroke: var(--ui-acier-steel-dim);
+  stroke-width: 1.4;
+}
+
+.ui-acier__plate-rule {
+  stroke: var(--ui-acier-steel);
+  stroke-width: 1.4;
+}
+
+.ui-acier__plate-name {
+  font-family: var(--ui-acier-serif);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 1.5px;
+  fill: var(--ui-acier-light);
+}
+
+.ui-acier__plate-sub {
+  font-family: var(--ui-acier-sans);
+  font-weight: 600;
+  font-size: 8.5px;
+  letter-spacing: 2.4px;
+  fill: var(--ui-acier-steel);
+}
+
+.ui-acier__end-copy {
+  --ls: 0.06em;
+  flex: none;
+  margin: 0;
+  width: calc(15ch + 15 * var(--ls));
+  font-family: var(--ui-acier-mono);
+  font-size: max(8px, calc(var(--px) * 9.5));
+  line-height: 1.3;
+  letter-spacing: var(--ls);
+  color: var(--ui-acier-steel);
+}
+
+.ui-acier__end-word {
+  flex: none;
+  width: calc(var(--px) * 160);
+  height: auto;
+  aspect-ratio: 504 / 100;
+  overflow: visible;
+}
+
+@container (max-width: 480px) {
+  .ui-acier__end {
+    gap: calc(var(--px) * 34);
+  }
+
+  .ui-acier__end-copy {
+    --ls: 0.03em;
+    font-size: 7.5px;
+  }
+}
+
+/* ---------- Edge markers, grain, progress ---------- */
+
+.ui-acier__markers i {
+  --s: clamp(5px, 1.1cqmin, 9px);
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  background: var(--ui-acier-steel-dim);
+  transform: scale(0);
+}
+
+.ui-acier__markers i:nth-child(1) { left: var(--ui-acier-inset); top: var(--ui-acier-inset); }
+.ui-acier__markers i:nth-child(2) { left: 50%; top: var(--ui-acier-inset); }
+.ui-acier__markers i:nth-child(3) { left: calc(100% - var(--ui-acier-inset)); top: var(--ui-acier-inset); }
+.ui-acier__markers i:nth-child(4) { left: calc(100% - var(--ui-acier-inset)); top: 50%; }
+.ui-acier__markers i:nth-child(5) { left: calc(100% - var(--ui-acier-inset)); top: calc(100% - var(--ui-acier-inset)); }
+.ui-acier__markers i:nth-child(6) { left: 50%; top: calc(100% - var(--ui-acier-inset)); }
+.ui-acier__markers i:nth-child(7) { left: var(--ui-acier-inset); top: calc(100% - var(--ui-acier-inset)); }
+.ui-acier__markers i:nth-child(8) { left: var(--ui-acier-inset); top: 50%; }
+
+.ui-acier__grain {
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.6 -0.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  animation: ui-acier-grain 0.48s steps(4) infinite;
+}
+
+@keyframes ui-acier-grain {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-7%, 4%); }
+  50%  { transform: translate(5%, -6%); }
+  75%  { transform: translate(-3%, -9%); }
+  100% { transform: translate(0, 0); }
+}
+
+.ui-acier__progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  opacity: 0.35;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+/* ---------- Phases ---------- */
+
+.ui-acier[data-phase="poster"],
+.ui-acier[data-phase="end"] {
+  color: var(--ui-acier-steel);
+}
+
+.ui-acier[data-phase="poster"] .ui-acier__bg {
+  background:
+    radial-gradient(58cqw 48cqh at 50% 36%, #3A3D42 0%, #1D1E21 52%, var(--ui-acier-onyx) 100%);
+}
+
+.ui-acier[data-phase="end"] .ui-acier__bg {
+  background:
+    radial-gradient(70cqw 50cqh at 50% 50%, #17181A 0%, var(--ui-acier-onyx) 70%);
+}
+
+.ui-acier[data-phase="poster"] .ui-acier__camera,
+.ui-acier[data-phase="poster"] .ui-acier__brand,
+.ui-acier[data-phase="poster"] .ui-acier__meta,
+.ui-acier[data-phase="end"] .ui-acier__end {
+  opacity: 1;
+}
+
+.ui-acier[data-phase="poster"] .ui-acier__grain,
+.ui-acier[data-phase="end"] .ui-acier__grain {
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+}
+
+.ui-acier[data-phase="quartz"] .ui-acier__markers {
+  display: none;
+}
+
+/* Without JS the stage shows the poster as a still */
+.ui-acier:not([data-phase]) {
+  color: var(--ui-acier-steel);
+}
+
+.ui-acier:not([data-phase]) .ui-acier__bg {
+  background: radial-gradient(58cqw 48cqh at 50% 36%, #3A3D42 0%, #1D1E21 52%, var(--ui-acier-onyx) 100%);
+}
+
+.ui-acier:not([data-phase]) .ui-acier__camera,
+.ui-acier:not([data-phase]) .ui-acier__brand,
+.ui-acier:not([data-phase]) .ui-acier__meta {
+  opacity: 1;
+}
+
+.ui-acier:not([data-phase]) .ui-acier__intro {
+  display: none;
+}
+
+/* ---------- Controls ---------- */
+
+.ui-acier__controls {
+  position: absolute;
+  z-index: 3;
+  right: calc(clamp(10px, 2.6vmin, 22px) + 18px);
+  bottom: calc(clamp(10px, 2.6vmin, 22px) + 14px);
+  display: flex;
+  gap: 8px;
+}
+
+.ui-acier__btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(201, 205, 209, 0.35);
+  border-radius: 50%;
+  background: rgba(18, 19, 20, 0.66);
+  color: #FFFFFF;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.ui-acier__btn:hover {
+  background: rgba(18, 19, 20, 0.9);
+}
+
+.ui-acier__btn:active {
+  transform: scale(0.94);
+}
+
+.ui-acier__btn:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px var(--ui-acier-ink);
+}
+
+.ui-acier__icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.ui-acier__btn .ui-acier__icon--play { display: none; }
+.ui-acier[data-paused] .ui-acier__btn .ui-acier__icon--play { display: block; }
+.ui-acier[data-paused] .ui-acier__btn .ui-acier__icon--pause { display: none; }
+
+/* The cue: the watch's crown, seen tread-on like a scroll wheel, with a
+   small label. Still a link: scrolling, clicking or tapping all run the exit. */
+.ui-acier__cue {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: calc(clamp(10px, 2.6vmin, 22px) + 14px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 64px;
+  padding: 6px 10px 4px;
+  border-radius: 12px;
+  color: var(--ui-acier-steel);
+  font-family: var(--ui-acier-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translate(-50%, 12px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s linear 0.4s;
+}
+
+.ui-acier[data-done] .ui-acier__cue,
+.ui-acier__cue:focus-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s;
+}
+
+/* The label: steel letters that a glint of light runs across each time the
+   beams reach the crown */
+.ui-acier__cue-label {
+  --lab: var(--ui-acier-steel);
+  padding-left: 0.28em;   /* balance the trailing letter-spacing */
+  line-height: 1.2;
+  white-space: nowrap;
+  color: transparent;
+  background: linear-gradient(90deg, var(--lab) 0 40%, #FFFFFF 50%, var(--lab) 60% 100%) 100% 0 / 250% 100% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.ui-acier__cue:hover .ui-acier__cue-label {
+  --lab: #FFFFFF;
+}
+
+.ui-acier[data-done][data-phase="end"] .ui-acier__cue-label {
+  animation: ui-acier-label-glint var(--ui-acier-beam-cycle, 2.8s) ease-in-out 0.12s infinite;
+}
+
+.ui-acier[data-draining] .ui-acier__cue-label {
+  animation-play-state: paused;
+}
+
+/* The glint enters just as the beams land and leaves off the far side, so
+   the jump back to the start of the loop is never seen */
+@keyframes ui-acier-label-glint {
+  0%, 50%   { background-position: 100% 0; }
+  78%, 100% { background-position: 0% 0; }
+}
+
+/* Brushed steel tread with horizontal grooves that roll downward.
+   Two nested layers move the grooves, and their offsets add up:
+   - the tread notches one groove per beam cycle (always in step with the beams)
+   - the wind layer turns continuously, but only while hovered; otherwise it is
+     paused in place, so going on or off the crown never jumps
+   Each groove tile is exactly one pitch tall, so any whole-pitch move loops
+   seamlessly. */
+.ui-acier__crown {
+  --pitch: 5px;
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 32px;
+  border-radius: 6px;
+  background: #B9BEC3;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, filter 0.25s ease;
+}
+
+/* Cylinder shading and the rim, fixed above the moving grooves */
+.ui-acier__crown::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 30%, rgba(255, 255, 255, 0.18) 50%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.6) 100%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+/* A fixed clip: the layers inside it move, the crown's outline does not */
+.ui-acier__crown-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ui-acier__crown-wind {
+  position: absolute;
+  inset: 0;
+}
+
+.ui-acier__crown-clip,
+.ui-acier__crown-wind,
+.ui-acier__crown-tread {
+  display: block;
+}
+
+.ui-acier__crown-tread {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--pitch) * -3);
+  bottom: calc(var(--pitch) * -1);
+  background: linear-gradient(180deg, #E9ECEE 0 40%, #7C8288 40% 60%, #B9BEC3 60% 100%) 0 0 / 100% var(--pitch) repeat-y;
+}
+
+.ui-acier__crown i {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.ui-acier__cue:hover .ui-acier__crown {
+  filter: brightness(1.12);
+}
+
+.ui-acier__cue:active .ui-acier__crown {
+  transform: scale(0.92);
+}
+
+.ui-acier__cue:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* Beams: after the reveal, pulses of light run along the curves the
+   sign-off pieces will drain down, into the crown */
+.ui-acier__beams {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ui-acier[data-done][data-phase="end"]:not([data-draining]) .ui-acier__beams {
+  opacity: 1;
+  transition: opacity 0.8s ease 0.35s;
+}
+
+.ui-acier__beam-track,
+.ui-acier__beam-tail,
+.ui-acier__beam-head {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.ui-acier__beam-track {
+  stroke: rgba(244, 245, 246, 0.07);
+  stroke-width: 1;
+}
+
+.ui-acier__beam-tail {
+  stroke: rgba(244, 245, 246, 0.38);
+  stroke-width: 1.5;
+  stroke-dasharray: 0.24 2;
+  stroke-dashoffset: 0.24;
+  animation: ui-acier-beam-tail var(--ui-acier-beam-cycle, 2.8s) cubic-bezier(0.55, 0, 0.75, 1) var(--d, 0s) infinite;
+}
+
+.ui-acier__beam-head {
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  stroke-dasharray: 0.05 2;
+  stroke-dashoffset: 0.05;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.45));
+  animation: ui-acier-beam-head var(--ui-acier-beam-cycle, 2.8s) cubic-bezier(0.55, 0, 0.75, 1) var(--d, 0s) infinite;
+}
+
+/* The pulse's front travels from the piece (0) past the button (1.3), then waits */
+@keyframes ui-acier-beam-tail {
+  0%   { stroke-dashoffset: 0.24; }
+  55%, 100% { stroke-dashoffset: -1.06; }
+}
+
+@keyframes ui-acier-beam-head {
+  0%   { stroke-dashoffset: 0.05; }
+  55%, 100% { stroke-dashoffset: -1.25; }
+}
+
+/* The crown answers each arrival: its grooves turn one notch, and a ring of
+   light breathes out from it. Hovering winds it continuously. */
+.ui-acier[data-done][data-phase="end"] .ui-acier__crown-tread {
+  animation: ui-acier-crown-notch var(--ui-acier-beam-cycle, 2.8s) linear 0.12s infinite;
+}
+
+.ui-acier[data-done][data-phase="end"] .ui-acier__crown-wind {
+  animation: ui-acier-crown-wind 0.5s linear infinite paused;
+}
+
+.ui-acier[data-done][data-phase="end"]:not([data-draining]) .ui-acier__cue:hover .ui-acier__crown-wind {
+  animation-play-state: running;
+}
+
+.ui-acier[data-done][data-phase="end"] .ui-acier__crown i {
+  animation: ui-acier-crown-ring var(--ui-acier-beam-cycle, 2.8s) ease-out 0.12s infinite;
+  transition: opacity 0.2s ease;
+}
+
+/* During the exit the crown holds exactly where it is (no snap back) and its
+   ring fades rather than cutting out */
+.ui-acier[data-draining] .ui-acier__crown-tread,
+.ui-acier[data-draining] .ui-acier__crown-wind,
+.ui-acier[data-draining] .ui-acier__crown i {
+  animation-play-state: paused;
+}
+
+.ui-acier[data-draining] .ui-acier__crown i {
+  opacity: 0;
+}
+
+@keyframes ui-acier-crown-notch {
+  0%, 46%   { transform: translateY(0); animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1); }
+  62%, 100% { transform: translateY(var(--pitch)); }
+}
+
+@keyframes ui-acier-crown-wind {
+  from { transform: translateY(0); }
+  to   { transform: translateY(var(--pitch)); }
+}
+
+@keyframes ui-acier-crown-ring {
+  0%, 46%   { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+  52%       { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6), 0 0 16px 3px rgba(255, 255, 255, 0.45); }
+  85%, 100% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0), 0 0 16px 3px rgba(255, 255, 255, 0); }
+}
+
+/* ---------- Landing page around the hero ---------- */
+
+.ui-acier-page {
+  margin: 0;
+  background: var(--ui-acier-page-bg, #0B0B0C);
+  color: #E7E9EB;
+  font-family: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ui-acier-skip {
+  position: absolute;
+  z-index: 10;
+  left: 16px;
+  top: -100px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: #121314;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ui-acier-skip:focus {
+  top: 16px;
+}
+
+/* ---------- The bench (product section) ----------
+   The live watch under a light you move, a giant faint dial behind it that
+   keeps the real seconds, and a steel bar with a crown to add it to the bag. */
+
+.ui-acier-product {
+  --bench-steel: #C9CDD1;
+  --bench-line: rgba(231, 233, 235, 0.14);
+  position: relative;
+  display: grid;
+  gap: clamp(24px, 5vw, 72px);
+  align-items: center;
+  max-width: 1240px;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: clamp(40px, 7vw, 96px) 16px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+@media (min-width: 880px) {
+  .ui-acier-product {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+.ui-acier-bench {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  max-width: 620px;
+  justify-self: center;
+}
+
+.ui-acier-bench__stage {
+  --rx: 0deg;
+  --ry: 0deg;
+  --lx: 50%;
+  --ly: 30%;
+  --lit: 0.35;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 100%;
+  perspective: 1100px;
+}
+
+/* A soft pool of light under the watch, following the pointer a little */
+.ui-acier-bench__stage::before {
+  content: "";
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side at var(--plx, 50%) var(--ply, 45%), rgba(214, 220, 226, 0.12), rgba(214, 220, 226, 0.04) 60%, transparent 80%);
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+/* The giant dial: the intro's 60 ticks, centred on the watch's own dial */
+.ui-acier-bench__dial {
+  position: absolute;
+  left: 49.1%;
+  top: 48.3%;
+  width: 96%;
+  height: 96%;
+  overflow: visible;
+  transform: translate(-50%, -50%) translate(var(--dx, 0px), var(--dy, 0px));   /* a touch of parallax against the watch */
+}
+
+.ui-acier-bench__dial line {
+  stroke: var(--bench-steel);
+  stroke-linecap: butt;
+  opacity: 0.13;
+  transition: opacity 0.9s ease;
+}
+
+.ui-acier-bench__dial line.is-hour {
+  stroke-width: 1.1;
+}
+
+.ui-acier-bench__dial line:not(.is-hour) {
+  stroke-width: 0.45;
+}
+
+/* A full lap of light around the dial when the watch goes in the bag */
+.ui-acier-bench.is-sweep .ui-acier-bench__dial line {
+  animation: ui-acier-bench-sweep 0.9s ease-out calc(var(--i) * 9ms) both;
+}
+
+@keyframes ui-acier-bench-sweep {
+  0%   { opacity: 0.13; }
+  18%  { opacity: 1; stroke: #FFFFFF; }
+  100% { opacity: 0.13; }
+}
+
+.ui-acier-bench__watch {
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  height: 90%;
+  aspect-ratio: 532 / 878;
+  transform: translateX(-50%) rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  will-change: transform;
+  filter: drop-shadow(0 30px 36px rgba(0, 0, 0, 0.6));
+}
+
+.ui-acier-bench__img,
+.ui-acier-bench__light,
+.ui-acier-bench__hands {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ui-acier-bench__img {
+  display: block;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
+}
+
+/* The light you move: lands only on the steel, masked by the photo itself */
+.ui-acier-bench__light {
+  background: radial-gradient(circle at var(--lx) var(--ly), rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.35) 16%, transparent 40%);
+  -webkit-mask: url("images/acier-watch.webp") center / 100% 100% no-repeat;
+  mask: url("images/acier-watch.webp") center / 100% 100% no-repeat;
+  mix-blend-mode: overlay;
+  opacity: var(--lit);
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.ui-acier-bench__hands {
+  overflow: visible;
+}
+
+/* A faint floor line the watch stands over */
+.ui-acier-bench__floor {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 2%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--bench-line), transparent);
+}
+
+/* ---- Copy ---- */
+
+.ui-acier-product__copy {
+  max-width: 34rem;
+}
+
+.ui-acier-product__statement {
+  margin: 0;
+  font-family: "Libre Baskerville", Georgia, Baskerville, "Times New Roman", serif;
+  font-weight: 400;
+  font-size: clamp(24px, 2.6vw, 36px);
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+  color: #E9EBED;
+  text-wrap: balance;
+}
+
+.ui-acier-product__statement em {
+  font-style: italic;
+  color: #FFFFFF;
+}
+
+.ui-acier-product__aside {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 28px 0 0;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9AA0A6;
+}
+
+.ui-acier-product__aside::before {
+  content: "";
+  flex: none;
+  width: 36px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.ui-acier-product__buy {
+  display: grid;
+  gap: 22px;
+  margin-top: clamp(32px, 4vw, 52px);
+  padding-top: clamp(24px, 3vw, 32px);
+  border-top: 1px solid var(--bench-line);
+}
+
+.ui-acier-product__pricing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  margin: 0;
+}
+
+/* The sale price, in the same brushed steel as the name */
+.ui-acier-product__price {
+  font-size: clamp(44px, 5vw, 64px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  background: linear-gradient(105deg, #7D838A 0%, #F2F4F5 28%, #9EA4AA 46%, #FFFFFF 62%, #8A9096 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-acier-product__was {
+  font-size: clamp(18px, 1.6vw, 22px);
+  font-weight: 500;
+  color: #7E848A;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: rgba(201, 205, 209, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Add to bag: a dark bar with a steel edge.
+   Hover: white steel fills about a third of it and pushes towards the end in
+   a pulse, teasing the press. Click: it runs all the way, and the bar reacts
+   when it lands. The label is blended so it is dark wherever the light is. */
+
+@property --ui-acier-p {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
+.ui-acier-cta {
+  --ui-acier-p: 0%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 60px;
+  padding: 0 22px 0 24px;
+  isolation: isolate;
+  border: 1px solid rgba(201, 205, 209, 0.38);
+  border-radius: 12px;
+  background: #0E0F10;
+  color: #FFFFFF;
+  font: 600 16px/1 "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: --ui-acier-p 0.9s cubic-bezier(0.45, 0, 0.25, 1), border-color 0.4s ease;
+}
+
+.ui-acier-cta:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 4px;
+}
+
+/* Hover: fill to about a third, then push towards the end and ease back */
+.ui-acier-cta:hover:not([data-added]),
+.ui-acier-cta:focus-visible:not([data-added]) {
+  --ui-acier-p: 36%;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* One slow, even breath towards the end and back */
+.ui-acier-cta:hover:not([data-added]) {
+  animation: ui-acier-cta-tease 2.8s ease-in-out 0.9s infinite;
+}
+
+@keyframes ui-acier-cta-tease {
+  0%, 100% { --ui-acier-p: 36%; }
+  50%      { --ui-acier-p: 41%; }
+}
+
+/* Click: run the light all the way */
+.ui-acier-cta[data-added] {
+  --ui-acier-p: 100%;
+  border-color: rgba(255, 255, 255, 0.9);
+  transition: --ui-acier-p 1.1s cubic-bezier(0.55, 0, 0.2, 1), border-color 0.4s ease;
+}
+
+.ui-acier-cta__fill,
+.ui-acier-cta__edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+/* The light: brushed white steel, clipped to the current reach */
+.ui-acier-cta__fill {
+  left: 0;
+  right: 0;
+  z-index: -1;
+  border-radius: 11px;
+  background:
+    linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 45%, rgba(255, 255, 255, 0) 55%) -150% 0 / 60% 100% no-repeat,
+    linear-gradient(180deg, #F5F6F7, #C9CDD1);
+  clip-path: inset(0 calc(100% - var(--ui-acier-p)) 0 0);
+}
+
+/* Its leading edge glows while it is reaching */
+.ui-acier-cta__edge {
+  left: var(--ui-acier-p);
+  z-index: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: #FFFFFF;
+  box-shadow: 0 0 12px 3px rgba(255, 255, 255, 0.55), 0 0 28px 6px rgba(255, 255, 255, 0.18);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ui-acier-cta:hover:not([data-added]) .ui-acier-cta__edge,
+.ui-acier-cta:focus-visible:not([data-added]) .ui-acier-cta__edge,
+.ui-acier-cta.is-running .ui-acier-cta__edge {
+  opacity: 1;
+}
+
+/* Label and icon: white on the dark bar, dark wherever the light is */
+.ui-acier-cta__labels,
+.ui-acier-cta__icon {
+  position: relative;
+  z-index: 1;
+  mix-blend-mode: difference;
+}
+
+.ui-acier-cta__icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+
+/* Two labels in a window: the new one rolls up once the light has landed */
+.ui-acier-cta__labels {
+  display: grid;
+  justify-items: start;
+  overflow: hidden;
+  height: 1.3em;
+  text-align: left;
+}
+
+.ui-acier-cta__label {
+  grid-area: 1 / 1;
+  display: block;
+  line-height: 1.3em;
+  white-space: nowrap;
+  transition: transform 0.45s cubic-bezier(0.6, 0, 0.2, 1), opacity 0.45s ease;
+}
+
+.ui-acier-cta__label--done {
+  transform: translateY(110%);
+  opacity: 0;
+}
+
+.ui-acier-cta__label--done::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 5px;
+  margin: 0 10px 3px 0;
+  border: solid currentColor;
+  border-width: 0 0 2px 2px;
+  transform: rotate(-45deg);
+}
+
+.ui-acier-cta[data-added] .ui-acier-cta__label {
+  transition-duration: 0.6s;
+  transition-delay: 0.95s;
+}
+
+.ui-acier-cta[data-added] .ui-acier-cta__label:not(.ui-acier-cta__label--done) {
+  transform: translateY(-110%);
+  opacity: 0;
+}
+
+.ui-acier-cta[data-added] .ui-acier-cta__label--done {
+  transform: none;
+  opacity: 1;
+}
+
+/* The landing: the bar pops, a ring of light bursts out, the bag jumps and a
+   glint runs across the steel */
+.ui-acier-cta::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.ui-acier-cta.is-landed {
+  animation: ui-acier-cta-pop 0.9s cubic-bezier(0.35, 0, 0.25, 1);
+}
+
+.ui-acier-cta.is-landed::after {
+  animation: ui-acier-cta-ring 1.4s cubic-bezier(0.2, 0.6, 0.3, 1);
+}
+
+.ui-acier-cta.is-landed .ui-acier-cta__icon {
+  animation: ui-acier-cta-bag 0.9s cubic-bezier(0.35, 0, 0.25, 1);
+}
+
+.ui-acier-cta.is-landed .ui-acier-cta__fill {
+  animation: ui-acier-cta-glint 1.4s ease-in-out;
+}
+
+/* A soft settle rather than a bounce */
+@keyframes ui-acier-cta-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+
+@keyframes ui-acier-cta-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4), 0 0 20px 2px rgba(255, 255, 255, 0.25); }
+  100% { box-shadow: 0 0 0 12px rgba(255, 255, 255, 0), 0 0 20px 2px rgba(255, 255, 255, 0); }
+}
+
+@keyframes ui-acier-cta-bag {
+  0%   { transform: translateY(0); }
+  40%  { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes ui-acier-cta-glint {
+  from { background-position: -150% 0, 0 0; }
+  to   { background-position: 250% 0, 0 0; }
+}
+
+/* ---- Arrival: when the page lands here, the dial, the watch and the copy
+   come in in turn. Only set up by the script, so without it everything is
+   simply there. ---- */
+
+.ui-acier-product[data-arrival] .ui-acier-bench__dial,
+.ui-acier-product[data-arrival] .ui-acier-bench__watch,
+.ui-acier-product[data-arrival] [data-arrive] {
+  transition: opacity 0.9s ease, transform 1.1s cubic-bezier(0.2, 0.7, 0.1, 1), filter 0.9s ease;
+}
+
+.ui-acier-product[data-arrival]:not(.is-in) .ui-acier-bench__dial {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.86) rotate(-12deg);
+}
+
+.ui-acier-product[data-arrival]:not(.is-in) .ui-acier-bench__watch {
+  opacity: 0;
+  filter: blur(10px) drop-shadow(0 30px 36px rgba(0, 0, 0, 0.6));
+  transform: translateX(-50%) translateY(40px) scale(0.96);
+}
+
+.ui-acier-product[data-arrival]:not(.is-in) [data-arrive] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.ui-acier-product[data-arrival].is-in .ui-acier-bench__watch { transition-delay: 0.12s, 0.12s, 0.12s; }
+.ui-acier-product[data-arrival].is-in [data-arrive]:nth-of-type(1) { transition-delay: 0.32s; }
+.ui-acier-product[data-arrival].is-in [data-arrive]:nth-of-type(2) { transition-delay: 0.44s; }
+.ui-acier-product[data-arrival].is-in [data-arrive]:nth-of-type(3) { transition-delay: 0.56s; }
+
+.ui-acier-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 16px 40px;
+  box-sizing: border-box;
+  border-top: 1px solid rgba(231, 233, 235, 0.12);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9AA0A6;
+}
+
+.ui-acier-footer p {
+  margin: 0;
+}
+
+@media (min-width: 880px) {
+  .ui-acier-footer {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-acier__grain,
+  .ui-acier__beam-tail,
+  .ui-acier__beam-head,
+  .ui-acier__crown-tread,
+  .ui-acier__crown-wind,
+  .ui-acier__crown i,
+  .ui-acier__cue-label {
+    animation: none !important;
+  }
+
+  .ui-acier__beam-tail,
+  .ui-acier__beam-head {
+    visibility: hidden;
+  }
+
+  .ui-acier__cue,
+  .ui-acier__btn,
+  .ui-acier-cta,
+  .ui-acier-cta__label,
+  .ui-acier-bench__dial line {
+    transition: none;
+  }
+
+  .ui-acier-cta,
+  .ui-acier-cta::after,
+  .ui-acier-cta__fill,
+  .ui-acier-cta__icon,
+  .ui-acier-bench.is-sweep .ui-acier-bench__dial line {
+    animation: none !important;
+  }
+
+  .ui-acier-cta__edge {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-acier__cue-label {
+    background: none;
+    color: LinkText;
+  }
+
+  .ui-acier__btn,
+  .ui-acier__crown,
+  .ui-acier-cta {
+    border: 1px solid ButtonText;
+  }
+
+  .ui-acier-product__price {
+    background: none;
+    color: CanvasText;
+  }
+}
