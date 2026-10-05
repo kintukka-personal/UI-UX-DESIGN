@@ -9,19 +9,20 @@
 
   var NS = "http://www.w3.org/2000/svg";
 
+  // Intro: FOSLN holds on the finished dial (the ring completes at ~1.84s),
+  // squashes into a line at MORPH_AT and stretches out into the seconds hand
+  // at 3 o'clock by HAND_AT. Everything after it is timed from HAND_AT.
+  var MORPH_AT = 2.35;
+  var HAND_AT = MORPH_AT + 0.65;    // an unhurried, overlapping squash and stretch
+
   // Beats. Everything after the quartz beat is timed from T_POSTER.
-  var T_POSTER = 5.3;               // dissolve: ring + ink hands -> the watch
+  var T_POSTER = HAND_AT + 2.2;     // dissolve: ring + ink hands -> the watch
   var T_JOIN = T_POSTER + 0.45;     // the paper layer has gone
   var CALL_START = T_POSTER + 2.8;  // after a hold on the watch and ACIER, callouts start on the next tick
   var CALL_END = CALL_START + 6.5;  // up to 1s to the first tick, 4 more ticks, then a short hold
   var T_END = CALL_END + 0.8;       // dive into the dial -> sign-off
   var T_TOTAL = T_END + 2.0;
   var T_STILL = CALL_START + 5.2;   // the settled poster, all callouts in, for stills and reduced motion
-
-  // Intro: FOSLN holds on the finished dial, squashes into a line at
-  // MORPH_AT and stretches out into the seconds hand at 3 o'clock by HAND_AT
-  var MORPH_AT = 2.84;              // about 1s after the ring completes
-  var HAND_AT = MORPH_AT + 0.25;     // a quick squash and stretch
 
   // Quartz ring (design units on the 720 x 900 frame)
   var RING_R = 250, RING_C = { x: 360, y: 450 };
@@ -313,7 +314,7 @@
     var sec = sp >= 1 ? L.s : 90 + 6 * Math.floor(turn * sp / 6);
     ink.second.setAttribute("transform", "rotate(" + n(sec) + ")");
     ink.second.style.display = t >= HAND_AT && (L.show || sp < 1) ? "" : "none";
-    var hubIn = outBack(seg(t, HAND_AT - 0.12, HAND_AT + 0.06), 2);
+    var hubIn = outBack(seg(t, HAND_AT - 0.28, HAND_AT), 1.4);
     ink.hub.setAttribute("transform", "scale(" + n(Math.max(0, hubIn)) + ")");
 
     // Minute: grows out of the hub and turns a full revolution into place
@@ -336,8 +337,11 @@
     // The brand decodes at the centre, one letter locking at a time, and
     // holds on the finished dial. Then the letters squash into a line...
     this.hz.textContent = decode("FOSLN", t, 0.06, 0.7);   // locked just before the first tick
-    var squash = inCubic(seg(t, MORPH_AT, MORPH_AT + 0.1));
-    var swap = seg(t, MORPH_AT + 0.08, MORPH_AT + 0.11);
+    // The phases overlap so there is no visible hand-off: the line fades in
+    // while the letters are still squashing, and starts stretching before
+    // they have finished.
+    var squash = inOutCubic(seg(t, MORPH_AT, MORPH_AT + 0.32));
+    var swap = inOutSine(seg(t, MORPH_AT + 0.18, MORPH_AT + 0.34));
     this.hz.setAttribute("transform", squash > 0 ? "translate(0 450) scale(1 " + n(lerp(1, 0.08, squash) * 1000) / 1000 + ") translate(0 -450)" : "");
     this.hz.style.opacity = t < 0.04 ? 0 : n(1 - swap);
 
@@ -348,11 +352,11 @@
       var b = this.hz.getBBox();
       if (b.width > 0) box = { x: b.x - RING_C.x, w: b.width };
     }
-    var stretch = seg(t, MORPH_AT + 0.1, HAND_AT);
+    var stretch = seg(t, MORPH_AT + 0.2, HAND_AT);
     var k1 = this.inkScale;
-    this.morph.setAttribute("x1", n(lerp(box.x, -40 * k1, outCubic(stretch))));
-    this.morph.setAttribute("x2", n(lerp(box.x + box.w, 154 * k1, outBack(stretch, 1.2))));
-    this.morph.setAttribute("stroke-width", n(lerp(1.4, 1.7 * k1, stretch)));
+    this.morph.setAttribute("x1", n(lerp(box.x, -40 * k1, inOutCubic(seg(stretch, 0.12, 1)))));   // the tail follows a beat behind
+    this.morph.setAttribute("x2", n(lerp(box.x + box.w, 154 * k1, inOutCubic(stretch))));
+    this.morph.setAttribute("stroke-width", n(lerp(1.4, 1.7 * k1, inOutSine(stretch))));
     this.morph.style.opacity = t < HAND_AT ? n(swap) : 0;
 
     // Ticks count in around it, faster and faster
