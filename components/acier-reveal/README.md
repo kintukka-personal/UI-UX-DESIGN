@@ -22,7 +22,7 @@ Three beats, joined by match cuts and a dissolve:
 
 When it ends, **Discover Acier** appears. Clicking it, or scrolling down from the sign-off card, pulls the three pieces down the drain into the button, then snaps the page to the product section, as in Product reveal.
 
-The **product section** shows a still of the poster, with hands and the local-time callout still live. Beside it are the copy, a "Your local time" readout, specs, a price and a demo "Add to bag".
+The **product section** shows a still of the poster, with hands and the local-time callout still live. Beside it are a short description, the specs, a price and a demo "Add to bag". The name, brand and time are already on the poster, so the copy doesn't repeat them.
 
 Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-acier`.
 
@@ -49,7 +49,7 @@ Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-a
 - The animated stage is `aria-hidden`, and a visually hidden `<h1>` says what it shows. The still poster has a caption.
 - **Pause/Play** and **Replay** (WCAG 2.2.2). Pause also stops the hero watch.
 - **Reduced motion:** nothing plays on its own and the hero shows the poster. The seconds hand is hidden and the hour and minute hands update once a second, without movement you would notice. Discover jumps straight to the product section, and scrolling is never taken over.
-- A skip link, a real heading, a `<dl>` for specs, a native button with a polite status message, focus rings, and 44px targets.
+- A skip link, a visually hidden `<h2>` naming the product section, a `<dl>` for specs, a native button with a polite status message, focus rings, and 44px targets.
 
 ## Customise
 

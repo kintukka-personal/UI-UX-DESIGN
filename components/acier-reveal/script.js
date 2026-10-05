@@ -565,21 +565,13 @@
     initDrain(hero, player);
   }
 
-  // The real clock: every stage's hands, plus the time readout in the product copy
-  var nowEl = document.querySelector("[data-ui-acier-now]");
-  var lastSecond = -1;
+  // The real clock: every stage's hands
   function clock() {
     var d = new Date(), ms = d.getMilliseconds(), seconds = !calm();
     stages.forEach(function (s) {
       if (player && s === player.stage && player.userPaused) return;   // Pause also stops the watch
       s.setHands(d, ms, seconds);
     });
-    if (nowEl && d.getSeconds() !== lastSecond) {
-      lastSecond = d.getSeconds();
-      var text = pad(d.getHours()) + ":" + pad(d.getMinutes()) + (seconds ? ":" + pad(d.getSeconds()) : "");
-      nowEl.textContent = text;
-      nowEl.setAttribute("datetime", text);
-    }
     if (seconds) requestAnimationFrame(clock);
     else setTimeout(clock, 1000);
   }

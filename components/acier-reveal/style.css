@@ -637,71 +637,12 @@
   height: auto;
 }
 
-.ui-acier-product__eyebrow {
-  display: flex;
-  gap: 16px;
-  margin: 0 0 20px;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 13px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #AEB3B9;
-}
-
-.ui-acier-product__eyebrow span + span::before {
-  content: "/";
-  margin-right: 16px;
-  color: #5F646A;
-}
-
-.ui-acier-product__title {
-  margin: 0;
-  font-size: clamp(56px, 9vw, 112px);
-  font-weight: 700;
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  color: #FFFFFF;
-  text-wrap: balance;
-}
-
-.ui-acier-product__title span {
-  display: block;
-  margin-top: 12px;
-  font-size: 0.32em;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: #C9CDD1;
-}
-
 .ui-acier-product__lede {
   max-width: 44ch;
-  margin: 28px 0 0;
+  margin: 0;
   font-size: clamp(17px, 1.6vw, 19px);
   line-height: 1.55;
   color: #C3C8CD;
-}
-
-.ui-acier-product__now {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  margin: 28px 0 0;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-}
-
-.ui-acier-product__now-label {
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #9AA0A6;
-}
-
-.ui-acier-product__now-time {
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: #FFFFFF;
-  font-variant-numeric: tabular-nums;
 }
 
 .ui-acier-product__specs {
