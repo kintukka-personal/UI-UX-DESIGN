@@ -1,0 +1,598 @@
+/* Quote Stack — a stack of frosted glass cards that collapses into one and reveals a quote.
+   Rebuilt from Jitter's free animated testimonial template. Every number below with a plain
+   decimal is a pixel measured off the 1152 x 720 source frames, scaled by --cu / --tu / --su. */
+
+.ui-quotes-page {
+  margin: 0;
+  background: #140D07;
+  color: #F6EAE2;
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh;
+}
+
+.ui-quotes {
+  --ui-quotes-gut: 16px;
+  --ui-quotes-bar: 58px;
+
+  /* The frame is 8:5, as in the source. It is as wide as the window allows and no taller
+     than the window minus the control bar, so the whole frame is always on screen. */
+  --ui-quotes-sw: min(
+    calc(100vw - 2 * var(--ui-quotes-gut)),
+    calc((100svh - 2 * var(--ui-quotes-gut) - var(--ui-quotes-bar)) * 1.6)
+  );
+
+  /* ink */
+  --ui-quotes-blush: #FEECFC;      /* the wordmark, the mark and the liked heart */
+  --ui-quotes-ink: #FDEDF9;        /* the quote */
+  --ui-quotes-ink-soft: #FDEDF9;   /* the name. The source dims this to .66; full strength
+                                      keeps it at 4.7:1 on the glass. See README. */
+  --ui-quotes-card-ink: #16141A;
+
+  /* glass: an 11% white veil over an 18px blur and a 6% desaturation — fitted pixel by pixel
+     against the source frame — plus a 16% warm-black veil, which the source does not have and
+     which carries the quote from 3.7:1 to 4.7:1 on the brightest part of the plate */
+  --ui-quotes-veil: rgba(255, 255, 255, .11);
+  --ui-quotes-shade: rgba(32, 14, 2, .18);
+  --ui-quotes-desat: .94;
+  --ui-quotes-frost: 18;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: var(--ui-quotes-gut);
+  min-height: 100svh;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+@supports not (height: 100svh) {
+  .ui-quotes-page, .ui-quotes { min-height: 100vh; }
+  .ui-quotes { --ui-quotes-sw: min(calc(100vw - 32px), calc((100vh - 90px) * 1.6)); }
+}
+
+.ui-quotes__sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- the frame */
+
+.ui-quotes__stage {
+  position: relative;
+  width: var(--ui-quotes-sw);
+  aspect-ratio: 8 / 5;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #2A1A0D;
+  isolation: isolate;
+  touch-action: pan-y;
+}
+
+.ui-quotes__stage:focus-visible {
+  outline: 2px solid var(--ui-quotes-blush);
+  outline-offset: 2px;
+}
+
+/* One unit = one source pixel at the 1152px-wide source frame. --cu sizes the card box,
+   --tu the type and the spacing inside it, --su the chrome. They are equal on a wide frame
+   and part company only in the portrait layout further down. */
+.ui-quotes__stage > * {
+  --cu: calc(var(--ui-quotes-sw) / 1152);
+  --tu: var(--cu);
+  --su: var(--cu);
+}
+
+.ui-quotes__plate {
+  position: absolute;
+  inset: 0;
+  transform: scale(var(--cam, 1));
+  transform-origin: 50% 46.25%;   /* the point the source zoom holds still */
+  will-change: transform;
+}
+
+.ui-quotes__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  display: block;
+}
+
+/* Keeps the near-white chrome off the bright plywood: 5.9:1 for the site label */
+.ui-quotes__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(78% 120% at 100% -8%, rgba(10, 4, 0, .44), rgba(10, 4, 0, 0) 62%),
+    linear-gradient(to bottom, rgba(12, 5, 0, .22), rgba(12, 5, 0, 0) 16%);
+}
+
+/* ---------------------------------------------------------------- the deck */
+
+.ui-quotes__deck {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-quotes__item {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.ui-quotes__item[hidden],
+.ui-quotes__item:not([data-active]):not(.is-leaving) {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* without the script there is no clock and nothing to advance, so the first quote simply sits
+   there, fully revealed */
+.ui-quotes:not([data-ready]) .ui-quotes__item:first-child {
+  visibility: visible;
+  opacity: 1;
+}
+
+.ui-quotes__card {
+  --t: 999;          /* seconds into this card's reveal; JS drives it */
+  --s: 1;            /* pane scale */
+  --f: 0;            /* how far the stack is still fanned out, 1 .. 0 */
+  --like: 0;         /* 0 unliked, 1 liked */
+  --out: 0;          /* how far this card has left on an advance */
+
+  position: relative;
+  margin: 0;
+  width: calc(444.5 * var(--cu));
+  min-height: calc(258 * var(--cu));
+  opacity: calc(1 - var(--out));
+  filter: blur(calc(var(--out) * 11 * var(--cu)));
+  transform: translateY(calc(var(--out) * -26 * var(--cu)));
+}
+
+.ui-quotes__panes {
+  position: absolute;
+  inset: 0;
+}
+
+.ui-quotes__pane {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(65 * var(--cu));
+  background-color: var(--ui-quotes-veil);
+  background-image:
+    /* the sheen the source carries along the top and bottom lips of the glass */
+    linear-gradient(to bottom,
+      rgba(255, 255, 255, .13), rgba(255, 255, 255, 0) 12%,
+      rgba(255, 255, 255, 0) 90%, rgba(255, 255, 255, .10)),
+    linear-gradient(var(--ui-quotes-shade), var(--ui-quotes-shade));
+  /* the source blurs the glass before the camera magnifies it, so the frost thickens
+     while the camera is still pushed in */
+  -webkit-backdrop-filter: blur(calc(var(--ui-quotes-frost) * var(--cu) * var(--cam, 1))) saturate(var(--ui-quotes-desat));
+  backdrop-filter: blur(calc(var(--ui-quotes-frost) * var(--cu) * var(--cam, 1))) saturate(var(--ui-quotes-desat));
+  box-shadow:
+    0 calc(7 * var(--cu)) calc(24 * var(--cu)) rgba(26, 10, 0, .13),
+    inset 0 calc(1 * var(--cu)) 0 rgba(255, 255, 255, .15),
+    inset 0 0 0 1px rgba(255, 255, 255, .05);
+  transform:
+    translate(calc(var(--fx, 0px) * var(--f)), calc(var(--fy, 0px) * var(--f)))
+    scale(var(--s));
+  will-change: transform;
+}
+
+.ui-quotes__pane--up   { --fx: calc(-8 * var(--cu)); --fy: calc(-75 * var(--cu)); opacity: .55; }
+.ui-quotes__pane--down { --fx: calc( 8 * var(--cu)); --fy: calc( 75 * var(--cu)); opacity: .78; }
+
+/* Three sheets of glass cost three backdrop filters, so the two behind only exist while
+   the stack is open */
+.ui-quotes__card:not(.is-fanned) .ui-quotes__pane--up,
+.ui-quotes__card:not(.is-fanned) .ui-quotes__pane--down {
+  visibility: hidden;
+}
+
+.ui-quotes__body {
+  position: relative;
+  padding: calc(58 * var(--tu)) calc(69 * var(--tu)) calc(55.5 * var(--tu));
+}
+
+/* ---------------------------------------------------------------- the quote */
+
+.ui-quotes__quote {
+  --w0: .70;     /* the first word lands here */
+  --ws: .0455;   /* and each one after it trails the last by this much */
+  --wd: .33;     /* over this long */
+  margin: 0;
+}
+
+.ui-quotes__quote p {
+  margin: 0;
+  max-width: calc(306.5 * var(--tu));
+  font-size: calc(17.4 * var(--tu));
+  line-height: calc(20.75 * var(--tu));
+  font-weight: 500;
+  letter-spacing: -.004em;
+  color: var(--ui-quotes-ink);
+  text-wrap: pretty;
+}
+
+/* the opening mark hangs out of the measure, as in the source, and both marks ride in
+   with the word they belong to */
+.ui-quotes__quote p::before,
+.ui-quotes__quote p::after {
+  display: inline-block;
+  --p: clamp(0, calc((var(--t) - var(--w0) - var(--qi, 0) * var(--ws)) / var(--wd)), 1);
+  --e: calc(1 - (1 - var(--p)) * (1 - var(--p)) * (1 - var(--p)));
+  opacity: var(--e);
+  transform: translateY(calc((1 - var(--e)) * .55em));
+  filter: blur(calc((1 - var(--e)) * 7 * var(--tu)));
+}
+.ui-quotes__quote p::before {
+  content: "\201C";
+  margin-left: calc(-6.5 * var(--tu));
+  margin-right: calc(3.5 * var(--tu));
+  --qi: 0;
+}
+.ui-quotes__quote p::after  { content: "\201D"; --qi: var(--n, 0); }
+
+.ui-quotes__w {
+  display: inline-block;
+  --p: clamp(0, calc((var(--t) - var(--w0) - var(--i, 0) * var(--ws)) / var(--wd)), 1);
+  --e: calc(1 - (1 - var(--p)) * (1 - var(--p)) * (1 - var(--p)));
+  opacity: var(--e);
+  transform: translateY(calc((1 - var(--e)) * .55em));
+  filter: blur(calc((1 - var(--e)) * 7 * var(--tu)));
+}
+
+/* ---------------------------------------------------------------- who said it */
+
+.ui-quotes__who {
+  display: flex;
+  align-items: center;
+  gap: calc(13 * var(--tu));
+  margin: calc(40 * var(--tu)) 0 0;
+  /* the attribution row sits a shade inside the quote's measure, as in the source */
+  padding: 0 calc(5 * var(--tu)) 0 calc(2 * var(--tu));
+}
+
+.ui-quotes__avatar {
+  flex: none;
+  width: calc(43 * var(--tu));
+  height: calc(43 * var(--tu));
+  border-radius: calc(12 * var(--tu));
+  object-fit: cover;
+  display: block;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .10);
+  --p: clamp(0, calc((var(--t) - 1.44) / .62), 1);
+  --e: calc(1 - (1 - var(--p)) * (1 - var(--p)) * (1 - var(--p)));
+  transform: scale(var(--e));
+}
+
+/* the one portrait in the source video is the only face there is, so the rest are monograms */
+.ui-quotes__avatar--mono {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(120% 120% at 24% 18%, #3B3340, #16141A 72%);
+  color: var(--ui-quotes-blush);
+  font-size: calc(15 * var(--tu));
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+
+.ui-quotes__name {
+  --w0: 1.60;
+  --ws: .075;
+  --wd: .36;
+  margin: 0;
+  font-size: calc(17.4 * var(--tu));
+  line-height: calc(20 * var(--tu));
+  font-weight: 400;
+  color: var(--ui-quotes-ink-soft);
+  text-wrap: balance;
+}
+
+/* ---------------------------------------------------------------- the heart */
+
+.ui-quotes__like {
+  position: relative;
+  flex: none;
+  margin: 0 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  line-height: 0;
+}
+
+/* the glyph keeps the source's 21px, the target keeps the 44px minimum */
+.ui-quotes__like::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: max(44px, 100%);
+  height: max(44px, 100%);
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+}
+
+.ui-quotes__like:focus-visible { outline: none; }
+.ui-quotes__like:focus-visible::before {
+  outline: 2px solid var(--ui-quotes-blush);
+  outline-offset: calc(-2 * var(--tu));
+}
+
+.ui-quotes__heart {
+  width: calc(25.2 * var(--tu));
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.ui-quotes__heart-base {
+  fill: #fff;
+  --p: clamp(0, calc((var(--t) - 1.37) / .44), 1);
+  opacity: calc(var(--p) * .72 * (1 - var(--like)));
+}
+
+.ui-quotes__heart-fill {
+  fill: var(--ui-quotes-blush);
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  /* a touch past 1 on the way in, as in the source */
+  transform: scale(calc(var(--like) * (1.10 - .10 * var(--like))));
+}
+
+.ui-quotes__like:hover .ui-quotes__heart-base { opacity: calc(clamp(0, calc((var(--t) - 1.37) / .44), 1) * .92 * (1 - var(--like))); }
+
+/* ---------------------------------------------------------------- the chrome */
+
+.ui-quotes__brand {
+  position: absolute;
+  left: calc(31 * var(--su));
+  right: calc(41 * var(--su));
+  top: calc(32 * var(--su));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  color: var(--ui-quotes-blush);
+}
+
+.ui-quotes__logo {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--su));
+}
+
+.ui-quotes__mark {
+  width: calc(21 * var(--su));
+  height: calc(21 * var(--su));
+  display: block;
+}
+
+.ui-quotes__word {
+  font-size: calc(29 * var(--su));
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -.012em;
+}
+
+.ui-quotes__site {
+  position: absolute;
+  right: 0;
+  top: calc(1 * var(--su));
+  font-size: calc(13.8 * var(--su));
+  line-height: 1;
+  color: #FFF4F0;
+}
+
+.ui-quotes__credit {
+  position: absolute;
+  right: calc(16 * var(--su));
+  bottom: calc(18 * var(--su));
+  height: calc(36 * var(--su));
+  padding: 0 calc(13 * var(--su));
+  display: grid;
+  place-items: center;
+  background: var(--ui-quotes-card-ink);
+  color: #fff;
+  font-size: calc(17.4 * var(--su));
+  line-height: 1;
+  text-decoration: none;
+  letter-spacing: -.005em;
+}
+
+.ui-quotes__credit:hover { background: #241F2C; }
+.ui-quotes__credit:focus-visible {
+  outline: 2px solid var(--ui-quotes-blush);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------- the control bar */
+
+.ui-quotes__bar {
+  width: var(--ui-quotes-sw);
+  box-sizing: border-box;
+  height: var(--ui-quotes-bar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px;
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #C8B5A8;
+}
+
+.ui-quotes__dots {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ui-quotes__dot {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.ui-quotes__dot::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #6B5648;
+  transition: background-color .2s, transform .2s;
+}
+
+.ui-quotes__dot[aria-current="true"]::before { background: var(--ui-quotes-blush); transform: scale(1.3); }
+.ui-quotes__dot:hover::before { background: #A28B7B; }
+.ui-quotes__dot:focus-visible { outline: 2px solid var(--ui-quotes-blush); outline-offset: -2px; border-radius: 4px; }
+
+.ui-quotes__controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ui-quotes__nav,
+.ui-quotes__play {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: #E9DCD2;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 999px;
+  min-height: 34px;
+  padding: 0 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ui-quotes__nav:hover,
+.ui-quotes__play:hover { background: rgba(255, 255, 255, .13); }
+.ui-quotes__nav:focus-visible,
+.ui-quotes__play:focus-visible { outline: 2px solid var(--ui-quotes-blush); outline-offset: 2px; }
+
+/* the arrows only take room once a keyboard reaches them */
+.ui-quotes__nav {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+.ui-quotes__nav:focus-visible {
+  position: static;
+  width: auto; height: auto;
+  margin: 0; padding: 0 14px;
+  overflow: visible;
+  clip-path: none;
+  pointer-events: auto;
+}
+
+.ui-quotes__play-icon {
+  width: 9px;
+  height: 11px;
+  background: currentColor;
+  clip-path: polygon(0 0, 3px 0, 3px 11px, 0 11px, 0 0, 6px 0, 9px 0, 9px 11px, 6px 11px);
+}
+.ui-quotes[data-paused] .ui-quotes__play-icon {
+  clip-path: polygon(0 0, 9px 50%, 0 100%);
+}
+
+/* ---------------------------------------------------------------- portrait */
+
+@media (max-aspect-ratio: 1/1), (max-width: 720px) {
+  .ui-quotes {
+    --ui-quotes-gut: 12px;
+    --ui-quotes-sw: min(
+      calc(100vw - 2 * var(--ui-quotes-gut)),
+      calc((100svh - 2 * var(--ui-quotes-gut) - var(--ui-quotes-bar)) * .8)
+    );
+  }
+  .ui-quotes__stage { aspect-ratio: 4 / 5; }
+  .ui-quotes__stage > * {
+    --cu: calc(var(--ui-quotes-sw) / 505);   /* the card takes 88% of the frame */
+    --tu: calc(var(--ui-quotes-sw) / 372);   /* and the quote stays at 16px and up */
+    --su: calc(var(--ui-quotes-sw) / 560);
+  }
+  .ui-quotes__photo { object-position: 64% 32%; }
+  .ui-quotes__body { padding: calc(46 * var(--tu)) calc(42 * var(--tu)) calc(44 * var(--tu)); }
+  .ui-quotes__quote p { max-width: none; }
+  .ui-quotes__pane--up   { --fy: calc(-62 * var(--cu)); }
+  .ui-quotes__pane--down { --fy: calc( 62 * var(--cu)); }
+  /* The portrait frame is a re-crop, not the source's 8:5, and the card lands on sunlit
+     plywood instead of the shaded wall. Dusk the plate down behind it so the quote keeps
+     4.5:1; the band is lightest at the top and bottom, where the photo still reads bright. */
+  .ui-quotes__scrim {
+    background:
+      linear-gradient(to bottom, rgba(10, 4, 0, .34), rgba(10, 4, 0, .42) 18%,
+                      rgba(10, 4, 0, .42) 82%, rgba(10, 4, 0, .30)),
+      radial-gradient(92% 60% at 100% -4%, rgba(10, 4, 0, .42), rgba(10, 4, 0, 0) 66%);
+  }
+  .ui-quotes { --ui-quotes-shade: rgba(32, 14, 2, .22); }
+  .ui-quotes__bar { font-size: 11px; }
+}
+
+/* ---------------------------------------------------------------- preferences */
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-quotes__card { filter: none; transform: none; }
+  .ui-quotes__pane { transform: scale(1); will-change: auto; }
+  .ui-quotes__plate { transform: none; will-change: auto; }
+  .ui-quotes__w { opacity: 1; transform: none; filter: none; }
+  .ui-quotes__avatar { transform: none; }
+  .ui-quotes__dot::before { transition: none; }
+}
+
+@media (prefers-contrast: more) {
+  .ui-quotes {
+    --ui-quotes-shade: rgba(14, 7, 3, .42);
+    --ui-quotes-veil: rgba(255, 255, 255, .10);
+  }
+  .ui-quotes__scrim {
+    background:
+      radial-gradient(90% 140% at 100% -8%, rgba(10, 4, 0, .66), rgba(10, 4, 0, .10) 70%),
+      linear-gradient(to bottom, rgba(10, 4, 0, .34), rgba(10, 4, 0, .06) 26%);
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-quotes__pane {
+    background: Canvas;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: 1px solid CanvasText;
+  }
+  .ui-quotes__quote p, .ui-quotes__name { color: CanvasText; }
+  .ui-quotes__heart-base { fill: none; stroke: CanvasText; stroke-width: 2; }
+  .ui-quotes__heart-fill { fill: CanvasText; }
+  .ui-quotes__scrim { display: none; }
+  .ui-quotes__nav, .ui-quotes__play, .ui-quotes__credit { border: 1px solid CanvasText; }
+}
