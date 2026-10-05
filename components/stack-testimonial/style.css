@@ -1,0 +1,376 @@
+/* ==========================================================================
+   Stack testimonial
+   Rebuilt from Jitter's free "The Stack: Testimonial" template (Mango).
+   Classes are prefixed st. Plain CSS, no dependencies.
+
+   Sizes are in scene units, the pixels of the 1152 x 720 source frame.
+   script.js sets two lengths on .st:
+     --u   px per unit for the cards (follows the photo; capped on phones)
+     --hu  px per unit for the header and the controls
+   ========================================================================== */
+
+.st {
+  /* Palette, sampled from the source video */
+  --st-ink: #feecfb;                 /* quote, logo and heart: a warm pink white */
+  --st-ink-soft: rgba(254, 236, 251, .88); /* name and role: 50% in the video, raised to pass 4.5:1 */
+  --st-wood: #9c5a24;                /* the plywood wall, shown before the photo loads */
+  --st-chip: #19171c;                /* control chips, like the source's corner badge */
+  --st-glass-tint: rgba(170, 150, 138, .16);
+  --st-glass-blur: calc(var(--u) * 36);
+
+  --st-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  --u: 1px;
+  --hu: 1px;
+
+  position: relative;
+  height: 100vh;
+  min-height: 480px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--st-wood);
+  color: var(--st-ink);
+  font-family: var(--st-sans);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@supports (height: 100svh) {
+  .st { height: 100svh; }
+}
+
+.st-page {
+  margin: 0;
+  background: #9c5a24;
+}
+
+.st__sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------- Stage */
+
+.st__stage {
+  position: absolute;
+  inset: 0;
+  touch-action: pan-y;
+}
+
+.st__world {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.st__photo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  max-width: none;
+  /* script.js sizes and places it like object-fit: cover around a focal point */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- Cards */
+
+.st__stack {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+}
+
+.st__card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 446);
+  transform: translate(-50%, -50%);
+  /* No opacity or filter on the card itself: either would make it a
+     backdrop root, and the glass would blur nothing */
+}
+
+/* The frosted box. Its size is animated on its own (the squeeze and the pop),
+   while the text inside stays put, as in the source. */
+.st__glass {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--u) * 58);
+  transform: translate(-50%, -50%);
+  /* A little deeper behind the name, so it keeps 4.5:1 */
+  background:
+    linear-gradient(to bottom, rgba(36, 20, 10, 0) 48%, rgba(36, 20, 10, .2) 100%),
+    var(--st-glass-tint);
+  -webkit-backdrop-filter: blur(var(--st-glass-blur)) brightness(.94);
+  backdrop-filter: blur(var(--st-glass-blur)) brightness(.94);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .st__glass { background: rgba(122, 88, 66, .9); }
+}
+
+.st__body {
+  position: relative;
+  margin: 0;
+  padding: calc(var(--u) * 56.5) calc(var(--u) * 66) calc(var(--u) * 58) calc(var(--u) * 73);
+  font-size: calc(var(--u) * 17.8);
+  line-height: calc(var(--u) * 21.5);
+}
+
+.st__quote {
+  position: relative;
+  margin: 0;
+}
+
+.st__quote p {
+  margin: 0;
+}
+
+/* The opening mark hangs in the margin; the closing one rides on the last word */
+.st__open {
+  position: absolute;
+  right: 100%;
+  top: 0;
+  padding-right: calc(var(--u) * 2);
+}
+
+.st__by {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 14);
+  margin-top: calc(var(--u) * 37);
+  min-height: calc(var(--u) * 42);
+}
+
+.st__avatar {
+  flex: none;
+  display: block;
+  width: calc(var(--u) * 42);
+  height: calc(var(--u) * 42);
+  border-radius: calc(var(--u) * 10);
+  object-fit: cover;
+  background: #0b0401;
+}
+
+.st__avatar--initials {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #2a2420, #0e0b09);
+  color: var(--st-ink);
+  font-size: calc(var(--u) * 14);
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+
+.st__who {
+  flex: 1;
+  min-width: 0;
+  color: var(--st-ink-soft);
+}
+
+.st__name,
+.st__role {
+  display: block;
+}
+
+.st__heart {
+  flex: none;
+  width: calc(var(--u) * 24);
+  height: calc(var(--u) * 24);
+  margin-right: calc(var(--u) * 10.5);
+  position: relative;
+  top: calc(var(--u) * 1.5);
+  fill: var(--st-ink);
+}
+
+/* Words rise out of a mask one at a time. The extra bottom padding keeps the
+   descenders inside the mask. */
+.st__w {
+  display: inline-block;
+  vertical-align: top;
+  overflow: hidden;
+  padding-bottom: .16em;
+  margin-bottom: -.16em;
+}
+
+.st__wi {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Phones: the card keeps a readable size, and the text reflows in it */
+.st.is-compact .st__card {
+  width: calc(100vw - 32px);
+  max-width: 420px;
+}
+
+.st.is-compact .st__body {
+  padding: 30px 26px 28px 34px;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.st.is-compact .st__by { margin-top: 22px; gap: 12px; min-height: 40px; }
+.st.is-compact .st__avatar { width: 40px; height: 40px; border-radius: 10px; }
+.st.is-compact .st__avatar--initials { font-size: 13px; }
+.st.is-compact .st__heart { width: 20px; height: 20px; margin-right: 2px; }
+.st.is-compact .st__glass { border-radius: 40px; }
+
+/* ---------------------------------------------------------------- Header */
+
+.st__bar {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: calc(var(--hu) * 34) calc(var(--hu) * 40) 0 calc(var(--hu) * 30);
+  padding-top: max(calc(var(--hu) * 34), env(safe-area-inset-top));
+  pointer-events: none;
+}
+
+.st__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--hu) * 4);
+  color: var(--st-ink);
+  text-decoration: none;
+  pointer-events: auto;
+  border-radius: 6px;
+}
+
+.st__mark {
+  width: calc(var(--hu) * 21);
+  height: calc(var(--hu) * 21);
+  fill: currentColor;
+}
+
+.st__wordmark {
+  font-size: calc(var(--hu) * 26);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.st__url {
+  margin: calc(var(--hu) * -2) 0 0;
+  font-size: calc(var(--hu) * 15);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+
+/* ---------------------------------------------------------------- Controls */
+
+.st__controls {
+  position: absolute;
+  z-index: 3;
+  right: calc(var(--hu) * 18);
+  bottom: calc(var(--hu) * 18);
+  bottom: max(calc(var(--hu) * 18), env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--st-chip);
+  color: #fff;
+}
+
+.st__btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.st__btn:hover { background: rgba(255, 255, 255, .12); }
+
+.st__icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.st__icon--play { display: none; }
+.st.is-paused .st__icon--play { display: block; }
+.st.is-paused .st__icon--pause { display: none; }
+
+.st__count {
+  min-width: 3.4em;
+  font-size: 14px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  letter-spacing: .01em;
+}
+
+@media (pointer: coarse) {
+  .st__btn { width: 44px; height: 44px; }
+}
+
+/* Focus rings: visible on the photo and on the dark chips */
+.st__btn:focus-visible,
+.st__logo:focus-visible {
+  outline: 2px solid var(--st-ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(25, 23, 28, .7);
+}
+
+.st__card:focus-visible {
+  outline: none;
+}
+
+.st__card:focus-visible .st__glass {
+  outline: 2px solid var(--st-ink);
+  outline-offset: 4px;
+}
+
+/* ---------------------------------------------------------------- Modes */
+
+@media (forced-colors: active) {
+  .st__glass {
+    background: Canvas;
+    border: 1px solid CanvasText;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .st__body, .st__who { color: CanvasText; }
+  .st__heart { fill: CanvasText; }
+  .st__controls { border: 1px solid ButtonText; }
+}
+
+/* Without JavaScript: show the first testimonial, finished */
+.st:not(.is-ready) .st__card + .st__card { display: none; }
+.st:not(.is-ready) .st__controls { display: none; }
