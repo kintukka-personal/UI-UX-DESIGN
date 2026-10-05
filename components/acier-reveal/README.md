@@ -6,7 +6,7 @@ Three beats, joined by match cuts and a dissolve:
 
 1. **Quartz (0 to 5.35s), on pale steel paper**
    - At the centre, letters cycle and lock one by one, left to right, until they spell **FOSLN**.
-   - The letters start first. Once they are under way, the 60 minute ticks appear around them, faster and faster, with heavier ticks at the hours.
+   - The letters come first and lock by 0.7s. Only then do the 60 minute ticks appear around them, faster and faster, with heavier ticks at the hours.
    - FOSLN holds on the finished dial for about a second. Then the letters squash into a thin line, which stretches out to the right into the seconds hand, pointing at 3 o'clock. The hub grows in at the centre as it lands.
    - **The hands, as one continuous move:** from 3 o'clock the seconds hand sweeps a full turn in quartz steps and carries on into the visitor's current second. The minute hand grows out of the hub and turns a full revolution into the current minute. The hour hand joins last and turns to the current hour.
    - Meanwhile the ring, with the hands on it, shrinks and moves until it is exactly the size and position of the watch dial. All three hands land on the watch's live time just as the ring lands.
