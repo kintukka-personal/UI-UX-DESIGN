@@ -23,7 +23,7 @@
 
   --ui-acier-sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
   --ui-acier-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --ui-acier-serif: "Libre Baskerville", Baskerville, "Times New Roman", serif;
+  --ui-acier-serif: "Libre Baskerville", Georgia, Baskerville, "Times New Roman", serif;
 
   position: relative;
   height: 100vh;
@@ -113,12 +113,13 @@
   stroke-linecap: butt;
 }
 
-/* The brand decodes at the centre, one letter locking at a time */
+/* The brand decodes at the centre, one letter locking at a time, set
+   exactly like the FOSLN wordmark on the poster (same serif, weight, tracking) */
 .ui-acier__hz {
-  font-family: var(--ui-acier-mono);
-  font-size: 19px;
-  font-weight: 500;
-  letter-spacing: 0.4em;
+  font-family: var(--ui-acier-serif);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   fill: var(--ui-acier-ink);
 }
 
