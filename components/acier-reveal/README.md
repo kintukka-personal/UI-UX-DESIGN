@@ -21,9 +21,9 @@ Three beats, joined by match cuts and a dissolve:
 3. **Sign-off (about 15.5 to 17.5s), out of the black**
    - The FOSLN plate from the watch, redrawn, wipes in. "STAINLESS STEEL / QUARTZ MOVEMENT" types out and a small steel ACIER assembles beside it, all on one centred row.
 
-When it ends, **Discover Acier** appears. Clicking it, or scrolling down from the sign-off card, pulls the three pieces down the drain into the button, then snaps the page to the product section, as in Product reveal.
+When it ends, the watch's **crown** appears at the bottom: the knurled winder from the side of the case, seen tread-on like a scroll wheel, with a small "SCROLL" label. Scrolling down from the sign-off, or clicking or tapping the crown, pulls the three pieces down the drain into it. The crown presses in as they arrive, and the page snaps to the product section. Hovering winds the crown continuously.
 
-**Light beams** then guide the eye to the button. A faint track runs from under each sign-off piece to the top of Discover, along the same curve that piece will drain down. White pulses of light, each a bright glowing head with a soft tail, run along them in a loop: the outer two slightly after the middle one, speeding up as they go, like water finding the drain. Each time they arrive, the button gives a ring of light. The beams fade out the moment the exit starts. With reduced motion only the faint tracks show.
+**Light beams** guide the eye to the crown. A faint track runs from under each sign-off piece to the crown's stem, along the same curve that piece will drain down. White pulses of light, each a bright glowing head with a soft tail, run along them in a loop: the outer two slightly after the middle one, speeding up as they go, like water finding the drain. Each time they arrive, the crown's grooves turn one notch and a ring of light breathes out from it. The beams fade out the moment the exit starts. With reduced motion only the faint tracks show and the crown stays still.
 
 The **product section** shows a still of the poster, with hands and the local-time callout still live. Beside it are a short description, a price and a demo "Add to bag". The name, brand, time and specs are already on the poster, so the copy doesn't repeat them.
 
@@ -35,7 +35,7 @@ Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-a
 | --- | --- |
 | `index.html` | The landing page: the reveal hero, the product section and the footer |
 | `style.css` | Stage layout, phase styles, controls and the landing page around them |
-| `script.js` | The timeline, the steel letters, the hands and real clock, callouts, the player, the Discover exit |
+| `script.js` | The timeline, the steel letters, the hands and real clock, callouts, the player, the beams and the crown exit |
 | `images/acier-watch.webp` | The watch cut out of the supplied photo, printed hands removed, upscaled 2× (1064 × 1756) |
 | `preview.png` | The poster beat |
 
@@ -51,7 +51,7 @@ Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-a
 
 - The animated stage is `aria-hidden`, and a visually hidden `<h1>` says what it shows. The still poster has a caption.
 - **Pause/Play** and **Replay** (WCAG 2.2.2). Pause also stops the hero watch.
-- **Reduced motion:** nothing plays on its own and the hero shows the poster. The seconds hand is hidden and the hour and minute hands update once a second, without movement you would notice. Discover jumps straight to the product section, and scrolling is never taken over.
+- **Reduced motion:** nothing plays on its own and the hero shows the poster. The seconds hand is hidden and the hour and minute hands update once a second, without movement you would notice. the crown jumps straight to the product section, and scrolling is never taken over.
 - A skip link, a visually hidden `<h2>` naming the product section, a native button with a polite status message, focus rings, and 44px targets.
 
 ## Customise

@@ -583,8 +583,8 @@
   }
   clock();
 
-  // ---------- "Discover" exit: down the drain, then scroll ----------
-  // The three sign-off pieces are dragged along curves into the button,
+  // ---------- Crown exit: down the drain, then scroll ----------
+  // The three sign-off pieces are dragged along curves into the crown,
   // speeding up, shrinking and blurring as they bunch together. The moment
   // they hit it the button gives a press and the page snaps on to the product.
   // Scrolling down from the finished sign-off card does the same.
@@ -598,6 +598,7 @@
     var pieces = [stage.plate, stage.endCopy, stage.endWord.grad.ownerSVGElement];
     var busy = false;
     var beams = hero.querySelector("[data-beams]");
+    var crown = hero.querySelector("[data-crown]") || cue;
     var TRAVEL = 900, SCROLL = 460;
 
     function bezier(p0, p1, p2, p3, u) {
@@ -615,9 +616,9 @@
     function layoutBeams() {
       if (!beams || busy) return;
       var H = hero.getBoundingClientRect();
-      var c = cue.getBoundingClientRect();
+      var c = crown.getBoundingClientRect();
       var m = new DOMMatrixReadOnly(getComputedStyle(cue).transform);   // ignore the cue's slide-in offset
-      var T = { x: c.left + c.width / 2 - H.left, y: c.top - m.m42 - H.top - 6 };
+      var T = { x: c.left + c.width / 2 - H.left, y: c.top - m.m42 - H.top - 8 };   // the top of the crown's stem
       var html = "";
       pieces.forEach(function (node, i) {
         var b = node.getBoundingClientRect();
@@ -643,7 +644,7 @@
       pieces.forEach(function (node) {
         node.style.translate = node.style.scale = node.style.filter = node.style.opacity = node.style.transformOrigin = "";
       });
-      cue.style.scale = cue.style.pointerEvents = "";
+      crown.style.scale = cue.style.pointerEvents = "";
       if (controls) controls.inert = false;
       busy = false;
       hero.removeAttribute("data-draining");
@@ -658,7 +659,7 @@
         var t = now - t0;
         var p = outQuart(seg(t, 0, SCROLL));
         window.scrollTo(0, lerp(from, to, p));
-        cue.style.scale = n(lerp(0.9, 1, outCubic(seg(t, 0, 220))));
+        crown.style.scale = n(lerp(0.86, 1, outCubic(seg(t, 0, 220))));
         if (p < 1) requestAnimationFrame(step); else finish();
       }
       requestAnimationFrame(step);
@@ -714,8 +715,8 @@
       if (controls) controls.inert = true;
       cue.style.pointerEvents = "none";
 
-      var cueBox = cue.getBoundingClientRect();
-      var T = { x: cueBox.left + cueBox.width / 2, y: cueBox.top + cueBox.height * 0.45 };
+      var cueBox = crown.getBoundingClientRect();
+      var T = { x: cueBox.left + cueBox.width / 2, y: cueBox.top + cueBox.height * 0.5 };   // into the crown
       var paths = pieces.map(function (node, i) {
         var b = node.getBoundingClientRect();
         var A = { x: b.left + b.width / 2, y: b.bottom };
@@ -743,7 +744,7 @@
           p.node.style.filter = "blur(" + n(6 * seg(u, 0.3, 1)) + "px)";
           p.node.style.opacity = n(1 - seg(u, 0.85, 1));
         });
-        cue.style.scale = n(1 - 0.1 * seg(t, TRAVEL - 120, TRAVEL));
+        crown.style.scale = n(1 - 0.14 * seg(t, TRAVEL - 120, TRAVEL));   // pressed in as they arrive
         if (t < TRAVEL) requestAnimationFrame(frame);
         else scrollToTarget();
       }
