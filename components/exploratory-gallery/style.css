@@ -1,0 +1,459 @@
+/* ==========================================================================
+   Exploratory gallery
+   Rebuilt from Jitter's free "Interactive gallery" template (rico.)
+   Classes are prefixed ui-gallery. Plain CSS, no dependencies.
+   ========================================================================== */
+
+.ui-gallery {
+  /* Palette, sampled from the source video */
+  --ui-gallery-bg: #bebdc0;          /* stage grey */
+  --ui-gallery-slot: #dedfe2;        /* the lit slot behind the centre card */
+  --ui-gallery-ink: #111112;         /* ticker type */
+  --ui-gallery-paper: rgba(250, 250, 250, .9); /* coin card, slightly see-through */
+  --ui-gallery-bar-ink: #f2f2f3;     /* footer type on the darkened floor */
+  --ui-gallery-cursor: rgba(46, 46, 48, .72);
+
+  /* Type */
+  --ui-gallery-sans: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ui-gallery-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Geometry. The source frame is 960 x 720 with a 324px card on a 408px
+     pitch, i.e. card = 45% of the height or 33.75% of the width. */
+  --card: min(45vh, 33.75vw);
+  --pitch: 1.259;                    /* centre-to-centre distance, in cards */
+  --radius: calc(var(--card) * .037);
+
+  /* Driven by script.js: 0 = browsing, 1 = a card is open */
+  --f: 0;
+
+  position: relative;
+  height: 100vh;
+  min-height: 420px;
+  overflow: hidden;
+  background: var(--ui-gallery-bg);
+  color: var(--ui-gallery-bar-ink);
+  font-family: var(--ui-gallery-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+@supports (height: 100svh) {
+  .ui-gallery { height: 100svh; --card: min(45svh, 33.75vw); }
+}
+
+/* Phones and tall windows: a bigger card, neighbours peeking at the edges */
+@media (max-aspect-ratio: 1/1) {
+  .ui-gallery { --card: min(66vw, 46vh); --pitch: 1.12; }
+  @supports (height: 100svh) {
+    .ui-gallery { --card: min(66vw, 46svh); }
+  }
+}
+
+.ui-gallery-page {
+  margin: 0;
+  background: #bebdc0;
+}
+
+.ui-gallery__sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------------------------------------------------------------- Stage */
+
+.ui-gallery__stage {
+  position: absolute;
+  inset: 0;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ui-gallery.has-dot .ui-gallery__stage,
+  .ui-gallery.has-dot .ui-gallery__card { cursor: none; }
+}
+
+.ui-gallery__slot,
+.ui-gallery__item {
+  position: absolute;
+  top: calc(50% - var(--card) / 2);
+  left: calc(50% - var(--card) / 2);
+  width: var(--card);
+  height: var(--card);
+}
+
+.ui-gallery__slot {
+  z-index: 0;
+  border-radius: var(--radius);
+  background: var(--ui-gallery-slot);
+  transform: scale(calc(1 + var(--f) * .25));
+}
+
+.ui-gallery__track {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-gallery__item {
+  z-index: 1;
+  will-change: transform;
+}
+
+.ui-gallery__item.is-open { z-index: 3; }
+
+/* ---------------------------------------------------------------- Cards */
+
+.ui-gallery__card {
+  --a: 0; /* 1 on the open card */
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  /* The open card grows by 25% and leans slightly off the slot; the rest
+     swell and go soft behind it. */
+  transform:
+    translateX(calc(var(--f) * var(--a) * var(--card) * .025))
+    scale(calc(1 + var(--f) * (.25 * var(--a) + .4 * (1 - var(--a)))));
+  /* Mask the overflow so the corners stay clipped while scaled */
+  isolation: isolate;
+}
+
+.is-open > .ui-gallery__card { --a: 1; }
+
+.ui-gallery.is-focusing .ui-gallery__item:not(.is-open) .ui-gallery__card {
+  filter: blur(calc(var(--f) * var(--card) * .2));
+}
+
+.ui-gallery.is-focusing .ui-gallery__item.is-open .ui-gallery__card {
+  filter: brightness(calc(1 - var(--f) * .1));
+}
+
+.ui-gallery__card:focus { outline: none; }
+
+.ui-gallery__card:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, .85);
+}
+
+/* Inner layer: drifts against the card's travel for a little parallax */
+.ui-gallery__inner {
+  position: absolute;
+  inset: 0 -6%;
+  display: block;
+  will-change: transform;
+}
+
+.ui-gallery__inner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* Photo cards are glass: the slot shows faintly through them */
+.ui-gallery__card--product .ui-gallery__inner { opacity: .9; background: #9c9b9e; }
+.ui-gallery__card--portrait .ui-gallery__inner { opacity: .94; background: #6c6c6c; }
+
+/* Mark card: black, with the mark cut clean through it. The black plate in
+   the SVG runs past the card edges, so the parallax drift never shows a gap. */
+.ui-gallery__card--mark .ui-gallery__inner { inset: 0; }
+
+.ui-gallery__mark {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: #000;
+}
+
+/* ---------------------------------------------------------------- Coin card */
+
+.ui-gallery__card--coin {
+  background-color: var(--ui-gallery-paper);
+  /* A barely-there checker, as in the source */
+  background-image: conic-gradient(rgba(0, 0, 0, .022) 25%, transparent 0 50%, rgba(0, 0, 0, .022) 0 75%, transparent 0);
+  background-size: 6px 6px;
+}
+
+.ui-gallery__ticker {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.ui-gallery__word {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ui-gallery-ink);
+  font-family: var(--ui-gallery-sans);
+  font-size: calc(var(--card) * .172);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -.035em;
+  /* Optical centring: the caps sit a hair high in the source */
+  padding-bottom: calc(var(--card) * .004);
+}
+
+.ui-gallery__coinwrap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  perspective: calc(var(--card) * 2.6);
+  pointer-events: none;
+}
+
+.ui-gallery__coin {
+  --d: calc(var(--card) * .58);  /* diameter */
+  --t: calc(var(--card) * .058); /* thickness */
+  position: absolute;
+  top: calc(50% - var(--d) / 2);
+  left: calc(50% - var(--d) / 2);
+  width: var(--d);
+  height: var(--d);
+  transform-style: preserve-3d;
+}
+
+.ui-gallery__face {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  /* Clear glass: two hairline rims, a soft vertical glare */
+  border: 1px solid rgba(24, 26, 32, .38);
+  box-shadow:
+    inset 0 0 0 calc(var(--card) * .009) rgba(255, 255, 255, .55),
+    inset 0 0 0 calc(var(--card) * .012) rgba(30, 32, 40, .16);
+  background:
+    linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .26) 38%, transparent 46%),
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, .06), rgba(255, 255, 255, .16) 70%, rgba(180, 186, 198, .12));
+}
+
+.ui-gallery__face--front { transform: translateZ(calc(var(--t) / 2)); }
+.ui-gallery__face--back { transform: rotateY(180deg) translateZ(calc(var(--t) / 2)); }
+
+/* Reeded rim: built from facets by script.js */
+.ui-gallery__facet {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--t);
+  margin-left: calc(var(--t) / -2);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ---------------------------------------------------------------- Overlays */
+
+/* Darkens everything a little while a card is open */
+.ui-gallery__dim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: #000;
+  opacity: calc(var(--f) * .28);
+  pointer-events: none;
+}
+
+/* The floor: the lower half of the scene falls off to half brightness,
+   over the cards as well as the backdrop */
+.ui-gallery__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: linear-gradient(to bottom, #fff 50%, #808080 100%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* Cursor dot (fine pointers only, see script.js) */
+.ui-gallery__cursor {
+  --s: 18px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 6;
+  width: 100px;
+  height: 100px;
+  margin: -50px 0 0 -50px;
+  border-radius: 50%;
+  background: var(--ui-gallery-cursor);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ---------------------------------------------------------------- Footer bar */
+
+.ui-gallery__bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+  height: clamp(52px, 8.4vh, 76px);
+  padding: 0 clamp(16px, 2.5vw, 40px);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  pointer-events: none;
+}
+
+.ui-gallery__bar > * { pointer-events: auto; }
+
+.ui-gallery__logo,
+.ui-gallery__label,
+.ui-gallery__count,
+.ui-gallery__controls {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ui-gallery__logo {
+  left: clamp(16px, 2.5vw, 40px);
+  width: auto;
+  height: clamp(15px, 1.75vw, 24px);
+  color: #ececee;
+  overflow: visible;
+}
+
+.ui-gallery__label,
+.ui-gallery__count {
+  font-family: var(--ui-gallery-mono);
+  font-size: clamp(11px, 1vw, 14px);
+  line-height: 1;
+  letter-spacing: .01em;
+  color: var(--ui-gallery-bar-ink);
+  white-space: nowrap;
+}
+
+.ui-gallery__label { left: 46%; }
+.ui-gallery__count { left: 67.5%; font-variant-numeric: tabular-nums; }
+
+.ui-gallery__controls {
+  right: clamp(16px, 2.5vw, 40px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ui-gallery__play,
+.ui-gallery__nav {
+  display: inline-flex;
+  align-items: center;
+  gap: .6em;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, .4);
+  border-radius: 999px;
+  background: rgba(20, 20, 22, .28);
+  color: var(--ui-gallery-bar-ink);
+  font-family: var(--ui-gallery-mono);
+  font-size: clamp(11px, 1vw, 14px);
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color .2s, border-color .2s;
+}
+
+.ui-gallery__play:hover,
+.ui-gallery__nav:hover {
+  background: rgba(20, 20, 22, .5);
+  border-color: rgba(255, 255, 255, .7);
+}
+
+.ui-gallery__play:focus-visible,
+.ui-gallery__nav:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Pause bars, or a play triangle once paused */
+.ui-gallery__play-icon {
+  position: relative;
+  width: 8px;
+  height: 9px;
+  border-left: 2.5px solid currentColor;
+  border-right: 2.5px solid currentColor;
+  box-sizing: border-box;
+}
+
+.ui-gallery__play.is-paused .ui-gallery__play-icon {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid currentColor;
+  border-right: 0;
+}
+
+/* Previous / Next stay out of the picture until keyboard focus reaches them */
+.ui-gallery__nav:not(:focus-visible) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Narrow screens: the bar becomes a simple row */
+@media (max-width: 640px) {
+  .ui-gallery__bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .ui-gallery__logo,
+  .ui-gallery__label,
+  .ui-gallery__count,
+  .ui-gallery__controls {
+    position: static;
+    transform: none;
+  }
+  .ui-gallery__logo { flex: none; margin-right: auto; }
+  .ui-gallery__controls { margin-left: auto; }
+}
+
+@media (max-width: 340px) {
+  .ui-gallery__label { display: none; }
+}
+
+/* ---------------------------------------------------------------- Modes */
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-gallery__inner,
+  .ui-gallery__item { will-change: auto; }
+}
+
+@media (forced-colors: active) {
+  .ui-gallery__cursor { display: none; }
+  .ui-gallery__card { border: 1px solid CanvasText; }
+  .ui-gallery__card:focus-visible { outline-color: Highlight; }
+  .ui-gallery__play,
+  .ui-gallery__nav { border-color: ButtonText; }
+  .ui-gallery__logo { color: CanvasText; }
+}
