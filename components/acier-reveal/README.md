@@ -4,12 +4,13 @@ A launch hero for the **FOSLN Acier** quartz watch, built on the [Product reveal
 
 Three beats, joined by match cuts and a dissolve:
 
-1. **Quartz (0 to 3.6s), on pale steel paper**
-   - At the centre, letters cycle and lock one by one, left to right, until they spell **FOSLN**. The name holds for a moment, then clears just before the seconds hand grows out of the same spot.
+1. **Quartz (0 to 5.35s), on pale steel paper**
+   - At the centre, letters cycle and lock one by one, left to right, until they spell **FOSLN**.
    - The letters start first. Once they are under way, the 60 minute ticks appear around them, faster and faster, with heavier ticks at the hours.
-   - **The hands, as one continuous move:** a seconds hand ticks in at 12 and sweeps a full turn in quartz steps, then carries on into the visitor's current second. The minute hand grows out of the hub and turns a full revolution into the current minute. The hour hand joins last and turns to the current hour.
+   - FOSLN holds on the finished dial for about a second. Then the letters squash into a thin line, which stretches out to the right into the seconds hand, pointing at 3 o'clock. The hub grows in at the centre as it lands.
+   - **The hands, as one continuous move:** from 3 o'clock the seconds hand sweeps a full turn in quartz steps and carries on into the visitor's current second. The minute hand grows out of the hub and turns a full revolution into the current minute. The hour hand joins last and turns to the current hour.
    - Meanwhile the ring, with the hands on it, shrinks and moves until it is exactly the size and position of the watch dial. All three hands land on the watch's live time just as the ring lands.
-2. **Poster (3.6 to about 13.7s), dissolving to graphite**
+2. **Poster (5.35 to about 15.5s), dissolving to graphite**
    - The paper layer dissolves into the watch. The ink hands sit exactly on top of the watch's own hands, so the time carries straight through. The bracelet extends out of the case as it appears.
    - **Live hands:** the photo's printed hands were painted out and replaced with drawn ones. They show the visitor's local time and step once a second with a small quartz overshoot.
    - **ACIER** assembles in brushed steel, link by link. Each letter is cut into five bands, like the bracelet's links, and every band slides in from alternating sides and locks with a slight overshoot.
@@ -17,7 +18,7 @@ Three beats, joined by match cuts and a dissolve:
    - The poster holds on just the watch and ACIER for a moment.
    - **Callouts on the tick:** each callout appears on a tick of the watch's real seconds hand, one per second: Link bracelet, **Local time** (with the live time, pointing at the crown that sets it), Quartz movement, Steel case, Onyx dial. The first waits for the next real tick, so all five stay in step with the hand. A short hold follows.
    - The callouts clear and the camera dives into the black dial while the hands fade.
-3. **Sign-off (about 13.7 to 15.7s), out of the black**
+3. **Sign-off (about 15.5 to 17.5s), out of the black**
    - The FOSLN plate from the watch, redrawn, wipes in. "STAINLESS STEEL / QUARTZ MOVEMENT" types out and a small steel ACIER assembles beside it, all on one centred row.
 
 When it ends, **Discover Acier** appears. Clicking it, or scrolling down from the sign-off card, pulls the three pieces down the drain into the button, then snaps the page to the product section, as in Product reveal.

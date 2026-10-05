@@ -10,13 +10,18 @@
   var NS = "http://www.w3.org/2000/svg";
 
   // Beats. Everything after the quartz beat is timed from T_POSTER.
-  var T_POSTER = 3.6;               // dissolve: ring + ink hands -> the watch
+  var T_POSTER = 5.35;              // dissolve: ring + ink hands -> the watch
   var T_JOIN = T_POSTER + 0.45;     // the paper layer has gone
   var CALL_START = T_POSTER + 2.8;  // after a hold on the watch and ACIER, callouts start on the next tick
   var CALL_END = CALL_START + 6.5;  // up to 1s to the first tick, 4 more ticks, then a short hold
   var T_END = CALL_END + 0.8;       // dive into the dial -> sign-off
   var T_TOTAL = T_END + 2.0;
   var T_STILL = CALL_START + 5.2;   // the settled poster, all callouts in, for stills and reduced motion
+
+  // Intro: FOSLN holds on the finished dial, squashes into a line at
+  // MORPH_AT and stretches out into the seconds hand at 3 o'clock by HAND_AT
+  var MORPH_AT = 2.4;
+  var HAND_AT = 3.15;
 
   // Quartz ring (design units on the 720 x 900 frame)
   var RING_R = 250, RING_C = { x: 360, y: 450 };
@@ -127,9 +132,10 @@
     var hour = sword(96), minute = sword(138);
     var second = el("g", {}, root);
     el("line", { x1: 0, y1: 40, x2: 0, y2: -154, stroke: ink ? "#121314" : "#C3C7CB", "stroke-width": 1.7, "stroke-linecap": "round" }, second);
-    el("circle", { r: 8, fill: body, stroke: edge, "stroke-width": 0.7 }, root);
-    el("circle", { r: 3, fill: ink ? "#ECECE9" : "#1A1B1D" }, root);
-    return { root: root, hour: hour, minute: minute, second: second };
+    var hub = el("g", {}, root);
+    el("circle", { r: 8, fill: body, stroke: edge, "stroke-width": 0.7 }, hub);
+    el("circle", { r: 3, fill: ink ? "#ECECE9" : "#1A1B1D" }, hub);
+    return { root: root, hour: hour, minute: minute, second: second, hub: hub };
   }
 
   // Letters cycle until each one locks into the brand, left to right
@@ -166,6 +172,9 @@
     // photo px x (frame px per photo px) / (ring scale on the dial)
     var inkScale = (WATCH_W / 532) / (DIAL.r / RING_R);
     this.inkHands = buildHands(el("g", { transform: "scale(" + inkScale + ")" }, ring), id + "-i", true, 0, 0);
+    // The line FOSLN squashes into, which stretches out into the seconds hand
+    this.inkScale = inkScale;
+    this.morph = el("line", { x1: 0, y1: 0, x2: 0, y2: 0, stroke: "#121314", "stroke-linecap": "round" }, ring);
     this.qt = 0;
     this.hz = q("[data-hz]");
 
@@ -297,36 +306,54 @@
   Stage.prototype.updateInk = function () {
     var t = this.qt, L = this.live, ink = this.inkHands;
 
-    // Seconds: quartz steps all the way, 360 degrees plus the live second
-    var sp = inOutSine(seg(t, 1.45, 3.35));
-    var sec = sp >= 1 ? L.s : 6 * Math.floor((360 + L.sWhole) * sp / 6);
-    var sIn = outBack(seg(t, 1.3, 1.45), 2);
-    ink.second.setAttribute("transform", "rotate(" + n(sec) + ") scale(" + n(Math.max(0, sIn)) + ")");
-    ink.second.style.display = L.show || sp < 1 ? "" : "none";
+    // Seconds: formed from FOSLN at 3 o'clock (see renderQuartz), then quartz
+    // steps through a full turn and on into the live second
+    var sp = inOutSine(seg(t, HAND_AT + 0.05, HAND_AT + 1.95));
+    var turn = 360 + (((L.sWhole - 90) % 360) + 360) % 360;
+    var sec = sp >= 1 ? L.s : 90 + 6 * Math.floor(turn * sp / 6);
+    ink.second.setAttribute("transform", "rotate(" + n(sec) + ")");
+    ink.second.style.display = t >= HAND_AT && (L.show || sp < 1) ? "" : "none";
+    var hubIn = outBack(seg(t, HAND_AT - 0.12, HAND_AT + 0.06), 2);
+    ink.hub.setAttribute("transform", "scale(" + n(Math.max(0, hubIn)) + ")");
 
     // Minute: grows out of the hub and turns a full revolution into place
-    var mIn = outCubic(seg(t, 2.2, 2.5));
-    var min = lerp(0, 360 + L.m, inOutCubic(seg(t, 2.2, 3.4)));
+    var mIn = outCubic(seg(t, HAND_AT + 0.8, HAND_AT + 1.1));
+    var min = lerp(0, 360 + L.m, inOutCubic(seg(t, HAND_AT + 0.8, HAND_AT + 2.0)));
     ink.minute.setAttribute("transform", "rotate(" + n(min) + ") scale(" + n(lerp(0.4, 1, mIn)) + ")");
     ink.minute.style.opacity = n(mIn);
 
     // Hour: last in, straight to its hour
-    var hIn = outCubic(seg(t, 2.7, 2.95));
-    var hr = lerp(0, L.h, outCubic(seg(t, 2.7, 3.45)));
+    var hIn = outCubic(seg(t, HAND_AT + 1.3, HAND_AT + 1.55));
+    var hr = lerp(0, L.h, outCubic(seg(t, HAND_AT + 1.3, HAND_AT + 2.05)));
     ink.hour.setAttribute("transform", "rotate(" + n(hr) + ") scale(" + n(lerp(0.4, 1, hIn)) + ")");
     ink.hour.style.opacity = n(hIn);
-
-    ink.root.style.opacity = t < 1.3 ? 0 : 1;
   };
 
   // The quartz beat, on its paper layer
   Stage.prototype.renderQuartz = function (t) {
     var i, p;
 
-    // The brand decodes at the centre, one letter locking at a time, holds,
-    // and clears just before the seconds hand grows out of the same spot
+    // The brand decodes at the centre, one letter locking at a time, and
+    // holds on the finished dial. Then the letters squash into a line...
     this.hz.textContent = decode("FOSLN", t, 0.08, 1.0);
-    this.hz.style.opacity = t < 0.04 ? 0 : n(1 - seg(t, 1.2, 1.4));
+    var squash = inCubic(seg(t, MORPH_AT, MORPH_AT + 0.3));
+    var swap = seg(t, MORPH_AT + 0.24, MORPH_AT + 0.32);
+    this.hz.setAttribute("transform", squash > 0 ? "translate(0 450) scale(1 " + n(lerp(1, 0.08, squash) * 1000) / 1000 + ") translate(0 -450)" : "");
+    this.hz.style.opacity = t < 0.04 ? 0 : n(1 - swap);
+
+    // ...which stretches out to the right into the seconds hand at 3 o'clock:
+    // from the width of the word to the hand's exact tail and tip
+    var box = { x: -46, w: 92 };
+    if (t >= MORPH_AT && t < HAND_AT + 0.05) {
+      var b = this.hz.getBBox();
+      if (b.width > 0) box = { x: b.x - RING_C.x, w: b.width };
+    }
+    var stretch = seg(t, MORPH_AT + 0.3, HAND_AT);
+    var k1 = this.inkScale;
+    this.morph.setAttribute("x1", n(lerp(box.x, -40 * k1, outCubic(stretch))));
+    this.morph.setAttribute("x2", n(lerp(box.x + box.w, 154 * k1, outBack(stretch, 1.2))));
+    this.morph.setAttribute("stroke-width", n(lerp(1.4, 1.7 * k1, stretch)));
+    this.morph.style.opacity = t < HAND_AT ? n(swap) : 0;
 
     // Ticks count in around it, faster and faster
     for (i = 0; i < 60; i++) {
@@ -341,7 +368,7 @@
     this.updateInk();
 
     // The ring, hands and all, shrinks onto the exact size and place of the watch dial
-    var k = inOutCubic(seg(t, 2.8, 3.45));
+    var k = inOutCubic(seg(t, HAND_AT + 1.4, HAND_AT + 2.05));
     var scale = lerp(1, DIAL.r / RING_R, k);
     this.ring.setAttribute("transform", "translate(" + RING_C.x + " " + n(lerp(RING_C.y, DIAL.y, k)) + ") scale(" + n(scale * 1000) / 1000 + ")");
   };
