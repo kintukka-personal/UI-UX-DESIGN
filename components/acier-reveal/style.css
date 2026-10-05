@@ -532,7 +532,13 @@
   color: #FFFFFF;
 }
 
-/* Brushed steel tread with horizontal grooves; the grooves roll downward */
+/* Brushed steel tread with horizontal grooves that roll downward.
+   Two nested layers move the grooves, and their offsets add up:
+   - the tread notches one groove per beam cycle (always in step with the beams)
+   - the wind layer turns continuously, but only while hovered; otherwise it is
+     paused in place, so going on or off the crown never jumps
+   Each groove tile is exactly one pitch tall, so any whole-pitch move loops
+   seamlessly. */
 .ui-acier__crown {
   --pitch: 5px;
   position: relative;
@@ -540,25 +546,48 @@
   width: 20px;
   height: 32px;
   border-radius: 6px;
-  /* Layer 1: cylinder shading, fixed. Layer 2: one groove per tile, so the
-     tile is exactly one pitch tall and moving it by a pitch loops seamlessly. */
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 30%, rgba(255, 255, 255, 0.18) 50%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.6) 100%) 0 0 / 100% 100% no-repeat,
-    linear-gradient(180deg, #E9ECEE 0 40%, #7C8288 40% 60%, #B9BEC3 60% 100%) 0 0 / 100% var(--pitch) repeat-y,
-    #B9BEC3;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.5);
+  background: #B9BEC3;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
   transition: transform 0.2s ease, filter 0.25s ease;
 }
 
-/* The stem the beams arrive along */
-.ui-acier__crown::before {
+/* Cylinder shading and the rim, fixed above the moving grooves */
+.ui-acier__crown::after {
   content: "";
   position: absolute;
-  left: 50%;
-  bottom: 100%;
-  width: 1px;
-  height: 8px;
-  background: rgba(244, 245, 246, 0.35);
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 30%, rgba(255, 255, 255, 0.18) 50%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.6) 100%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+/* A fixed clip: the layers inside it move, the crown's outline does not */
+.ui-acier__crown-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ui-acier__crown-wind {
+  position: absolute;
+  inset: 0;
+}
+
+.ui-acier__crown-clip,
+.ui-acier__crown-wind,
+.ui-acier__crown-tread {
+  display: block;
+}
+
+.ui-acier__crown-tread {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--pitch) * -3);
+  bottom: calc(var(--pitch) * -1);
+  background: linear-gradient(180deg, #E9ECEE 0 40%, #7C8288 40% 60%, #B9BEC3 60% 100%) 0 0 / 100% var(--pitch) repeat-y;
 }
 
 .ui-acier__crown i {
@@ -643,8 +672,16 @@
 
 /* The crown answers each arrival: its grooves turn one notch, and a ring of
    light breathes out from it. Hovering winds it continuously. */
-.ui-acier[data-done][data-phase="end"] .ui-acier__crown {
-  animation: ui-acier-crown-notch var(--ui-acier-beam-cycle, 2.8s) ease-out 0.12s infinite;
+.ui-acier[data-done][data-phase="end"] .ui-acier__crown-tread {
+  animation: ui-acier-crown-notch var(--ui-acier-beam-cycle, 2.8s) linear 0.12s infinite;
+}
+
+.ui-acier[data-done][data-phase="end"] .ui-acier__crown-wind {
+  animation: ui-acier-crown-wind 0.5s linear infinite paused;
+}
+
+.ui-acier[data-done][data-phase="end"]:not([data-draining]) .ui-acier__cue:hover .ui-acier__crown-wind {
+  animation-play-state: running;
 }
 
 .ui-acier[data-done][data-phase="end"] .ui-acier__crown i {
@@ -654,7 +691,8 @@
 
 /* During the exit the crown holds exactly where it is (no snap back) and its
    ring fades rather than cutting out */
-.ui-acier[data-draining] .ui-acier__crown,
+.ui-acier[data-draining] .ui-acier__crown-tread,
+.ui-acier[data-draining] .ui-acier__crown-wind,
 .ui-acier[data-draining] .ui-acier__crown i {
   animation-play-state: paused;
 }
@@ -663,18 +701,14 @@
   opacity: 0;
 }
 
-.ui-acier[data-done][data-phase="end"]:not([data-draining]) .ui-acier__cue:hover .ui-acier__crown {
-  animation: ui-acier-crown-wind 0.5s linear infinite;
-}
-
 @keyframes ui-acier-crown-notch {
-  0%, 46%   { background-position: 0 0, 0 0, 0 0; animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1); }
-  62%, 100% { background-position: 0 0, 0 var(--pitch), 0 0; }
+  0%, 46%   { transform: translateY(0); animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1); }
+  62%, 100% { transform: translateY(var(--pitch)); }
 }
 
 @keyframes ui-acier-crown-wind {
-  from { background-position: 0 0, 0 0, 0 0; }
-  to   { background-position: 0 0, 0 var(--pitch), 0 0; }
+  from { transform: translateY(0); }
+  to   { transform: translateY(var(--pitch)); }
 }
 
 @keyframes ui-acier-crown-ring {
@@ -872,7 +906,8 @@
   .ui-acier__grain,
   .ui-acier__beam-tail,
   .ui-acier__beam-head,
-  .ui-acier__crown,
+  .ui-acier__crown-tread,
+  .ui-acier__crown-wind,
   .ui-acier__crown i {
     animation: none !important;
   }

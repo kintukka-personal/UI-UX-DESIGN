@@ -618,7 +618,7 @@
       var H = hero.getBoundingClientRect();
       var c = crown.getBoundingClientRect();
       var m = new DOMMatrixReadOnly(getComputedStyle(cue).transform);   // ignore the cue's slide-in offset
-      var T = { x: c.left + c.width / 2 - H.left, y: c.top - m.m42 - H.top - 8 };   // the top of the crown's stem
+      var T = { x: c.left + c.width / 2 - H.left, y: c.top - m.m42 - H.top - 1 };   // the top of the crown
       var html = "";
       pieces.forEach(function (node, i) {
         var b = node.getBoundingClientRect();
