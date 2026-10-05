@@ -21,8 +21,9 @@
   // Where the watch dial sits on the poster, and its radius
   var DIAL = { x: 360, y: 360, r: 118 };
 
-  // The watch photo (532 x 878 px) and its dial centre, for the hands
+  // The watch photo (532 x 878 px), its width on the frame, and its dial centre
   var HANDS_C = { x: 257, y: 422.5 };
+  var WATCH_W = 720 * 0.4844;
 
   // ACIER, drawn on a 100-unit cap height
   var LETTERS = [
@@ -98,8 +99,9 @@
   }
 
   // Hands drawn on the photo's own pixel grid. The same geometry comes in
-  // steel (on the watch) and in ink (on the paper ring, before the dissolve).
-  function buildHands(svg, id, ink) {
+  // steel (on the watch) and in ink (inside the quartz ring, scaled so it
+  // lands exactly on the watch's hands when the ring lands on the dial).
+  function buildHands(svg, id, ink, cx, cy) {
     var defs = el("defs", {}, svg);
     var hg = el("linearGradient", { id: id + "-hand", x1: 0, y1: 0, x2: 1, y2: 0 }, defs);
     [[0, "#7E848A"], [0.42, "#F3F5F6"], [0.58, "#A7ADB3"], [1, "#666C72"]]
@@ -110,7 +112,7 @@
     var body = ink ? "#121314" : "url(#" + id + "-hand)";
     var edge = ink ? "none" : "#3B3F44";
     var lume = ink ? "#ECECE9" : "#EEF1EA";
-    var attrs = { transform: "translate(" + HANDS_C.x + " " + HANDS_C.y + ")" };
+    var attrs = { transform: "translate(" + cx + " " + cy + ")" };
     if (!ink) attrs.filter = "url(#" + id + "-shadow)";
     var root = el("g", attrs, svg);
     function sword(len) {
@@ -158,9 +160,11 @@
       this.ticks.push({ node: line, len: len, at: 0.42 + 0.9 * Math.pow(i / 60, 0.6) });
     }
     this.sweep = el("path", { "class": "ui-acier__sweep" }, ring);
-    this.shand = el("g", {}, ring);
-    el("line", { "class": "ui-acier__hand-s", x1: 0, y1: 28, x2: 0, y2: -RING_R + 22 }, this.shand);
-    el("circle", { "class": "ui-acier__hub", r: 5 }, this.shand);
+    // The intro's hands are the watch's hands, in ink, drawn in ring units:
+    // photo px x (frame px per photo px) / (ring scale on the dial)
+    var inkScale = (WATCH_W / 532) / (DIAL.r / RING_R);
+    this.inkHands = buildHands(el("g", { transform: "scale(" + inkScale + ")" }, ring), id + "-i", true, 0, 0);
+    this.qt = 0;
     this.fork = q("[data-fork]");
     this.tines = q("[data-tines]");
     this.buzz = q("[data-buzz]");
@@ -172,10 +176,8 @@
     this.watchImg = q(".ui-acier__watch-img");
     this.sheen = q("[data-sheen]");
     this.word = buildWord(q("[data-word]"), id + "-w");
-    this.hands = buildHands(q("[data-hands]"), id + "-h");
+    this.hands = buildHands(q("[data-hands]"), id + "-h", false, HANDS_C.x, HANDS_C.y);
     this.intro = q("[data-intro]");
-    this.inkWatch = q(".ui-acier__ink-watch");
-    this.inkHands = buildHands(q("[data-ink-hands]"), id + "-i", true);
 
     var leaders = q("[data-leaders]");
     var labels = q("[data-labels]");
@@ -205,8 +207,8 @@
     this.markers = qa("[data-markers] i");
     this.progress = q("[data-progress]");
     this.phase = "";
-    this.now = new Date();
     this.measure();
+    this.setHands(new Date(), 999, true);   // start on the real time, before the clock loop takes over
   }
 
   Stage.prototype.measure = function () {
@@ -252,15 +254,12 @@
     this.now = date;
     var s = date.getSeconds(), m = date.getMinutes(), h = date.getHours() % 12;
     var step = showSeconds ? s - 1 + outBack(clamp01(ms / 90), 2.2) : s;
-    var hr = "rotate(" + n(30 * (h + m / 60 + s / 3600)) + ")";
-    var mn = "rotate(" + n(6 * (m + s / 60)) + ")";
-    var sc = "rotate(" + n(6 * step) + ")";
-    [this.hands, this.inkHands].forEach(function (set) {
-      set.hour.setAttribute("transform", hr);
-      set.minute.setAttribute("transform", mn);
-      set.second.setAttribute("transform", sc);
-      set.second.style.display = showSeconds ? "" : "none";
-    });
+    this.live = { h: 30 * (h + m / 60 + s / 3600), m: 6 * (m + s / 60), s: 6 * step, sWhole: 6 * s, show: showSeconds };
+    this.hands.hour.setAttribute("transform", "rotate(" + n(this.live.h) + ")");
+    this.hands.minute.setAttribute("transform", "rotate(" + n(this.live.m) + ")");
+    this.hands.second.setAttribute("transform", "rotate(" + n(this.live.s) + ")");
+    this.hands.second.style.display = showSeconds ? "" : "none";
+    if (this.qt < T_JOIN) this.updateInk();
     var c = this.callouts[3];
     if (c.typed) this.setLabel(c, c.text + this.timeText());
   };
@@ -269,6 +268,42 @@
     if (text === c.shown) return;
     c.shown = text;
     c.label.textContent = text;
+  };
+
+  // The intro's hands, as one continuous move into the watch's time:
+  // the seconds hand ticks in and sweeps a full turn on into its live second,
+  // the minute hand joins and turns on into its minute, then the hour hand
+  // joins and turns to its hour. All three land just as the ring lands.
+  Stage.prototype.updateInk = function () {
+    var t = this.qt, L = this.live, ink = this.inkHands;
+
+    // Seconds: quartz steps all the way, 360 degrees plus the live second
+    var sp = inOutSine(seg(t, 1.42, 2.38));
+    var sec = sp >= 1 ? L.s : 6 * Math.floor((360 + L.sWhole) * sp / 6);
+    var sIn = outBack(seg(t, 1.3, 1.42), 2);
+    ink.second.setAttribute("transform", "rotate(" + n(sec) + ") scale(" + n(Math.max(0, sIn)) + ")");
+    ink.second.style.display = L.show || sp < 1 ? "" : "none";
+
+    // Minute: grows out of the hub and turns a full revolution into place
+    var mIn = outCubic(seg(t, 1.78, 1.95));
+    var min = lerp(0, 360 + L.m, inOutCubic(seg(t, 1.8, 2.4)));
+    ink.minute.setAttribute("transform", "rotate(" + n(min) + ") scale(" + n(lerp(0.4, 1, mIn)) + ")");
+    ink.minute.style.opacity = n(mIn);
+
+    // Hour: last in, straight to its hour
+    var hIn = outCubic(seg(t, 2.02, 2.18));
+    var hr = lerp(0, L.h, outCubic(seg(t, 2.04, 2.42)));
+    ink.hour.setAttribute("transform", "rotate(" + n(hr) + ") scale(" + n(lerp(0.4, 1, hIn)) + ")");
+    ink.hour.style.opacity = n(hIn);
+
+    ink.root.style.opacity = t < 1.3 ? 0 : 1;
+
+    // The faint sector the seconds hand leaves behind, for its first lap
+    var sr = 154 * (WATCH_W / 532) / (DIAL.r / RING_R), a = Math.min(sec, 360) * Math.PI / 180;
+    this.sweep.setAttribute("d", sec <= 0 ? "" : sec >= 360
+      ? "M0 " + -sr + "A" + sr + " " + sr + " 0 1 1 0 " + sr + "A" + sr + " " + sr + " 0 1 1 0 " + -sr + "Z"
+      : "M0 0L0 " + -sr + "A" + sr + " " + sr + " 0 " + (sec > 180 ? 1 : 0) + " 1 " + n(sr * Math.sin(a)) + " " + n(-sr * Math.cos(a)) + "Z");
+    this.sweep.style.opacity = n(0.06 * (1 - seg(t, 1.95, 2.25)));
   };
 
   // The quartz beat, on its paper layer
@@ -298,23 +333,14 @@
       tk.node.style.opacity = p > 0 ? 1 : 0;
     }
 
-    // One second: the hand ticks, then sweeps a full minute in 60 quartz steps
-    var steps = Math.floor(60 * inOutSine(seg(t, 1.45, 2.0)));
-    var angle = t < 1.45 ? (t >= 1.36 ? 0 : -6) : steps * 6;
-    this.shand.setAttribute("transform", "rotate(" + angle + ")");
-    this.shand.style.opacity = t < 1.34 ? 0 : 1 - seg(t, 1.98, 2.12);
-    var sr = RING_R - 22, a = angle * Math.PI / 180;
-    this.sweep.setAttribute("d", angle <= 0 ? "" : angle >= 360
-      ? "M0 " + -sr + "A" + sr + " " + sr + " 0 1 1 0 " + sr + "A" + sr + " " + sr + " 0 1 1 0 " + -sr + "Z"
-      : "M0 0L0 " + -sr + "A" + sr + " " + sr + " 0 " + (angle > 180 ? 1 : 0) + " 1 " + n(sr * Math.sin(a)) + " " + n(-sr * Math.cos(a)) + "Z");
-    this.sweep.style.opacity = n(0.06 * (1 - seg(t, 1.98, 2.2)));
+    // The hands (see updateInk)
+    this.qt = t;
+    this.updateInk();
 
-    // The ring shrinks onto the exact size and place of the watch dial,
-    // then the hands fade in, already showing the time the watch will show
-    var k = inOutCubic(seg(t, 2.0, 2.38));
+    // The ring, hands and all, shrinks onto the exact size and place of the watch dial
+    var k = inOutCubic(seg(t, 2.0, 2.42));
     var scale = lerp(1, DIAL.r / RING_R, k);
     this.ring.setAttribute("transform", "translate(" + RING_C.x + " " + n(lerp(RING_C.y, DIAL.y, k)) + ") scale(" + n(scale * 1000) / 1000 + ")");
-    this.inkWatch.style.opacity = n(outCubic(seg(t, 2.3, 2.55)));
   };
 
   Stage.prototype.render = function (t) {
@@ -327,6 +353,7 @@
     this.intro.style.display = paper > 0 ? "" : "none";
     this.intro.style.opacity = n(paper);
     if (paper > 0) this.renderQuartz(t);
+    else this.qt = t;
     if (t < T_POSTER) {
       this.setPhase("quartz");
       return;

@@ -137,15 +137,6 @@
   opacity: 0.06;
 }
 
-.ui-acier__hand-s {
-  stroke: var(--ui-acier-ink);
-  stroke-width: 2;
-}
-
-.ui-acier__hub {
-  fill: var(--ui-acier-ink);
-}
-
 /* ---------- 2. Poster ---------- */
 
 .ui-acier__camera {

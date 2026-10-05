@@ -7,8 +7,8 @@ Three beats, joined by match cuts and a dissolve:
 1. **Quartz (0 to 2.55s), on pale steel paper**
    - A tuning-fork crystal (the shape of the quartz inside a watch) pops in and starts to buzz. Under it, letters cycle and lock one by one, left to right, until they spell **FOSLN**.
    - While it decodes, the 60 minute ticks appear around it, faster and faster, with heavier ticks at the hours.
-   - A seconds hand ticks once, then sweeps the full minute in 60 quartz steps, leaving a faint sector behind it.
-   - The ring shrinks and moves until it is exactly the size and position of the watch dial. Then the hour, minute and seconds hands fade in on the empty ring in ink, already showing the visitor's local time, exactly where the watch's hands will be.
+   - **The hands, as one continuous move:** a seconds hand ticks in at 12 and sweeps a full turn in quartz steps, leaving a faint sector behind it, then carries on into the visitor's current second. The minute hand grows out of the hub and turns a full revolution into the current minute. The hour hand joins last and turns to the current hour.
+   - Meanwhile the ring, with the hands on it, shrinks and moves until it is exactly the size and position of the watch dial. All three hands land on the watch's live time just as the ring lands.
 2. **Poster (2.55 to 6s), dissolving to graphite**
    - The paper layer dissolves into the watch. The ink hands sit exactly on top of the watch's own hands, so the time carries straight through. The bracelet extends out of the case as it appears.
    - **Live hands:** the photo's printed hands were painted out and replaced with drawn ones. They show the visitor's local time and step once a second with a small quartz overshoot.
@@ -41,7 +41,7 @@ Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-a
 - **One frame.** As in Product reveal, the composition sits on a 720 × 900 frame centred at `min(100cqw, 80cqh)`, and backgrounds and markers fill the viewport.
 - **Steel as SVG.** ACIER is five custom letter paths, each used as a clip. Inside, five steel bands slide in, with a dark groove between links. The steel is one gradient across the word, and its `gradientTransform` is shifted to move the light.
 - **Hands on the photo's own grid.** The hands SVG uses the photo's pixel coordinates (532 × 878), so the hands stay pinned to the dial centre however the watch is scaled. That holds through the 12× dive too.
-- **Match cuts.** The ring ends at the dial's radius (118 design px) and centre (360, 360). The ink hands use the same SVG geometry and box as the watch's hands, so the dissolve lines them up exactly. The quartz beat sits on its own paper layer above the poster so it can fade out over it. The dive scales the whole poster around the same point.
+- **Match cuts.** The ring ends at the dial's radius (118 design px) and centre (360, 360). The intro's hands are the watch's own hand shapes, drawn inside the ring at photo px × (frame px per photo px) ÷ (the ring's scale on the dial). They are about twice the watch's size while the ring is full size and exactly its size when the ring lands, so the dissolve lines them up with nothing swapped. The quartz beat sits on its own paper layer above the poster so it can fade out over it. The dive scales the whole poster around the same point.
 
 ## Accessibility
 
