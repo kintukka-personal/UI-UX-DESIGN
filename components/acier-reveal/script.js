@@ -12,9 +12,11 @@
   // Beats. Everything after the quartz beat is timed from T_POSTER.
   var T_POSTER = 3.6;               // dissolve: ring + ink hands -> the watch
   var T_JOIN = T_POSTER + 0.45;     // the paper layer has gone
-  var T_END = T_POSTER + 3.45;      // dive into the dial -> sign-off
+  var CALL_START = T_POSTER + 2.8;  // after a hold on the watch and ACIER, callouts start on the next tick
+  var CALL_END = CALL_START + 6.5;  // up to 1s to the first tick, 4 more ticks, then a short hold
+  var T_END = CALL_END + 0.8;       // dive into the dial -> sign-off
   var T_TOTAL = T_END + 2.0;
-  var T_STILL = T_POSTER + 2.55;    // the settled poster, for stills and reduced motion
+  var T_STILL = CALL_START + 5.2;   // the settled poster, all callouts in, for stills and reduced motion
 
   // Quartz ring (design units on the 720 x 900 frame)
   var RING_R = 250, RING_C = { x: 360, y: 450 };
@@ -36,12 +38,13 @@
   var LETTER_GAP = 14, ROWS = 5, ROW_H = 20;
 
   // Callouts on the poster: anchor on the watch, label height, side
+  // In the order they appear, one per tick of the seconds hand
   var CALLOUTS = [
-    { a: [296, 299], y: 236, side: "left", text: "BLACK\nDIAL" },
-    { a: [220, 368], y: 430, side: "left", text: "STEEL\nCASE" },
     { a: [454, 140], y: 146, side: "right", text: "LINK\nBRACELET" },
     { a: [532, 357], y: 318, side: "right", text: "LOCAL TIME\n", time: true },
-    { a: [377, 526], y: 560, side: "right", text: "QUARTZ\nMOVEMENT" }
+    { a: [377, 526], y: 560, side: "right", text: "QUARTZ\nMOVEMENT" },
+    { a: [220, 368], y: 430, side: "left", text: "STEEL\nCASE" },
+    { a: [296, 299], y: 236, side: "left", text: "ONYX\nDIAL" }
   ];
 
   // ---------- Easing ----------
@@ -185,14 +188,16 @@
       var ex = c.a[0] + (c.side === "left" ? -34 : 34);
       var end = c.side === "left" ? 128 : 592;
       var path = el("path", { d: "M" + c.a[0] + " " + c.a[1] + "L" + ex + " " + c.y + "H" + end, pathLength: 1 }, leaders);
-      path.style.strokeDasharray = "1";
+      path.style.strokeDasharray = "1 2";   // a gap longer than the path, so nothing shows before it draws
       var dot = el("circle", { cx: c.a[0], cy: c.a[1], r: 3 }, leaders);
       var label = document.createElement("p");
       label.className = "ui-acier__label ui-acier__label--" + c.side;
       label.style.top = n(c.y / 9) + "%";
       labels.appendChild(label);
-      return { path: path, dot: dot, label: label, text: c.text, time: !!c.time, at: T_POSTER + 1.4 + k * 0.12, shown: "" };
+      return { path: path, dot: dot, label: label, text: c.text, time: !!c.time, typeP: 0, shown: "" };
     });
+    this.firstTick = null;
+    this.liveTicks = false;
 
     this.brand = q("[data-brand]");
     this.types = qa("[data-type]").map(function (node) {
@@ -260,8 +265,27 @@
     this.hands.second.setAttribute("transform", "rotate(" + n(this.live.s) + ")");
     this.hands.second.style.display = showSeconds ? "" : "none";
     if (this.qt < T_JOIN) this.updateInk();
-    var c = this.callouts[3];
-    if (c.typed) this.setLabel(c, c.text + this.timeText());
+    var c = this.callouts[1];
+    if (c.typeP > 0) this.setLabel(c, this.typed(c));
+  };
+
+  // The callout's text as typed so far (the time one includes the live time)
+  Stage.prototype.typed = function (c) {
+    var full = c.text + (c.time ? this.timeText() : "");
+    return full.slice(0, Math.round(full.length * c.typeP));
+  };
+
+  // Timeline time of the first callout: the first tick of the real seconds
+  // hand at or after CALL_START, so every callout lands on a tick.
+  // Stills and frozen frames use CALL_START itself.
+  Stage.prototype.callFirst = function (t) {
+    if (!this.liveTicks) return CALL_START;
+    if (t < CALL_START - 1) { this.firstTick = null; return CALL_START; }
+    if (this.firstTick === null) {
+      var anchor = t - new Date().getMilliseconds() / 1000;   // when the current second began
+      this.firstTick = anchor + Math.ceil(CALL_START - anchor - 1e-6);
+    }
+    return this.firstTick;
   };
 
   Stage.prototype.setLabel = function (c, text) {
@@ -364,7 +388,7 @@
       this.setPhase("poster");
 
       // Camera: holds still under the dissolve, then dives into the black dial
-      var dive = inQuart(seg(t, T_POSTER + 2.8, T_END));
+      var dive = inQuart(seg(t, CALL_END + 0.15, T_END));
       var cam = 1 + 11 * dive;
       this.camera.style.transform = cam === 1 ? "" : "scale(" + n(cam * 1000) / 1000 + ")";
       this.watchImg.style.filter = dive > 0.35 ? "blur(" + n(5 * seg(dive, 0.35, 1) * this.unit) + "px)" : "";
@@ -378,7 +402,7 @@
         this.markers[i].style.transform = p >= 1 ? "none" : "scale(" + n(Math.max(0, outBack(p, 1.9))) + ")";
       }
 
-      var top = 1 - seg(t, T_POSTER + 2.75, T_POSTER + 2.9);
+      var top = 1 - seg(t, CALL_END + 0.1, CALL_END + 0.25);
       this.reveal(this.brand, outExpo(seg(t, T_POSTER + 0.15, T_POSTER + 0.45)));
       this.brand.style.opacity = top;
       this.types[0].node.style.opacity = top;
@@ -393,19 +417,18 @@
       this.sheen.style.opacity = sweepP > 0 && sweepP < 1 ? 1 : 0;
       this.sheen.style.setProperty("--x", n(lerp(-75, 75, sweepP)) + "%");
 
-      // Callouts draw in, then clear before the dive
-      var out = 1 - seg(t, T_POSTER + 2.65, T_POSTER + 2.8);
+      // Callouts: one on each tick of the seconds hand, then they clear before the dive
+      var first = this.callFirst(t);
+      var out = 1 - seg(t, CALL_END, CALL_END + 0.15);
       for (i = 0; i < this.callouts.length; i++) {
         var c = this.callouts[i];
-        var draw = outCubic(seg(t, c.at, c.at + 0.32));
-        c.path.style.strokeDashoffset = 1 - draw;
+        var at = first + i;
+        c.path.style.strokeDashoffset = 1 - outCubic(seg(t, at, at + 0.3));
         c.path.style.opacity = out;
-        c.dot.setAttribute("r", n(3 * outBack(seg(t, c.at - 0.04, c.at + 0.12), 2)));
+        c.dot.setAttribute("r", n(3 * Math.max(0, outBack(seg(t, at, at + 0.14), 2))));
         c.dot.style.opacity = out;
-        var full = c.text + (c.time ? this.timeText() : "");
-        var typeP = seg(t, c.at + 0.18, c.at + 0.48);
-        c.typed = typeP >= 1;
-        this.setLabel(c, full.slice(0, Math.round(full.length * typeP)));
+        c.typeP = seg(t, at + 0.12, at + 0.42);
+        this.setLabel(c, this.typed(c));
         c.label.style.opacity = out;
       }
       return;
@@ -440,6 +463,7 @@
     if (this.t >= T_TOTAL || this.still) { this.t = 0; this.still = false; }
     this.playing = true;
     this.userPaused = false;
+    this.stage.liveTicks = true;
     this.last = 0;
     this.stage.root.removeAttribute("data-paused");
     this.stage.root.removeAttribute("data-done");
@@ -456,6 +480,7 @@
   Player.prototype.seek = function (t, still) {
     this.t = t;
     this.still = !!still;
+    if (still) this.stage.liveTicks = false;
     this.stage.render(t);
   };
 

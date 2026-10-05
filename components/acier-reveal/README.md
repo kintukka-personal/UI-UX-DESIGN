@@ -9,14 +9,15 @@ Three beats, joined by match cuts and a dissolve:
    - While it decodes, the 60 minute ticks appear around it, faster and faster, with heavier ticks at the hours.
    - **The hands, as one continuous move:** a seconds hand ticks in at 12 and sweeps a full turn in quartz steps, leaving a faint sector behind it, then carries on into the visitor's current second. The minute hand grows out of the hub and turns a full revolution into the current minute. The hour hand joins last and turns to the current hour.
    - Meanwhile the ring, with the hands on it, shrinks and moves until it is exactly the size and position of the watch dial. All three hands land on the watch's live time just as the ring lands.
-2. **Poster (3.6 to 7s), dissolving to graphite**
+2. **Poster (3.6 to about 13.7s), dissolving to graphite**
    - The paper layer dissolves into the watch. The ink hands sit exactly on top of the watch's own hands, so the time carries straight through. The bracelet extends out of the case as it appears.
    - **Live hands:** the photo's printed hands were painted out and replaced with drawn ones. They show the visitor's local time and step once a second with a small quartz overshoot.
    - **ACIER** assembles in brushed steel, link by link. Each letter is cut into five bands, like the bracelet's links, and every band slides in from alternating sides and locks with a slight overshoot.
    - A band of light passes over the letters and the watch. On the watch it lands only on the steel, because it is masked by the photo itself.
-   - Callouts draw in: Black dial, Steel case, Link bracelet, Quartz movement, and **Local time** with the live time, pointing at the crown that sets it.
+   - The poster holds on just the watch and ACIER for a moment.
+   - **Callouts on the tick:** each callout appears on a tick of the watch's real seconds hand, one per second: Link bracelet, **Local time** (with the live time, pointing at the crown that sets it), Quartz movement, Steel case, Onyx dial. The first waits for the next real tick, so all five stay in step with the hand. A short hold follows.
    - The callouts clear and the camera dives into the black dial while the hands fade.
-3. **Sign-off (7 to 9s), out of the black**
+3. **Sign-off (about 13.7 to 15.7s), out of the black**
    - The FOSLN plate from the watch, redrawn, wipes in. "STAINLESS STEEL / QUARTZ MOVEMENT" types out and a small steel ACIER assembles beside it, all on one centred row.
 
 When it ends, **Discover Acier** appears. Clicking it, or scrolling down from the sign-off card, pulls the three pieces down the drain into the button, then snaps the page to the product section, as in Product reveal.
@@ -37,7 +38,7 @@ Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-a
 
 ## How it is built
 
-- **Two clocks.** `Stage.render(t)` draws every moment of the sequence from one time in seconds, so pause, replay and `?t=4.2` seeking are exact. A second loop reads the real time and moves the hands on every stage, the hero and the product-section still.
+- **Two clocks.** `Stage.render(t)` draws every moment of the sequence from one time in seconds, so pause, replay and `?t=4.2` seeking are exact. A second loop reads the real time and moves the hands on every stage, the hero and the product-section still. During playback, the callouts are pinned to that real clock: `callFirst()` finds the timeline time of the first real tick after `CALL_START`. Stills and frozen frames use `CALL_START` itself.
 - **One frame.** As in Product reveal, the composition sits on a 720 × 900 frame centred at `min(100cqw, 80cqh)`, and backgrounds and markers fill the viewport.
 - **Steel as SVG.** ACIER is five custom letter paths, each used as a clip. Inside, five steel bands slide in, with a dark groove between links. The steel is one gradient across the word, and its `gradientTransform` is shifted to move the light.
 - **Hands on the photo's own grid.** The hands SVG uses the photo's pixel coordinates (532 × 878), so the hands stay pinned to the dial centre however the watch is scaled. That holds through the 12× dive too.
