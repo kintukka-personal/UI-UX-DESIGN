@@ -1,0 +1,841 @@
+/* ==========================================================================
+   UI Acier Reveal: a launch hero for the FOSLN Acier quartz watch
+   Three beats, joined by match cuts:
+     1. quartz  a tuning-fork crystal counts to 32 768 Hz (one second), the
+                minute ring ticks in around it and a seconds hand sweeps.
+                The ring then shrinks onto the exact size of the watch dial.
+     2. poster  cut to the watch, hands set to your local time and ticking.
+                "ACIER" assembles in brushed steel, link by link, a light
+                sweeps across, callouts draw in, then the camera dives into
+                the black dial.
+     3. end     out of the black: the FOSLN plate, the specs and the name.
+   Laid out on a 720 x 900 frame and scaled with container query units.
+   ========================================================================== */
+
+.ui-acier {
+  --ui-acier-paper: #ECECE9;
+  --ui-acier-ink: #121314;
+  --ui-acier-onyx: #0B0B0C;
+  --ui-acier-graphite: #1B1C1F;
+  --ui-acier-steel: #C9CDD1;
+  --ui-acier-steel-dim: #8C9197;
+  --ui-acier-light: #F4F5F6;
+
+  --ui-acier-sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --ui-acier-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --ui-acier-serif: "Libre Baskerville", Baskerville, "Times New Roman", serif;
+
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 480px;
+  overflow: hidden;
+  background: var(--ui-acier-paper);
+  color: var(--ui-acier-ink);
+  font-family: var(--ui-acier-sans);
+  isolation: isolate;
+}
+
+.ui-acier__sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Stage ---------- */
+
+.ui-acier__stage {
+  --ui-acier-inset: clamp(10px, 2.6cqmin, 22px);
+  position: absolute;
+  inset: 0;
+  container-type: size;
+  background: var(--ui-acier-paper);
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.ui-acier__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--ui-acier-paper);
+}
+
+/* The 720 x 900 design frame. 1 design px = 100cqw / 720 inside it. */
+.ui-acier__frame {
+  --px: calc(100cqw / 720);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(100cqw, 80cqh);
+  aspect-ratio: 4 / 5;
+  transform: translate(-50%, -50%);
+  container-type: inline-size;
+}
+
+.ui-acier__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* ---------- 1. Quartz ---------- */
+
+.ui-acier__quartz line {
+  stroke: var(--ui-acier-ink);
+  stroke-linecap: butt;
+}
+
+.ui-acier__fork path {
+  fill: none;
+  stroke: var(--ui-acier-ink);
+  stroke-linecap: round;
+}
+
+.ui-acier__fork-tines { stroke-width: 5.5; }
+.ui-acier__fork-stem { stroke-width: 4.5; }
+.ui-acier__fork-buzz { stroke-width: 1.4; opacity: 0; }
+
+.ui-acier__hz {
+  font-family: var(--ui-acier-mono);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  fill: var(--ui-acier-ink);
+}
+
+.ui-acier__sweep {
+  fill: var(--ui-acier-ink);
+  opacity: 0.06;
+}
+
+.ui-acier__hand-s {
+  stroke: var(--ui-acier-ink);
+  stroke-width: 2;
+}
+
+.ui-acier__hub {
+  fill: var(--ui-acier-ink);
+}
+
+/* ---------- 2. Poster ---------- */
+
+.ui-acier__camera {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 40%;   /* the dial centre, (360, 360) */
+  opacity: 0;
+  will-change: transform;
+}
+
+.ui-acier__word {
+  position: absolute;
+  left: 8.89%;
+  top: 75%;
+  width: 82.22%;
+  height: auto;
+  aspect-ratio: 504 / 100;
+  overflow: visible;
+}
+
+.ui-acier__watch {
+  position: absolute;
+  left: 26.6%;
+  top: 9.22%;
+  width: 48.44%;
+  aspect-ratio: 532 / 878;
+  transform-origin: 48.31% 48.12%;
+  /* On the wrapper, so the shadow is not clipped by the photo's mask */
+  filter: drop-shadow(0 calc(var(--px) * 28) calc(var(--px) * 30) rgba(0, 0, 0, 0.55));
+}
+
+.ui-acier__watch-img,
+.ui-acier__hands,
+.ui-acier__sheen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ui-acier__watch-img {
+  display: block;
+  -webkit-user-drag: none;
+  /* The photo's bracelet is cropped flat; let both ends dissolve into the dark */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 var(--ui-acier-fade, 9%), #000 calc(100% - var(--ui-acier-fade, 9%)), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 var(--ui-acier-fade, 9%), #000 calc(100% - var(--ui-acier-fade, 9%)), transparent 100%);
+}
+
+/* A band of light that only lands on the steel: masked by the photo itself */
+.ui-acier__sheen {
+  --x: -60%;
+  background: linear-gradient(105deg, transparent 0%, transparent calc(50% + var(--x) - 14%), rgba(255, 255, 255, 0.5) calc(50% + var(--x)), transparent calc(50% + var(--x) + 14%), transparent 100%);
+  -webkit-mask: url("images/acier-watch.webp") center / 100% 100% no-repeat;
+  mask: url("images/acier-watch.webp") center / 100% 100% no-repeat;
+  mix-blend-mode: overlay;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ui-acier__hands {
+  overflow: visible;
+}
+
+.ui-acier__leaders path {
+  fill: none;
+  stroke: var(--ui-acier-steel);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.ui-acier__leaders circle {
+  fill: var(--ui-acier-light);
+}
+
+.ui-acier__label {
+  position: absolute;
+  margin: 0;
+  transform: translateY(-50%);
+  font-family: var(--ui-acier-mono);
+  font-size: max(8px, calc(var(--px) * 9.5));
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  color: var(--ui-acier-steel);
+  white-space: pre;
+}
+
+.ui-acier__label--left {
+  right: 83.33%;
+  text-align: right;
+}
+
+.ui-acier__label--right {
+  left: 83.33%;
+}
+
+.ui-acier__label b {
+  font-weight: 500;
+  color: var(--ui-acier-light);
+}
+
+.ui-acier__brand,
+.ui-acier__meta {
+  position: absolute;
+  top: 4.2%;
+  margin: 0;
+  opacity: 0;
+}
+
+.ui-acier__brand {
+  left: 8.89%;
+  font-family: var(--ui-acier-serif);
+  font-weight: 700;
+  font-size: calc(var(--px) * 22);
+  letter-spacing: 0.12em;
+  line-height: 1;
+  color: var(--ui-acier-light);
+}
+
+.ui-acier__meta {
+  right: 8.89%;
+  text-align: right;
+  font-family: var(--ui-acier-mono);
+  font-size: max(8px, calc(var(--px) * 9.5));
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  color: var(--ui-acier-steel);
+}
+
+.ui-acier__type {
+  white-space: pre;
+}
+
+/* ---------- 3. Sign-off ---------- */
+
+.ui-acier__end {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--px) * 52);
+  opacity: 0;
+}
+
+.ui-acier__plate {
+  flex: none;
+  width: calc(var(--px) * 170);
+  height: auto;
+  overflow: visible;
+}
+
+.ui-acier__plate-body {
+  fill: #050506;
+  stroke: var(--ui-acier-steel-dim);
+  stroke-width: 1.4;
+}
+
+.ui-acier__plate-rule {
+  stroke: var(--ui-acier-steel);
+  stroke-width: 1.4;
+}
+
+.ui-acier__plate-name {
+  font-family: var(--ui-acier-serif);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 1.5px;
+  fill: var(--ui-acier-light);
+}
+
+.ui-acier__plate-sub {
+  font-family: var(--ui-acier-sans);
+  font-weight: 600;
+  font-size: 8.5px;
+  letter-spacing: 2.4px;
+  fill: var(--ui-acier-steel);
+}
+
+.ui-acier__end-copy {
+  --ls: 0.06em;
+  flex: none;
+  margin: 0;
+  width: calc(15ch + 15 * var(--ls));
+  font-family: var(--ui-acier-mono);
+  font-size: max(8px, calc(var(--px) * 9.5));
+  line-height: 1.3;
+  letter-spacing: var(--ls);
+  color: var(--ui-acier-steel);
+}
+
+.ui-acier__end-word {
+  flex: none;
+  width: calc(var(--px) * 160);
+  height: auto;
+  aspect-ratio: 504 / 100;
+  overflow: visible;
+}
+
+@container (max-width: 480px) {
+  .ui-acier__end {
+    gap: calc(var(--px) * 34);
+  }
+
+  .ui-acier__end-copy {
+    --ls: 0.03em;
+    font-size: 7.5px;
+  }
+}
+
+/* ---------- Edge markers, grain, progress ---------- */
+
+.ui-acier__markers i {
+  --s: clamp(5px, 1.1cqmin, 9px);
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  background: var(--ui-acier-steel-dim);
+  transform: scale(0);
+}
+
+.ui-acier__markers i:nth-child(1) { left: var(--ui-acier-inset); top: var(--ui-acier-inset); }
+.ui-acier__markers i:nth-child(2) { left: 50%; top: var(--ui-acier-inset); }
+.ui-acier__markers i:nth-child(3) { left: calc(100% - var(--ui-acier-inset)); top: var(--ui-acier-inset); }
+.ui-acier__markers i:nth-child(4) { left: calc(100% - var(--ui-acier-inset)); top: 50%; }
+.ui-acier__markers i:nth-child(5) { left: calc(100% - var(--ui-acier-inset)); top: calc(100% - var(--ui-acier-inset)); }
+.ui-acier__markers i:nth-child(6) { left: 50%; top: calc(100% - var(--ui-acier-inset)); }
+.ui-acier__markers i:nth-child(7) { left: var(--ui-acier-inset); top: calc(100% - var(--ui-acier-inset)); }
+.ui-acier__markers i:nth-child(8) { left: var(--ui-acier-inset); top: 50%; }
+
+.ui-acier__grain {
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.6 -0.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  animation: ui-acier-grain 0.48s steps(4) infinite;
+}
+
+@keyframes ui-acier-grain {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-7%, 4%); }
+  50%  { transform: translate(5%, -6%); }
+  75%  { transform: translate(-3%, -9%); }
+  100% { transform: translate(0, 0); }
+}
+
+.ui-acier__progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  opacity: 0.35;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+/* ---------- Phases ---------- */
+
+.ui-acier[data-phase="poster"],
+.ui-acier[data-phase="end"] {
+  color: var(--ui-acier-steel);
+}
+
+.ui-acier[data-phase="poster"] .ui-acier__bg {
+  background:
+    radial-gradient(58cqw 48cqh at 50% 36%, #3A3D42 0%, #1D1E21 52%, var(--ui-acier-onyx) 100%);
+}
+
+.ui-acier[data-phase="end"] .ui-acier__bg {
+  background:
+    radial-gradient(70cqw 50cqh at 50% 50%, #17181A 0%, var(--ui-acier-onyx) 70%);
+}
+
+.ui-acier[data-phase="poster"] .ui-acier__camera,
+.ui-acier[data-phase="poster"] .ui-acier__brand,
+.ui-acier[data-phase="poster"] .ui-acier__meta,
+.ui-acier[data-phase="end"] .ui-acier__end {
+  opacity: 1;
+}
+
+.ui-acier[data-phase="poster"] .ui-acier__grain,
+.ui-acier[data-phase="end"] .ui-acier__grain {
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+}
+
+.ui-acier:not([data-phase="quartz"]) .ui-acier__quartz,
+.ui-acier[data-phase="quartz"] .ui-acier__markers {
+  display: none;
+}
+
+/* Without JS the stage shows the poster as a still */
+.ui-acier:not([data-phase]) {
+  color: var(--ui-acier-steel);
+}
+
+.ui-acier:not([data-phase]) .ui-acier__bg {
+  background: radial-gradient(58cqw 48cqh at 50% 36%, #3A3D42 0%, #1D1E21 52%, var(--ui-acier-onyx) 100%);
+}
+
+.ui-acier:not([data-phase]) .ui-acier__camera,
+.ui-acier:not([data-phase]) .ui-acier__brand,
+.ui-acier:not([data-phase]) .ui-acier__meta {
+  opacity: 1;
+}
+
+.ui-acier:not([data-phase]) .ui-acier__quartz {
+  display: none;
+}
+
+/* ---------- Controls ---------- */
+
+.ui-acier__controls {
+  position: absolute;
+  z-index: 3;
+  right: calc(clamp(10px, 2.6vmin, 22px) + 18px);
+  bottom: calc(clamp(10px, 2.6vmin, 22px) + 14px);
+  display: flex;
+  gap: 8px;
+}
+
+.ui-acier__btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(201, 205, 209, 0.35);
+  border-radius: 50%;
+  background: rgba(18, 19, 20, 0.66);
+  color: #FFFFFF;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.ui-acier__btn:hover {
+  background: rgba(18, 19, 20, 0.9);
+}
+
+.ui-acier__btn:active {
+  transform: scale(0.94);
+}
+
+.ui-acier__btn:focus-visible,
+.ui-acier__cue:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px var(--ui-acier-ink);
+}
+
+.ui-acier__icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.ui-acier__btn .ui-acier__icon--play { display: none; }
+.ui-acier[data-paused] .ui-acier__btn .ui-acier__icon--play { display: block; }
+.ui-acier[data-paused] .ui-acier__btn .ui-acier__icon--pause { display: none; }
+
+.ui-acier__cue {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: calc(clamp(10px, 2.6vmin, 22px) + 18px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(201, 205, 209, 0.45);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #F4F5F6, #B9BEC3);
+  color: var(--ui-acier-ink);
+  font-family: var(--ui-acier-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translate(-50%, 12px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s linear 0.4s;
+}
+
+.ui-acier__cue svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.ui-acier[data-done] .ui-acier__cue,
+.ui-acier__cue:focus-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s;
+}
+
+/* Phones: the cue moves to the left so it clears the controls */
+@media (max-width: 560px) {
+  .ui-acier__cue {
+    left: calc(clamp(10px, 2.6vmin, 22px) + 14px);
+    transform: translateY(12px);
+  }
+
+  .ui-acier[data-done] .ui-acier__cue,
+  .ui-acier__cue:focus-visible {
+    transform: none;
+  }
+}
+
+/* ---------- Static poster (product section) ---------- */
+
+.ui-acier--poster {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 4 / 5;
+}
+
+.ui-acier--poster .ui-acier__grain {
+  animation: none;
+}
+
+.ui-acier--poster .ui-acier__progress {
+  display: none;
+}
+
+/* ---------- Landing page around the hero ---------- */
+
+.ui-acier-page {
+  margin: 0;
+  background: var(--ui-acier-page-bg, #0B0B0C);
+  color: #E7E9EB;
+  font-family: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ui-acier-skip {
+  position: absolute;
+  z-index: 10;
+  left: 16px;
+  top: -100px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: #121314;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ui-acier-skip:focus {
+  top: 16px;
+}
+
+.ui-acier-product {
+  display: grid;
+  gap: clamp(32px, 6vw, 88px);
+  align-items: center;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(56px, 10vw, 128px) 16px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+@media (min-width: 880px) {
+  .ui-acier-product {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+.ui-acier-product__poster {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  max-width: 540px;
+  justify-self: center;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: radial-gradient(60% 50% at 50% 36%, #3A3D42, #0B0B0C);
+}
+
+.ui-acier-product__fallback {
+  position: absolute;
+  left: 26.6%;
+  top: 9.22%;
+  width: 48.44%;
+  height: auto;
+}
+
+.ui-acier-product__eyebrow {
+  display: flex;
+  gap: 16px;
+  margin: 0 0 20px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #AEB3B9;
+}
+
+.ui-acier-product__eyebrow span + span::before {
+  content: "/";
+  margin-right: 16px;
+  color: #5F646A;
+}
+
+.ui-acier-product__title {
+  margin: 0;
+  font-size: clamp(56px, 9vw, 112px);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: #FFFFFF;
+  text-wrap: balance;
+}
+
+.ui-acier-product__title span {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.32em;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #C9CDD1;
+}
+
+.ui-acier-product__lede {
+  max-width: 44ch;
+  margin: 28px 0 0;
+  font-size: clamp(17px, 1.6vw, 19px);
+  line-height: 1.55;
+  color: #C3C8CD;
+}
+
+.ui-acier-product__now {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 28px 0 0;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+.ui-acier-product__now-label {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9AA0A6;
+}
+
+.ui-acier-product__now-time {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-acier-product__specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 32px 0 0;
+  background: rgba(231, 233, 235, 0.14);
+  border: 1px solid rgba(231, 233, 235, 0.14);
+}
+
+.ui-acier-product__specs div {
+  padding: 16px;
+  background: #0B0B0C;
+}
+
+.ui-acier-product__specs dt {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9AA0A6;
+}
+
+.ui-acier-product__specs dd {
+  margin: 6px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.ui-acier-product__buy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin-top: 36px;
+}
+
+.ui-acier-product__price {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+.ui-acier-product__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 0 28px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #F7F8F9, #BFC4C9);
+  color: #121314;
+  font: 600 17px/1 "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.ui-acier-product__cta svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  transition: transform 0.25s ease;
+}
+
+.ui-acier-product__cta:hover {
+  filter: brightness(1.06);
+}
+
+.ui-acier-product__cta:hover svg {
+  transform: translateX(3px);
+}
+
+.ui-acier-product__cta:active {
+  transform: scale(0.97);
+}
+
+.ui-acier-product__cta:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 4px;
+}
+
+.ui-acier-product__note {
+  min-height: 1.5em;
+  margin: 16px 0 0;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #C9CDD1;
+}
+
+.ui-acier-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 16px 40px;
+  box-sizing: border-box;
+  border-top: 1px solid rgba(231, 233, 235, 0.12);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9AA0A6;
+}
+
+.ui-acier-footer p {
+  margin: 0;
+}
+
+@media (min-width: 880px) {
+  .ui-acier-footer {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-acier__grain {
+    animation: none;
+  }
+
+  .ui-acier__cue,
+  .ui-acier__btn,
+  .ui-acier-product__cta,
+  .ui-acier-product__cta svg {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-acier__btn,
+  .ui-acier__cue,
+  .ui-acier-product__cta {
+    border: 1px solid ButtonText;
+  }
+}

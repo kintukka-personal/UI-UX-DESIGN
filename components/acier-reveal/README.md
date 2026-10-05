@@ -1,0 +1,59 @@
+# Acier Reveal
+
+A launch hero for the **FOSLN Acier** quartz watch, built on the [Product reveal](../product-reveal/) engine. It keeps that component's single timeline, frame scaling, controls, Discover exit and product section. The story and the motion are new: the page is about how a quartz watch keeps time, and the watch on it actually runs, on the visitor's own clock.
+
+Three beats, joined by match cuts:
+
+1. **Quartz (0 to 2.5s), on pale steel paper**
+   - A tuning-fork crystal (the shape of the quartz inside a watch) pops in and starts to buzz. Under it a counter climbs to **32 768 Hz**, the frequency a watch crystal runs at, then reads "= 1 SECOND".
+   - While it counts, the 60 minute ticks appear around it, faster and faster, with heavier ticks at the hours.
+   - A seconds hand ticks once, then sweeps the full minute in 60 quartz steps, leaving a faint sector behind it.
+   - The ring shrinks and moves until it is exactly the size and position of the watch dial on the next beat.
+2. **Poster (2.5 to 6s), hard cut to graphite**
+   - The watch appears where the ring was. Its bracelet extends out of the case, and both ends dissolve into the dark.
+   - **Live hands:** the photo's printed hands were painted out and replaced with drawn ones. They spin from 12:00 to the visitor's local time, then keep running and step once a second with a small quartz overshoot.
+   - **ACIER** assembles in brushed steel, link by link. Each letter is cut into five bands, like the bracelet's links, and every band slides in from alternating sides and locks with a slight overshoot.
+   - A band of light passes over the letters and the watch. On the watch it lands only on the steel, because it is masked by the photo itself.
+   - Callouts draw in: Black dial, Steel case, Link bracelet, Quartz movement, and **Local time** with the live time, pointing at the crown that sets it.
+   - The callouts clear and the camera dives into the black dial while the hands fade.
+3. **Sign-off (6 to 8s), out of the black**
+   - The FOSLN plate from the watch, redrawn, wipes in. "STAINLESS STEEL / QUARTZ MOVEMENT" types out and a small steel ACIER assembles beside it, all on one centred row.
+
+When it ends, **Discover Acier** appears. Clicking it, or scrolling down from the sign-off card, pulls the three pieces down the drain into the button, then snaps the page to the product section, as in Product reveal.
+
+The **product section** shows a still of the poster, with hands and the local-time callout still live. Beside it are the copy, a "Your local time" readout, specs, a price and a demo "Add to bag".
+
+Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-acier`.
+
+## Files
+
+| File | What it is |
+| --- | --- |
+| `index.html` | The landing page: the reveal hero, the product section and the footer |
+| `style.css` | Stage layout, phase styles, controls and the landing page around them |
+| `script.js` | The timeline, the steel letters, the hands and real clock, callouts, the player, the Discover exit |
+| `images/acier-watch.webp` | The watch cut out of the supplied photo, printed hands removed, upscaled 2× (1064 × 1756) |
+| `preview.png` | The poster beat |
+
+## How it is built
+
+- **Two clocks.** `Stage.render(t)` draws every moment of the sequence from one time in seconds, so pause, replay and `?t=4.2` seeking are exact. A second loop reads the real time and moves the hands on every stage, the hero and the product-section still.
+- **One frame.** As in Product reveal, the composition sits on a 720 × 900 frame centred at `min(100cqw, 80cqh)`, and backgrounds and markers fill the viewport.
+- **Steel as SVG.** ACIER is five custom letter paths, each used as a clip. Inside, five steel bands slide in, with a dark groove between links. The steel is one gradient across the word, and its `gradientTransform` is shifted to move the light.
+- **Hands on the photo's own grid.** The hands SVG uses the photo's pixel coordinates (532 × 878), so the hands stay pinned to the dial centre however the watch is scaled. That holds through the 12× dive too.
+- **Match cuts.** The ring ends at the dial's radius (118 design px) and centre (360, 360). The dive scales the whole poster around that same point.
+
+## Accessibility
+
+- The animated stage is `aria-hidden`, and a visually hidden `<h1>` says what it shows. The still poster has a caption.
+- **Pause/Play** and **Replay** (WCAG 2.2.2). Pause also stops the hero watch.
+- **Reduced motion:** nothing plays on its own and the hero shows the poster. The seconds hand is hidden and the hour and minute hands update once a second, without movement you would notice. Discover jumps straight to the product section, and scrolling is never taken over.
+- A skip link, a real heading, a `<dl>` for specs, a native button with a polite status message, focus rings, and 44px targets.
+
+## Customise
+
+- **Copy:** the text in `index.html`. Text that types out lives in `data-type`. Callout text is in `CALLOUTS` in `script.js`.
+- **Colours:** the `--ui-acier-*` tokens at the top of `style.css`. The steel stops are in `steelGradient()`.
+- **Pace:** `T_POSTER`, `T_END` and `T_TOTAL` at the top of `script.js`. The other times sit with the step they control.
+- **Another watch:** replace the photo, then set `HANDS_C` (dial centre in photo pixels), the box in `.ui-acier__watch` and `DIAL` so the ring still lands on the dial.
+- **Events:** Add to bag fires `ui-acier:add` with `{ added: true | false }`.

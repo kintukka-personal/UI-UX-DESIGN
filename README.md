@@ -24,6 +24,7 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Spot Me rating screen](components/spot-me-rate/) | The app rating screen rebranded for Spot Me: "Hey, bestie!!", stars in laurels, the avatar inside the crush ring, and a "Rate Spot Me" button. After the tap the heart completes the ring and pink confetti bursts out |
 | [MacBook scroll](components/macbook-scroll/) | React + Motion + Tailwind: on scroll the screen ejects from a laptop and lands full-size in the viewport, the laptop drops out of focus, and the landing hits with an overshoot, a ring pulse and a sheen |
 | [Product reveal](components/product-reveal/) | Product-launch hero rebuilt from Jitter's "Logo reveal" template: a running track and logo mark build, a hard cut to the CO2 shoe over red Martian ground with tracking readouts and a smeared zoom, then a white sign-off card. Pause, replay and reduced-motion support, plus a product section |
+| [Acier reveal](components/acier-reveal/) | Launch hero for the FOSLN Acier quartz watch, built on Product reveal: a tuning-fork crystal counts to 32 768 Hz while the minute ring ticks in, a match cut to the watch with live hands on your local time, ACIER assembling in brushed steel link by link, callouts, then a dive through the black dial to the sign-off. Discover or scroll to exit, plus a product section |
 
 ## Sites
 
