@@ -30,8 +30,8 @@ The **product section** is a watchmaker's bench:
 - **A giant dial behind it:** the intro's 60-tick ring, faint, centred on the watch's own dial, with a touch of parallax. The tick for the current second glows, with a trail that fades over six seconds, so the section keeps the real time.
 - **Copy:** the description is a large serif statement, ending in italics on "nothing on it but the hands", with the quartz line as a small mono note.
 - **Price and Add to bag:** the sale price, $97, is set in brushed steel, with the retail price of $225 struck through beside it. Screen readers hear "Sale price $97, was $225". Add to bag is a full-width dark bar with a fine steel edge.
-  - **Hover:** white steel fills about a third of the bar, then pushes towards the end and eases back in a pulse, with a glowing leading edge, teasing the press.
-  - **Click:** the light runs on to the end from wherever the pulse was. When it lands, the bar pops, a ring of light bursts out, the bag icon jumps, a glint runs across, the label rolls to "In your bag" and a lap of light runs round the giant dial.
+  - **Hover:** white steel fills about a third of the bar, then breathes slowly towards the end and back (36% to 41% over 2.8s), with a glowing leading edge, teasing the press.
+  - **Click:** the light runs on to the end over about a second, from wherever the breath was. When it lands, the bar settles with a soft swell, a gentle ring of light spreads out, the bag icon lifts, a glint runs across, the label rolls to "In your bag" and a lap of light runs round the giant dial.
   - **Click again** to remove it.
 
   The label is blended so it reads dark wherever the light covers it. The result is announced to screen readers only.

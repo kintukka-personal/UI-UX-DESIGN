@@ -867,8 +867,8 @@
           void cta.offsetWidth;   // restart the landing
           cta.classList.add("is-landed");
           if (bench) bench.sweep();
-          clearTimer = setTimeout(function () { cta.classList.remove("is-landed"); }, 950);
-        }, calm() ? 0 : 600);
+          clearTimer = setTimeout(function () { cta.classList.remove("is-landed"); }, 1450);
+        }, calm() ? 0 : 1050);
       }
       if (status) status.textContent = on ? "Acier added to your bag." : "Acier removed from your bag.";
       cta.dispatchEvent(new CustomEvent("ui-acier:add", { bubbles: true, detail: { added: on } }));
