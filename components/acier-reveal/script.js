@@ -9,12 +9,12 @@
 
   var NS = "http://www.w3.org/2000/svg";
 
-  // Beats
-  var T_POSTER = 2.55;  // dissolve: ring + ink hands -> the watch (until T_JOIN)
-  var T_JOIN = 2.95;
-  var T_END = 6.0;      // match cut: black dial -> sign-off
-  var T_TOTAL = 8.0;
-  var T_STILL = 5.1;    // the settled poster, for stills and reduced motion
+  // Beats. Everything after the quartz beat is timed from T_POSTER.
+  var T_POSTER = 3.6;               // dissolve: ring + ink hands -> the watch
+  var T_JOIN = T_POSTER + 0.45;     // the paper layer has gone
+  var T_END = T_POSTER + 3.45;      // dive into the dial -> sign-off
+  var T_TOTAL = T_END + 2.0;
+  var T_STILL = T_POSTER + 2.55;    // the settled poster, for stills and reduced motion
 
   // Quartz ring (design units on the 720 x 900 frame)
   var RING_R = 250, RING_C = { x: 360, y: 450 };
@@ -191,7 +191,7 @@
       label.className = "ui-acier__label ui-acier__label--" + c.side;
       label.style.top = n(c.y / 9) + "%";
       labels.appendChild(label);
-      return { path: path, dot: dot, label: label, text: c.text, time: !!c.time, at: 3.95 + k * 0.12, shown: "" };
+      return { path: path, dot: dot, label: label, text: c.text, time: !!c.time, at: T_POSTER + 1.4 + k * 0.12, shown: "" };
     });
 
     this.brand = q("[data-brand]");
@@ -278,21 +278,21 @@
     var t = this.qt, L = this.live, ink = this.inkHands;
 
     // Seconds: quartz steps all the way, 360 degrees plus the live second
-    var sp = inOutSine(seg(t, 1.42, 2.38));
+    var sp = inOutSine(seg(t, 1.45, 3.35));
     var sec = sp >= 1 ? L.s : 6 * Math.floor((360 + L.sWhole) * sp / 6);
-    var sIn = outBack(seg(t, 1.3, 1.42), 2);
+    var sIn = outBack(seg(t, 1.3, 1.45), 2);
     ink.second.setAttribute("transform", "rotate(" + n(sec) + ") scale(" + n(Math.max(0, sIn)) + ")");
     ink.second.style.display = L.show || sp < 1 ? "" : "none";
 
     // Minute: grows out of the hub and turns a full revolution into place
-    var mIn = outCubic(seg(t, 1.78, 1.95));
-    var min = lerp(0, 360 + L.m, inOutCubic(seg(t, 1.8, 2.4)));
+    var mIn = outCubic(seg(t, 2.2, 2.5));
+    var min = lerp(0, 360 + L.m, inOutCubic(seg(t, 2.2, 3.4)));
     ink.minute.setAttribute("transform", "rotate(" + n(min) + ") scale(" + n(lerp(0.4, 1, mIn)) + ")");
     ink.minute.style.opacity = n(mIn);
 
     // Hour: last in, straight to its hour
-    var hIn = outCubic(seg(t, 2.02, 2.18));
-    var hr = lerp(0, L.h, outCubic(seg(t, 2.04, 2.42)));
+    var hIn = outCubic(seg(t, 2.7, 2.95));
+    var hr = lerp(0, L.h, outCubic(seg(t, 2.7, 3.45)));
     ink.hour.setAttribute("transform", "rotate(" + n(hr) + ") scale(" + n(lerp(0.4, 1, hIn)) + ")");
     ink.hour.style.opacity = n(hIn);
 
@@ -303,7 +303,7 @@
     this.sweep.setAttribute("d", sec <= 0 ? "" : sec >= 360
       ? "M0 " + -sr + "A" + sr + " " + sr + " 0 1 1 0 " + sr + "A" + sr + " " + sr + " 0 1 1 0 " + -sr + "Z"
       : "M0 0L0 " + -sr + "A" + sr + " " + sr + " 0 " + (sec > 180 ? 1 : 0) + " 1 " + n(sr * Math.sin(a)) + " " + n(-sr * Math.cos(a)) + "Z");
-    this.sweep.style.opacity = n(0.06 * (1 - seg(t, 1.95, 2.25)));
+    this.sweep.style.opacity = n(0.06 * (1 - seg(t, 2.6, 3.1)));
   };
 
   // The quartz beat, on its paper layer
@@ -313,7 +313,7 @@
     // The crystal pops in and buzzes harder as the count climbs
     var forkIn = outBack(seg(t, 0.05, 0.32));
     var count = seg(t, 0.25, 1.3);
-    var fade = 1 - seg(t, 1.5, 1.7);
+    var fade = 1 - seg(t, 1.5, 1.9);
     var buzzing = count > 0 && count < 1;
     var jitter = buzzing ? (Math.floor(t * 60) % 2 ? 1 : -1) * (0.03 + 0.1 * count) : 0;
     this.fork.setAttribute("transform", "translate(360 450) scale(" + n(Math.max(0, forkIn)) + ")");
@@ -338,7 +338,7 @@
     this.updateInk();
 
     // The ring, hands and all, shrinks onto the exact size and place of the watch dial
-    var k = inOutCubic(seg(t, 2.0, 2.42));
+    var k = inOutCubic(seg(t, 2.8, 3.45));
     var scale = lerp(1, DIAL.r / RING_R, k);
     this.ring.setAttribute("transform", "translate(" + RING_C.x + " " + n(lerp(RING_C.y, DIAL.y, k)) + ") scale(" + n(scale * 1000) / 1000 + ")");
   };
@@ -364,37 +364,37 @@
       this.setPhase("poster");
 
       // Camera: holds still under the dissolve, then dives into the black dial
-      var dive = inQuart(seg(t, 5.35, T_END));
+      var dive = inQuart(seg(t, T_POSTER + 2.8, T_END));
       var cam = 1 + 11 * dive;
       this.camera.style.transform = cam === 1 ? "" : "scale(" + n(cam * 1000) / 1000 + ")";
       this.watchImg.style.filter = dive > 0.35 ? "blur(" + n(5 * seg(dive, 0.35, 1) * this.unit) + "px)" : "";
       this.hands.root.style.opacity = n(1 - seg(dive, 0.15, 0.5));
 
       // The bracelet extends out of the case
-      this.watch.style.setProperty("--ui-acier-fade", n(lerp(50, 9, outCubic(seg(t, T_POSTER, 3.05)))) + "%");
+      this.watch.style.setProperty("--ui-acier-fade", n(lerp(50, 9, outCubic(seg(t, T_POSTER, T_POSTER + 0.5)))) + "%");
 
       for (i = 0; i < this.markers.length; i++) {
         p = seg(t, T_POSTER + i * 0.018, T_POSTER + 0.2 + i * 0.018);
         this.markers[i].style.transform = p >= 1 ? "none" : "scale(" + n(Math.max(0, outBack(p, 1.9))) + ")";
       }
 
-      var top = 1 - seg(t, 5.3, 5.45);
-      this.reveal(this.brand, outExpo(seg(t, 2.7, 3.0)));
+      var top = 1 - seg(t, T_POSTER + 2.75, T_POSTER + 2.9);
+      this.reveal(this.brand, outExpo(seg(t, T_POSTER + 0.15, T_POSTER + 0.45)));
       this.brand.style.opacity = top;
       this.types[0].node.style.opacity = top;
-      this.setType(this.types[0], seg(t, 2.75, 3.3));
+      this.setType(this.types[0], seg(t, T_POSTER + 0.2, T_POSTER + 0.75));
 
       // ACIER, link by link
-      this.assemble(this.word, t, 2.85, 0.06, 0.035, 0.38);
+      this.assemble(this.word, t, T_POSTER + 0.3, 0.06, 0.035, 0.38);
 
       // A light passes over the steel
-      var sweepP = inOutCubic(seg(t, 3.55, 4.3));
+      var sweepP = inOutCubic(seg(t, T_POSTER + 1.0, T_POSTER + 1.75));
       this.word.grad.setAttribute("gradientTransform", "translate(" + n(lerp(-420, 420, sweepP)) + " 0)");
       this.sheen.style.opacity = sweepP > 0 && sweepP < 1 ? 1 : 0;
       this.sheen.style.setProperty("--x", n(lerp(-75, 75, sweepP)) + "%");
 
       // Callouts draw in, then clear before the dive
-      var out = 1 - seg(t, 5.2, 5.35);
+      var out = 1 - seg(t, T_POSTER + 2.65, T_POSTER + 2.8);
       for (i = 0; i < this.callouts.length; i++) {
         var c = this.callouts[i];
         var draw = outCubic(seg(t, c.at, c.at + 0.32));

@@ -4,19 +4,19 @@ A launch hero for the **FOSLN Acier** quartz watch, built on the [Product reveal
 
 Three beats, joined by match cuts and a dissolve:
 
-1. **Quartz (0 to 2.55s), on pale steel paper**
+1. **Quartz (0 to 3.6s), on pale steel paper**
    - A tuning-fork crystal (the shape of the quartz inside a watch) pops in and starts to buzz. Under it, letters cycle and lock one by one, left to right, until they spell **FOSLN**.
    - While it decodes, the 60 minute ticks appear around it, faster and faster, with heavier ticks at the hours.
    - **The hands, as one continuous move:** a seconds hand ticks in at 12 and sweeps a full turn in quartz steps, leaving a faint sector behind it, then carries on into the visitor's current second. The minute hand grows out of the hub and turns a full revolution into the current minute. The hour hand joins last and turns to the current hour.
    - Meanwhile the ring, with the hands on it, shrinks and moves until it is exactly the size and position of the watch dial. All three hands land on the watch's live time just as the ring lands.
-2. **Poster (2.55 to 6s), dissolving to graphite**
+2. **Poster (3.6 to 7s), dissolving to graphite**
    - The paper layer dissolves into the watch. The ink hands sit exactly on top of the watch's own hands, so the time carries straight through. The bracelet extends out of the case as it appears.
    - **Live hands:** the photo's printed hands were painted out and replaced with drawn ones. They show the visitor's local time and step once a second with a small quartz overshoot.
    - **ACIER** assembles in brushed steel, link by link. Each letter is cut into five bands, like the bracelet's links, and every band slides in from alternating sides and locks with a slight overshoot.
    - A band of light passes over the letters and the watch. On the watch it lands only on the steel, because it is masked by the photo itself.
    - Callouts draw in: Black dial, Steel case, Link bracelet, Quartz movement, and **Local time** with the live time, pointing at the crown that sets it.
    - The callouts clear and the camera dives into the black dial while the hands fade.
-3. **Sign-off (6 to 8s), out of the black**
+3. **Sign-off (7 to 9s), out of the black**
    - The FOSLN plate from the watch, redrawn, wipes in. "STAINLESS STEEL / QUARTZ MOVEMENT" types out and a small steel ACIER assembles beside it, all on one centred row.
 
 When it ends, **Discover Acier** appears. Clicking it, or scrolling down from the sign-off card, pulls the three pieces down the drain into the button, then snaps the page to the product section, as in Product reveal.
@@ -54,6 +54,6 @@ Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-a
 
 - **Copy:** the text in `index.html`. Text that types out lives in `data-type`. Callout text is in `CALLOUTS` in `script.js`.
 - **Colours:** the `--ui-acier-*` tokens at the top of `style.css`. The steel stops are in `steelGradient()`.
-- **Pace:** `T_POSTER`, `T_END` and `T_TOTAL` at the top of `script.js`. The other times sit with the step they control.
+- **Pace:** the beats are at the top of `script.js`. Everything after the quartz beat is timed from `T_POSTER`, so moving it shifts the rest. The quartz times, including the hand choreography in `updateInk()`, sit with the step they control.
 - **Another watch:** replace the photo, then set `HANDS_C` (dial centre in photo pixels), the box in `.ui-acier__watch` and `DIAL` so the ring still lands on the dial.
 - **Events:** Add to bag fires `ui-acier:add` with `{ added: true | false }`.
