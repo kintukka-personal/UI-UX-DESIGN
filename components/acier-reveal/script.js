@@ -12,7 +12,7 @@
   // Intro: FOSLN holds on the finished dial (the ring completes at ~1.84s),
   // squashes into a line at MORPH_AT and stretches out into the seconds hand
   // at 3 o'clock by HAND_AT. Everything after it is timed from HAND_AT.
-  var MORPH_AT = 2.35;
+  var MORPH_AT = 1.84;              // the moment the last tick lands
   var HAND_AT = MORPH_AT + 0.65;    // an unhurried, overlapping squash and stretch
 
   // Beats. Everything after the quartz beat is timed from T_POSTER.
@@ -46,9 +46,9 @@
   // Callouts on the poster: anchor on the watch, label height, side
   // In the order they appear, one per tick of the seconds hand
   var CALLOUTS = [
-    { a: [454, 140], y: 146, side: "right", text: "LINK\nBRACELET" },
-    { a: [532, 357], y: 318, side: "right", text: "LOCAL TIME\n", time: true },
-    { a: [377, 526], y: 560, side: "right", text: "QUARTZ\nMOVEMENT" },
+    { a: [441, 292], y: 146, side: "right", text: "LOCAL TIME\n", time: true },   // into the dial, by the hands
+    { a: [532, 357], y: 318, side: "right", text: "QUARTZ\nMOVEMENT" },          // the crown
+    { a: [408, 571], y: 560, side: "right", text: "LINK\nBRACELET" },           // the lower bracelet
     { a: [220, 368], y: 430, side: "left", text: "STEEL\nCASE" },
     { a: [296, 299], y: 236, side: "left", text: "ONYX\nDIAL" }
   ];
@@ -202,6 +202,7 @@
       labels.appendChild(label);
       return { path: path, dot: dot, label: label, text: c.text, time: !!c.time, typeP: 0, shown: "" };
     });
+    this.timeCallout = this.callouts.filter(function (c) { return c.time; })[0];
     this.firstTick = null;
     this.liveTicks = false;
 
@@ -271,8 +272,8 @@
     this.hands.second.setAttribute("transform", "rotate(" + n(this.live.s) + ")");
     this.hands.second.style.display = showSeconds ? "" : "none";
     if (this.qt < T_JOIN) this.updateInk();
-    var c = this.callouts[1];
-    if (c.typeP > 0) this.setLabel(c, this.typed(c));
+    var c = this.timeCallout;
+    if (c && c.typeP > 0) this.setLabel(c, this.typed(c));
   };
 
   // The callout's text as typed so far (the time one includes the live time)

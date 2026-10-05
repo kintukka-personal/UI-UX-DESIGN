@@ -7,7 +7,7 @@ Three beats, joined by match cuts and a dissolve:
 1. **Quartz (0 to 5.2s), on pale steel paper**
    - At the centre, letters cycle and lock one by one, left to right, until they spell **FOSLN**.
    - The letters come first and lock by 0.7s. After a 0.4s pause the 60 minute ticks appear around them, faster and faster, with heavier ticks at the hours.
-   - FOSLN holds on the finished dial for about half a second. Then, over an unhurried 0.65s with overlapping phases, the letters squash into a thin line, which stretches out to the right into the seconds hand, pointing at 3 o'clock. The hub grows in at the centre as it lands.
+   - The moment the last tick lands, over an unhurried 0.65s with overlapping phases, the letters squash into a thin line, which stretches out to the right into the seconds hand, pointing at 3 o'clock. The hub grows in at the centre as it lands.
    - **The hands, as one continuous move:** from 3 o'clock the seconds hand sweeps a full turn in quartz steps and carries on into the visitor's current second. The minute hand grows out of the hub and turns a full revolution into the current minute. The hour hand joins last and turns to the current hour.
    - Meanwhile the ring, with the hands on it, shrinks and moves until it is exactly the size and position of the watch dial. All three hands land on the watch's live time just as the ring lands.
 2. **Poster (5.2 to about 15.4s), dissolving to graphite**
@@ -16,7 +16,7 @@ Three beats, joined by match cuts and a dissolve:
    - **ACIER** assembles in brushed steel, link by link. Each letter is cut into five bands, like the bracelet's links, and every band slides in from alternating sides and locks with a slight overshoot.
    - A band of light passes over the letters and the watch. On the watch it lands only on the steel, because it is masked by the photo itself.
    - The poster holds on just the watch and ACIER for a moment.
-   - **Callouts on the tick:** each callout appears on a tick of the watch's real seconds hand, one per second: Link bracelet, **Local time** (with the live time, pointing at the crown that sets it), Quartz movement, Steel case, Onyx dial. The first waits for the next real tick, so all five stay in step with the hand. A short hold follows.
+   - **Callouts on the tick:** each callout appears on a tick of the watch's real seconds hand, one per second: **Local time** (with the live time, pointing into the dial by the hands), Quartz movement (at the crown), Link bracelet (at the lower bracelet), Steel case, Onyx dial. The first waits for the next real tick, so all five stay in step with the hand. A short hold follows.
    - The callouts clear and the camera dives into the black dial while the hands fade.
 3. **Sign-off (about 15.4 to 17.4s), out of the black**
    - The FOSLN plate from the watch, redrawn, wipes in. "STAINLESS STEEL / QUARTZ MOVEMENT" types out and a small steel ACIER assembles beside it, all on one centred row.
