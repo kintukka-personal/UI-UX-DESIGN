@@ -126,6 +126,8 @@
     var root = el("g", attrs, svg);
     function sword(len) {
       var g = el("g", {}, root);
+      // The arm: a thin strip of metal from the hub out to the blade, as on the real hands
+      el("path", { d: "M-1.5 0V-17.5Q0 -18.6 1.5 -17.5V0Z", fill: body, stroke: edge, "stroke-width": 0.6 }, g);
       el("path", { d: "M-4.8 -15L-3.4 " + -len + "Q0 " + -(len + 5) + " 3.4 " + -len + "L4.8 -15Z", fill: body, stroke: edge, "stroke-width": 0.7 }, g);
       el("path", { d: "M-1.45 -27H1.45V" + -(len - 6) + "H-1.45Z", fill: lume }, g);
       return g;
