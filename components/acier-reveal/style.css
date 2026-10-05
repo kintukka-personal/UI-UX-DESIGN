@@ -522,14 +522,36 @@
   transition: opacity 0.4s ease, transform 0.4s ease, visibility 0s;
 }
 
+/* The label: steel letters that a glint of light runs across each time the
+   beams reach the crown */
 .ui-acier__cue-label {
+  --lab: var(--ui-acier-steel);
   padding-left: 0.28em;   /* balance the trailing letter-spacing */
-  line-height: 1;
-  transition: color 0.25s ease;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: transparent;
+  background: linear-gradient(90deg, var(--lab) 0 40%, #FFFFFF 50%, var(--lab) 60% 100%) 100% 0 / 250% 100% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .ui-acier__cue:hover .ui-acier__cue-label {
-  color: #FFFFFF;
+  --lab: #FFFFFF;
+}
+
+.ui-acier[data-done][data-phase="end"] .ui-acier__cue-label {
+  animation: ui-acier-label-glint var(--ui-acier-beam-cycle, 2.8s) ease-in-out 0.12s infinite;
+}
+
+.ui-acier[data-draining] .ui-acier__cue-label {
+  animation-play-state: paused;
+}
+
+/* The glint enters just as the beams land and leaves off the far side, so
+   the jump back to the start of the loop is never seen */
+@keyframes ui-acier-label-glint {
+  0%, 50%   { background-position: 100% 0; }
+  78%, 100% { background-position: 0% 0; }
 }
 
 /* Brushed steel tread with horizontal grooves that roll downward.
@@ -908,7 +930,8 @@
   .ui-acier__beam-head,
   .ui-acier__crown-tread,
   .ui-acier__crown-wind,
-  .ui-acier__crown i {
+  .ui-acier__crown i,
+  .ui-acier__cue-label {
     animation: none !important;
   }
 
@@ -926,6 +949,11 @@
 }
 
 @media (forced-colors: active) {
+  .ui-acier__cue-label {
+    background: none;
+    color: LinkText;
+  }
+
   .ui-acier__btn,
   .ui-acier__crown,
   .ui-acier-product__cta {
