@@ -25,7 +25,7 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [MacBook scroll](components/macbook-scroll/) | React + Motion + Tailwind: on scroll the screen ejects from a laptop and lands full-size in the viewport, the laptop drops out of focus, and the landing hits with an overshoot, a ring pulse and a sheen |
 | [Product reveal](components/product-reveal/) | Product-launch hero rebuilt from Jitter's "Logo reveal" template: a running track and logo mark build, a hard cut to the CO2 shoe over red Martian ground with tracking readouts and a smeared zoom, then a white sign-off card. Pause, replay and reduced-motion support, plus a product section |
 | [Exploratory gallery](components/exploratory-gallery/) | Portfolio gallery rebuilt from Jitter's "Interactive" template: glass cards slide past a lit slot with a staggered glide, the centre card opens while the rest blur and dim, and a glass coin turns over a ticker. A demo tour loops until the visitor takes over with click, keys, swipe or wheel |
-| [Quote stack](components/quote-stack/) | Animated testimonial rebuilt from Jitter's free testimonial template: three sheets of frosted glass collapse into one card over a photo, the quote lands word by word, and the card likes itself with a squeeze and a pop before the next quote comes up out of the stack |
+| [Animated testimonial card stack](components/animated-testimonial-stack/) | Rebuilt from Jitter's "Animated testimonial card stack" template: three sheets of frosted glass collapse into one card over a photo, the quote lands word by word, and the card likes itself with a squeeze and a pop before the next quote comes up out of the stack |
 
 ## Sites
 

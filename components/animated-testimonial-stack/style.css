@@ -1,8 +1,8 @@
-/* Quote Stack — a stack of frosted glass cards that collapses into one and reveals a quote.
+/* Animated testimonial card stack — a stack of frosted glass cards that collapses into one and reveals a quote.
    Rebuilt from Jitter's free animated testimonial template. Every number below with a plain
    decimal is a pixel measured off the 1152 x 720 source frames, scaled by --cu / --tu / --su. */
 
-.ui-quotes-page {
+.ui-testimonial-page {
   margin: 0;
   background: #140D07;
   color: #F6EAE2;
@@ -12,48 +12,48 @@
   min-height: 100svh;
 }
 
-.ui-quotes {
-  --ui-quotes-gut: 16px;
-  --ui-quotes-bar: 58px;
+.ui-testimonial {
+  --ui-testimonial-gut: 16px;
+  --ui-testimonial-bar: 58px;
 
   /* The frame is 8:5, as in the source. It is as wide as the window allows and no taller
      than the window minus the control bar, so the whole frame is always on screen. */
-  --ui-quotes-sw: min(
-    calc(100vw - 2 * var(--ui-quotes-gut)),
-    calc((100svh - 2 * var(--ui-quotes-gut) - var(--ui-quotes-bar)) * 1.6)
+  --ui-testimonial-sw: min(
+    calc(100vw - 2 * var(--ui-testimonial-gut)),
+    calc((100svh - 2 * var(--ui-testimonial-gut) - var(--ui-testimonial-bar)) * 1.6)
   );
 
   /* ink */
-  --ui-quotes-blush: #FEECFC;      /* the wordmark, the mark and the liked heart */
-  --ui-quotes-ink: #FDEDF9;        /* the quote */
-  --ui-quotes-ink-soft: #FDEDF9;   /* the name. The source dims this to .66; full strength
+  --ui-testimonial-blush: #FEECFC;      /* the wordmark, the mark and the liked heart */
+  --ui-testimonial-ink: #FDEDF9;        /* the quote */
+  --ui-testimonial-ink-soft: #FDEDF9;   /* the name. The source dims this to .66; full strength
                                       keeps it at 4.7:1 on the glass. See README. */
-  --ui-quotes-card-ink: #16141A;
+  --ui-testimonial-card-ink: #16141A;
 
   /* glass: an 11% white veil over an 18px blur and a 6% desaturation — fitted pixel by pixel
      against the source frame — plus a 16% warm-black veil, which the source does not have and
      which carries the quote from 3.7:1 to 4.7:1 on the brightest part of the plate */
-  --ui-quotes-veil: rgba(255, 255, 255, .11);
-  --ui-quotes-shade: rgba(32, 14, 2, .18);
-  --ui-quotes-desat: .94;
-  --ui-quotes-frost: 18;
+  --ui-testimonial-veil: rgba(255, 255, 255, .11);
+  --ui-testimonial-shade: rgba(32, 14, 2, .18);
+  --ui-testimonial-desat: .94;
+  --ui-testimonial-frost: 18;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
-  padding: var(--ui-quotes-gut);
+  padding: var(--ui-testimonial-gut);
   min-height: 100svh;
   box-sizing: border-box;
   justify-content: center;
 }
 
 @supports not (height: 100svh) {
-  .ui-quotes-page, .ui-quotes { min-height: 100vh; }
-  .ui-quotes { --ui-quotes-sw: min(calc(100vw - 32px), calc((100vh - 90px) * 1.6)); }
+  .ui-testimonial-page, .ui-testimonial { min-height: 100vh; }
+  .ui-testimonial { --ui-testimonial-sw: min(calc(100vw - 32px), calc((100vh - 90px) * 1.6)); }
 }
 
-.ui-quotes__sr {
+.ui-testimonial__sr {
   position: absolute;
   width: 1px; height: 1px;
   margin: -1px; padding: 0; border: 0;
@@ -64,9 +64,9 @@
 
 /* ---------------------------------------------------------------- the frame */
 
-.ui-quotes__stage {
+.ui-testimonial__stage {
   position: relative;
-  width: var(--ui-quotes-sw);
+  width: var(--ui-testimonial-sw);
   aspect-ratio: 8 / 5;
   overflow: hidden;
   border-radius: 2px;
@@ -75,21 +75,21 @@
   touch-action: pan-y;
 }
 
-.ui-quotes__stage:focus-visible {
-  outline: 2px solid var(--ui-quotes-blush);
+.ui-testimonial__stage:focus-visible {
+  outline: 2px solid var(--ui-testimonial-blush);
   outline-offset: 2px;
 }
 
 /* One unit = one source pixel at the 1152px-wide source frame. --cu sizes the card box,
    --tu the type and the spacing inside it, --su the chrome. They are equal on a wide frame
    and part company only in the portrait layout further down. */
-.ui-quotes__stage > * {
-  --cu: calc(var(--ui-quotes-sw) / 1152);
+.ui-testimonial__stage > * {
+  --cu: calc(var(--ui-testimonial-sw) / 1152);
   --tu: var(--cu);
   --su: var(--cu);
 }
 
-.ui-quotes__plate {
+.ui-testimonial__plate {
   position: absolute;
   inset: 0;
   transform: scale(var(--cam, 1));
@@ -97,7 +97,7 @@
   will-change: transform;
 }
 
-.ui-quotes__photo {
+.ui-testimonial__photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -106,7 +106,7 @@
 }
 
 /* Keeps the near-white chrome off the bright plywood: 5.9:1 for the site label */
-.ui-quotes__scrim {
+.ui-testimonial__scrim {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -117,7 +117,7 @@
 
 /* ---------------------------------------------------------------- the deck */
 
-.ui-quotes__deck {
+.ui-testimonial__deck {
   position: absolute;
   inset: 0;
   margin: 0;
@@ -125,27 +125,27 @@
   list-style: none;
 }
 
-.ui-quotes__item {
+.ui-testimonial__item {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
 }
 
-.ui-quotes__item[hidden],
-.ui-quotes__item:not([data-active]):not(.is-leaving) {
+.ui-testimonial__item[hidden],
+.ui-testimonial__item:not([data-active]):not(.is-leaving) {
   visibility: hidden;
   opacity: 0;
 }
 
 /* without the script there is no clock and nothing to advance, so the first quote simply sits
    there, fully revealed */
-.ui-quotes:not([data-ready]) .ui-quotes__item:first-child {
+.ui-testimonial:not([data-ready]) .ui-testimonial__item:first-child {
   visibility: visible;
   opacity: 1;
 }
 
-.ui-quotes__card {
+.ui-testimonial__card {
   --t: 999;          /* seconds into this card's reveal; JS drives it */
   --s: 1;            /* pane scale */
   --f: 0;            /* how far the stack is still fanned out, 1 .. 0 */
@@ -161,26 +161,26 @@
   transform: translateY(calc(var(--out) * -26 * var(--cu)));
 }
 
-.ui-quotes__panes {
+.ui-testimonial__panes {
   position: absolute;
   inset: 0;
 }
 
-.ui-quotes__pane {
+.ui-testimonial__pane {
   position: absolute;
   inset: 0;
   border-radius: calc(65 * var(--cu));
-  background-color: var(--ui-quotes-veil);
+  background-color: var(--ui-testimonial-veil);
   background-image:
     /* the sheen the source carries along the top and bottom lips of the glass */
     linear-gradient(to bottom,
       rgba(255, 255, 255, .13), rgba(255, 255, 255, 0) 12%,
       rgba(255, 255, 255, 0) 90%, rgba(255, 255, 255, .10)),
-    linear-gradient(var(--ui-quotes-shade), var(--ui-quotes-shade));
+    linear-gradient(var(--ui-testimonial-shade), var(--ui-testimonial-shade));
   /* the source blurs the glass before the camera magnifies it, so the frost thickens
      while the camera is still pushed in */
-  -webkit-backdrop-filter: blur(calc(var(--ui-quotes-frost) * var(--cu) * var(--cam, 1))) saturate(var(--ui-quotes-desat));
-  backdrop-filter: blur(calc(var(--ui-quotes-frost) * var(--cu) * var(--cam, 1))) saturate(var(--ui-quotes-desat));
+  -webkit-backdrop-filter: blur(calc(var(--ui-testimonial-frost) * var(--cu) * var(--cam, 1))) saturate(var(--ui-testimonial-desat));
+  backdrop-filter: blur(calc(var(--ui-testimonial-frost) * var(--cu) * var(--cam, 1))) saturate(var(--ui-testimonial-desat));
   box-shadow:
     0 calc(7 * var(--cu)) calc(24 * var(--cu)) rgba(26, 10, 0, .13),
     inset 0 calc(1 * var(--cu)) 0 rgba(255, 255, 255, .15),
@@ -191,45 +191,45 @@
   will-change: transform;
 }
 
-.ui-quotes__pane--up   { --fx: calc(-8 * var(--cu)); --fy: calc(-75 * var(--cu)); opacity: .55; }
-.ui-quotes__pane--down { --fx: calc( 8 * var(--cu)); --fy: calc( 75 * var(--cu)); opacity: .78; }
+.ui-testimonial__pane--up   { --fx: calc(-8 * var(--cu)); --fy: calc(-75 * var(--cu)); opacity: .55; }
+.ui-testimonial__pane--down { --fx: calc( 8 * var(--cu)); --fy: calc( 75 * var(--cu)); opacity: .78; }
 
 /* Three sheets of glass cost three backdrop filters, so the two behind only exist while
    the stack is open */
-.ui-quotes__card:not(.is-fanned) .ui-quotes__pane--up,
-.ui-quotes__card:not(.is-fanned) .ui-quotes__pane--down {
+.ui-testimonial__card:not(.is-fanned) .ui-testimonial__pane--up,
+.ui-testimonial__card:not(.is-fanned) .ui-testimonial__pane--down {
   visibility: hidden;
 }
 
-.ui-quotes__body {
+.ui-testimonial__body {
   position: relative;
   padding: calc(58 * var(--tu)) calc(69 * var(--tu)) calc(55.5 * var(--tu));
 }
 
 /* ---------------------------------------------------------------- the quote */
 
-.ui-quotes__quote {
+.ui-testimonial__quote {
   --w0: .70;     /* the first word lands here */
   --ws: .0455;   /* and each one after it trails the last by this much */
   --wd: .33;     /* over this long */
   margin: 0;
 }
 
-.ui-quotes__quote p {
+.ui-testimonial__quote p {
   margin: 0;
   max-width: calc(306.5 * var(--tu));
   font-size: calc(17.4 * var(--tu));
   line-height: calc(20.75 * var(--tu));
   font-weight: 500;
   letter-spacing: -.004em;
-  color: var(--ui-quotes-ink);
+  color: var(--ui-testimonial-ink);
   text-wrap: pretty;
 }
 
 /* the opening mark hangs out of the measure, as in the source, and both marks ride in
    with the word they belong to */
-.ui-quotes__quote p::before,
-.ui-quotes__quote p::after {
+.ui-testimonial__quote p::before,
+.ui-testimonial__quote p::after {
   display: inline-block;
   --p: clamp(0, calc((var(--t) - var(--w0) - var(--qi, 0) * var(--ws)) / var(--wd)), 1);
   --e: calc(1 - (1 - var(--p)) * (1 - var(--p)) * (1 - var(--p)));
@@ -237,15 +237,15 @@
   transform: translateY(calc((1 - var(--e)) * .55em));
   filter: blur(calc((1 - var(--e)) * 7 * var(--tu)));
 }
-.ui-quotes__quote p::before {
+.ui-testimonial__quote p::before {
   content: "\201C";
   margin-left: calc(-6.5 * var(--tu));
   margin-right: calc(3.5 * var(--tu));
   --qi: 0;
 }
-.ui-quotes__quote p::after  { content: "\201D"; --qi: var(--n, 0); }
+.ui-testimonial__quote p::after  { content: "\201D"; --qi: var(--n, 0); }
 
-.ui-quotes__w {
+.ui-testimonial__w {
   display: inline-block;
   --p: clamp(0, calc((var(--t) - var(--w0) - var(--i, 0) * var(--ws)) / var(--wd)), 1);
   --e: calc(1 - (1 - var(--p)) * (1 - var(--p)) * (1 - var(--p)));
@@ -256,7 +256,7 @@
 
 /* ---------------------------------------------------------------- who said it */
 
-.ui-quotes__who {
+.ui-testimonial__who {
   display: flex;
   align-items: center;
   gap: calc(13 * var(--tu));
@@ -265,7 +265,7 @@
   padding: 0 calc(5 * var(--tu)) 0 calc(2 * var(--tu));
 }
 
-.ui-quotes__avatar {
+.ui-testimonial__avatar {
   flex: none;
   width: calc(43 * var(--tu));
   height: calc(43 * var(--tu));
@@ -279,17 +279,17 @@
 }
 
 /* the one portrait in the source video is the only face there is, so the rest are monograms */
-.ui-quotes__avatar--mono {
+.ui-testimonial__avatar--mono {
   display: grid;
   place-items: center;
   background: radial-gradient(120% 120% at 24% 18%, #3B3340, #16141A 72%);
-  color: var(--ui-quotes-blush);
+  color: var(--ui-testimonial-blush);
   font-size: calc(15 * var(--tu));
   font-weight: 500;
   letter-spacing: .02em;
 }
 
-.ui-quotes__name {
+.ui-testimonial__name {
   --w0: 1.60;
   --ws: .075;
   --wd: .36;
@@ -297,13 +297,13 @@
   font-size: calc(17.4 * var(--tu));
   line-height: calc(20 * var(--tu));
   font-weight: 400;
-  color: var(--ui-quotes-ink-soft);
+  color: var(--ui-testimonial-ink-soft);
   text-wrap: balance;
 }
 
 /* ---------------------------------------------------------------- the heart */
 
-.ui-quotes__like {
+.ui-testimonial__like {
   position: relative;
   flex: none;
   margin: 0 0 0 auto;
@@ -318,7 +318,7 @@
 }
 
 /* the glyph keeps the source's 21px, the target keeps the 44px minimum */
-.ui-quotes__like::before {
+.ui-testimonial__like::before {
   content: "";
   position: absolute;
   left: 50%; top: 50%;
@@ -328,38 +328,38 @@
   border-radius: 999px;
 }
 
-.ui-quotes__like:focus-visible { outline: none; }
-.ui-quotes__like:focus-visible::before {
-  outline: 2px solid var(--ui-quotes-blush);
+.ui-testimonial__like:focus-visible { outline: none; }
+.ui-testimonial__like:focus-visible::before {
+  outline: 2px solid var(--ui-testimonial-blush);
   outline-offset: calc(-2 * var(--tu));
 }
 
-.ui-quotes__heart {
+.ui-testimonial__heart {
   width: calc(25.2 * var(--tu));
   height: auto;
   display: block;
   overflow: visible;
 }
 
-.ui-quotes__heart-base {
+.ui-testimonial__heart-base {
   fill: #fff;
   --p: clamp(0, calc((var(--t) - 1.37) / .44), 1);
   opacity: calc(var(--p) * .72 * (1 - var(--like)));
 }
 
-.ui-quotes__heart-fill {
-  fill: var(--ui-quotes-blush);
+.ui-testimonial__heart-fill {
+  fill: var(--ui-testimonial-blush);
   transform-box: fill-box;
   transform-origin: 50% 50%;
   /* a touch past 1 on the way in, as in the source */
   transform: scale(calc(var(--like) * (1.10 - .10 * var(--like))));
 }
 
-.ui-quotes__like:hover .ui-quotes__heart-base { opacity: calc(clamp(0, calc((var(--t) - 1.37) / .44), 1) * .92 * (1 - var(--like))); }
+.ui-testimonial__like:hover .ui-testimonial__heart-base { opacity: calc(clamp(0, calc((var(--t) - 1.37) / .44), 1) * .92 * (1 - var(--like))); }
 
 /* ---------------------------------------------------------------- the chrome */
 
-.ui-quotes__brand {
+.ui-testimonial__brand {
   position: absolute;
   left: calc(31 * var(--su));
   right: calc(41 * var(--su));
@@ -368,29 +368,29 @@
   align-items: center;
   justify-content: space-between;
   pointer-events: none;
-  color: var(--ui-quotes-blush);
+  color: var(--ui-testimonial-blush);
 }
 
-.ui-quotes__logo {
+.ui-testimonial__logo {
   display: flex;
   align-items: center;
   gap: calc(6 * var(--su));
 }
 
-.ui-quotes__mark {
+.ui-testimonial__mark {
   width: calc(21 * var(--su));
   height: calc(21 * var(--su));
   display: block;
 }
 
-.ui-quotes__word {
+.ui-testimonial__word {
   font-size: calc(29 * var(--su));
   line-height: 1;
   font-weight: 700;
   letter-spacing: -.012em;
 }
 
-.ui-quotes__site {
+.ui-testimonial__site {
   position: absolute;
   right: 0;
   top: calc(1 * var(--su));
@@ -399,7 +399,7 @@
   color: #FFF4F0;
 }
 
-.ui-quotes__credit {
+.ui-testimonial__credit {
   position: absolute;
   right: calc(16 * var(--su));
   bottom: calc(18 * var(--su));
@@ -407,7 +407,7 @@
   padding: 0 calc(13 * var(--su));
   display: grid;
   place-items: center;
-  background: var(--ui-quotes-card-ink);
+  background: var(--ui-testimonial-card-ink);
   color: #fff;
   font-size: calc(17.4 * var(--su));
   line-height: 1;
@@ -415,18 +415,18 @@
   letter-spacing: -.005em;
 }
 
-.ui-quotes__credit:hover { background: #241F2C; }
-.ui-quotes__credit:focus-visible {
-  outline: 2px solid var(--ui-quotes-blush);
+.ui-testimonial__credit:hover { background: #241F2C; }
+.ui-testimonial__credit:focus-visible {
+  outline: 2px solid var(--ui-testimonial-blush);
   outline-offset: 2px;
 }
 
 /* ---------------------------------------------------------------- the control bar */
 
-.ui-quotes__bar {
-  width: var(--ui-quotes-sw);
+.ui-testimonial__bar {
+  width: var(--ui-testimonial-sw);
   box-sizing: border-box;
-  height: var(--ui-quotes-bar);
+  height: var(--ui-testimonial-bar);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -438,13 +438,13 @@
   color: #C8B5A8;
 }
 
-.ui-quotes__dots {
+.ui-testimonial__dots {
   display: flex;
   align-items: center;
   gap: 2px;
 }
 
-.ui-quotes__dot {
+.ui-testimonial__dot {
   width: 24px;
   height: 24px;
   min-width: 24px;
@@ -456,7 +456,7 @@
   place-items: center;
 }
 
-.ui-quotes__dot::before {
+.ui-testimonial__dot::before {
   content: "";
   width: 7px;
   height: 7px;
@@ -465,18 +465,18 @@
   transition: background-color .2s, transform .2s;
 }
 
-.ui-quotes__dot[aria-current="true"]::before { background: var(--ui-quotes-blush); transform: scale(1.3); }
-.ui-quotes__dot:hover::before { background: #A28B7B; }
-.ui-quotes__dot:focus-visible { outline: 2px solid var(--ui-quotes-blush); outline-offset: -2px; border-radius: 4px; }
+.ui-testimonial__dot[aria-current="true"]::before { background: var(--ui-testimonial-blush); transform: scale(1.3); }
+.ui-testimonial__dot:hover::before { background: #A28B7B; }
+.ui-testimonial__dot:focus-visible { outline: 2px solid var(--ui-testimonial-blush); outline-offset: -2px; border-radius: 4px; }
 
-.ui-quotes__controls {
+.ui-testimonial__controls {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.ui-quotes__nav,
-.ui-quotes__play {
+.ui-testimonial__nav,
+.ui-testimonial__play {
   font: inherit;
   letter-spacing: inherit;
   text-transform: inherit;
@@ -492,13 +492,13 @@
   gap: 8px;
 }
 
-.ui-quotes__nav:hover,
-.ui-quotes__play:hover { background: rgba(255, 255, 255, .13); }
-.ui-quotes__nav:focus-visible,
-.ui-quotes__play:focus-visible { outline: 2px solid var(--ui-quotes-blush); outline-offset: 2px; }
+.ui-testimonial__nav:hover,
+.ui-testimonial__play:hover { background: rgba(255, 255, 255, .13); }
+.ui-testimonial__nav:focus-visible,
+.ui-testimonial__play:focus-visible { outline: 2px solid var(--ui-testimonial-blush); outline-offset: 2px; }
 
 /* the arrows only take room once a keyboard reaches them */
-.ui-quotes__nav {
+.ui-testimonial__nav {
   position: absolute;
   width: 1px; height: 1px;
   margin: -1px; padding: 0;
@@ -507,7 +507,7 @@
   white-space: nowrap;
   pointer-events: none;
 }
-.ui-quotes__nav:focus-visible {
+.ui-testimonial__nav:focus-visible {
   position: static;
   width: auto; height: auto;
   margin: 0; padding: 0 14px;
@@ -516,67 +516,67 @@
   pointer-events: auto;
 }
 
-.ui-quotes__play-icon {
+.ui-testimonial__play-icon {
   width: 9px;
   height: 11px;
   background: currentColor;
   clip-path: polygon(0 0, 3px 0, 3px 11px, 0 11px, 0 0, 6px 0, 9px 0, 9px 11px, 6px 11px);
 }
-.ui-quotes[data-paused] .ui-quotes__play-icon {
+.ui-testimonial[data-paused] .ui-testimonial__play-icon {
   clip-path: polygon(0 0, 9px 50%, 0 100%);
 }
 
 /* ---------------------------------------------------------------- portrait */
 
 @media (max-aspect-ratio: 1/1), (max-width: 720px) {
-  .ui-quotes {
-    --ui-quotes-gut: 12px;
-    --ui-quotes-sw: min(
-      calc(100vw - 2 * var(--ui-quotes-gut)),
-      calc((100svh - 2 * var(--ui-quotes-gut) - var(--ui-quotes-bar)) * .8)
+  .ui-testimonial {
+    --ui-testimonial-gut: 12px;
+    --ui-testimonial-sw: min(
+      calc(100vw - 2 * var(--ui-testimonial-gut)),
+      calc((100svh - 2 * var(--ui-testimonial-gut) - var(--ui-testimonial-bar)) * .8)
     );
   }
-  .ui-quotes__stage { aspect-ratio: 4 / 5; }
-  .ui-quotes__stage > * {
-    --cu: calc(var(--ui-quotes-sw) / 505);   /* the card takes 88% of the frame */
-    --tu: calc(var(--ui-quotes-sw) / 372);   /* and the quote stays at 16px and up */
-    --su: calc(var(--ui-quotes-sw) / 560);
+  .ui-testimonial__stage { aspect-ratio: 4 / 5; }
+  .ui-testimonial__stage > * {
+    --cu: calc(var(--ui-testimonial-sw) / 505);   /* the card takes 88% of the frame */
+    --tu: calc(var(--ui-testimonial-sw) / 372);   /* and the quote stays at 16px and up */
+    --su: calc(var(--ui-testimonial-sw) / 560);
   }
-  .ui-quotes__photo { object-position: 64% 32%; }
-  .ui-quotes__body { padding: calc(46 * var(--tu)) calc(42 * var(--tu)) calc(44 * var(--tu)); }
-  .ui-quotes__quote p { max-width: none; }
-  .ui-quotes__pane--up   { --fy: calc(-62 * var(--cu)); }
-  .ui-quotes__pane--down { --fy: calc( 62 * var(--cu)); }
+  .ui-testimonial__photo { object-position: 64% 32%; }
+  .ui-testimonial__body { padding: calc(46 * var(--tu)) calc(42 * var(--tu)) calc(44 * var(--tu)); }
+  .ui-testimonial__quote p { max-width: none; }
+  .ui-testimonial__pane--up   { --fy: calc(-62 * var(--cu)); }
+  .ui-testimonial__pane--down { --fy: calc( 62 * var(--cu)); }
   /* The portrait frame is a re-crop, not the source's 8:5, and the card lands on sunlit
      plywood instead of the shaded wall. Dusk the plate down behind it so the quote keeps
      4.5:1; the band is lightest at the top and bottom, where the photo still reads bright. */
-  .ui-quotes__scrim {
+  .ui-testimonial__scrim {
     background:
       linear-gradient(to bottom, rgba(10, 4, 0, .34), rgba(10, 4, 0, .42) 18%,
                       rgba(10, 4, 0, .42) 82%, rgba(10, 4, 0, .30)),
       radial-gradient(92% 60% at 100% -4%, rgba(10, 4, 0, .42), rgba(10, 4, 0, 0) 66%);
   }
-  .ui-quotes { --ui-quotes-shade: rgba(32, 14, 2, .22); }
-  .ui-quotes__bar { font-size: 11px; }
+  .ui-testimonial { --ui-testimonial-shade: rgba(32, 14, 2, .22); }
+  .ui-testimonial__bar { font-size: 11px; }
 }
 
 /* ---------------------------------------------------------------- preferences */
 
 @media (prefers-reduced-motion: reduce) {
-  .ui-quotes__card { filter: none; transform: none; }
-  .ui-quotes__pane { transform: scale(1); will-change: auto; }
-  .ui-quotes__plate { transform: none; will-change: auto; }
-  .ui-quotes__w { opacity: 1; transform: none; filter: none; }
-  .ui-quotes__avatar { transform: none; }
-  .ui-quotes__dot::before { transition: none; }
+  .ui-testimonial__card { filter: none; transform: none; }
+  .ui-testimonial__pane { transform: scale(1); will-change: auto; }
+  .ui-testimonial__plate { transform: none; will-change: auto; }
+  .ui-testimonial__w { opacity: 1; transform: none; filter: none; }
+  .ui-testimonial__avatar { transform: none; }
+  .ui-testimonial__dot::before { transition: none; }
 }
 
 @media (prefers-contrast: more) {
-  .ui-quotes {
-    --ui-quotes-shade: rgba(14, 7, 3, .42);
-    --ui-quotes-veil: rgba(255, 255, 255, .10);
+  .ui-testimonial {
+    --ui-testimonial-shade: rgba(14, 7, 3, .42);
+    --ui-testimonial-veil: rgba(255, 255, 255, .10);
   }
-  .ui-quotes__scrim {
+  .ui-testimonial__scrim {
     background:
       radial-gradient(90% 140% at 100% -8%, rgba(10, 4, 0, .66), rgba(10, 4, 0, .10) 70%),
       linear-gradient(to bottom, rgba(10, 4, 0, .34), rgba(10, 4, 0, .06) 26%);
@@ -584,15 +584,15 @@
 }
 
 @media (forced-colors: active) {
-  .ui-quotes__pane {
+  .ui-testimonial__pane {
     background: Canvas;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     border: 1px solid CanvasText;
   }
-  .ui-quotes__quote p, .ui-quotes__name { color: CanvasText; }
-  .ui-quotes__heart-base { fill: none; stroke: CanvasText; stroke-width: 2; }
-  .ui-quotes__heart-fill { fill: CanvasText; }
-  .ui-quotes__scrim { display: none; }
-  .ui-quotes__nav, .ui-quotes__play, .ui-quotes__credit { border: 1px solid CanvasText; }
+  .ui-testimonial__quote p, .ui-testimonial__name { color: CanvasText; }
+  .ui-testimonial__heart-base { fill: none; stroke: CanvasText; stroke-width: 2; }
+  .ui-testimonial__heart-fill { fill: CanvasText; }
+  .ui-testimonial__scrim { display: none; }
+  .ui-testimonial__nav, .ui-testimonial__play, .ui-testimonial__credit { border: 1px solid CanvasText; }
 }

@@ -1,9 +1,9 @@
-/* Quote Stack — one clock drives the whole thing.
+/* Animated testimonial card stack — one clock drives the whole thing.
    The numbers are seconds read off the 30fps source video, frame by frame. */
 (function () {
   'use strict';
 
-  var root = document.querySelector('[data-ui-quotes]');
+  var root = document.querySelector('[data-ui-testimonial]');
   if (!root) return;
 
   /* ------------------------------------------------------------------ timing */
@@ -85,7 +85,7 @@
 
   var slides = [].map.call(root.querySelectorAll('[data-item]'), function (el, i) {
     var card = el.querySelector('[data-card]');
-    var name = el.querySelector('.ui-quotes__name');
+    var name = el.querySelector('.ui-testimonial__name');
     var who = name ? [].map.call(name.childNodes, function (n) {
       return n.nodeName === 'BR' ? ' ' : n.textContent;
     }).join('').replace(/\s+/g, ' ').trim() : '';
@@ -116,7 +116,7 @@
         if (!chunk) return;
         if (/^\s+$/.test(chunk)) { frag.appendChild(document.createTextNode(' ')); return; }
         var s = document.createElement('span');
-        s.className = 'ui-quotes__w';
+        s.className = 'ui-testimonial__w';
         s.style.setProperty('--i', n++);
         s.textContent = chunk;
         frag.appendChild(s);
@@ -151,7 +151,7 @@
   var dots = slides.map(function (s, i) {
     var b = document.createElement('button');
     b.type = 'button';
-    b.className = 'ui-quotes__dot';
+    b.className = 'ui-testimonial__dot';
     b.setAttribute('aria-label', 'Quote ' + (i + 1) + ' of ' + slides.length);
     b.addEventListener('click', function () { go(i, true); });
     dotBox.appendChild(b);

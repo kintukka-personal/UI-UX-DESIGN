@@ -1,8 +1,8 @@
-# Quote Stack
+# Animated Testimonial Card Stack
 
-An animated testimonial, rebuilt from Jitter's free animated testimonial template (the *Mango* one). A stack of three sheets of frosted glass sits over a photograph. The camera pulls back, the stack collapses into one card, the quote lands word by word, the author arrives, and the card likes itself with a pop. Then the front card drops away and the next quote comes up out of the stack.
+An animated testimonial, rebuilt from Jitter's free *Animated testimonial card stack* template, version 5.0 (the *Mango* one). A stack of three sheets of frosted glass sits over a photograph. The camera pulls back, the stack collapses into one card, the quote lands word by word, the author arrives, and the card likes itself with a pop. Then the front card drops away and the next quote comes up out of the stack.
 
-Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-quotes`.
+Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-testimonial`.
 
 ## What it does
 
@@ -65,20 +65,20 @@ Re-glassed by the browser, the rebuilt card lands within about 5/255 of the sour
 - The heart is a real toggle button reporting `aria-pressed`. Its glyph keeps the source's 21px but its target is never smaller than 44 × 44.
 - Moves the visitor makes are announced through a polite live region ("2 of 5. Priya Raman, Growth lead at Fathom"). The reveal itself stays quiet.
 - The reveal runs longer than 5 seconds, so there is a **Pause/Play** button (WCAG 2.2.2) with a visible focus ring. **Previous** and **Next** appear when they take keyboard focus.
-- **Contrast.** Measured off the rendered page with the text hidden, against the brightest pixel behind each run of type: the quote is 4.7:1 and the name 4.8:1 on a wide frame, 4.7:1 and 5.5:1 in portrait; the site label 5.7:1, the wordmark 4.7:1, the heart 4.1:1. Two things pay for that, and neither is in the source: a 18% warm-black veil on the glass, and a soft scrim in the top-right corner under the site label. The source itself sits at about 3.5:1. The name is also at full strength here; the source dims it to 66%, which `--ui-quotes-ink-soft` will give you back.
+- **Contrast.** Measured off the rendered page with the text hidden, against the brightest pixel behind each run of type: the quote is 4.7:1 and the name 4.8:1 on a wide frame, 4.7:1 and 5.5:1 in portrait; the site label 5.7:1, the wordmark 4.7:1, the heart 4.1:1. Two things pay for that, and neither is in the source: a 18% warm-black veil on the glass, and a soft scrim in the top-right corner under the site label. The source itself sits at about 3.5:1. The name is also at full strength here; the source dims it to 66%, which `--ui-testimonial-ink-soft` will give you back.
 - **Reduced motion:** nothing plays on its own. The camera stays at 1×, the stack never fans, and each quote is simply there, complete. The arrow keys and the dots still move between quotes.
 - In forced-colours mode the glass becomes a plain system panel with a system border, and the heart an outline until it is liked.
 - Without JavaScript the first quote sits there fully revealed.
 
 ## Responsive
 
-The frame is 8:5 on a wide screen, as in the source. Below 720px, or in portrait, it becomes 4:5 and re-crops the photograph; the card grows to 88% of the frame and the type scale parts company from the card scale so the quote never drops under 16px. The portrait crop puts the card on sunlit plywood instead of the shaded wall, so the plate is dusked down behind it to hold the contrast — see the `.ui-quotes__scrim` band in the portrait block.
+The frame is 8:5 on a wide screen, as in the source. Below 720px, or in portrait, it becomes 4:5 and re-crops the photograph; the card grows to 88% of the frame and the type scale parts company from the card scale so the quote never drops under 16px. The portrait crop puts the card on sunlit plywood instead of the shaded wall, so the plate is dusked down behind it to hold the contrast — see the `.ui-testimonial__scrim` band in the portrait block.
 
 ## Customise
 
-- **Quotes:** each `<li data-item>` in `index.html`. The text is plain in the markup; the script splits it into words. A `<br>` is kept, which is how the name sits on two lines. Use `.ui-quotes__avatar--mono` with two letters for anyone without a portrait.
-- **Colours:** the `--ui-quotes-*` tokens at the top of `style.css`.
-- **Glass:** `--ui-quotes-veil`, `--ui-quotes-shade`, `--ui-quotes-desat` and `--ui-quotes-frost`.
+- **Quotes:** each `<li data-item>` in `index.html`. The text is plain in the markup; the script splits it into words. A `<br>` is kept, which is how the name sits on two lines. Use `.ui-testimonial__avatar--mono` with two letters for anyone without a portrait.
+- **Colours:** the `--ui-testimonial-*` tokens at the top of `style.css`.
+- **Glass:** `--ui-testimonial-veil`, `--ui-testimonial-shade`, `--ui-testimonial-desat` and `--ui-testimonial-frost`.
 - **Pace:** `CYCLE`, `ENTER_DUR`, `SETTLE` and the word timings at the top of `script.js`, plus `--w0` / `--ws` / `--wd` on the quote and the name in `style.css`.
 
 ## Credit
