@@ -10,7 +10,7 @@
   var NS = "http://www.w3.org/2000/svg";
 
   // Beats. Everything after the quartz beat is timed from T_POSTER.
-  var T_POSTER = 5.35;              // dissolve: ring + ink hands -> the watch
+  var T_POSTER = 5.3;               // dissolve: ring + ink hands -> the watch
   var T_JOIN = T_POSTER + 0.45;     // the paper layer has gone
   var CALL_START = T_POSTER + 2.8;  // after a hold on the watch and ACIER, callouts start on the next tick
   var CALL_END = CALL_START + 6.5;  // up to 1s to the first tick, 4 more ticks, then a short hold
@@ -20,8 +20,8 @@
 
   // Intro: FOSLN holds on the finished dial, squashes into a line at
   // MORPH_AT and stretches out into the seconds hand at 3 o'clock by HAND_AT
-  var MORPH_AT = 2.4;
-  var HAND_AT = 3.15;
+  var MORPH_AT = 2.84;              // about 1s after the ring completes
+  var HAND_AT = MORPH_AT + 0.25;     // a quick squash and stretch
 
   // Quartz ring (design units on the 720 x 900 frame)
   var RING_R = 250, RING_C = { x: 360, y: 450 };
@@ -166,7 +166,7 @@
     for (var i = 0; i < 60; i++) {
       var hour = i % 5 === 0, len = hour ? 30 : 14;
       var line = el("line", { x1: 0, x2: 0, y1: -RING_R, y2: -RING_R, "stroke-width": hour ? 4 : 1.6, transform: "rotate(" + i * 6 + ")" }, ring);
-      this.ticks.push({ node: line, len: len, at: 0.74 + 0.62 * Math.pow(i / 60, 0.6) });   // once FOSLN has locked
+      this.ticks.push({ node: line, len: len, at: 1.14 + 0.62 * Math.pow(i / 60, 0.6) });   // 0.4s after FOSLN has locked
     }
     // The intro's hands are the watch's hands, in ink, drawn in ring units:
     // photo px x (frame px per photo px) / (ring scale on the dial)
@@ -336,8 +336,8 @@
     // The brand decodes at the centre, one letter locking at a time, and
     // holds on the finished dial. Then the letters squash into a line...
     this.hz.textContent = decode("FOSLN", t, 0.06, 0.7);   // locked just before the first tick
-    var squash = inCubic(seg(t, MORPH_AT, MORPH_AT + 0.3));
-    var swap = seg(t, MORPH_AT + 0.24, MORPH_AT + 0.32);
+    var squash = inCubic(seg(t, MORPH_AT, MORPH_AT + 0.1));
+    var swap = seg(t, MORPH_AT + 0.08, MORPH_AT + 0.11);
     this.hz.setAttribute("transform", squash > 0 ? "translate(0 450) scale(1 " + n(lerp(1, 0.08, squash) * 1000) / 1000 + ") translate(0 -450)" : "");
     this.hz.style.opacity = t < 0.04 ? 0 : n(1 - swap);
 
@@ -348,7 +348,7 @@
       var b = this.hz.getBBox();
       if (b.width > 0) box = { x: b.x - RING_C.x, w: b.width };
     }
-    var stretch = seg(t, MORPH_AT + 0.3, HAND_AT);
+    var stretch = seg(t, MORPH_AT + 0.1, HAND_AT);
     var k1 = this.inkScale;
     this.morph.setAttribute("x1", n(lerp(box.x, -40 * k1, outCubic(stretch))));
     this.morph.setAttribute("x2", n(lerp(box.x + box.w, 154 * k1, outBack(stretch, 1.2))));

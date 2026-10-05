@@ -4,13 +4,13 @@ A launch hero for the **FOSLN Acier** quartz watch, built on the [Product reveal
 
 Three beats, joined by match cuts and a dissolve:
 
-1. **Quartz (0 to 5.35s), on pale steel paper**
+1. **Quartz (0 to 5.3s), on pale steel paper**
    - At the centre, letters cycle and lock one by one, left to right, until they spell **FOSLN**.
-   - The letters come first and lock by 0.7s. Only then do the 60 minute ticks appear around them, faster and faster, with heavier ticks at the hours.
-   - FOSLN holds on the finished dial for about a second. Then the letters squash into a thin line, which stretches out to the right into the seconds hand, pointing at 3 o'clock. The hub grows in at the centre as it lands.
+   - The letters come first and lock by 0.7s. After a 0.4s pause the 60 minute ticks appear around them, faster and faster, with heavier ticks at the hours.
+   - FOSLN holds on the finished dial for about a second. Then, in a quick 0.25s, the letters squash into a thin line, which stretches out to the right into the seconds hand, pointing at 3 o'clock. The hub grows in at the centre as it lands.
    - **The hands, as one continuous move:** from 3 o'clock the seconds hand sweeps a full turn in quartz steps and carries on into the visitor's current second. The minute hand grows out of the hub and turns a full revolution into the current minute. The hour hand joins last and turns to the current hour.
    - Meanwhile the ring, with the hands on it, shrinks and moves until it is exactly the size and position of the watch dial. All three hands land on the watch's live time just as the ring lands.
-2. **Poster (5.35 to about 15.5s), dissolving to graphite**
+2. **Poster (5.3 to about 15.5s), dissolving to graphite**
    - The paper layer dissolves into the watch. The ink hands sit exactly on top of the watch's own hands, so the time carries straight through. The bracelet extends out of the case as it appears.
    - **Live hands:** the photo's printed hands were painted out and replaced with drawn ones. They show the visitor's local time and step once a second with a small quartz overshoot.
    - **ACIER** assembles in brushed steel, link by link. Each letter is cut into five bands, like the bracelet's links, and every band slides in from alternating sides and locks with a slight overshoot.
