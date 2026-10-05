@@ -1,15 +1,15 @@
-# Dine In — test site
+# Dine In (baseline)
 
-A working copy of [dine-in.com.au](https://dine-in.com.au/), rebuilt as plain HTML, CSS and JS so new UI components can be tried on it before the real site is upgraded. It has the same pages, navigation, colours, copy, images, menus, prices and links as the live Squarespace site, and you can edit it directly with no build step and no platform lock-in.
+The untouched baseline copy of [dine-in.com.au](https://dine-in.com.au/), rebuilt as plain HTML, CSS and JS so new UI components can be tried on it before the real site is upgraded. It has the same pages, navigation, colours, copy, images, menus, prices and links as the live Squarespace site, and you can edit it directly with no build step and no platform lock-in.
 
-![Dine In test site](preview.png)
+![Dine In (baseline)](preview.png)
 
 ## Run it
 
 Open `index.html` in a browser, or serve the folder so every page and the reviews widget work as they do online:
 
 ```sh
-cd sites/dine-in
+cd sites/dine-in-baseline
 python3 -m http.server 8000   # then open http://localhost:8000
 ```
 

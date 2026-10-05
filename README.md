@@ -29,4 +29,4 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 
 | Site | Description |
 | --- | --- |
-| [Dine In (test copy)](sites/dine-in/) | A plain HTML/CSS/JS rebuild of dine-in.com.au, with every page, menu, form and the shop, used as a sandbox for trying components before upgrading the real site |
+| [Dine In (baseline)](sites/dine-in-baseline/) | The untouched baseline: a plain HTML/CSS/JS rebuild of dine-in.com.au, with every page, menu, form and the shop, kept as the reference to compare component experiments against before upgrading the real site |
