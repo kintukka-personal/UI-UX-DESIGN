@@ -23,6 +23,8 @@ Three beats, joined by match cuts and a dissolve:
 
 When it ends, **Discover Acier** appears. Clicking it, or scrolling down from the sign-off card, pulls the three pieces down the drain into the button, then snaps the page to the product section, as in Product reveal.
 
+**Light beams** then guide the eye to the button. A faint track runs from under each sign-off piece to the top of Discover, along the same curve that piece will drain down. White pulses of light, each a bright glowing head with a soft tail, run along them in a loop: the outer two slightly after the middle one, speeding up as they go, like water finding the drain. Each time they arrive, the button gives a ring of light. The beams fade out the moment the exit starts. With reduced motion only the faint tracks show.
+
 The **product section** shows a still of the poster, with hands and the local-time callout still live. Beside it are a short description, a price and a demo "Add to bag". The name, brand, time and specs are already on the poster, so the copy doesn't repeat them.
 
 Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-acier`.

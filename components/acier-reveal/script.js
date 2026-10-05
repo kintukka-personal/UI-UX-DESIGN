@@ -597,12 +597,46 @@
     var stage = player.stage;
     var pieces = [stage.plate, stage.endCopy, stage.endWord.grad.ownerSVGElement];
     var busy = false;
+    var beams = hero.querySelector("[data-beams]");
     var TRAVEL = 900, SCROLL = 460;
 
     function bezier(p0, p1, p2, p3, u) {
       var v = 1 - u;
       return v * v * v * p0 + 3 * v * v * u * p1 + 3 * v * u * u * p2 + u * u * u * p3;
     }
+
+    // Beams: one curve per piece, the same curve its drain will follow,
+    // from just under the piece to the top of the button
+    function curve(A, T) {
+      var dx = T.x - A.x, dy = T.y - A.y;
+      return { c1: { x: A.x + dx * 0.32, y: A.y + dy * 0.12 }, c2: { x: T.x, y: A.y + dy * 0.58 } };
+    }
+
+    function layoutBeams() {
+      if (!beams || busy) return;
+      var H = hero.getBoundingClientRect();
+      var c = cue.getBoundingClientRect();
+      var m = new DOMMatrixReadOnly(getComputedStyle(cue).transform);   // ignore the cue's slide-in offset
+      var T = { x: c.left + c.width / 2 - H.left, y: c.top - m.m42 - H.top - 6 };
+      var html = "";
+      pieces.forEach(function (node, i) {
+        var b = node.getBoundingClientRect();
+        var A = { x: b.left + b.width / 2 - H.left, y: b.bottom - H.top + 12 };
+        var k = curve(A, T);
+        var d = "M" + n(A.x) + " " + n(A.y) + "C" + n(k.c1.x) + " " + n(k.c1.y) + " " + n(k.c2.x) + " " + n(k.c2.y) + " " + n(T.x) + " " + n(T.y);
+        var delay = "--d:" + (i === 1 ? 0 : 0.12) + "s";
+        html += '<path class="ui-acier__beam-track" d="' + d + '"/>' +
+          '<path class="ui-acier__beam-tail" pathLength="1" style="' + delay + '" d="' + d + '"/>' +
+          '<path class="ui-acier__beam-head" pathLength="1" style="' + delay + '" d="' + d + '"/>';
+      });
+      beams.innerHTML = html;
+    }
+
+    // Lay the beams out whenever the sign-off is reached, and on resize
+    new MutationObserver(function () {
+      if (hero.hasAttribute("data-done")) requestAnimationFrame(layoutBeams);
+    }).observe(hero, { attributes: true, attributeFilter: ["data-done"] });
+    window.addEventListener("resize", function () { if (hero.hasAttribute("data-done")) layoutBeams(); });
 
     function finish() {
       target.focus({ preventScroll: true });
@@ -612,6 +646,7 @@
       cue.style.scale = cue.style.pointerEvents = "";
       if (controls) controls.inert = false;
       busy = false;
+      hero.removeAttribute("data-draining");
     }
 
     function scrollToTarget() {
@@ -675,6 +710,7 @@
 
     function drain() {
       busy = true;
+      hero.setAttribute("data-draining", "");
       if (controls) controls.inert = true;
       cue.style.pointerEvents = "none";
 
