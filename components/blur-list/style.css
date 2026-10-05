@@ -1,0 +1,224 @@
+/* ==========================================================================
+   Blur List
+   Rebuilt from Jitter's free "List" text animation template (Blur Effect,
+   Template 01). Classes are prefixed ui-blur-list. Plain CSS, no dependencies.
+   ========================================================================== */
+
+.ui-blur-list {
+  /* Palette, sampled from the source video */
+  --ui-blur-list-bg: #000;
+  --ui-blur-list-ink: #fff;           /* the word at the arrow */
+  --ui-blur-list-dim: #828282;        /* every other word (130/255) */
+  --ui-blur-list-label: #8b6dff;      /* footer labels; the source's violet, lifted to 5.7:1 */
+  --ui-blur-list-badge: #18151b;      /* the Pause button, where the source has its badge */
+  --ui-blur-list-focus: #b9a8ff;
+
+  /* Type */
+  --ui-blur-list-sans: "Poppins", "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+  /* Geometry. Everything is measured in source pixels of the 1280 x 720
+     frame and scaled by --u. The height decides on wide screens; on narrow
+     ones the longest word ("Blur Effect", arrow included) fills the width. */
+  --u: min(calc(100vh / 720), calc((100vw - 32px) / 830));
+  --font: calc(var(--u) * 128);          /* cap height 90px, as in the source */
+  --left: max(16px, calc(50vw - var(--u) * 410)); /* the arrow's tail: x = 230 at 16:9 */
+  --gap: calc(var(--u) * 122);           /* arrow tail to the words' left edge */
+  --reach: calc(var(--u) * 1088);        /* the wheel's pivot, off to the left */
+
+  position: relative;
+  height: 100vh;
+  min-height: 320px;
+  overflow: hidden;
+  background: var(--ui-blur-list-bg);
+  color: var(--ui-blur-list-ink);
+  font-family: var(--ui-blur-list-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+@supports (height: 100svh) {
+  .ui-blur-list {
+    --u: min(calc(100svh / 720), calc((100vw - 32px) / 830));
+    height: 100svh;
+  }
+}
+
+.ui-blur-list-page {
+  margin: 0;
+  background: #000;
+}
+
+.ui-blur-list__sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------------ Stage */
+.ui-blur-list__stage {
+  position: absolute;
+  inset: 0;
+  touch-action: none;   /* vertical drags turn the wheel */
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+.ui-blur-list__stage.is-dragging { cursor: grabbing; }
+
+.ui-blur-list__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* The arrow: tail at x 230, tip at x 319, centred 5px below the cap line */
+.ui-blur-list__arrow {
+  position: absolute;
+  left: var(--left);
+  top: calc(50% + var(--u) * 5 - var(--u) * 44);
+  width: calc(var(--u) * 92);
+  height: calc(var(--u) * 88);
+  overflow: visible;
+  fill: none;
+  stroke: var(--ui-blur-list-ink);
+  stroke-width: 13;
+  stroke-linejoin: miter;
+  pointer-events: none;
+}
+
+/* The wheel's origin is the words' left edge, on the screen's centre line */
+.ui-blur-list__wheel {
+  position: absolute;
+  left: calc(var(--left) + var(--gap));
+  top: 50%;
+  width: 0;
+  height: 0;
+}
+.ui-blur-list__wheel.is-moving { filter: url(#ui-blur-list-motion); }
+
+.ui-blur-list__words {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-blur-list__words li {
+  position: absolute;
+  left: 0;
+  top: 0;
+  /* Each word turns about the pivot; the script sets the angle */
+  transform-origin: calc(var(--reach) * -1) 0;
+  will-change: transform, filter;
+}
+
+.ui-blur-list__word {
+  display: block;
+  margin: calc(var(--font) * -0.5) 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ui-blur-list-dim);
+  font: 600 var(--font)/1 var(--ui-blur-list-sans);
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+  /* The caps sit centred on the box with Poppins at line-height 1 */
+}
+
+.ui-blur-list__word:focus { outline: none; }
+.ui-blur-list__word:focus-visible {
+  outline: max(2px, calc(var(--u) * 3)) solid var(--ui-blur-list-focus);
+  outline-offset: max(4px, calc(var(--u) * 8));
+  border-radius: 4px;
+}
+
+/* ----------------------------------------------------------------- Footer */
+.ui-blur-list__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: max(env(safe-area-inset-bottom), 0px);
+  height: calc(var(--u) * 80);
+  min-height: 72px;
+  pointer-events: none;
+}
+
+.ui-blur-list__label {
+  position: absolute;
+  top: 50%;
+  margin: 0;
+  transform: translateY(-50%);
+  color: var(--ui-blur-list-label);
+  font: 400 max(12px, calc(var(--u) * 10.5))/1.2 var(--ui-blur-list-sans);
+  white-space: nowrap;
+}
+.ui-blur-list__label--name { left: max(16px, calc(var(--u) * 40)); }
+.ui-blur-list__label--index { left: 50%; transform: translate(-50%, -50%); }
+
+/* --------------------------------------------------------------- Controls */
+.ui-blur-list__controls {
+  position: absolute;
+  right: max(12px, calc(var(--u) * 18));
+  bottom: calc(max(env(safe-area-inset-bottom), 0px) + max(14px, calc(var(--u) * 18)));
+  display: flex;
+  gap: 8px;
+}
+
+.ui-blur-list__toggle,
+.ui-blur-list__step {
+  min-width: 44px;
+  min-height: 44px;
+  height: max(44px, calc(var(--u) * 36));
+  padding: 0 max(14px, calc(var(--u) * 14));
+  border: 0;
+  border-radius: max(4px, calc(var(--u) * 4));
+  background: var(--ui-blur-list-badge);
+  color: var(--ui-blur-list-ink);
+  font: 500 max(15px, calc(var(--u) * 19))/1 var(--ui-blur-list-sans);
+  letter-spacing: -0.01em;
+  cursor: pointer;
+}
+.ui-blur-list__toggle { min-width: max(88px, calc(var(--u) * 130)); }
+
+.ui-blur-list__toggle:hover,
+.ui-blur-list__step:hover { background: #2a2530; }
+
+.ui-blur-list__toggle:focus-visible,
+.ui-blur-list__step:focus-visible {
+  outline: 2px solid var(--ui-blur-list-focus);
+  outline-offset: 3px;
+}
+
+/* Previous / Next only show while they hold keyboard focus */
+.ui-blur-list__step:not(:focus-visible) {
+  position: absolute;
+  width: 1px;
+  min-width: 0;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* On phones the centre label would collide with the button */
+@media (max-width: 560px) {
+  .ui-blur-list__label--index { display: none; }
+}
+
+/* ------------------------------------------------------------ Preferences */
+@media (forced-colors: active) {
+  .ui-blur-list__word { color: CanvasText; }
+  .ui-blur-list__word[aria-current="true"] { color: Highlight; }
+  .ui-blur-list__arrow { stroke: CanvasText; }
+  .ui-blur-list__toggle,
+  .ui-blur-list__step { border: 1px solid ButtonText; }
+  .ui-blur-list__words li { filter: none !important; }
+}

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blur List</title>
+<meta name="description" content="A kinetic word list: twelve words fan out on a wheel that pivots off the left of the screen, ticking past an arrow with a motion blur.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="ui-blur-list-page">
+
+<main>
+  <section class="ui-blur-list" data-ui-blur-list aria-roledescription="carousel" aria-labelledby="ui-blur-list-title">
+    <h1 id="ui-blur-list-title" class="ui-blur-list__sr">Blur Effect: twelve words</h1>
+    <p class="ui-blur-list__sr" id="ui-blur-list-help">Use the up and down arrow keys, scroll, swipe, or select a word to move the list.</p>
+
+    <div class="ui-blur-list__stage" data-stage>
+      <!-- Motion blur along the direction of travel. The script sets its
+           strength from the wheel's speed and only applies it while moving. -->
+      <svg class="ui-blur-list__defs" width="0" height="0" focusable="false" aria-hidden="true">
+        <filter id="ui-blur-list-motion" x="-5%" y="-20%" width="110%" height="140%" color-interpolation-filters="sRGB">
+          <feGaussianBlur data-motion-blur stdDeviation="0 0"/>
+        </filter>
+      </svg>
+
+      <!-- The arrow marks the current word and nudges right with each tick -->
+      <svg class="ui-blur-list__arrow" data-arrow viewBox="0 0 92 88" focusable="false" aria-hidden="true">
+        <path d="M0 44H86" />
+        <path d="M46 2.5 87.5 44 46 85.5" />
+      </svg>
+
+      <!-- The wheel: its pivot sits far off the left edge of the screen -->
+      <div class="ui-blur-list__wheel" data-wheel>
+        <ol class="ui-blur-list__words" data-words>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Motion</button></li>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Emotion</button></li>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Direction</button></li>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Jitter</button></li>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Versatile</button></li>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Life</button></li>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Journey</button></li>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Blur Effect</button></li>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Moments</button></li>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Pulse</button></li>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Essence</button></li>
+          <li><button class="ui-blur-list__word" type="button" aria-describedby="ui-blur-list-help">Memories</button></li>
+        </ol>
+      </div>
+    </div>
+
+    <footer class="ui-blur-list__bar">
+      <p class="ui-blur-list__label ui-blur-list__label--name">Blur Effect</p>
+      <p class="ui-blur-list__label ui-blur-list__label--index">Template — 01</p>
+    </footer>
+
+    <div class="ui-blur-list__controls">
+      <button class="ui-blur-list__step ui-blur-list__step--prev" type="button" data-prev>Previous word</button>
+      <button class="ui-blur-list__step ui-blur-list__step--next" type="button" data-next>Next word</button>
+      <button class="ui-blur-list__toggle" type="button" data-toggle>Pause</button>
+    </div>
+
+    <p class="ui-blur-list__sr" aria-live="polite" aria-atomic="true" data-live></p>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
