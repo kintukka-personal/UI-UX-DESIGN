@@ -540,9 +540,11 @@
   width: 20px;
   height: 32px;
   border-radius: 6px;
+  /* Layer 1: cylinder shading, fixed. Layer 2: one groove per tile, so the
+     tile is exactly one pitch tall and moving it by a pitch loops seamlessly. */
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 30%, rgba(255, 255, 255, 0.18) 50%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.6) 100%),
-    repeating-linear-gradient(180deg, #E9ECEE 0 2px, #7C8288 2px 3px, #B9BEC3 3px var(--pitch)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 30%, rgba(255, 255, 255, 0.18) 50%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.6) 100%) 0 0 / 100% 100% no-repeat,
+    linear-gradient(180deg, #E9ECEE 0 40%, #7C8288 40% 60%, #B9BEC3 60% 100%) 0 0 / 100% var(--pitch) repeat-y,
     #B9BEC3;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.5);
   transition: transform 0.2s ease, filter 0.25s ease;
@@ -641,12 +643,24 @@
 
 /* The crown answers each arrival: its grooves turn one notch, and a ring of
    light breathes out from it. Hovering winds it continuously. */
-.ui-acier[data-done][data-phase="end"]:not([data-draining]) .ui-acier__crown {
+.ui-acier[data-done][data-phase="end"] .ui-acier__crown {
   animation: ui-acier-crown-notch var(--ui-acier-beam-cycle, 2.8s) ease-out 0.12s infinite;
 }
 
-.ui-acier[data-done][data-phase="end"]:not([data-draining]) .ui-acier__crown i {
+.ui-acier[data-done][data-phase="end"] .ui-acier__crown i {
   animation: ui-acier-crown-ring var(--ui-acier-beam-cycle, 2.8s) ease-out 0.12s infinite;
+  transition: opacity 0.2s ease;
+}
+
+/* During the exit the crown holds exactly where it is (no snap back) and its
+   ring fades rather than cutting out */
+.ui-acier[data-draining] .ui-acier__crown,
+.ui-acier[data-draining] .ui-acier__crown i {
+  animation-play-state: paused;
+}
+
+.ui-acier[data-draining] .ui-acier__crown i {
+  opacity: 0;
 }
 
 .ui-acier[data-done][data-phase="end"]:not([data-draining]) .ui-acier__cue:hover .ui-acier__crown {
@@ -654,8 +668,8 @@
 }
 
 @keyframes ui-acier-crown-notch {
-  0%, 48%   { background-position: 0 0, 0 0, 0 0; }
-  58%, 100% { background-position: 0 0, 0 var(--pitch), 0 0; }
+  0%, 46%   { background-position: 0 0, 0 0, 0 0; animation-timing-function: cubic-bezier(0.3, 0, 0.2, 1); }
+  62%, 100% { background-position: 0 0, 0 var(--pitch), 0 0; }
 }
 
 @keyframes ui-acier-crown-wind {
