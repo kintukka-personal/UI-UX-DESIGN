@@ -24,3 +24,9 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Spot Me rating screen](components/spot-me-rate/) | The app rating screen rebranded for Spot Me: "Hey, bestie!!", stars in laurels, the avatar inside the crush ring, and a "Rate Spot Me" button. After the tap the heart completes the ring and pink confetti bursts out |
 | [MacBook scroll](components/macbook-scroll/) | React + Motion + Tailwind: on scroll the screen ejects from a laptop and lands full-size in the viewport, the laptop drops out of focus, and the landing hits with an overshoot, a ring pulse and a sheen |
 | [Product reveal](components/product-reveal/) | Product-launch hero rebuilt from Jitter's "Logo reveal" template: a running track and logo mark build, a hard cut to the CO2 shoe over red Martian ground with tracking readouts and a smeared zoom, then a white sign-off card. Pause, replay and reduced-motion support, plus a product section |
+
+## Sites
+
+| Site | Description |
+| --- | --- |
+| [Dine In (baseline)](sites/dine-in-baseline/) | The untouched baseline: a plain HTML/CSS/JS rebuild of dine-in.com.au, with every page, menu, form and the shop, kept as the reference to compare component experiments against before upgrading the real site |
