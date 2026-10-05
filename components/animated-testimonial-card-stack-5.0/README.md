@@ -1,4 +1,4 @@
-# Animated Testimonial Card Stack
+# Animated testimonial card stack-5.0
 
 An animated testimonial, rebuilt from Jitter's free *Animated testimonial card stack* template, version 5.0 (the *Mango* one). A stack of three sheets of frosted glass sits over a photograph. The camera pulls back, the stack collapses into one card, the quote lands word by word, the author arrives, and the card likes itself with a pop. Then the front card drops away and the next quote comes up out of the stack.
 

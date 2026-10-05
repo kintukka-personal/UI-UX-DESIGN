@@ -1,4 +1,4 @@
-/* Animated testimonial card stack — one clock drives the whole thing.
+/* Animated testimonial card stack-5.0 — one clock drives the whole thing.
    The numbers are seconds read off the 30fps source video, frame by frame. */
 (function () {
   'use strict';
