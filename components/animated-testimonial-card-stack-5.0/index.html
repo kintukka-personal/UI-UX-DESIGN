@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Animated testimonial card stack-5.0</title>
+<meta name="description" content="Mango testimonials: a stack of frosted glass cards that collapses into one, then reveals a quote word by word and likes itself.">
+<meta name="theme-color" content="#1A1008">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap">
+<link rel="preload" as="image" href="images/scene.webp" type="image/webp">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="ui-testimonial-page">
+
+<main>
+  <section class="ui-testimonial" data-ui-testimonial aria-roledescription="carousel" aria-labelledby="ui-testimonial-title">
+    <h1 id="ui-testimonial-title" class="ui-testimonial__sr">What teams say about Mango</h1>
+    <p class="ui-testimonial__sr" id="ui-testimonial-help">Use the left and right arrow keys to move between quotes. Each quote can be liked with the heart button.</p>
+
+    <div class="ui-testimonial__stage" data-stage tabindex="0" aria-label="Quotes, use the left and right arrow keys" aria-describedby="ui-testimonial-help">
+      <!-- The photo is the only thing the camera pushes in on -->
+      <div class="ui-testimonial__plate" data-plate aria-hidden="true">
+        <img class="ui-testimonial__photo" src="images/scene.webp" alt="" width="1728" height="1080" fetchpriority="high" decoding="async">
+      </div>
+      <div class="ui-testimonial__scrim" aria-hidden="true"></div>
+
+      <ul class="ui-testimonial__deck" data-deck>
+
+        <li class="ui-testimonial__item" data-item role="group" aria-roledescription="slide" aria-label="1 of 5">
+          <figure class="ui-testimonial__card" data-card>
+            <span class="ui-testimonial__panes" aria-hidden="true">
+              <span class="ui-testimonial__pane ui-testimonial__pane--up"></span>
+              <span class="ui-testimonial__pane ui-testimonial__pane--down"></span>
+              <span class="ui-testimonial__pane ui-testimonial__pane--face"></span>
+            </span>
+            <div class="ui-testimonial__body">
+              <blockquote class="ui-testimonial__quote"><p data-words>Mango&rsquo;s AI templates save us hours and make every campaign feel personalized. Highly recommend!</p></blockquote>
+              <figcaption class="ui-testimonial__who">
+                <img class="ui-testimonial__avatar" src="images/avatar.webp" alt="" width="160" height="160" decoding="async">
+                <p class="ui-testimonial__name" data-words>John Doe,<br>CEO of Acme</p>
+                <button class="ui-testimonial__like" type="button" data-like aria-pressed="false">
+                  <span class="ui-testimonial__sr">Like this quote from John Doe</span>
+                  <svg class="ui-testimonial__heart" viewBox="0 0 24 22" aria-hidden="true" focusable="false">
+                    <path class="ui-testimonial__heart-base" d="M12 21.1 2.9 12A6.1 6.1 0 0 1 12 4.1 6.1 6.1 0 0 1 21.1 12Z"/>
+                    <path class="ui-testimonial__heart-fill" d="M12 21.1 2.9 12A6.1 6.1 0 0 1 12 4.1 6.1 6.1 0 0 1 21.1 12Z"/>
+                  </svg>
+                </button>
+              </figcaption>
+            </div>
+          </figure>
+        </li>
+
+        <li class="ui-testimonial__item" data-item role="group" aria-roledescription="slide" aria-label="2 of 5">
+          <figure class="ui-testimonial__card" data-card>
+            <span class="ui-testimonial__panes" aria-hidden="true">
+              <span class="ui-testimonial__pane ui-testimonial__pane--up"></span>
+              <span class="ui-testimonial__pane ui-testimonial__pane--down"></span>
+              <span class="ui-testimonial__pane ui-testimonial__pane--face"></span>
+            </span>
+            <div class="ui-testimonial__body">
+              <blockquote class="ui-testimonial__quote"><p data-words>We built a whole launch in an afternoon and every asset came out on brand. Nobody had to redraw it.</p></blockquote>
+              <figcaption class="ui-testimonial__who">
+                <span class="ui-testimonial__avatar ui-testimonial__avatar--mono" aria-hidden="true">PR</span>
+                <p class="ui-testimonial__name" data-words>Priya Raman,<br>Growth lead at Fathom</p>
+                <button class="ui-testimonial__like" type="button" data-like aria-pressed="false">
+                  <span class="ui-testimonial__sr">Like this quote from Priya Raman</span>
+                  <svg class="ui-testimonial__heart" viewBox="0 0 24 22" aria-hidden="true" focusable="false">
+                    <path class="ui-testimonial__heart-base" d="M12 21.1 2.9 12A6.1 6.1 0 0 1 12 4.1 6.1 6.1 0 0 1 21.1 12Z"/>
+                    <path class="ui-testimonial__heart-fill" d="M12 21.1 2.9 12A6.1 6.1 0 0 1 12 4.1 6.1 6.1 0 0 1 21.1 12Z"/>
+                  </svg>
+                </button>
+              </figcaption>
+            </div>
+          </figure>
+        </li>
+
+        <li class="ui-testimonial__item" data-item role="group" aria-roledescription="slide" aria-label="3 of 5">
+          <figure class="ui-testimonial__card" data-card>
+            <span class="ui-testimonial__panes" aria-hidden="true">
+              <span class="ui-testimonial__pane ui-testimonial__pane--up"></span>
+              <span class="ui-testimonial__pane ui-testimonial__pane--down"></span>
+              <span class="ui-testimonial__pane ui-testimonial__pane--face"></span>
+            </span>
+            <div class="ui-testimonial__body">
+              <blockquote class="ui-testimonial__quote"><p data-words>Our team stopped arguing about layouts. Mango drafts five, we pick one and the day moves on.</p></blockquote>
+              <figcaption class="ui-testimonial__who">
+                <span class="ui-testimonial__avatar ui-testimonial__avatar--mono" aria-hidden="true">TL</span>
+                <p class="ui-testimonial__name" data-words>Theo Lindqvist,<br>Design lead, Nine Yards</p>
+                <button class="ui-testimonial__like" type="button" data-like aria-pressed="false">
+                  <span class="ui-testimonial__sr">Like this quote from Theo Lindqvist</span>
+                  <svg class="ui-testimonial__heart" viewBox="0 0 24 22" aria-hidden="true" focusable="false">
+                    <path class="ui-testimonial__heart-base" d="M12 21.1 2.9 12A6.1 6.1 0 0 1 12 4.1 6.1 6.1 0 0 1 21.1 12Z"/>
+                    <path class="ui-testimonial__heart-fill" d="M12 21.1 2.9 12A6.1 6.1 0 0 1 12 4.1 6.1 6.1 0 0 1 21.1 12Z"/>
+                  </svg>
+                </button>
+              </figcaption>
+            </div>
+          </figure>
+        </li>
+
+        <li class="ui-testimonial__item" data-item role="group" aria-roledescription="slide" aria-label="4 of 5">
+          <figure class="ui-testimonial__card" data-card>
+            <span class="ui-testimonial__panes" aria-hidden="true">
+              <span class="ui-testimonial__pane ui-testimonial__pane--up"></span>
+              <span class="ui-testimonial__pane ui-testimonial__pane--down"></span>
+              <span class="ui-testimonial__pane ui-testimonial__pane--face"></span>
+            </span>
+            <div class="ui-testimonial__body">
+              <blockquote class="ui-testimonial__quote"><p data-words>The first tool the whole team picked up without a training session. That has never happened here.</p></blockquote>
+              <figcaption class="ui-testimonial__who">
+                <span class="ui-testimonial__avatar ui-testimonial__avatar--mono" aria-hidden="true">AO</span>
+                <p class="ui-testimonial__name" data-words>Amara Okafor,<br>VP Marketing, Lumen</p>
+                <button class="ui-testimonial__like" type="button" data-like aria-pressed="false">
+                  <span class="ui-testimonial__sr">Like this quote from Amara Okafor</span>
+                  <svg class="ui-testimonial__heart" viewBox="0 0 24 22" aria-hidden="true" focusable="false">
+                    <path class="ui-testimonial__heart-base" d="M12 21.1 2.9 12A6.1 6.1 0 0 1 12 4.1 6.1 6.1 0 0 1 21.1 12Z"/>
+                    <path class="ui-testimonial__heart-fill" d="M12 21.1 2.9 12A6.1 6.1 0 0 1 12 4.1 6.1 6.1 0 0 1 21.1 12Z"/>
+                  </svg>
+                </button>
+              </figcaption>
+            </div>
+          </figure>
+        </li>
+
+        <li class="ui-testimonial__item" data-item role="group" aria-roledescription="slide" aria-label="5 of 5">
+          <figure class="ui-testimonial__card" data-card>
+            <span class="ui-testimonial__panes" aria-hidden="true">
+              <span class="ui-testimonial__pane ui-testimonial__pane--up"></span>
+              <span class="ui-testimonial__pane ui-testimonial__pane--down"></span>
+              <span class="ui-testimonial__pane ui-testimonial__pane--face"></span>
+            </span>
+            <div class="ui-testimonial__body">
+              <blockquote class="ui-testimonial__quote"><p data-words>One brief, every size, all of it on brand. Email, social and paid went out the same morning.</p></blockquote>
+              <figcaption class="ui-testimonial__who">
+                <span class="ui-testimonial__avatar ui-testimonial__avatar--mono" aria-hidden="true">DW</span>
+                <p class="ui-testimonial__name" data-words>Dan Whitlock,<br>Founder of Postscript</p>
+                <button class="ui-testimonial__like" type="button" data-like aria-pressed="false">
+                  <span class="ui-testimonial__sr">Like this quote from Dan Whitlock</span>
+                  <svg class="ui-testimonial__heart" viewBox="0 0 24 22" aria-hidden="true" focusable="false">
+                    <path class="ui-testimonial__heart-base" d="M12 21.1 2.9 12A6.1 6.1 0 0 1 12 4.1 6.1 6.1 0 0 1 21.1 12Z"/>
+                    <path class="ui-testimonial__heart-fill" d="M12 21.1 2.9 12A6.1 6.1 0 0 1 12 4.1 6.1 6.1 0 0 1 21.1 12Z"/>
+                  </svg>
+                </button>
+              </figcaption>
+            </div>
+          </figure>
+        </li>
+
+      </ul>
+
+      <div class="ui-testimonial__brand">
+        <span class="ui-testimonial__logo">
+          <svg class="ui-testimonial__mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <g fill="currentColor">
+              <circle cx="11" cy="2.8" r="2.1"/>
+              <circle cx="19.2" cy="11" r="2.1"/>
+              <circle cx="11" cy="19.2" r="2.1"/>
+              <circle cx="2.8" cy="11" r="2.1"/>
+              <rect x="12.6" y="3.5" width="5" height="7.2" rx="2.5" transform="rotate(45 15.1 7.1)"/>
+              <rect x="12.6" y="11.3" width="5" height="7.2" rx="2.5" transform="rotate(-45 15.1 14.9)"/>
+              <rect x="4.4" y="11.3" width="5" height="7.2" rx="2.5" transform="rotate(45 6.9 14.9)"/>
+              <rect x="4.4" y="3.5" width="5" height="7.2" rx="2.5" transform="rotate(-45 6.9 7.1)"/>
+              <circle cx="21.6" cy="2.4" r="1.5"/>
+            </g>
+          </svg>
+          <span class="ui-testimonial__word">Mango</span>
+        </span>
+        <span class="ui-testimonial__site">buildmango.co</span>
+      </div>
+
+      <a class="ui-testimonial__credit" href="https://jitter.video" rel="noopener noreferrer" target="_blank">jitter.video<span class="ui-testimonial__sr"> &mdash; the original template (opens in a new tab)</span></a>
+    </div>
+
+    <footer class="ui-testimonial__bar">
+      <div class="ui-testimonial__dots" data-dots role="group" aria-label="Choose a quote"></div>
+      <div class="ui-testimonial__controls">
+        <button class="ui-testimonial__nav" type="button" data-prev>Previous quote</button>
+        <button class="ui-testimonial__nav" type="button" data-next>Next quote</button>
+        <button class="ui-testimonial__play" type="button" data-play>
+          <span class="ui-testimonial__play-icon" aria-hidden="true"></span>
+          <span data-play-label>Pause</span><span class="ui-testimonial__sr"> the testimonials</span>
+        </button>
+      </div>
+    </footer>
+
+    <p class="ui-testimonial__sr" data-live aria-live="polite" aria-atomic="true"></p>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
