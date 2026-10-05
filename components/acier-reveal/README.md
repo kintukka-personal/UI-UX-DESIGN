@@ -5,7 +5,7 @@ A launch hero for the **FOSLN Acier** quartz watch, built on the [Product reveal
 Three beats, joined by match cuts and a dissolve:
 
 1. **Quartz (0 to 3.6s), on pale steel paper**
-   - A tuning-fork crystal (the shape of the quartz inside a watch) pops in and starts to buzz. Under it, letters cycle and lock one by one, left to right, until they spell **FOSLN**.
+   - At the centre, letters cycle and lock one by one, left to right, until they spell **FOSLN**. The name holds for a moment, then clears just before the seconds hand grows out of the same spot.
    - While it decodes, the 60 minute ticks appear around it, faster and faster, with heavier ticks at the hours.
    - **The hands, as one continuous move:** a seconds hand ticks in at 12 and sweeps a full turn in quartz steps, leaving a faint sector behind it, then carries on into the visitor's current second. The minute hand grows out of the hub and turns a full revolution into the current minute. The hour hand joins last and turns to the current hour.
    - Meanwhile the ring, with the hands on it, shrinks and moves until it is exactly the size and position of the watch dial. All three hands land on the watch's live time just as the ring lands.

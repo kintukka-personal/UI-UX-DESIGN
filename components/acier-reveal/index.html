@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Acier by FOSLN</title>
-<meta name="description" content="FOSLN Acier quartz watch: a launch page that counts a quartz crystal up to one second, assembles the name link by link and shows the watch running on your local time.">
+<meta name="description" content="FOSLN Acier quartz watch: a launch page that ticks in a watch dial, assembles the name link by link and shows the watch running on your local time.">
 <meta name="theme-color" content="#0B0B0C">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,15 +60,10 @@ QUARTZ MOVEMENT</p>
       <!-- 1. Quartz, on its own paper layer so it can dissolve into the watch -->
       <div class="ui-acier__intro" data-intro>
         <div class="ui-acier__frame">
-          <!-- The crystal, the brand decoding under it, the minute ring and a seconds hand -->
+          <!-- The brand decoding at the centre, the minute ring and the hands -->
           <svg class="ui-acier__svg ui-acier__quartz" viewBox="0 0 720 900" focusable="false">
             <g data-ring></g>
-            <g class="ui-acier__fork" data-fork transform="translate(360 450)">
-              <path class="ui-acier__fork-buzz" data-buzz d="M-26 -30Q-31 -8 -26 14M26 -30Q31 -8 26 14"/>
-              <path class="ui-acier__fork-tines" data-tines d="M-9 -40V2A9 9 0 0 0 9 2V-40"/>
-              <path class="ui-acier__fork-stem" d="M0 11V42"/>
-            </g>
-            <text class="ui-acier__hz" data-hz x="363" y="530" text-anchor="middle">FOSLN</text>
+            <text class="ui-acier__hz" data-hz x="364" y="450" text-anchor="middle" dominant-baseline="central">FOSLN</text>
           </svg>
         </div>
       </div>

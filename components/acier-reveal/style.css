@@ -1,9 +1,9 @@
 /* ==========================================================================
    UI Acier Reveal: a launch hero for the FOSLN Acier quartz watch
    Three beats, joined by match cuts:
-     1. quartz  a tuning-fork crystal counts to 32 768 Hz (one second), the
-                minute ring ticks in around it and a seconds hand sweeps.
-                The ring then shrinks onto the exact size of the watch dial.
+     1. quartz  FOSLN decodes at the centre while the minute ring ticks in
+                around it; the hands join one by one and the ring shrinks onto
+                the exact size of the watch dial.
      2. poster  cut to the watch, hands set to your local time and ticking.
                 "ACIER" assembles in brushed steel, link by link, a light
                 sweeps across, callouts draw in, then the camera dives into
@@ -113,20 +113,10 @@
   stroke-linecap: butt;
 }
 
-.ui-acier__fork path {
-  fill: none;
-  stroke: var(--ui-acier-ink);
-  stroke-linecap: round;
-}
-
-.ui-acier__fork-tines { stroke-width: 5.5; }
-.ui-acier__fork-stem { stroke-width: 4.5; }
-.ui-acier__fork-buzz { stroke-width: 1.4; opacity: 0; }
-
-/* The brand decodes under the crystal, one letter locking at a time */
+/* The brand decodes at the centre, one letter locking at a time */
 .ui-acier__hz {
   font-family: var(--ui-acier-mono);
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 500;
   letter-spacing: 0.4em;
   fill: var(--ui-acier-ink);

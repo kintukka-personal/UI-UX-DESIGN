@@ -168,9 +168,6 @@
     var inkScale = (WATCH_W / 532) / (DIAL.r / RING_R);
     this.inkHands = buildHands(el("g", { transform: "scale(" + inkScale + ")" }, ring), id + "-i", true, 0, 0);
     this.qt = 0;
-    this.fork = q("[data-fork]");
-    this.tines = q("[data-tines]");
-    this.buzz = q("[data-buzz]");
     this.hz = q("[data-hz]");
 
     // Poster
@@ -334,22 +331,12 @@
   Stage.prototype.renderQuartz = function (t) {
     var i, p;
 
-    // The crystal pops in and buzzes harder as the count climbs
-    var forkIn = outBack(seg(t, 0.05, 0.32));
-    var count = seg(t, 0.25, 1.3);
-    var fade = 1 - seg(t, 1.5, 1.9);
-    var buzzing = count > 0 && count < 1;
-    var jitter = buzzing ? (Math.floor(t * 60) % 2 ? 1 : -1) * (0.03 + 0.1 * count) : 0;
-    this.fork.setAttribute("transform", "translate(360 450) scale(" + n(Math.max(0, forkIn)) + ")");
-    this.fork.style.opacity = fade;
-    this.tines.setAttribute("transform", "scale(" + n(1 + jitter) + " 1)");
-    this.buzz.style.opacity = buzzing ? n(0.25 + 0.6 * count * (Math.floor(t * 30) % 2)) : 0;
+    // The brand decodes at the centre, one letter locking at a time, holds,
+    // and clears just before the seconds hand grows out of the same spot
+    this.hz.textContent = decode("FOSLN", t, 0.2, 1.05);
+    this.hz.style.opacity = t < 0.15 ? 0 : n(1 - seg(t, 1.2, 1.4));
 
-    // Under it the brand decodes, one letter locking at a time
-    this.hz.textContent = decode("FOSLN", t, 0.25, 1.3);
-    this.hz.style.opacity = t < 0.22 ? 0 : fade;
-
-    // Ticks count in around the crystal, faster and faster
+    // Ticks count in around it, faster and faster
     for (i = 0; i < 60; i++) {
       var tk = this.ticks[i];
       p = outCubic(seg(t, tk.at, tk.at + 0.08));
