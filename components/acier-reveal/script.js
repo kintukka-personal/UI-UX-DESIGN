@@ -10,7 +10,8 @@
   var NS = "http://www.w3.org/2000/svg";
 
   // Beats
-  var T_POSTER = 2.5;   // match cut: tick ring -> watch dial
+  var T_POSTER = 2.55;  // dissolve: ring + ink hands -> the watch (until T_JOIN)
+  var T_JOIN = 2.95;
   var T_END = 6.0;      // match cut: black dial -> sign-off
   var T_TOTAL = 8.0;
   var T_STILL = 5.1;    // the settled poster, for stills and reduced motion
@@ -96,8 +97,9 @@
     return { grad: grad, bands: bands };
   }
 
-  // Hands drawn on the photo's own pixel grid
-  function buildHands(svg, id) {
+  // Hands drawn on the photo's own pixel grid. The same geometry comes in
+  // steel (on the watch) and in ink (on the paper ring, before the dissolve).
+  function buildHands(svg, id, ink) {
     var defs = el("defs", {}, svg);
     var hg = el("linearGradient", { id: id + "-hand", x1: 0, y1: 0, x2: 1, y2: 0 }, defs);
     [[0, "#7E848A"], [0.42, "#F3F5F6"], [0.58, "#A7ADB3"], [1, "#666C72"]]
@@ -105,19 +107,35 @@
     var f = el("filter", { id: id + "-shadow", x: "-50%", y: "-50%", width: "200%", height: "200%" }, defs);
     el("feDropShadow", { dx: 2.5, dy: 3.5, stdDeviation: 2, "flood-color": "#000", "flood-opacity": 0.7 }, f);
 
-    var root = el("g", { transform: "translate(" + HANDS_C.x + " " + HANDS_C.y + ")", filter: "url(#" + id + "-shadow)" }, svg);
+    var body = ink ? "#121314" : "url(#" + id + "-hand)";
+    var edge = ink ? "none" : "#3B3F44";
+    var lume = ink ? "#ECECE9" : "#EEF1EA";
+    var attrs = { transform: "translate(" + HANDS_C.x + " " + HANDS_C.y + ")" };
+    if (!ink) attrs.filter = "url(#" + id + "-shadow)";
+    var root = el("g", attrs, svg);
     function sword(len) {
       var g = el("g", {}, root);
-      el("path", { d: "M-4.8 -15L-3.4 " + -len + "Q0 " + -(len + 5) + " 3.4 " + -len + "L4.8 -15Z", fill: "url(#" + id + "-hand)", stroke: "#3B3F44", "stroke-width": 0.7 }, g);
-      el("path", { d: "M-1.45 -27H1.45V" + -(len - 6) + "H-1.45Z", fill: "#EEF1EA" }, g);
+      el("path", { d: "M-4.8 -15L-3.4 " + -len + "Q0 " + -(len + 5) + " 3.4 " + -len + "L4.8 -15Z", fill: body, stroke: edge, "stroke-width": 0.7 }, g);
+      el("path", { d: "M-1.45 -27H1.45V" + -(len - 6) + "H-1.45Z", fill: lume }, g);
       return g;
     }
     var hour = sword(96), minute = sword(138);
     var second = el("g", {}, root);
-    el("line", { x1: 0, y1: 40, x2: 0, y2: -154, stroke: "#C3C7CB", "stroke-width": 1.7, "stroke-linecap": "round" }, second);
-    el("circle", { r: 8, fill: "url(#" + id + "-hand)", stroke: "#3B3F44", "stroke-width": 0.7 }, root);
-    el("circle", { r: 3, fill: "#1A1B1D" }, root);
+    el("line", { x1: 0, y1: 40, x2: 0, y2: -154, stroke: ink ? "#121314" : "#C3C7CB", "stroke-width": 1.7, "stroke-linecap": "round" }, second);
+    el("circle", { r: 8, fill: body, stroke: edge, "stroke-width": 0.7 }, root);
+    el("circle", { r: 3, fill: ink ? "#ECECE9" : "#1A1B1D" }, root);
     return { root: root, hour: hour, minute: minute, second: second };
+  }
+
+  // Letters cycle until each one locks into the brand, left to right
+  var GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  function decode(word, t, start, end) {
+    var out = "", frame = Math.floor(t * 30);
+    for (var j = 0; j < word.length; j++) {
+      var lock = start + (end - start) * (j + 1) / word.length;
+      out += t >= lock ? word[j] : GLYPHS[(frame * 7 + j * 13 + frame * j * 3) % GLYPHS.length];
+    }
+    return out;
   }
 
   // ---------- One stage ----------
@@ -155,7 +173,9 @@
     this.sheen = q("[data-sheen]");
     this.word = buildWord(q("[data-word]"), id + "-w");
     this.hands = buildHands(q("[data-hands]"), id + "-h");
-    this.handsK = 1;
+    this.intro = q("[data-intro]");
+    this.inkWatch = q(".ui-acier__ink-watch");
+    this.inkHands = buildHands(q("[data-ink-hands]"), id + "-i", true);
 
     var leaders = q("[data-leaders]");
     var labels = q("[data-labels]");
@@ -232,11 +252,15 @@
     this.now = date;
     var s = date.getSeconds(), m = date.getMinutes(), h = date.getHours() % 12;
     var step = showSeconds ? s - 1 + outBack(clamp01(ms / 90), 2.2) : s;
-    var k = this.handsK;
-    this.hands.hour.setAttribute("transform", "rotate(" + n(30 * (h + m / 60 + s / 3600) * k) + ")");
-    this.hands.minute.setAttribute("transform", "rotate(" + n(6 * (m + s / 60) * k) + ")");
-    this.hands.second.setAttribute("transform", "rotate(" + n(6 * step * k) + ")");
-    this.hands.second.style.display = showSeconds ? "" : "none";
+    var hr = "rotate(" + n(30 * (h + m / 60 + s / 3600)) + ")";
+    var mn = "rotate(" + n(6 * (m + s / 60)) + ")";
+    var sc = "rotate(" + n(6 * step) + ")";
+    [this.hands, this.inkHands].forEach(function (set) {
+      set.hour.setAttribute("transform", hr);
+      set.minute.setAttribute("transform", mn);
+      set.second.setAttribute("transform", sc);
+      set.second.style.display = showSeconds ? "" : "none";
+    });
     var c = this.callouts[3];
     if (c.typed) this.setLabel(c, c.text + this.timeText());
   };
@@ -247,52 +271,64 @@
     c.label.textContent = text;
   };
 
+  // The quartz beat, on its paper layer
+  Stage.prototype.renderQuartz = function (t) {
+    var i, p;
+
+    // The crystal pops in and buzzes harder as the count climbs
+    var forkIn = outBack(seg(t, 0.05, 0.32));
+    var count = seg(t, 0.25, 1.3);
+    var fade = 1 - seg(t, 1.5, 1.7);
+    var buzzing = count > 0 && count < 1;
+    var jitter = buzzing ? (Math.floor(t * 60) % 2 ? 1 : -1) * (0.03 + 0.1 * count) : 0;
+    this.fork.setAttribute("transform", "translate(360 450) scale(" + n(Math.max(0, forkIn)) + ")");
+    this.fork.style.opacity = fade;
+    this.tines.setAttribute("transform", "scale(" + n(1 + jitter) + " 1)");
+    this.buzz.style.opacity = buzzing ? n(0.25 + 0.6 * count * (Math.floor(t * 30) % 2)) : 0;
+
+    // Under it the brand decodes, one letter locking at a time
+    this.hz.textContent = decode("FOSLN", t, 0.25, 1.3);
+    this.hz.style.opacity = t < 0.22 ? 0 : fade;
+
+    // Ticks count in around the crystal, faster and faster
+    for (i = 0; i < 60; i++) {
+      var tk = this.ticks[i];
+      p = outCubic(seg(t, tk.at, tk.at + 0.08));
+      tk.node.setAttribute("y2", n(-RING_R + tk.len * p));
+      tk.node.style.opacity = p > 0 ? 1 : 0;
+    }
+
+    // One second: the hand ticks, then sweeps a full minute in 60 quartz steps
+    var steps = Math.floor(60 * inOutSine(seg(t, 1.45, 2.0)));
+    var angle = t < 1.45 ? (t >= 1.36 ? 0 : -6) : steps * 6;
+    this.shand.setAttribute("transform", "rotate(" + angle + ")");
+    this.shand.style.opacity = t < 1.34 ? 0 : 1 - seg(t, 1.98, 2.12);
+    var sr = RING_R - 22, a = angle * Math.PI / 180;
+    this.sweep.setAttribute("d", angle <= 0 ? "" : angle >= 360
+      ? "M0 " + -sr + "A" + sr + " " + sr + " 0 1 1 0 " + sr + "A" + sr + " " + sr + " 0 1 1 0 " + -sr + "Z"
+      : "M0 0L0 " + -sr + "A" + sr + " " + sr + " 0 " + (angle > 180 ? 1 : 0) + " 1 " + n(sr * Math.sin(a)) + " " + n(-sr * Math.cos(a)) + "Z");
+    this.sweep.style.opacity = n(0.06 * (1 - seg(t, 1.98, 2.2)));
+
+    // The ring shrinks onto the exact size and place of the watch dial,
+    // then the hands fade in, already showing the time the watch will show
+    var k = inOutCubic(seg(t, 2.0, 2.38));
+    var scale = lerp(1, DIAL.r / RING_R, k);
+    this.ring.setAttribute("transform", "translate(" + RING_C.x + " " + n(lerp(RING_C.y, DIAL.y, k)) + ") scale(" + n(scale * 1000) / 1000 + ")");
+    this.inkWatch.style.opacity = n(outCubic(seg(t, 2.3, 2.55)));
+  };
+
   Stage.prototype.render = function (t) {
     var i, p;
     this.progress.style.transform = "scaleX(" + n(clamp01(t / T_TOTAL) * 1000) / 1000 + ")";
 
     // ================= 1. Quartz =================
+    // The paper layer stays on top until it has dissolved into the watch
+    var paper = t < T_JOIN ? (t < T_POSTER ? 1 : 1 - inOutCubic(seg(t, T_POSTER, T_JOIN))) : 0;
+    this.intro.style.display = paper > 0 ? "" : "none";
+    this.intro.style.opacity = n(paper);
+    if (paper > 0) this.renderQuartz(t);
     if (t < T_POSTER) {
       this.setPhase("quartz");
-
-      // The crystal pops in and buzzes harder as the count climbs
-      var forkIn = outBack(seg(t, 0.05, 0.32));
-      var count = seg(t, 0.25, 1.3);
-      var fade = 1 - seg(t, 1.5, 1.7);
-      var buzzing = count > 0 && count < 1;
-      var jitter = buzzing ? (Math.floor(t * 60) % 2 ? 1 : -1) * (0.03 + 0.1 * count) : 0;
-      this.fork.setAttribute("transform", "translate(360 450) scale(" + n(Math.max(0, forkIn)) + ")");
-      this.fork.style.opacity = fade;
-      this.tines.setAttribute("transform", "scale(" + n(1 + jitter) + " 1)");
-      this.buzz.style.opacity = buzzing ? n(0.25 + 0.6 * count * (Math.floor(t * 30) % 2)) : 0;
-
-      var hz = Math.floor(32768 * count * count);
-      this.hz.textContent = t < 1.32 ? pad(Math.floor(hz / 1000)) + " " + ("00" + (hz % 1000)).slice(-3) + " Hz" : "= 1 SECOND";
-      this.hz.style.opacity = t < 0.22 ? 0 : fade;
-
-      // Ticks count in around the crystal, faster and faster
-      for (i = 0; i < 60; i++) {
-        var tk = this.ticks[i];
-        p = outCubic(seg(t, tk.at, tk.at + 0.08));
-        tk.node.setAttribute("y2", n(-RING_R + tk.len * p));
-        tk.node.style.opacity = p > 0 ? 1 : 0;
-      }
-
-      // One second: the hand ticks, then sweeps a full minute in 60 quartz steps
-      var steps = Math.floor(60 * inOutSine(seg(t, 1.45, 2.0)));
-      var angle = t < 1.45 ? (t >= 1.36 ? 0 : -6) : steps * 6;
-      this.shand.setAttribute("transform", "rotate(" + angle + ")");
-      this.shand.style.opacity = t < 1.34 ? 0 : 1 - seg(t, 1.98, 2.12);
-      var sr = RING_R - 22, a = angle * Math.PI / 180;
-      this.sweep.setAttribute("d", angle <= 0 ? "" : angle >= 360
-        ? "M0 " + -sr + "A" + sr + " " + sr + " 0 1 1 0 " + sr + "A" + sr + " " + sr + " 0 1 1 0 " + -sr + "Z"
-        : "M0 0L0 " + -sr + "A" + sr + " " + sr + " 0 " + (angle > 180 ? 1 : 0) + " 1 " + n(sr * Math.sin(a)) + " " + n(-sr * Math.cos(a)) + "Z");
-      this.sweep.style.opacity = n(0.06 * (1 - seg(t, 1.98, 2.2)));
-
-      // The ring shrinks onto the exact size and place of the watch dial
-      var k = inOutCubic(seg(t, 1.95, 2.45));
-      var scale = lerp(1, DIAL.r / RING_R, k);
-      this.ring.setAttribute("transform", "translate(" + RING_C.x + " " + n(lerp(RING_C.y, DIAL.y, k)) + ") scale(" + n(scale * 1000) / 1000 + ")");
       return;
     }
 
@@ -300,17 +336,15 @@
     if (t < T_END) {
       this.setPhase("poster");
 
-      // Camera: settles after the cut, then dives into the black dial
-      var settle = outCubic(seg(t, T_POSTER, T_POSTER + 0.3));
+      // Camera: holds still under the dissolve, then dives into the black dial
       var dive = inQuart(seg(t, 5.35, T_END));
-      var cam = lerp(1.04, 1, settle) * (1 + 11 * dive);
+      var cam = 1 + 11 * dive;
       this.camera.style.transform = cam === 1 ? "" : "scale(" + n(cam * 1000) / 1000 + ")";
       this.watchImg.style.filter = dive > 0.35 ? "blur(" + n(5 * seg(dive, 0.35, 1) * this.unit) + "px)" : "";
       this.hands.root.style.opacity = n(1 - seg(dive, 0.15, 0.5));
 
       // The bracelet extends out of the case
-      this.watch.style.setProperty("--ui-acier-fade", n(lerp(50, 9, outCubic(seg(t, T_POSTER, 2.95)))) + "%");
-      this.handsK = outCubic(seg(t, 2.55, 3.2));
+      this.watch.style.setProperty("--ui-acier-fade", n(lerp(50, 9, outCubic(seg(t, T_POSTER, 3.05)))) + "%");
 
       for (i = 0; i < this.markers.length; i++) {
         p = seg(t, T_POSTER + i * 0.018, T_POSTER + 0.2 + i * 0.018);
@@ -318,13 +352,13 @@
       }
 
       var top = 1 - seg(t, 5.3, 5.45);
-      this.reveal(this.brand, outExpo(seg(t, 2.6, 2.9)));
+      this.reveal(this.brand, outExpo(seg(t, 2.7, 3.0)));
       this.brand.style.opacity = top;
       this.types[0].node.style.opacity = top;
-      this.setType(this.types[0], seg(t, 2.65, 3.2));
+      this.setType(this.types[0], seg(t, 2.75, 3.3));
 
       // ACIER, link by link
-      this.assemble(this.word, t, 2.75, 0.06, 0.035, 0.38);
+      this.assemble(this.word, t, 2.85, 0.06, 0.035, 0.38);
 
       // A light passes over the steel
       var sweepP = inOutCubic(seg(t, 3.55, 4.3));

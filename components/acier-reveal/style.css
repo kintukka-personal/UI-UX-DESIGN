@@ -90,6 +90,24 @@
 
 /* ---------- 1. Quartz ---------- */
 
+/* Its own paper layer over the poster, so the ring and the ink hands can
+   dissolve straight into the watch */
+.ui-acier__intro {
+  position: absolute;
+  inset: 0;
+  background: var(--ui-acier-paper);
+}
+
+/* Same box as the watch photo, so the ink hands sit exactly on its dial */
+.ui-acier__ink-watch {
+  position: absolute;
+  left: 26.6%;
+  top: 9.22%;
+  width: 48.44%;
+  aspect-ratio: 532 / 878;
+  opacity: 0;
+}
+
 .ui-acier__quartz line {
   stroke: var(--ui-acier-ink);
   stroke-linecap: butt;
@@ -105,10 +123,12 @@
 .ui-acier__fork-stem { stroke-width: 4.5; }
 .ui-acier__fork-buzz { stroke-width: 1.4; opacity: 0; }
 
+/* The brand decodes under the crystal, one letter locking at a time */
 .ui-acier__hz {
   font-family: var(--ui-acier-mono);
-  font-size: 15px;
-  letter-spacing: 0.08em;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
   fill: var(--ui-acier-ink);
 }
 
@@ -417,7 +437,6 @@
   mix-blend-mode: overlay;
 }
 
-.ui-acier:not([data-phase="quartz"]) .ui-acier__quartz,
 .ui-acier[data-phase="quartz"] .ui-acier__markers {
   display: none;
 }
@@ -437,7 +456,7 @@
   opacity: 1;
 }
 
-.ui-acier:not([data-phase]) .ui-acier__quartz {
+.ui-acier:not([data-phase]) .ui-acier__intro {
   display: none;
 }
 

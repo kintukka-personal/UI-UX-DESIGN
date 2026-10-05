@@ -25,17 +25,6 @@
       <div class="ui-acier__bg"></div>
 
       <div class="ui-acier__frame">
-        <!-- 1. Quartz: the crystal, its count, the minute ring and a seconds hand -->
-        <svg class="ui-acier__svg ui-acier__quartz" viewBox="0 0 720 900" focusable="false">
-          <g data-ring></g>
-          <g class="ui-acier__fork" data-fork transform="translate(360 450)">
-            <path class="ui-acier__fork-buzz" data-buzz d="M-26 -30Q-31 -8 -26 14M26 -30Q31 -8 26 14"/>
-            <path class="ui-acier__fork-tines" data-tines d="M-9 -40V2A9 9 0 0 0 9 2V-40"/>
-            <path class="ui-acier__fork-stem" d="M0 11V42"/>
-          </g>
-          <text class="ui-acier__hz" data-hz x="360" y="528" text-anchor="middle">00 000 Hz</text>
-        </svg>
-
         <!-- 2. Poster: one "camera" group that the dial zoom pushes into -->
         <div class="ui-acier__camera" data-camera>
           <svg class="ui-acier__word" data-word viewBox="0 0 504 100" focusable="false"></svg>
@@ -65,6 +54,26 @@ Nº 01 / 2026</p>
           <p class="ui-acier__end-copy ui-acier__type" data-type="STAINLESS STEEL&#10;QUARTZ MOVEMENT">STAINLESS STEEL
 QUARTZ MOVEMENT</p>
           <svg class="ui-acier__end-word" data-end-word viewBox="0 0 504 100" focusable="false"></svg>
+        </div>
+      </div>
+
+      <!-- 1. Quartz, on its own paper layer so it can dissolve into the watch -->
+      <div class="ui-acier__intro" data-intro>
+        <div class="ui-acier__frame">
+          <!-- The crystal, the brand decoding under it, the minute ring and a seconds hand -->
+          <svg class="ui-acier__svg ui-acier__quartz" viewBox="0 0 720 900" focusable="false">
+            <g data-ring></g>
+            <g class="ui-acier__fork" data-fork transform="translate(360 450)">
+              <path class="ui-acier__fork-buzz" data-buzz d="M-26 -30Q-31 -8 -26 14M26 -30Q31 -8 26 14"/>
+              <path class="ui-acier__fork-tines" data-tines d="M-9 -40V2A9 9 0 0 0 9 2V-40"/>
+              <path class="ui-acier__fork-stem" d="M0 11V42"/>
+            </g>
+            <text class="ui-acier__hz" data-hz x="363" y="530" text-anchor="middle">FOSLN</text>
+          </svg>
+          <!-- The hands fade in here first, exactly where the watch's hands will be -->
+          <div class="ui-acier__ink-watch">
+            <svg class="ui-acier__hands" data-ink-hands viewBox="0 0 532 878" focusable="false"></svg>
+          </div>
         </div>
       </div>
 
