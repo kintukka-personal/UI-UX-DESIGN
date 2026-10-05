@@ -1,4 +1,4 @@
-# Stack Testimonial
+# Animated testimonial card stack-5.5
 
 A testimonial hero rebuilt from Jitter's free template [The Stack: Testimonial](https://jitter.video/template/the-stack-testimonial/) (the *Mango* one). The camera pulls back from a sunlit studio photo as a frosted-glass card settles over it. The quote rises in word by word, then the avatar, the name and a heart appear. The card gives a small squeeze and pops as the heart fills. After that, the next testimonial arrives on top and the older cards step back into a stack behind it.
 

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Stack testimonial
+   Animated testimonial card stack-5.5
    One clock drives everything: the camera, the frosted box, the word masks
    and the stack. Every timing below was measured frame by frame from the
    source video (1152 x 720, 30 fps). Add ?t=2.1 to the URL to freeze any
