@@ -837,8 +837,8 @@
     } };
   }
 
-  // Add to bag (demo): the crown winds, the label rolls over, a lap of light
-  // runs round the dial, and the result is announced to screen readers
+  // Add to bag (demo): the light locks in with a glint, the label rolls over,
+  // a lap of light runs round the dial, and screen readers hear the result
   var cta = document.querySelector("[data-ui-acier-add]");
   var status = document.querySelector("[data-ui-acier-status]");
   if (cta) {
@@ -847,9 +847,13 @@
       cta.toggleAttribute("data-added", on);
       cta.querySelector("[data-label-add]").setAttribute("aria-hidden", on ? "true" : "false");
       cta.querySelector("[data-label-done]").setAttribute("aria-hidden", on ? "false" : "true");
-      cta.classList.add("is-winding");
-      setTimeout(function () { cta.classList.remove("is-winding"); }, 520);
-      if (on && bench) bench.sweep();
+      if (on) {
+        cta.classList.remove("is-glint");
+        void cta.offsetWidth;   // restart the glint
+        cta.classList.add("is-glint");
+        setTimeout(function () { cta.classList.remove("is-glint"); }, 950);
+        if (bench) bench.sweep();
+      }
       if (status) status.textContent = on ? "Acier added to your bag." : "Acier removed from your bag.";
       cta.dispatchEvent(new CustomEvent("ui-acier:add", { bubbles: true, detail: { added: on } }));
     });
