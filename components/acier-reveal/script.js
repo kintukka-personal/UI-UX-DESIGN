@@ -162,7 +162,6 @@
       var line = el("line", { x1: 0, x2: 0, y1: -RING_R, y2: -RING_R, "stroke-width": hour ? 4 : 1.6, transform: "rotate(" + i * 6 + ")" }, ring);
       this.ticks.push({ node: line, len: len, at: 0.42 + 0.9 * Math.pow(i / 60, 0.6) });
     }
-    this.sweep = el("path", { "class": "ui-acier__sweep" }, ring);
     // The intro's hands are the watch's hands, in ink, drawn in ring units:
     // photo px x (frame px per photo px) / (ring scale on the dial)
     var inkScale = (WATCH_W / 532) / (DIAL.r / RING_R);
@@ -318,13 +317,6 @@
     ink.hour.style.opacity = n(hIn);
 
     ink.root.style.opacity = t < 1.3 ? 0 : 1;
-
-    // The faint sector the seconds hand leaves behind, for its first lap
-    var sr = 154 * (WATCH_W / 532) / (DIAL.r / RING_R), a = Math.min(sec, 360) * Math.PI / 180;
-    this.sweep.setAttribute("d", sec <= 0 ? "" : sec >= 360
-      ? "M0 " + -sr + "A" + sr + " " + sr + " 0 1 1 0 " + sr + "A" + sr + " " + sr + " 0 1 1 0 " + -sr + "Z"
-      : "M0 0L0 " + -sr + "A" + sr + " " + sr + " 0 " + (sec > 180 ? 1 : 0) + " 1 " + n(sr * Math.sin(a)) + " " + n(-sr * Math.cos(a)) + "Z");
-    this.sweep.style.opacity = n(0.06 * (1 - seg(t, 2.6, 3.1)));
   };
 
   // The quartz beat, on its paper layer

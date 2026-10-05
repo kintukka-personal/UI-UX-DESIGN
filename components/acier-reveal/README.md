@@ -7,7 +7,7 @@ Three beats, joined by match cuts and a dissolve:
 1. **Quartz (0 to 3.6s), on pale steel paper**
    - At the centre, letters cycle and lock one by one, left to right, until they spell **FOSLN**. The name holds for a moment, then clears just before the seconds hand grows out of the same spot.
    - While it decodes, the 60 minute ticks appear around it, faster and faster, with heavier ticks at the hours.
-   - **The hands, as one continuous move:** a seconds hand ticks in at 12 and sweeps a full turn in quartz steps, leaving a faint sector behind it, then carries on into the visitor's current second. The minute hand grows out of the hub and turns a full revolution into the current minute. The hour hand joins last and turns to the current hour.
+   - **The hands, as one continuous move:** a seconds hand ticks in at 12 and sweeps a full turn in quartz steps, then carries on into the visitor's current second. The minute hand grows out of the hub and turns a full revolution into the current minute. The hour hand joins last and turns to the current hour.
    - Meanwhile the ring, with the hands on it, shrinks and moves until it is exactly the size and position of the watch dial. All three hands land on the watch's live time just as the ring lands.
 2. **Poster (3.6 to about 13.7s), dissolving to graphite**
    - The paper layer dissolves into the watch. The ink hands sit exactly on top of the watch's own hands, so the time carries straight through. The bracelet extends out of the case as it appears.

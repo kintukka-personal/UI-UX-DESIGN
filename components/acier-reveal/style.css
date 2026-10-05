@@ -122,11 +122,6 @@
   fill: var(--ui-acier-ink);
 }
 
-.ui-acier__sweep {
-  fill: var(--ui-acier-ink);
-  opacity: 0.06;
-}
-
 /* ---------- 2. Poster ---------- */
 
 .ui-acier__camera {
