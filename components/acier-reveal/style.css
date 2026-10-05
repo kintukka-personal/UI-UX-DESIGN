@@ -645,35 +645,6 @@
   color: #C3C8CD;
 }
 
-.ui-acier-product__specs {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  margin: 32px 0 0;
-  background: rgba(231, 233, 235, 0.14);
-  border: 1px solid rgba(231, 233, 235, 0.14);
-}
-
-.ui-acier-product__specs div {
-  padding: 16px;
-  background: #0B0B0C;
-}
-
-.ui-acier-product__specs dt {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #9AA0A6;
-}
-
-.ui-acier-product__specs dd {
-  margin: 6px 0 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #FFFFFF;
-}
-
 .ui-acier-product__buy {
   display: flex;
   flex-wrap: wrap;
