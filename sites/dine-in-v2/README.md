@@ -6,6 +6,26 @@ The working copy of the [Dine In baseline](../dine-in-baseline/), where new UI c
 
 ## Changes from the baseline
 
+### Round 5: Menu page
+
+The menu now leads into a booking instead of ending the visit. Every dish, description and price is the existing menu text. The only wording changes are casing ("KINGFISH TARTARE" becomes "Kingfish Tartare") and moving the (V) and award marks into badges.
+
+| Part | What it does |
+| --- | --- |
+| **Head** | Adds "Dietaries catered for at no extra cost" (from the booking page) and a 3-step "Pick a menu → shortlist → send to Brooke" guide. |
+| **Tabs** | Each tab shows a starting price, e.g. "Banquet $110 pp". The tab bar sticks under the sticky bar while you scroll; on phones it sticks to the top and swipes sideways. Clicking a tab updates the URL hash, so the address bar is always a shareable link. |
+| **Menu facts** | Each menu opens with how it's served, the price, the guest minimum and how choosing works. All of it comes from the Experiences cards and the menu itself. It ends with **Enquire with this menu** (`book.html?exp=…&src=menu&menu=<slug>`). |
+| **Dish cards** | Two columns on desktop. The five (V) dishes get a V badge (with a legend), and the cheesecake gets a gold "3rd in the world" badge. Options that sat in the price field (grazing, the banquet pasta) now read as one line. |
+| **Shortlist** | A **+ Shortlist** button on all 94 dishes. A tray (bottom right on desktop, a collapsible sheet above the Call / Book bar on phones) groups the picks by menu. Sections with a rule show a count, e.g. "1 of 2 shortlisted"; it guides but never blocks. **Send my shortlist to Brooke** opens the booking form with the matching experiences ticked and the message filled in, e.g. "Dishes I'd love: Banquet: Pulled Pork Shoulder; Canapés: Mini Pavlovas". The shortlist is kept in `localStorage`, and the page still works if storage is blocked. |
+| **Print** | **Print this menu** prints only the open menu. The browser's own Print prints all six. Buttons, tabs and the tray are left out of print. |
+| **No JavaScript** | All six menus show one after another with their own headings, and `menu.html#banquet` still jumps to the Banquet menu. Before this round, only the spring menu showed without JS. |
+| **SEO** | `Menu` → `MenuSection` → `MenuItem` JSON-LD for all 94 dishes. Only the five (V) dishes are tagged `VegetarianDiet`. |
+
+**New booking parameters**
+
+- `menu=<slug>`: added to the hidden `source` field, e.g. `menu:banquet`.
+- `dishes=<text>`: fills the message field, only if it's empty (600 characters at most).
+
 ### Round 4: Experiences redesign
 
 `experiences.html` is where the homepage, the landing pages and the FAQ all send people to choose. Until now it still ran the live site's Squarespace code block: about 290 lines of inline CSS and 300 lines of script that rebuilt the cards on load, a hidden filter dropdown, a home-made modal, and titles in a font that was never loaded. It is now plain HTML in the site's design system. Every price, tier and detail is the page's own text.
@@ -125,6 +145,11 @@ Every new text colour pair passes WCAG AA:
 - **Landing-page packages and "from" prices** as worded on the three new pages, including the wedding package contents (marked `<!-- CONFIRM WITH BROOKE -->` in `weddings.html`).
 - **Estimator assumptions:** 3 hours of waitress service by default, and one waitress for any group size (marked in the estimator markup).
 - **"Quotes and invoices provided"** on the corporate page.
+- **Menu choosing rules:**
+  - The banquet menu says "Choose 4–5" sides, but the Experiences page says "three sides". The menu page shows the menu's wording.
+  - Grazing says "choose three of five" but lists eight groups.
+  - The Sides tab isn't tied to one experience, so its buttons offer Private Dining or Banquets.
+- **Plant-based dishes** carry no vegan or gluten-free labels. Only the five dishes the site marks (V) are badged. If Brooke wants dietary labels, she needs to supply them per dish.
 
 ## Run it
 
@@ -140,7 +165,7 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | File | Live page | What's on it |
 | --- | --- | --- |
 | `index.html` | `/` | Hero, trust strip, intro, How it works, experience cards, proof band, Chef card, As Featured In, gift cards, "Check your date" mini form |
-| `menu.html` | `/menu` | Six tabbed menus: Private Dining (spring), Plant-Based, Banquet, Sides, Canapés, Grazing |
+| `menu.html` | `/menu` | Six tabbed menus (Private Dining spring, Plant-Based, Banquet, Sides, Canapés, Grazing), each with price and serving facts, plus a dish shortlist that hands off to the booking form |
 | `experiences.html` | `/experiences` | "Which experience suits me?" picker, filter chips, six priced cards, a comparison table and Details dialogs |
 | `faq.html` | `/faq` | Three groups of accordions (18 questions), closing CTA |
 | `shop.html` | `/shop` | Chilli Jam, Degustation voucher, eGift Card |

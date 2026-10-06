@@ -50,20 +50,24 @@
   /* ---- Menu tabs ------------------------------------------------------ */
   var tabs = document.querySelectorAll('.menu-tabs [role="tab"]');
   tabs.forEach(function (tab, i) {
-    tab.addEventListener('click', function () { selectTab(tab); });
+    tab.addEventListener('click', function () { selectTab(tab, true); });
     tab.addEventListener('keydown', function (e) {
       var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
-      if (d) { var t = tabs[(i + d + tabs.length) % tabs.length]; t.focus(); selectTab(t); }
+      if (d) { var t = tabs[(i + d + tabs.length) % tabs.length]; t.focus(); selectTab(t, true); }
     });
   });
-  function selectTab(tab) {
+  // All panels are visible in the HTML (so the page works without JS); show one.
+  function selectTab(tab, push) {
     tabs.forEach(function (t) {
       var on = t === tab;
       t.setAttribute('aria-selected', String(on));
       t.tabIndex = on ? 0 : -1;
       document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
     });
+    if (push && tab.dataset.slug && history.replaceState) history.replaceState(null, '', location.pathname + location.search + '#' + tab.dataset.slug);
+    if (tab.scrollIntoView && tab.parentNode.scrollWidth > tab.parentNode.clientWidth) tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
+  if (tabs.length) selectTab(document.querySelector('.menu-tabs [aria-selected="true"]') || tabs[0]);
 
   /* ---- Product gallery ------------------------------------------------ */
   document.querySelectorAll('.gallery').forEach(function (g) {
@@ -171,6 +175,10 @@
     if (occEl && params.get('occasion')) occEl.value = params.get('occasion').slice(0, 80);
     var msg = booking.querySelector('#message');
     if (msg && params.get('package') === '1' && !msg.value) msg.value = 'Please send me the wedding package.';
+    // Menu page: ?menu=banquet ("Enquire with this menu") and ?dishes=… (the shortlist)
+    var menuSlug = (params.get('menu') || '').replace(/[^a-z-]/g, '').slice(0, 20);
+    if (srcEl && menuSlug) srcEl.value = (srcEl.value || 'menu') + ':' + menuSlug;
+    if (msg && params.get('dishes') && !msg.value) msg.value = ('Dishes I\'d love: ' + params.get('dishes')).slice(0, 600);
     var flexible = booking.querySelector('#flexible');
     if (flexible) flexible.addEventListener('change', function () { dateEl.disabled = flexible.checked; });
 
@@ -423,12 +431,135 @@
 
   /* ---- Menu: open a tab from the URL hash (menu.html#banquet) --------- */
   if (document.querySelector('.menu-tabs')) {
-    var openHashTab = function () {
-      var tab = location.hash && document.querySelector('.menu-tabs [data-slug="' + location.hash.slice(1) + '"]');
-      if (tab) tab.click();
+    var openHashTab = function (e) {
+      var slug = location.hash.slice(1);
+      var tab = slug && document.querySelector('.menu-tabs [data-slug="' + slug.replace(/[^a-z-]/g, '') + '"]');
+      if (!tab) return;
+      selectTab(tab);
+      var head = document.getElementById(slug);
+      if (e && head) head.scrollIntoView({ block: 'start' });
     };
     openHashTab();
     window.addEventListener('hashchange', openHashTab);
+
+    var printBtn = document.querySelector('[data-menu-print]');
+    if (printBtn && window.print) {
+      printBtn.hidden = false;
+      printBtn.addEventListener('click', function () { document.body.classList.add('print-one'); window.print(); });
+      window.addEventListener('afterprint', function () { document.body.classList.remove('print-one'); });
+    }
+  }
+
+  /* ---- Menu shortlist: + dishes, tray, hand-off to the booking form --- */
+  var shortlist = document.querySelector('[data-shortlist]');
+  if (shortlist) {
+    var SL_KEY = 'dinein-shortlist';
+    var dishes = {}, order = [];
+    document.querySelectorAll('.menu-item[data-dish]').forEach(function (li) { dishes[li.dataset.dish] = li; order.push(li.dataset.dish); });
+    var panelOf = function (id) { return dishes[id].closest('.menu-panel'); };
+    var menuLabel = function (panel) { var t = document.getElementById(panel.getAttribute('aria-labelledby')); return t ? t.querySelector('.tab-name').textContent : panel.dataset.slug; };
+    var slPicks = [];
+    try { slPicks = JSON.parse(localStorage.getItem(SL_KEY)) || []; } catch (e) {}
+    slPicks = Array.isArray(slPicks) ? slPicks.filter(function (id) { return dishes[id]; }) : [];
+    var save = function () { try { localStorage.setItem(SL_KEY, JSON.stringify(slPicks)); } catch (e) {} };
+    var slStatus = document.querySelector('[data-shortlist-status]');
+    var list = shortlist.querySelector('[data-shortlist-list]');
+    var send = shortlist.querySelector('[data-shortlist-send]');
+    var view = shortlist.querySelector('[data-shortlist-view]');
+    var body = shortlist.querySelector('.shortlist-body');
+    var slCta = document.querySelector('[data-shortlist-cta]');
+    var PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+    var TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+    order.forEach(function (id) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'shortlist-add';
+      b.setAttribute('aria-pressed', 'false');
+      b.setAttribute('aria-label', 'Shortlist ' + dishes[id].dataset.name);
+      b.addEventListener('click', function () { slToggle(id); });
+      dishes[id].appendChild(b);
+    });
+
+    var slHref = function () {
+      var exps = [], groups = [];
+      slPicks.slice().sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); }).forEach(function (id) {
+        var panel = panelOf(id), label = menuLabel(panel), g = groups[groups.length - 1];
+        if (panel.dataset.exp && exps.indexOf(panel.dataset.exp) < 0) exps.push(panel.dataset.exp);
+        if (!g || g.label !== label) groups.push(g = { label: label, names: [] });
+        g.names.push(dishes[id].dataset.name);
+      });
+      var text = groups.map(function (g) { return g.label + ': ' + g.names.join(', '); }).join('; ');
+      return 'book.html?' + (exps.length ? 'exp=' + exps.join(',') + '&' : '') + 'src=menu-shortlist&dishes=' + encodeURIComponent(text);
+    };
+
+    var slRender = function () {
+      order.forEach(function (id) {
+        var on = slPicks.indexOf(id) > -1, b = dishes[id].querySelector('.shortlist-add');
+        dishes[id].classList.toggle('is-picked', on);
+        b.setAttribute('aria-pressed', String(on));
+        b.innerHTML = (on ? TICK : PLUS) + '<span class="label">' + (on ? 'Shortlisted' : 'Shortlist') + '</span>';
+      });
+      document.querySelectorAll('.menu-section').forEach(function (sec) {
+        var c = sec.querySelector('[data-count]');
+        if (!c) return;
+        var n = sec.querySelectorAll('.menu-item.is-picked').length;
+        c.hidden = !n;
+        c.textContent = c.dataset.of ? n + ' of ' + c.dataset.of + ' shortlisted' : n + ' shortlisted';
+      });
+      shortlist.hidden = !slPicks.length;
+      shortlist.querySelector('[data-shortlist-count]').textContent = slPicks.length;
+      list.textContent = '';
+      var last = null, ul;
+      slPicks.slice().sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); }).forEach(function (id) {
+        var panel = panelOf(id);
+        if (panel !== last) {
+          last = panel;
+          var g = document.createElement('div'); g.className = 'shortlist-group';
+          var h = document.createElement('h3'); h.textContent = menuLabel(panel);
+          ul = document.createElement('ul');
+          g.appendChild(h); g.appendChild(ul); list.appendChild(g);
+        }
+        var li = document.createElement('li'), name = dishes[id].dataset.name;
+        li.textContent = name;
+        var x = document.createElement('button');
+        x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + name);
+        x.addEventListener('click', function () {
+          slToggle(id);
+          var next = list.querySelector('button');
+          (next || document.querySelector('.menu-tabs [aria-selected="true"]')).focus();
+        });
+        li.appendChild(x); ul.appendChild(li);
+      });
+      var to = slHref();
+      send.href = to;
+      if (slCta) {
+        slCta.textContent = slPicks.length ? 'Send my shortlist (' + slPicks.length + ')' : 'Build your menu';
+        slCta.href = slPicks.length ? to : 'book.html?src=menu';
+      }
+    };
+
+    var slToggle = function (id) {
+      var i = slPicks.indexOf(id), first = !slPicks.length;
+      if (i > -1) slPicks.splice(i, 1); else slPicks.push(id);
+      save();
+      if (first && window.matchMedia('(max-width: 767px)').matches) { body.hidden = true; view.setAttribute('aria-expanded', 'false'); }
+      slRender();
+      slStatus.textContent = (i > -1 ? 'Removed ' : 'Added ') + dishes[id].dataset.name + ' · ' + slPicks.length + (slPicks.length === 1 ? ' dish' : ' dishes') + ' shortlisted';
+    };
+
+    view.addEventListener('click', function () {
+      var open = view.getAttribute('aria-expanded') !== 'true';
+      view.setAttribute('aria-expanded', String(open));
+      body.hidden = !open;
+    });
+    shortlist.querySelector('[data-shortlist-clear]').addEventListener('click', function () {
+      slPicks = []; save(); slRender();
+      slStatus.textContent = 'Shortlist cleared';
+      document.querySelector('.menu-tabs [aria-selected="true"]').focus();
+    });
+    if (slPicks.length && window.matchMedia('(max-width: 767px)').matches) { body.hidden = true; view.setAttribute('aria-expanded', 'false'); }
+    slRender();
   }
 
   /* ---- Featured video (HLS stream from the live site's video CDN) ----- */
