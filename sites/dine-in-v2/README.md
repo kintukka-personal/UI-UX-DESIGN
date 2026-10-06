@@ -6,6 +6,39 @@ The working copy of the [Dine In baseline](../dine-in-baseline/), where new UI c
 
 ## Changes from the baseline
 
+### Round 4: Experiences redesign
+
+`experiences.html` is where the homepage, the landing pages and the FAQ all send people to choose. Until now it still ran the live site's Squarespace code block: about 290 lines of inline CSS and 300 lines of script that rebuilt the cards on load, a hidden filter dropdown, a home-made modal, and titles in a font that was never loaded. It is now plain HTML in the site's design system. Every price, tier and detail is the page's own text.
+
+| Part | What it does |
+| --- | --- |
+| **"Which experience suits me?"** | Three tappable questions (occasion, guests, style). It shows a best match and a runner-up, each with a reason and a "from" price, and gives the matching card a gold ring. "Check your date" opens `book.html?exp=…&guests=…&src=experiences-picker&occasion=…`. |
+| **Filter chips** | All / Private dining / Cooking classes / Catering & events / Degustation, each with a count, plus a live "Showing 3 of 6" line. The choice is kept in the URL (`?type=catering`). On phones the chips sit in one swipeable row. |
+| **Six static cards** | Image, "from" price, best-for tags, every price tier, the minimum, and Enquire + Details. The ids are unchanged, so `experiences.html#canapes` etc. still land on the right card. |
+| **Compare all six** | A table: best for, guests, format, from price, what's included, waitress service. On phones it scrolls sideways with the first column fixed. |
+| **Details** | Each "Details" link goes to a full in-page details section (`#details-canapes`), which works with JavaScript off. With JavaScript it opens a native `<dialog>` instead: Escape closes it, the backdrop closes it, and focus returns to the card. The dialog offers Enquire, the matching menu tab and the matching landing page. |
+| **SEO** | An `ItemList` of six `Service` + `Offer` entries in JSON-LD. |
+
+**Picker rules.** These are based on the site's own minimums.
+
+| Style | Recommends | Runner-up |
+| --- | --- | --- |
+| Hands-on (or occasion "Learn to cook") | Private Cooking Class | Private Dining |
+| Standing & mingling, 20+ guests | Canapés | Grazing Boards |
+| Standing & mingling, under 20 | Grazing Boards | Canapés |
+| Shared feast, 12+ guests | Banquets | Grazing Boards |
+| Shared feast, under 12 | Private Dining | Grazing Boards |
+| Seated & served | Private Dining | 5 Course Degustation |
+
+- **Minimums:** if the guest range starts below the experience's minimum, the result shows the site's rule, e.g. "Minimum 6 guests (or equivalent minimum charge)".
+- **Occasion links:** a Wedding occasion adds a link to `weddings.html`; a Work event adds `corporate-events.html`.
+
+**New deep links**
+
+- `experiences.html?type=dining|classes|catering|degustation` opens the page already filtered.
+- `experiences.html#details-<id>` opens the full details for one experience.
+- `menu.html#spring|plant-based|banquet|sides|canapes|grazing` opens that menu tab. The hash is re-read when it changes.
+
 ### Round 3: occasion landing pages
 
 Three pages written for the visitors who search for something specific, each usable as an ad or social-post destination. They share one template: hero with a page-specific H1, proof strip, priced packages, how it works, FAQ answers reused from `faq.html`, proof, and a closing CTA. Every CTA opens the booking form pre-filled and tagged with the page it came from.
@@ -35,7 +68,7 @@ The review pack (audit, Squarespace CSS, footer JS) was written as Squarespace c
 | Home | Rebuilt as a sales page, in this order: hero with a real H1, "Check your date" and the starting price; trust strip (5.0 · 60 reviews, 3× Australian champion, 3rd in the world, Top 3 wedding caterer); intro; three-step "How it works"; three experience cards with "from" prices; proof band with the Nine Travel quote and the 5.0 score; Chef card; As Featured In; gift cards; a closing "Check your date" mini form that carries its answers to the booking page. |
 | Book | A three-step enquiry (Experience → Your event → Your details) with tappable tiles instead of 16px checkboxes, a progress bar and per-step validation. It pre-fills from the URL (`book.html?exp=private-dining&date=2026-12-12&guests=8`), shows a review summary, then a "What happens next" success screen with a gift-card upsell. With JS off it shows as one long form. |
 | Every page | Gold "Book Now" button in the header; a sticky booking bar after the hero (desktop); a Call / Check your date bar (phones); a closing CTA block on Experiences, Menu, FAQ, Reviews and product pages; tappable `0432 804 952` in the footer; one real H1; Open Graph tags. |
-| Experiences | "Enquire Now" and the Details pop-up pre-select that experience on the booking form; cards have anchors (`experiences.html#private-dining`); the gold buttons now pass contrast. |
+| Experiences | (Rebuilt in Round 4.) "Enquire Now" and the Details pop-up pre-select that experience on the booking form; cards have anchors (`experiences.html#private-dining`); the gold buttons now pass contrast. |
 | Design system | Serif headings (Crimson Pro, or kepler-std if the Adobe kit is loaded) with Inter for body and UI; 17px body text, a 68-character line length and 1.15 heading line-height; a primary / secondary / ghost button system with 2px corners; a gold focus ring; reduced-motion and print styles. Every value is a token at the top of `assets/css/site.css`. |
 | Performance | The 4 MB GIF is now a 38 KB WebM / 71 KB MP4 loop; the hero is served at 1920px and 960px; the experience photos are recompressed; the hero is preloaded; images below the fold lazy-load. The homepage now loads 1.73 MB of local assets, down from 4.84 MB. |
 | SEO | Page titles target the service area, there's an Open Graph image (`assets/images/og-image.jpg`), and the homepage has `LocalBusiness` / `FoodEstablishment` JSON-LD. |
@@ -108,7 +141,7 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | --- | --- | --- |
 | `index.html` | `/` | Hero, trust strip, intro, How it works, experience cards, proof band, Chef card, As Featured In, gift cards, "Check your date" mini form |
 | `menu.html` | `/menu` | Six tabbed menus: Private Dining (spring), Plant-Based, Banquet, Sides, Canapés, Grazing |
-| `experiences.html` | `/experiences` | Six experience cards with pricing, a category filter and Details pop-ups |
+| `experiences.html` | `/experiences` | "Which experience suits me?" picker, filter chips, six priced cards, a comparison table and Details dialogs |
 | `faq.html` | `/faq` | Three groups of accordions (18 questions), closing CTA |
 | `shop.html` | `/shop` | Chilli Jam, Degustation voucher, eGift Card |
 | `shop/*.html` | `/shop/p/*` | Product pages with gallery, quantity, value picker and Add To Cart |
@@ -127,7 +160,7 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | `assets/js/site.js` | Mobile menu, FAQ accordions, menu tabs, product gallery, cart, form validation, video |
 | `assets/images/` | Every image from the live site, downloaded locally |
 
-The header and footer are repeated in each page, so a nav change needs making in every file. The Experiences cards are the live site's own code block, carried over as-is (only the image and link paths changed). Its styles and data live inside `experiences.html`.
+The header and footer are repeated in each page, so a nav change needs making in every file. The Experiences cards, details and comparison table are static HTML in `experiences.html`. A price change means editing the card, its details section, the table row and the JSON-LD, plus the picker's one-line summary in `assets/js/site.js`.
 
 ## Brand tokens
 
