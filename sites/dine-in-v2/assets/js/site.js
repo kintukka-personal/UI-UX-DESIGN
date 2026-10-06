@@ -127,6 +127,97 @@
     });
   });
 
+  /* ---- eGift card: occasion, amount, personalise, live preview ------- */
+  var giftForm = document.querySelector('[data-gift-form]');
+  if (giftForm) {
+    var OCCASIONS = {
+      birthday: ['Happy birthday', 'Happy birthday! Enjoy a night in with Chef Brooke.'],
+      anniversary: ['Happy anniversary', 'Here’s to us. A special night in, cooked by Chef Brooke.'],
+      'thank-you': ['Thank you', 'A small thank you for everything. Enjoy a Dine In experience.'],
+      christmas: ['Merry Christmas', 'Merry Christmas! A night of great food, without the washing up.'],
+      'just-because': ['Just because', 'Just because you deserve a night off from the kitchen.']
+    };
+    var gp = new URLSearchParams(location.search);
+    var giftSrc = (gp.get('src') || '').replace(/[^a-z0-9-]/gi, '').slice(0, 30);
+    var gMsg = giftForm.querySelector('#gift-message');
+    var gDate = giftForm.querySelector('#gift-date');
+    var gStatus = giftForm.querySelector('[data-gift-status]');
+    var gSubmit = giftForm.querySelector('[data-gift-submit]');
+    var amountGroup = giftForm.querySelector('[data-amount-group]');
+    var preview = document.querySelector('[data-gift-preview]');
+    var pv = function (k) { return preview.querySelector('[data-preview="' + k + '"]'); };
+    var msgTouched = false;
+    var gVal = function (n) { var c = giftForm.querySelector('input[name="' + n + '"]:checked'); return c ? c.value : ''; };
+    if (gDate) {
+      var gToday = new Date(); gToday.setMinutes(gToday.getMinutes() - gToday.getTimezoneOffset());
+      gDate.min = gToday.toISOString().slice(0, 10);
+    }
+    var pick = function (name, value) {
+      var r = giftForm.querySelector('input[name="' + name + '"][value="' + String(value).replace(/[^a-z0-9-]/gi, '') + '"]');
+      if (r) r.checked = true;
+    };
+    pick('amount', gp.get('amount') || '');
+    pick('occasion', gp.get('occasion') || '');
+
+    var giftUpdate = function (e) {
+      var occ = OCCASIONS[gVal('occasion')];
+      if (e && e.target.name === 'occasion' && occ && !msgTouched) gMsg.value = occ[1];
+      if (!e && occ && !gMsg.value) gMsg.value = occ[1];
+      var amount = gVal('amount');
+      pv('headline').textContent = occ ? occ[0] : 'Here’s a gift!';
+      pv('amount').textContent = amount ? 'A$' + amount : 'from A$50';
+      pv('to').textContent = giftForm.querySelector('#gift-to').value.trim() || 'someone special';
+      var from = giftForm.querySelector('#gift-from').value.trim();
+      pv('from').textContent = from;
+      preview.querySelector('[data-preview-line="from"]').hidden = !from;
+      pv('message').textContent = gMsg.value.trim();
+      pv('message').hidden = !gMsg.value.trim();
+      preview.querySelector('.gift-card-art').dataset.occasion = gVal('occasion');
+      giftForm.querySelector('[data-gift-count]').textContent = gMsg.value.length + ' / 200';
+      gSubmit.textContent = amount ? 'Add gift card — A$' + amount : 'Add gift card';
+      if (amount) amountGroup.classList.remove('invalid');
+    };
+    gMsg.addEventListener('input', function () { msgTouched = gMsg.value.length > 0; });
+    giftForm.addEventListener('input', giftUpdate);
+    giftForm.addEventListener('change', giftUpdate);
+    giftUpdate();
+
+    giftForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var amount = +gVal('amount');
+      if (!amount) {
+        amountGroup.classList.add('invalid');
+        giftForm.querySelector('input[name="amount"]').focus();
+        gStatus.textContent = '';
+        return;
+      }
+      var field = function (id) { return giftForm.querySelector(id).value.trim(); };
+      var cart = readCart();
+      cart.push({
+        name: 'eGift Card — A$' + amount.toFixed(2), price: amount, qty: 1, img: 'assets/images/shop-egift-card.webp',
+        gift: { occasion: gVal('occasion'), to: field('#gift-to'), from: field('#gift-from'), message: field('#gift-message'), email: field('#gift-email'), date: gDate.value, src: giftSrc }
+      });
+      writeCart(cart);
+      gStatus.innerHTML = 'Added to cart. <a href="../cart.html">View cart</a> · <button type="button" class="text-link" data-gift-again>Add another gift</button>';
+      gStatus.querySelector('[data-gift-again]').addEventListener('click', function () {
+        giftForm.reset(); msgTouched = false; gStatus.textContent = ''; giftUpdate();
+        giftForm.querySelector('input[name="occasion"]').focus();
+      });
+    });
+  }
+
+  // Cart lines include text people typed (gift messages), so escape everything.
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function giftDetails(g) {
+    if (!g) return '';
+    var parts = [];
+    if (g.to) parts.push('For ' + g.to);
+    if (g.from) parts.push('From ' + g.from);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(g.date || '')) parts.push('Send on ' + new Date(g.date + 'T00:00').toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }));
+    if (g.email) parts.push('To ' + g.email);
+    return (parts.length ? '<span class="cart-gift">' + esc(parts.join(' · ')) + '</span>' : '') +
+      (g.message ? '<span class="cart-gift cart-gift-msg">“' + esc(g.message) + '”</span>' : '');
+  }
   var cartList = document.getElementById('cartList');
   if (cartList) renderCart();
   function renderCart() {
@@ -135,8 +226,8 @@
     var total = 0;
     cartList.innerHTML = cart.map(function (i, n) {
       total += i.price * i.qty;
-      return '<div class="cart-row"><img src="' + i.img + '" alt=""><div>' + i.name + '<br><small>Qty ' + i.qty +
-        '</small></div><div>A$' + (i.price * i.qty).toFixed(2) + '</div><button type="button" data-remove="' + n + '">Remove</button></div>';
+      return '<div class="cart-row"><img src="' + esc(i.img) + '" alt=""><div>' + esc(i.name) + '<br><small>Qty ' + i.qty +
+        '</small>' + giftDetails(i.gift) + '</div><div>A$' + (i.price * i.qty).toFixed(2) + '</div><button type="button" data-remove="' + n + '">Remove</button></div>';
     }).join('') + '<p class="cart-total">Subtotal A$' + total.toFixed(2) + '</p>' +
       '<p class="text-small" style="text-align:right">Checkout is disabled in this test version.</p>';
     cartList.querySelectorAll('[data-remove]').forEach(function (b) {
@@ -178,6 +269,8 @@
     // Menu page: ?menu=banquet ("Enquire with this menu") and ?dishes=… (the shortlist)
     var menuSlug = (params.get('menu') || '').replace(/[^a-z-]/g, '').slice(0, 20);
     if (srcEl && menuSlug) srcEl.value = (srcEl.value || 'menu') + ':' + menuSlug;
+    var hasGift = params.get('gift') === '1';
+    if (msg && hasGift && !msg.value) msg.value = 'I have a Dine In gift card.';
     if (msg && params.get('dishes') && !msg.value) msg.value = ('Dishes I\'d love: ' + params.get('dishes')).slice(0, 600);
     var flexible = booking.querySelector('#flexible');
     if (flexible) flexible.addEventListener('change', function () { dateEl.disabled = flexible.checked; });
@@ -237,6 +330,7 @@
       if (flexible && flexible.checked) d = d ? d + ' (flexible)' : 'Flexible';
       var rows = [['Experience', chosen().join(', ')], ['Date', d || 'Not set yet'], ['Guests', booking.querySelector('#guests').value], ['Location', booking.querySelector('#location').value]];
       if (occEl && occEl.value) rows.unshift(['Occasion', occEl.value]);
+      if (hasGift) rows.push(['Gift card', 'Yes']);
       booking.querySelector('[data-summary]').innerHTML = rows.map(function (r) {
         var dd = document.createElement('dd'); dd.textContent = r[1];
         return '<dt>' + r[0] + '</dt>' + dd.outerHTML;

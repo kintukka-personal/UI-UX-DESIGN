@@ -6,6 +6,31 @@ The working copy of the [Dine In baseline](../dine-in-baseline/), where new UI c
 
 ## Changes from the baseline
 
+### Round 6: Gift card funnel
+
+`shop/egift-card.html` was the stock product page: one image, a value dropdown and "Purchase". It's now a gifting flow, built around the site's own gift-card rule from the cancellation policy: non-refundable, transferable, and redeemable for any Dine In experience within 365 days of purchase.
+
+| Part | What it does |
+| --- | --- |
+| **Live card preview** | A green and gold card that shows the occasion headline, the amount, "For …", the message and "From …" as the buyer types. |
+| **Three steps** | 1. Occasion chips (Birthday, Anniversary, Thank you, Christmas, Just because). Each one sets the card headline and suggests a message, but never overwrites one the buyer has typed. 2. Amount tiles (A$50 / A$75 / A$100 / A$200), which must be chosen, with an inline error if not. 3. To, From, a message of up to 200 characters with a counter, recipient email and a date to send. The button follows the amount: "Add gift card — A$100". |
+| **Cart** | Each personalised gift is its own cart line, with its details listed under it. Everything shown in the cart is now HTML-escaped (`esc()` in `site.js`), because gift messages are text people typed. On phones the cart row stacks so the details stay readable. |
+| **Terms strip** | Any experience · 365 days · Transferable · Non-refundable, linked to the new `cancellation-policy.html#gift-cards` anchor. |
+| **How it works + redeem** | Three steps, then a **Received a Dine In gift card?** band. Its button opens `book.html?src=gift-card-redeem&gift=1`, which fills the message with "I have a Dine In gift card." and adds a Gift card row to the review summary. |
+| **Cross-sell** | A link to the 5-course Degustation voucher (A$130 per person, min. 6). |
+| **SEO** | `Product` + `AggregateOffer` JSON-LD (AUD 50–200) and a fuller meta description. |
+
+**Deep links and attribution**
+
+- `shop/egift-card.html?amount=100&occasion=birthday&src=home` pre-selects the amount and occasion. `src` is saved on the cart line.
+- Inbound links now carry a `src`:
+  - homepage gift card (`home`)
+  - booking success upsell (`book-success`)
+  - cooking classes (`classes`)
+  - shop (`shop`)
+  - every footer (`footer`)
+  - new "Give it as a gift" buttons in the closing blocks on Experiences (`experiences`) and Menu (`menu`)
+
 ### Round 5: Menu page
 
 The menu now leads into a booking instead of ending the visit. Every dish, description and price is the existing menu text. The only wording changes are casing ("KINGFISH TARTARE" becomes "Kingfish Tartare") and moving the (V) and award marks into badges.
@@ -149,6 +174,7 @@ Every new text colour pair passes WCAG AA:
   - The banquet menu says "Choose 4–5" sides, but the Experiences page says "three sides". The menu page shows the menu's wording.
   - Grazing says "choose three of five" but lists eight groups.
   - The Sides tab isn't tied to one experience, so its buttons offer Private Dining or Banquets.
+- **Gift card delivery:** whether the live store emails the card to the buyer or the recipient, and whether a send date and message are supported. The test page collects them but makes no delivery promise. Also confirm the 200-character message limit and the five suggested messages.
 - **Plant-based dishes** carry no vegan or gluten-free labels. Only the five dishes the site marks (V) are badged. If Brooke wants dietary labels, she needs to supply them per dish.
 
 ## Run it
