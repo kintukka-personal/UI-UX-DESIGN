@@ -2,13 +2,22 @@
 <html lang="en-AU">
 <head>
 <meta charset="utf-8">
+<script>document.documentElement.classList.add('js')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>5-course Degustation voucher — Dine In</title>
 <meta name="description" content="5-course Degustation voucher from Dine In by Chef Brooke Silk.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dine In by Brooke Silk">
+<meta property="og:title" content="5-course Degustation voucher — Dine In">
+<meta property="og:description" content="5-course Degustation voucher from Dine In by Chef Brooke Silk.">
+<!-- Use absolute URLs (https://dine-in.com.au/...) when this goes live -->
+<meta property="og:image" content="../assets/images/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#002E13">
 <link rel="icon" href="../assets/images/favicon.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Libre+Caslon+Text:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap">
 <link rel="stylesheet" href="../assets/css/site.css">
 </head>
 <body>
@@ -17,7 +26,7 @@
   <div class="header-inner">
     <a class="header-logo" href="../index.html"><img src="../assets/images/logo.webp" width="750" height="582" alt="Dine In"></a>
     <nav class="header-nav" aria-label="Main">
-      <ul><li><a href="../index.html">Home</a></li><li><a href="../menu.html">Menu</a></li><li><a href="../experiences.html">Our Experiences</a></li><li><a href="../faq.html">FAQ</a></li><li><a href="../shop.html" aria-current="page">Shop</a></li><li><a href="../testimonials.html">Reviews &amp; Press</a></li><li><a href="../contact.html">Contact Us</a></li><li><a href="../book.html">Book Now</a></li></ul>
+      <ul><li><a href="../index.html">Home</a></li><li><a href="../menu.html">Menu</a></li><li><a href="../experiences.html">Our Experiences</a></li><li><a href="../faq.html">FAQ</a></li><li><a href="../shop.html" aria-current="page">Shop</a></li><li><a href="../testimonials.html">Reviews &amp; Press</a></li><li><a href="../contact.html">Contact Us</a></li><li><a class="nav-cta" href="../book.html" data-cta="nav-book">Book Now</a></li></ul>
     </nav>
     <div class="header-social"><a href="https://www.instagram.com/dineinbybrookesilk/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.facebook.com/DineInbyBrookesilk" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.4 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4V10.4H7.7v3h2.6V21h3.1z"/></svg></a><a href="mailto:dineinbybrooke@gmail.com" aria-label="Email dineinbybrooke@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="1"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg></a></div>
     <a class="header-cart" href="../cart.html" aria-label="Cart"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 7h14l-1.5 13h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="count">0</span></a>
@@ -45,16 +54,42 @@
   </div>
 </section>
 
+<section class="cta-block" aria-labelledby="product-cta-title">
+  <span class="eyebrow">Hosting instead?</span>
+  <h2 id="product-cta-title">Bring Brooke to your table</h2>
+  <p>Private dining, cooking classes, grazing and canapés across the Illawarra, South Coast, Highlands and Sydney.</p>
+  <div class="actions">
+    <a class="btn" href="../book.html" data-cta="product-cta-primary">Check your date</a>
+    <a class="btn btn--ghost" href="../experiences.html" data-cta="product-cta-secondary">See our experiences</a>
+  </div>
+  <p class="fine">Or call Brooke on <a href="tel:+61432804952" data-cta="product-call">0432 804 952</a></p>
+</section>
 </main>
 <footer class="site-footer">
+  <div class="footer-contact">
+    <div class="footer-brand">Dine In</div>
+    <a href="tel:+61432804952" data-cta="footer-call">Call 0432 804 952</a>
+    <a href="mailto:dineinbybrooke@gmail.com">dineinbybrooke@gmail.com</a>
+    <span class="meta">Illawarra, South Coast, Highlands &amp; Greater Sydney · Mon–Fri 10am–5pm</span>
+  </div>
   <div class="footer-social"><a href="https://www.instagram.com/dineinbybrookesilk/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.facebook.com/DineInbyBrookesilk" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.4 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4V10.4H7.7v3h2.6V21h3.1z"/></svg></a><a href="mailto:dineinbybrooke@gmail.com" aria-label="Email dineinbybrooke@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="1"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg></a></div>
   <div class="footer-policies">
-    <p><strong>Policies</strong></p>
     <p><a href="../terms-and-conditions.html">Terms &amp; Conditions</a></p>
     <p><a href="../cancellation-policy.html">Cancellations &amp; Refunds</a></p>
     <p><a href="../privacy-policy.html">Privacy Policy</a></p>
   </div>
+  <p class="footer-legal">© Dine In by Brooke Silk · ABN 59 527 143 743</p>
 </footer>
+<div class="sticky-bar" data-sticky-bar inert>
+  <a class="brand" href="../index.html">Dine In</a>
+  <nav aria-label="Quick links"><a href="../experiences.html">Experiences</a><a href="../menu.html">Menu</a><a href="../testimonials.html">Reviews</a><a href="../faq.html">FAQ</a></nav>
+  <a class="phone" href="tel:+61432804952" data-cta="sticky-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>0432 804 952</a>
+  <a class="btn" href="../book.html" data-cta="sticky-book">Check your date</a>
+</div>
+<nav class="mobile-bar" aria-label="Call or book">
+  <a class="call" href="tel:+61432804952" data-cta="mobile-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
+  <a class="book" href="../book.html" data-cta="mobile-book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Check your date</a>
+</nav>
 <script src="../assets/js/site.js"></script>
 </body>
 </html>
