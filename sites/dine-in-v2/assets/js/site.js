@@ -29,22 +29,26 @@
   }
 
   /* ---- FAQ accordions ------------------------------------------------- */
-  document.querySelectorAll('.accordion button').forEach(function (btn) {
+  // openPanel(btn, open, instant): instant skips the height animation (used by
+  // FAQ search, Expand all and deep links).
+  function openPanel(btn, open, instant) {
     var panel = document.getElementById(btn.getAttribute('aria-controls'));
-    btn.addEventListener('click', function () {
-      var open = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!open));
-      if (open) {
-        panel.style.height = panel.scrollHeight + 'px';
-        requestAnimationFrame(function () { panel.style.height = '0px'; });
-      } else {
-        panel.style.height = panel.scrollHeight + 'px';
-        panel.addEventListener('transitionend', function done() {
-          if (btn.getAttribute('aria-expanded') === 'true') panel.style.height = 'auto';
-          panel.removeEventListener('transitionend', done);
-        });
-      }
-    });
+    if ((btn.getAttribute('aria-expanded') === 'true') === open) return;
+    btn.setAttribute('aria-expanded', String(open));
+    if (instant || reduceMotion) { panel.style.height = open ? 'auto' : '0px'; return; }
+    if (!open) {
+      panel.style.height = panel.scrollHeight + 'px';
+      requestAnimationFrame(function () { panel.style.height = '0px'; });
+    } else {
+      panel.style.height = panel.scrollHeight + 'px';
+      panel.addEventListener('transitionend', function done() {
+        if (btn.getAttribute('aria-expanded') === 'true') panel.style.height = 'auto';
+        panel.removeEventListener('transitionend', done);
+      });
+    }
+  }
+  document.querySelectorAll('.accordion button').forEach(function (btn) {
+    btn.addEventListener('click', function () { openPanel(btn, btn.getAttribute('aria-expanded') !== 'true'); });
   });
 
   /* ---- Menu tabs ------------------------------------------------------ */
@@ -269,6 +273,11 @@
     // Menu page: ?menu=banquet ("Enquire with this menu") and ?dishes=… (the shortlist)
     var menuSlug = (params.get('menu') || '').replace(/[^a-z-]/g, '').slice(0, 20);
     if (srcEl && menuSlug) srcEl.value = (srcEl.value || 'menu') + ':' + menuSlug;
+    // Contact page hand-off: ?name=Sam Taylor fills first and last name
+    var fullName = (params.get('name') || '').trim().slice(0, 80).split(/\s+/).filter(Boolean);
+    var fEl = booking.querySelector('#fname'), lEl = booking.querySelector('#lname');
+    if (fullName.length && fEl && !fEl.value) fEl.value = fullName[0];
+    if (fullName.length > 1 && lEl && !lEl.value) lEl.value = fullName.slice(1).join(' ');
     var hasGift = params.get('gift') === '1';
     if (msg && hasGift && !msg.value) msg.value = 'I have a Dine In gift card.';
     if (msg && params.get('dishes') && !msg.value) msg.value = ('Dishes I\'d love: ' + params.get('dishes')).slice(0, 600);
@@ -786,6 +795,130 @@
     slot.appendChild(link);
     slot.hidden = false;
   });
+
+  /* ---- FAQ: search, topic chips, expand all, deep links --------------- */
+  var faqTools = document.querySelector('[data-faq-tools]');
+  if (faqTools) {
+    var faqItems = [].slice.call(document.querySelectorAll('.faq-group .accordion > li'));
+    var faqGroups = [].slice.call(document.querySelectorAll('.faq-group[data-group]'));
+    var faqQ = faqTools.querySelector('[data-faq-q]');
+    var faqStatus = faqTools.querySelector('[data-faq-status]');
+    var faqChipBox = faqTools.querySelector('[data-faq-chips]');
+    var faqAllBtn = faqTools.querySelector('[data-faq-all]');
+    var faqEmpty = document.querySelector('[data-faq-empty]');
+    var FAQ_LABEL = { discover: 'Discover Dine In', planning: 'Planning your event', experience: 'Your dining experience' };
+    var faqNorm = function (t) { return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); };
+    var faqText = faqItems.map(function (li) { return faqNorm(li.textContent); });
+    var faqBtnOf = function (li) { return li.querySelector('h3 button'); };
+    var faqTopic = 'all', faqSearching = false;
+    ['all'].concat(faqGroups.map(function (g) { return g.dataset.group; })).forEach(function (key) {
+      var n = key === 'all' ? faqItems.length : faqItems.filter(function (li) { return li.closest('.faq-group').dataset.group === key; }).length;
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip'; b.dataset.faqTopic = key;
+      b.setAttribute('aria-pressed', String(key === 'all'));
+      b.textContent = key === 'all' ? 'All' : (FAQ_LABEL[key] || key);
+      var c = document.createElement('span'); c.className = 'count'; c.textContent = n; b.appendChild(c);
+      b.addEventListener('click', function () { faqTopic = key; faqApply(); });
+      faqChipBox.appendChild(b);
+    });
+    var faqApply = function () {
+      var raw = faqQ.value.trim(), words = faqNorm(raw).split(/\s+/).filter(Boolean), shown = 0;
+      faqItems.forEach(function (li, i) {
+        var inTopic = faqTopic === 'all' || li.closest('.faq-group').dataset.group === faqTopic;
+        var match = inTopic && words.every(function (w) { return faqText[i].indexOf(w) > -1; });
+        li.hidden = !match;
+        if (match) shown++;
+        if (words.length) openPanel(faqBtnOf(li), match, true);
+        else if (faqSearching) openPanel(faqBtnOf(li), false, true);
+      });
+      faqSearching = words.length > 0;
+      faqGroups.forEach(function (g) { g.hidden = !g.querySelector('.accordion > li:not([hidden])'); });
+      faqChipBox.querySelectorAll('[data-faq-topic]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.faqTopic === faqTopic)); });
+      faqStatus.textContent = words.length ? shown + (shown === 1 ? ' answer matches' : ' answers match') + ' “' + raw + '”' : 'Showing ' + shown + ' of ' + faqItems.length;
+      faqEmpty.hidden = shown > 0;
+      if (!shown) {
+        faqEmpty.textContent = (words.length ? 'No answers match “' + raw + '”. ' : 'No answers in this topic. ');
+        var ask = document.createElement('a'); ask.className = 'text-link'; ask.href = 'contact.html#ask'; ask.textContent = 'Ask Brooke directly';
+        var tel = document.createElement('a'); tel.className = 'text-link'; tel.href = 'tel:+61432804952'; tel.textContent = '0432 804 952';
+        faqEmpty.appendChild(ask); faqEmpty.appendChild(document.createTextNode(' or call ')); faqEmpty.appendChild(tel);
+      }
+    };
+    faqQ.addEventListener('input', faqApply);
+    faqAllBtn.addEventListener('click', function () {
+      var expand = faqAllBtn.getAttribute('aria-pressed') !== 'true';
+      faqItems.forEach(function (li) { if (!li.hidden) openPanel(faqBtnOf(li), expand, true); });
+      faqAllBtn.setAttribute('aria-pressed', String(expand));
+      faqAllBtn.textContent = expand ? 'Collapse all' : 'Expand all';
+    });
+    var faqFromHash = function () {
+      var id = decodeURIComponent(location.hash.slice(1));
+      var target = id && document.getElementById(id);
+      var li = target && target.closest && target.closest('.accordion > li');
+      if (!li) return;
+      if (li.hidden) { faqQ.value = ''; faqTopic = 'all'; faqApply(); }
+      openPanel(faqBtnOf(li), true, true);
+      li.scrollIntoView({ block: 'start' });
+      faqBtnOf(li).focus({ preventScroll: true });
+    };
+    faqTools.hidden = false;
+    faqApply();
+    faqFromHash();
+    window.addEventListener('hashchange', faqFromHash);
+  }
+
+  /* ---- Contact: live hours status (Sydney time) and quick question ---- */
+  var hoursEl = document.querySelector('[data-hours-status]');
+  if (hoursEl && window.Intl && Intl.DateTimeFormat) {
+    try {
+      var hp = new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Sydney', weekday: 'short', hour: 'numeric', minute: 'numeric', hour12: false }).formatToParts(new Date());
+      var hget = function (t) { var x = hp.filter(function (p) { return p.type === t; })[0]; return x ? x.value : ''; };
+      var hday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(hget('weekday').slice(0, 3));
+      var hmins = (+hget('hour') % 24) * 60 + (+hget('minute'));
+      if (hday > -1 && !isNaN(hmins)) {
+        var weekday = hday >= 1 && hday <= 5, isOpen = weekday && hmins >= 600 && hmins < 1020, htext;
+        if (isOpen) htext = 'Open now · until 5pm';
+        else if (weekday && hmins < 600) htext = 'Closed now · opens today 10am';
+        else {
+          var nd = hday;
+          do { nd = (nd + 1) % 7; } while (nd === 0 || nd === 6);
+          htext = 'Closed now · opens ' + ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][nd] + ' 10am';
+        }
+        hoursEl.textContent = htext;
+        hoursEl.classList.toggle('is-open', isOpen);
+        hoursEl.hidden = false;
+      }
+    } catch (e) {}
+  }
+  var askForm = document.querySelector('[data-ask-form]');
+  if (askForm) {
+    var askTopic = askForm.querySelector('#ask-topic');
+    var askBook = askForm.querySelector('[data-ask-book]');
+    var askBookLink = askForm.querySelector('[data-ask-book-link]');
+    var askVal = function (id) { return askForm.querySelector(id).value.trim(); };
+    var askSync = function () {
+      askBook.hidden = askTopic.value !== 'Checking a date';
+      askBookLink.href = 'book.html?src=contact' + (askVal('#ask-name') ? '&name=' + encodeURIComponent(askVal('#ask-name')) : '');
+    };
+    askForm.addEventListener('input', askSync);
+    askForm.addEventListener('change', askSync);
+    askSync();
+    askForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var firstBad = null;
+      ['#ask-name', '#ask-email', '#ask-message'].forEach(function (id) {
+        var f = askForm.querySelector(id), v = f.value.trim();
+        var good = !!v && (f.type !== 'email' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
+        f.closest('.field').classList.toggle('invalid', !good);
+        f.setAttribute('aria-invalid', String(!good));
+        if (!good && !firstBad) firstBad = f;
+      });
+      if (firstBad) { firstBad.focus(); return; }
+      var url = 'mailto:dineinbybrooke@gmail.com?subject=' + encodeURIComponent('Website question: ' + askTopic.value) +
+        '&body=' + encodeURIComponent(askVal('#ask-message') + '\n\n' + askVal('#ask-name') + '\n' + askVal('#ask-email'));
+      askForm.dataset.mailto = url;
+      window.location.href = url;
+    });
+  }
 
   /* ---- Featured video (HLS stream from the live site's video CDN) ----- */
   var video = document.querySelector('video[data-hls]');

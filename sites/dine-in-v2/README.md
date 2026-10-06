@@ -6,6 +6,31 @@ The working copy of the [Dine In baseline](../dine-in-baseline/), where new UI c
 
 ## Changes from the baseline
 
+### Round 8: FAQ & Contact polish
+
+**FAQ (`faq.html`).** All 18 answers are word for word as before. Before this round, every answer was invisible with JavaScript off, because the collapse style applied whether or not the script ran. That style now only applies when JavaScript is running.
+
+| Part | What it does |
+| --- | --- |
+| **Search** | Live search over questions and answers. Matching answers open, with a result line such as "1 answer matches 'payment'". If nothing matches, the page offers **Ask Brooke directly** (Contact form) or the phone number. |
+| **Topic chips** | All 18 · Discover Dine In 3 · Planning your event 9 · Your dining experience 6. They combine with search. |
+| **Expand all / Collapse all** | Opens or closes every visible answer at once. |
+| **Deep links** | Every question has a readable link, e.g. `faq.html#waitress-service` or `#booking-confirmation-and-payment`. The answer opens and scrolls into view, including when the link is followed from the same page, and even if a search had hidden it. |
+| **Related** | Next-step links under 8 answers: Experiences, Contact service areas, booking (`src=faq`), the corporate estimator, Menus, the Plant-based menu, the menu shortlist. |
+| **SEO** | `FAQPage` JSON-LD for all 18 answers, generated from the page text. |
+| **Closing CTA** | The secondary button is now **Ask a quick question** (`contact.html#ask`). The phone number moved to the small print. |
+
+**Contact (`contact.html`).**
+
+| Part | What it does |
+| --- | --- |
+| **Four choices** | Check your date (primary, `src=contact`), Call, Email, Ask a quick question. |
+| **Hours + live status** | Monday–Friday · 10am–5pm, plus a status line worked out in Sydney time: "Open now · until 5pm" or "Closed now · opens Monday 10am". It doesn't promise a reply time, and it's hidden without JavaScript. |
+| **Quick question form** | Name, email, topic and message, with inline errors. The form has no server behind it, so **Open email to send** opens the visitor's email app with the subject ("Website question: Gift cards") and the message already filled in, addressed to dineinbybrooke@gmail.com. If the topic is "Checking a date", the page points to the booking form instead and carries the name across (`book.html?name=…` fills first and last name). |
+| **Where Brooke cooks** | The FAQ's service-area sentence plus area chips, next to the existing map. |
+| **Common questions** | Three links into the FAQ deep links. |
+| **SEO** | `ContactPage` JSON-LD with the same business details as the homepage: phone, email, hours and area served. |
+
 ### Round 7: Reviews page, curated by Brooke
 
 `testimonials.html` was a heading, a long three-column press list and the Elfsight widget. None of the individual review text lives in this repo. The rebuild works with real content only: anything without real reviews behind it stays hidden.
@@ -204,6 +229,7 @@ Every new text colour pair passes WCAG AA:
   - The Sides tab isn't tied to one experience, so its buttons offer Private Dining or Banquets.
 - **Gift card delivery:** whether the live store emails the card to the buyer or the recipient, and whether a send date and message are supported. The test page collects them but makes no delivery promise. Also confirm the 200-character message limit and the five suggested messages.
 - **Reviews:** Brooke's Google review links (`googleUrl`, `leaveReviewUrl`), which reviews to feature, and each guest's OK to be quoted. Until then the curated blocks and the review quotes across the site stay hidden.
+- **Contact form:** the quick-question topics, and whether she wants a real form inbox at launch. Today the form opens the visitor's email app, so nothing is sent without their email client. A form service such as Formspree or Netlify Forms would make it send directly.
 - **Plant-based dishes** carry no vegan or gluten-free labels. Only the five dishes the site marks (V) are badged. If Brooke wants dietary labels, she needs to supply them per dish.
 
 ## Run it
@@ -222,12 +248,12 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | `index.html` | `/` | Hero, trust strip, intro, How it works, experience cards, proof band, Chef card, As Featured In, gift cards, "Check your date" mini form |
 | `menu.html` | `/menu` | Six tabbed menus (Private Dining spring, Plant-Based, Banquet, Sides, Canapés, Grazing), each with price and serving facts, plus a dish shortlist that hands off to the booking form |
 | `experiences.html` | `/experiences` | "Which experience suits me?" picker, filter chips, six priced cards, a comparison table and Details dialogs |
-| `faq.html` | `/faq` | Three groups of accordions (18 questions), closing CTA |
+| `faq.html` | `/faq` | 18 questions in three groups, with search, topic chips, expand all, readable deep links, related next steps and FAQPage JSON-LD |
 | `shop.html` | `/shop` | Chilli Jam, Degustation voucher, eGift Card |
 | `shop/*.html` | `/shop/p/*` | Product pages with gallery, quantity, value picker and Add To Cart |
 | `cart.html` | `/cart` | Cart (stored in the browser, see below) |
 | `testimonials.html` | `/testimonials` | Reviews & Press: score, curated guest stories and occasion filter (from `assets/js/reviews-data.js`), Nine pull quote, awards and media wall, live Google reviews widget |
-| `contact.html` | `/contact` | Email, phone, hours, greyscale map |
+| `contact.html` | `/contact` | Four ways to get in touch, live hours status, quick-question form (opens email), service area, map |
 | `weddings.html`, `corporate-events.html`, `cooking-classes.html` | new | Occasion landing pages with packages, estimators and pre-filled booking links |
 | `book.html` | `/book` | Three-step booking enquiry with pre-fill, summary and success screen |
 | `privacy-policy.html`, `terms-and-conditions.html`, `cancellation-policy.html` | same | Policy pages linked from the footer |
