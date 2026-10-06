@@ -6,6 +6,34 @@ The working copy of the [Dine In baseline](../dine-in-baseline/), where new UI c
 
 ## Changes from the baseline
 
+### Round 7: Reviews page, curated by Brooke
+
+`testimonials.html` was a heading, a long three-column press list and the Elfsight widget. None of the individual review text lives in this repo. The rebuild works with real content only: anything without real reviews behind it stays hidden.
+
+| Part | What it does |
+| --- | --- |
+| **Score hero** | The H1, then ★ 5.0 · from 60 Google reviews, and award pills: Top 3 Wedding Caterer 2026, NSW Business Awards finalist, Illawarra Local Business Awards winner. "Read all reviews on Google" and "Leave a review" appear once their links are added to the data file. |
+| **Guest stories** | Up to three large featured reviews, each with a "Book [experience]" button (`book.html?exp=…&src=reviews`). Hidden until Brooke marks reviews as featured. |
+| **Reviews by occasion** | Chips only for occasions that have reviews, with counts, plus a "Showing 2 of 5" line. Long reviews are clamped with a Read more button. The URL keeps the filter (`?occasion=wedding`), and wedding, corporate and class filters link to their landing pages. Hidden until there are reviews. |
+| **Press quote** | The existing Nine Travel quote as a green pull quote, with a link to the article. |
+| **Awards & media** | All nine existing items as uniform tiles, split into **Awards** (3) and **In the media** (6), with the same text and links as before. |
+| **Latest on Google** | The Elfsight widget, unchanged, under its own heading. |
+| **Review quotes across the site** | Small quote boxes in the six Experiences details (and their pop-up), the Menu panels, the gift card page and the three landing pages. Each picks the best match by experience or occasion, featured first, and links to the filtered reviews. Every box stays hidden until a matching review exists. |
+
+**Adding a review**
+
+All review content lives in `assets/js/reviews-data.js`. It's a JS file rather than JSON, so it also works when a page is opened straight from disk.
+
+1. Copy the review word for word from Dine In's own Google Business Profile.
+2. Ask the guest if it's OK to feature it. Use their first name and last initial.
+3. Tag it with an `occasion` (`dinner`, `celebration`, `wedding`, `corporate`, `class` or `catering`) and an `experience` (one of the six Experiences ids).
+4. Set `featured: true` on up to three reviews. `url` is optional: the review's `https://` link on Google.
+5. Add `googleUrl` and `leaveReviewUrl` from the Business Profile so the two hero links appear.
+
+Entries that are missing a name or text, or that use an unknown occasion or experience, are skipped. Review text is always inserted as plain text, never as HTML, and only `https://` links are used.
+
+**Structured data:** the page adds no `Review` or `AggregateRating` markup on purpose. Google treats reviews a business publishes about itself on its own site as self-serving and doesn't show them as review stars.
+
 ### Round 6: Gift card funnel
 
 `shop/egift-card.html` was the stock product page: one image, a value dropdown and "Purchase". It's now a gifting flow, built around the site's own gift-card rule from the cancellation policy: non-refundable, transferable, and redeemable for any Dine In experience within 365 days of purchase.
@@ -175,6 +203,7 @@ Every new text colour pair passes WCAG AA:
   - Grazing says "choose three of five" but lists eight groups.
   - The Sides tab isn't tied to one experience, so its buttons offer Private Dining or Banquets.
 - **Gift card delivery:** whether the live store emails the card to the buyer or the recipient, and whether a send date and message are supported. The test page collects them but makes no delivery promise. Also confirm the 200-character message limit and the five suggested messages.
+- **Reviews:** Brooke's Google review links (`googleUrl`, `leaveReviewUrl`), which reviews to feature, and each guest's OK to be quoted. Until then the curated blocks and the review quotes across the site stay hidden.
 - **Plant-based dishes** carry no vegan or gluten-free labels. Only the five dishes the site marks (V) are badged. If Brooke wants dietary labels, she needs to supply them per dish.
 
 ## Run it
@@ -197,7 +226,7 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | `shop.html` | `/shop` | Chilli Jam, Degustation voucher, eGift Card |
 | `shop/*.html` | `/shop/p/*` | Product pages with gallery, quantity, value picker and Add To Cart |
 | `cart.html` | `/cart` | Cart (stored in the browser, see below) |
-| `testimonials.html` | `/testimonials` | Reviews & Press: awards and media, plus the live Google reviews widget |
+| `testimonials.html` | `/testimonials` | Reviews & Press: score, curated guest stories and occasion filter (from `assets/js/reviews-data.js`), Nine pull quote, awards and media wall, live Google reviews widget |
 | `contact.html` | `/contact` | Email, phone, hours, greyscale map |
 | `weddings.html`, `corporate-events.html`, `cooking-classes.html` | new | Occasion landing pages with packages, estimators and pre-filled booking links |
 | `book.html` | `/book` | Three-step booking enquiry with pre-fill, summary and success screen |

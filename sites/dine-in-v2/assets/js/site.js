@@ -656,6 +656,137 @@
     slRender();
   }
 
+  /* ---- Reviews: Brooke's hand-picked Google reviews ------------------- */
+  /* Data lives in assets/js/reviews-data.js. Anything missing or malformed is
+     skipped, and every block that has nothing real to show stays hidden. */
+  var REV_OCC = { dinner: 'Dinner party', celebration: 'Celebration', wedding: 'Wedding', corporate: 'Work event', 'class': 'Cooking class', catering: 'Catering & events' };
+  var REV_EXP = { 'private-dining': 'Private Dining', 'grazing-boards': 'Grazing Boards', 'cooking-classes': 'Private Cooking Class', 'party-packs': 'Banquets', canapes: 'Canapés', degustation: '5 Course Degustation' };
+  var REV_PAGE = { wedding: 'weddings.html', corporate: 'corporate-events.html', 'class': 'cooking-classes.html' };
+  var revData = window.DINE_IN_REVIEWS && typeof window.DINE_IN_REVIEWS === 'object' ? window.DINE_IN_REVIEWS : {};
+  var isHttps = function (u) { return typeof u === 'string' && /^https:\/\/[^\s"'<>]+$/.test(u); };
+  var revReviews = (Array.isArray(revData.reviews) ? revData.reviews : []).filter(function (r) {
+    return r && typeof r.text === 'string' && r.text.trim() && typeof r.name === 'string' && r.name.trim() &&
+      (!r.occasion || REV_OCC.hasOwnProperty(r.occasion)) && (!r.experience || REV_EXP.hasOwnProperty(r.experience));
+  });
+  var siteJs = document.querySelector('script[src$="assets/js/site.js"]');
+  var revBase = siteJs ? siteJs.getAttribute('src').replace(/assets\/js\/site\.js$/, '') : '';
+  var el = function (tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  var revStars = function (r) {
+    var n = Math.max(1, Math.min(5, Math.round(+r.rating || 5)));
+    var p = el('p', 'rev-stars', '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n));
+    p.setAttribute('aria-label', n + ' out of 5 stars');
+    return p;
+  };
+  var revWhen = function (r) {
+    return /^\d{4}-\d{2}$/.test(r.date || '') ? new Date(r.date + '-01T00:00').toLocaleDateString('en-AU', { month: 'short', year: 'numeric' }) : '';
+  };
+  var revCard = function (r, big) {
+    var card = el('article', 'rev-card' + (big ? ' rev-card--featured' : ''));
+    card.dataset.occasion = r.occasion || '';
+    card.appendChild(revStars(r));
+    var q = el('blockquote', 'rev-text'); q.appendChild(el('p', null, r.text.trim())); card.appendChild(q);
+    if (!big && r.text.trim().length > 260) {
+      var more = el('button', 'rev-readmore text-link', 'Read more');
+      more.type = 'button'; more.setAttribute('aria-expanded', 'false');
+      more.addEventListener('click', function () {
+        var open = card.classList.toggle('is-open');
+        more.setAttribute('aria-expanded', String(open)); more.textContent = open ? 'Show less' : 'Read more';
+      });
+      card.appendChild(more);
+    }
+    var meta = el('p', 'rev-meta');
+    meta.appendChild(el('span', 'rev-name', r.name.trim()));
+    [r.occasion ? REV_OCC[r.occasion] : '', revWhen(r)].forEach(function (t) { if (t) meta.appendChild(document.createTextNode(' · ' + t)); });
+    card.appendChild(meta);
+    var src = el('p', 'rev-source');
+    if (isHttps(r.url)) { var a = el('a', null, 'Posted on Google'); a.href = r.url; a.target = '_blank'; a.rel = 'noopener'; src.appendChild(a); }
+    else src.textContent = 'Posted on Google';
+    card.appendChild(src);
+    if (big && r.experience) {
+      var book = el('a', 'btn btn--secondary', 'Book ' + REV_EXP[r.experience]);
+      book.href = revBase + 'book.html?exp=' + r.experience + '&src=reviews';
+      book.setAttribute('data-cta', 'review-book-' + r.experience);
+      card.appendChild(book);
+    }
+    return card;
+  };
+
+  // Reviews page: score, Google links, featured stories, occasion filter
+  var ratingEl = document.querySelector('[data-rev-rating]');
+  if (ratingEl && typeof revData.rating === 'number' && revData.rating > 0 && revData.rating <= 5) ratingEl.textContent = revData.rating.toFixed(1);
+  var countEl = document.querySelector('[data-rev-count]');
+  if (countEl && Math.round(+revData.count) > 0) countEl.textContent = Math.round(+revData.count);
+  var gBox = document.querySelector('[data-rev-google]');
+  if (gBox) {
+    [['[data-rev-google-read]', revData.googleUrl], ['[data-rev-google-leave]', revData.leaveReviewUrl]].forEach(function (pair) {
+      var a = gBox.querySelector(pair[0]);
+      if (isHttps(pair[1])) { a.href = pair[1]; a.hidden = false; gBox.hidden = false; }
+    });
+  }
+  var featBox = document.querySelector('[data-rev-featured]');
+  if (featBox) {
+    var feat = revReviews.filter(function (r) { return r.featured === true; }).slice(0, 3);
+    feat.forEach(function (r) { featBox.querySelector('[data-rev-featured-list]').appendChild(revCard(r, true)); });
+    featBox.hidden = !feat.length;
+  }
+  var allBox = document.querySelector('[data-rev-all]');
+  if (allBox && revReviews.length) {
+    var grid = allBox.querySelector('[data-rev-grid]'), chipBox = allBox.querySelector('[data-rev-chips]');
+    var revStatus = allBox.querySelector('[data-rev-status]'), moreBox = allBox.querySelector('[data-rev-more]');
+    var cardsR = revReviews.map(function (r) { var c = revCard(r, false); grid.appendChild(c); return c; });
+    var occs = Object.keys(REV_OCC).filter(function (o) { return revReviews.some(function (r) { return r.occasion === o; }); });
+    ['all'].concat(occs).forEach(function (o) {
+      var n = o === 'all' ? revReviews.length : revReviews.filter(function (r) { return r.occasion === o; }).length;
+      var b = el('button', 'chip', o === 'all' ? 'All' : REV_OCC[o]);
+      b.type = 'button'; b.dataset.revFilter = o; b.setAttribute('aria-pressed', 'false');
+      b.appendChild(el('span', 'count', String(n)));
+      b.addEventListener('click', function () { revFilter(o, true); });
+      chipBox.appendChild(b);
+    });
+    var revFilter = function (o, push) {
+      if (o !== 'all' && occs.indexOf(o) < 0) o = 'all';
+      var shown = 0;
+      cardsR.forEach(function (c) { c.hidden = o !== 'all' && c.dataset.occasion !== o; if (!c.hidden) shown++; });
+      chipBox.querySelectorAll('[data-rev-filter]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.revFilter === o)); });
+      revStatus.textContent = 'Showing ' + shown + ' of ' + cardsR.length;
+      moreBox.textContent = '';
+      moreBox.hidden = !REV_PAGE[o];
+      if (REV_PAGE[o]) {
+        var a = el('a', 'text-link', 'See ' + REV_OCC[o].toLowerCase() + ' options'); a.href = REV_PAGE[o];
+        moreBox.appendChild(a);
+      }
+      if (push && history.replaceState) {
+        var u = new URL(location.href);
+        if (o === 'all') u.searchParams.delete('occasion'); else u.searchParams.set('occasion', o);
+        history.replaceState(null, '', u.pathname + u.search + u.hash);
+      }
+    };
+    allBox.hidden = false;
+    revFilter(new URLSearchParams(location.search).get('occasion') || 'all', false);
+  }
+
+  // Review quotes on Experiences, Menu, gift and landing pages
+  document.querySelectorAll('[data-review-slot]').forEach(function (slot) {
+    var exp = slot.dataset.experience, occ = slot.dataset.occasion;
+    var pool = revReviews.filter(function (r) {
+      if (slot.hasAttribute('data-any')) return true;
+      return (exp && r.experience === exp) || (occ && r.occasion === occ);
+    }).sort(function (a, b) { return (b.featured === true) - (a.featured === true); });
+    if (!pool.length) return;
+    var r = pool[0];
+    slot.textContent = '';
+    slot.appendChild(revStars(r));
+    var q = el('blockquote', 'rev-text'); q.appendChild(el('p', null, r.text.trim())); slot.appendChild(q);
+    var meta = el('p', 'rev-meta'); meta.appendChild(el('span', 'rev-name', r.name.trim()));
+    meta.appendChild(document.createTextNode(' · Google review'));
+    slot.appendChild(meta);
+    var link = el('a', 'text-link', 'Read more reviews');
+    var o = occ || r.occasion;
+    link.href = revBase + 'testimonials.html' + (o ? '?occasion=' + o : '');
+    slot.appendChild(link);
+    slot.hidden = false;
+  });
+
   /* ---- Featured video (HLS stream from the live site's video CDN) ----- */
   var video = document.querySelector('video[data-hls]');
   if (video) {

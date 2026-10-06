@@ -510,36 +510,8 @@ strong, b { font-weight: 600; }
 /* ==========================================================================
    REVIEWS & PRESS
    ========================================================================== */
-.press { text-align: center; padding-top: 133px; padding-bottom: 60px; }
-.press h2 + .press-grid { margin-top: 140px; }
-.press-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 144px);
-  justify-content: center;
-  column-gap: 26px;
-  align-items: start;
-}
-.press-col { display: flex; flex-direction: column; gap: 60px; }
-.press-item img { width: 144px; height: auto; margin: 0 auto; }
-.press-item .press-title {
-  display: block;
-  margin: 18px 0 14px;
-  font-size: var(--fs-body);
-  line-height: 1.25;
-  text-decoration: none;
-}
-.press-item .press-title:hover { text-decoration: underline; }
-.press-item p { font-size: var(--fs-small); line-height: 1.4; margin: 0 0 10px; }
-.reviews-title { margin-top: 157px; }
 .reviews-widget { padding: var(--pad-m) var(--gutter); min-height: 400px; }
 
-@media (max-width: 1023px) {
-  .press-grid { grid-template-columns: repeat(3, 144px); row-gap: 60px; }
-  .press-col { display: contents; }
-}
-@media (max-width: 520px) {
-  .press-grid { grid-template-columns: repeat(2, 144px); }
-}
 
 /* ==========================================================================
    CONTACT
@@ -1388,4 +1360,84 @@ body:has(.shortlist:not([hidden])) .site-footer { padding-bottom: 120px; }
   .cart-row { grid-template-columns: 64px 1fr auto; gap: 6px 14px; align-items: start; }
   .cart-row img { width: 64px; height: 64px; }
   .cart-row button { grid-column: 2 / -1; justify-self: start; min-height: 44px; padding: 0; }
+}
+
+/* ==========================================================================
+   REVIEWS (Round 7): score hero, curated stories, occasion filter,
+   review slots on decision pages, press quote and awards/media wall
+   ========================================================================== */
+.reviews-hero { text-align: center; padding: 90px var(--gutter) 60px; }
+.reviews-hero h1 { max-width: 20ch; margin: 10px auto 0; }
+.rev-score { max-width: none; display: inline-flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 4px 14px; margin: 28px 0 0; font: 500 17px var(--font-body); color: var(--ink-soft); }
+.rev-score-stars { color: var(--gold); font-size: 26px; letter-spacing: 3px; }
+.rev-score b { font: 400 52px/1 var(--font-heading); color: var(--green); }
+.rev-google { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 26px; margin: 14px auto 0; max-width: none; }
+.rev-google[hidden], .rev-google a[hidden] { display: none; }
+.rev-proof { list-style: none; padding: 0; margin: 30px auto 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.rev-proof li { font: 600 13px var(--font-body); letter-spacing: .04em; color: var(--green); background: var(--sage); border-radius: 999px; padding: 9px 16px; }
+.rev-proof li::before { content: "★ "; color: var(--gold-text); }
+
+.rev-featured, .rev-all { padding: 70px var(--gutter); max-width: 1240px; margin: 0 auto; box-sizing: content-box; }
+.rev-featured[hidden], .rev-all[hidden], .review-slot[hidden], .rev-more[hidden] { display: none; }
+.rev-featured h2, .rev-all h2 { margin: 6px 0 30px; }
+.rev-featured-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+.rev-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 24px; }
+.rev-card { display: flex; flex-direction: column; gap: 10px; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 24px; }
+.rev-card[hidden] { display: none; }
+.rev-card--featured { background: var(--sage); border: 0; border-top: 3px solid var(--gold); padding: 30px; }
+.rev-stars { margin: 0; color: var(--gold); letter-spacing: 2px; font-size: 18px; }
+.rev-text { margin: 0; }
+.rev-text p { margin: 0; font: 400 18px/1.55 var(--font-heading); color: var(--ink); overflow-wrap: anywhere; }
+.rev-card--featured .rev-text p { font-size: 21px; }
+.rev-card:not(.rev-card--featured):not(.is-open) .rev-text p { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+.rev-readmore { align-self: flex-start; background: none; border: 0; padding: 0; cursor: pointer; font: 600 14.5px var(--font-body); color: var(--green); }
+.rev-meta { margin: auto 0 0; font-size: 14.5px; color: var(--muted); }
+.rev-name { font-weight: 600; color: var(--ink); }
+.rev-source { margin: 0; font-size: 13px; color: var(--muted); }
+.rev-source a { color: inherit; }
+.rev-card .btn { align-self: flex-start; margin-top: 6px; }
+.rev-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; }
+.rev-more { margin: 22px 0 0; }
+
+.review-slot { display: block; margin: 18px 0; padding: 18px 20px; background: #fff; border: 1px solid var(--line); border-left: 3px solid var(--gold); border-radius: 6px; }
+.review-slot .rev-stars { font-size: 15px; }
+.review-slot .rev-text p { font-size: 17px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin: 4px 0; }
+.review-slot .rev-meta { margin: 6px 0 0; font-size: 14px; }
+.menu-panel-head .review-slot { grid-column: 1 / -1; margin: 0; }
+.review-slot-wrap { max-width: 860px; margin: 0 auto; padding: 0 var(--gutter); }
+.review-slot-wrap .review-slot { margin: 0 0 60px; }
+
+.press-quote { background: var(--green); color: var(--ivory); padding: 80px var(--gutter); text-align: center; }
+.press-quote figure { margin: 0 auto; max-width: 860px; }
+.press-quote blockquote { margin: 0; }
+.press-quote blockquote p { font: italic 400 clamp(24px, 3vw, 34px)/1.35 var(--font-heading); color: #fff; margin: 0; }
+.press-quote figcaption { margin-top: 22px; font: 500 15px var(--font-body); color: rgba(244, 239, 225, .82); }
+.press-quote figcaption a { color: var(--gold); }
+
+.press-wall { padding: 90px var(--gutter); max-width: 1240px; margin: 0 auto; box-sizing: content-box; text-align: center; }
+.press-wall h2 { margin: 6px 0 10px; }
+.press-group { margin: 40px 0 18px; font: 600 13px var(--font-body); letter-spacing: .14em; text-transform: uppercase; color: var(--gold-text); }
+.press-tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; text-align: left; }
+.press-tile { display: flex; flex-direction: column; gap: 8px; padding: 22px; background: #fff; border: 1px solid var(--line); border-radius: 8px; }
+.press-tile a { display: flex; flex-direction: column; gap: 14px; text-decoration: none; color: var(--green); min-height: 44px; }
+.press-logo { display: grid; place-items: center start; height: 64px; }
+.press-logo img { max-height: 64px; max-width: 150px; width: auto; height: auto; object-fit: contain; }
+.press-tile .press-title { font: 400 21px/1.25 var(--font-heading); }
+.press-tile a:hover .press-title { text-decoration: underline; text-decoration-color: var(--gold); }
+.press-tile p { margin: 0; font-size: 15px; line-height: 1.5; color: var(--ink-soft); }
+
+.rev-live { text-align: center; padding: 70px var(--gutter) 0; }
+.rev-live h2 { margin: 6px 0 8px; }
+.rev-live-note { margin: 0 auto; color: var(--muted); font-size: 15px; }
+
+@media (max-width: 1023px) {
+  .rev-grid, .press-tiles { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 767px) {
+  .reviews-hero { padding: 56px var(--gutter) 40px; }
+  .rev-score b { font-size: 44px; }
+  .rev-grid, .press-tiles { grid-template-columns: 1fr; }
+  .rev-featured-grid { grid-template-columns: 1fr; }
+  .rev-featured, .rev-all, .press-wall { padding: 56px var(--gutter); }
+  .press-quote { padding: 60px var(--gutter); }
 }
