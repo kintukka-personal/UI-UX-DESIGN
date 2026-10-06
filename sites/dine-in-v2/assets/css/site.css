@@ -1074,3 +1074,77 @@ html:not(.js) .steps-progress, html:not(.js) .step-nav [data-next], html:not(.js
 .card-title { font-size: 23px !important; }
 .modal-content { font-family: var(--font-body) !important; }
 .menu-intro { font-size: 18px; color: var(--ink-soft); margin: 16px auto 0; }
+
+/* ==========================================================================
+   LANDING PAGES (Round 3): weddings, corporate events, cooking classes.
+   Built from the homepage components; only the new pieces live here.
+   ========================================================================== */
+.lp-crumbs { display: flex; gap: 10px; align-items: center; font-size: 13.5px; margin-bottom: 18px; color: rgba(244, 239, 225, .75); }
+.lp-crumbs a { color: var(--ivory); display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 0 4px; }
+
+.package-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); max-width: 1320px; }
+.package-card .facts { list-style: none; padding: 0; margin: 4px 0 6px; display: grid; gap: 6px; font-size: 14.5px; color: var(--ink-soft); }
+.package-card .facts li { padding-left: 22px; position: relative; }
+.package-card .facts li::before { content: ""; position: absolute; left: 2px; top: .55em; width: 10px; height: 6px; border-left: 2px solid var(--gold-text); border-bottom: 2px solid var(--gold-text); transform: rotate(-45deg); }
+.package-card .actions { justify-content: flex-start; }
+.package-card--note { background: var(--paper); border: 1.5px dashed var(--line); box-shadow: none; }
+
+.estimator-band, .package-offer { background: var(--green); color: var(--ivory); padding: 96px var(--gutter); }
+.estimator-inner, .package-offer-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 60px; align-items: center; }
+.estimator-band h2, .package-offer h2 { color: #fff; }
+.estimator-band .eyebrow { color: var(--gold); }
+.estimator-copy p { color: rgba(244, 239, 225, .82); margin-top: 16px; }
+.estimator-copy .fine { font-size: 14px; color: rgba(244, 239, 225, .65); }
+.estimator { background: var(--green-2); border: 1px solid rgba(218, 165, 32, .35); border-radius: 6px; padding: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.estimator .full { grid-column: 1 / -1; }
+.estimator [hidden] { display: none; }
+.estimator label { display: block; font: 600 13px var(--font-body); letter-spacing: .06em; text-transform: uppercase; color: rgba(244, 239, 225, .85); margin-bottom: 8px; }
+.estimator select, .estimator input { width: 100%; min-height: 52px; font: 400 16px var(--font-body); padding: 12px 14px; border: 1px solid rgba(244, 239, 225, .35); border-radius: var(--radius); background: #fff; color: var(--ink); }
+.estimator .btn { width: 100%; }
+.estimate { display: grid; gap: 6px; padding: 18px 20px; border-radius: 4px; background: rgba(0, 0, 0, .22); }
+.estimate-label { font: 600 12px var(--font-body); letter-spacing: .12em; text-transform: uppercase; color: rgba(244, 239, 225, .7); }
+.estimate-total { font: 400 44px/1.05 var(--font-heading); color: var(--gold); }
+.estimate-lines { font-size: 14.5px; color: rgba(244, 239, 225, .85); white-space: pre-line; }
+.estimate-warn { font-size: 14px; color: #FFD27A; }
+.estimate-warn:empty { display: none; }
+
+.package-offer-inner { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto; }
+.package-offer p { color: rgba(244, 239, 225, .82); margin-top: 16px; }
+.offer-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.offer-list li { padding-left: 30px; position: relative; }
+.offer-list li::before { content: ""; position: absolute; left: 4px; top: .45em; width: 12px; height: 7px; border-left: 2px solid var(--gold); border-bottom: 2px solid var(--gold); transform: rotate(-45deg); }
+
+.lp-how { background: var(--paper); }
+.lp-how-inner { max-width: 760px; margin: 0 auto; }
+.lp-how h2 { margin-bottom: 30px; }
+
+.lp-faq { background: var(--sage); padding: 96px var(--gutter); }
+.lp-faq-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 60px; }
+.lp-faq-inner > div p { color: var(--ink-soft); margin-top: 14px; }
+.lp-reviews { padding: 96px var(--gutter); }
+
+/* Homepage "occasions" row and the footer occasions line */
+.occasions { padding: 0 var(--gutter) 96px; background: var(--sage); }
+.occasions-grid { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.occasion { position: relative; display: flex; align-items: flex-end; min-height: 220px; border-radius: 6px; overflow: hidden; color: #fff; text-decoration: none; isolation: isolate; }
+.occasion img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transition: transform .7s var(--ease); }
+.occasion::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg, rgba(0, 32, 13, .88), rgba(0, 32, 13, .15) 70%); }
+.occasion:hover img { transform: scale(1.05); }
+.occasion span { padding: 22px; display: grid; gap: 4px; }
+.occasion strong { font: 400 26px/1.15 var(--font-heading); }
+.occasion em { font-style: normal; font-size: 14.5px; color: rgba(244, 239, 225, .85); }
+.occasion em::after { content: " →"; color: var(--gold); }
+.occasions-label { text-align: center; margin: 0 auto 22px; font-weight: 600; color: var(--green); }
+.footer-occasions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 18px; margin: 0 0 24px; font-size: 15px; }
+.footer-occasions a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 6px; font-weight: 500; }
+.exp-pointer { margin: 18px auto 0; font-size: 16px; color: var(--ink-soft); }
+
+@media (max-width: 1023px) {
+  .estimator-inner, .package-offer-inner, .lp-faq-inner { grid-template-columns: 1fr; gap: 36px; }
+  .occasions-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 767px) {
+  .estimator { grid-template-columns: 1fr; padding: 22px; }
+  .estimate-total { font-size: 38px; }
+  .occasion { min-height: 180px; }
+}
