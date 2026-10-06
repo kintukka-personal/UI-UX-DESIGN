@@ -6,6 +6,13 @@
    ========================================================================== */
 
 /* ---- Tokens ------------------------------------------------------------ */
+/* Arial, resized to Inter's metrics, shown until Inter loads: stops the hero
+   text re-wrapping (layout shift) when the web font swaps in. */
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("Helvetica");
+  size-adjust: 107.1%; ascent-override: 90.4%; descent-override: 22.5%; line-gap-override: 0%;
+}
 :root {
   /* Brand */
   --green: #002E13;        /* header, dark panels, text on gold */
@@ -30,7 +37,7 @@
      Crimson Pro) paired with Inter for body and UI text. To go back to an
      all-serif site, set --font-body to var(--font-heading). */
   --font-heading: kepler-std, "Crimson Pro", Georgia, serif;
-  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-body: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
   --font-button: var(--font-body);
 
   /* Layout */
@@ -1499,4 +1506,41 @@ body:has(.shortlist:not([hidden])) .site-footer { padding-bottom: 120px; }
   .contact-card svg { margin: 0; }
   .contact-card .cc-meta { flex-basis: 100%; }
   .faq-tools { margin-top: 20px; }
+}
+
+/* ==========================================================================
+   HOME (Round 9): mini picker, "From the menu" strip, CSS gift card
+   ========================================================================== */
+.home-picker-all { margin: 14px 0 0; }
+.home-picker .text-link { color: var(--gold); }
+.home-picker .pick .text-link { color: var(--ivory); }
+
+.home-menu { padding: 90px var(--gutter); background: var(--sage); }
+.home-dishes { list-style: none; margin: 0 auto; padding: 0; max-width: 1240px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.home-dish { display: flex; flex-direction: column; gap: 8px; padding: 24px; background: #fff; border: 1px solid var(--line); border-radius: 8px; transition: border-color .2s, box-shadow .2s; }
+.home-dish.is-picked { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(218, 165, 32, .35); }
+.home-dish-menu { font: 600 11.5px var(--font-body); letter-spacing: .12em; text-transform: uppercase; color: var(--gold-text); }
+.home-dish-name { margin: 0; font: 400 23px/1.25 var(--font-heading); color: var(--green); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.home-dish-desc { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--ink-soft); }
+.home-dish-actions { margin-top: auto; padding-top: 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.home-dish .shortlist-add { grid-column: auto; grid-row: auto; }
+.home-menu-foot { max-width: 1240px; margin: 28px auto 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 26px; text-align: center; }
+.home-shortlist-note { font: 600 15px var(--font-body); color: var(--green); }
+.home-shortlist-note[hidden] { display: none; }
+
+.home-gift-art { display: grid; place-items: center; padding: 22px; background: linear-gradient(160deg, #F4EFE1, #E9E1C9); }
+.home-gift-art .gift-card-art { width: 100%; aspect-ratio: 1.6 / 1; padding: 16px 8% 14px; box-shadow: 0 14px 30px rgba(0, 46, 19, .25); }
+.gift-card .home-gift-art .gift-card-logo { width: 30%; max-width: 90px; height: auto; object-fit: contain; }
+.home-gift-art .gift-card-headline { font-size: 18px; }
+.home-gift-art .gift-card-amount { font-size: 30px; margin: 2px 0 2px; }
+.home-gift-art .gift-card-foot { font-size: 8.5px; letter-spacing: .1em; margin-top: 6px; }
+
+@media (max-width: 1023px) {
+  .home-dishes { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 767px) {
+  .home-menu { padding: 64px var(--gutter); }
+  .home-dishes { grid-template-columns: 1fr; }
+  .home-gift-art { padding: 26px 18%; }
+  .home-gift-art .gift-card-amount { font-size: 36px; }
 }

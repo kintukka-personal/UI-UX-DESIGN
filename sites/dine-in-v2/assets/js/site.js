@@ -426,8 +426,15 @@
   }
 
   /* ---- Decorative looping video: honour reduced motion ---------------- */
+  // It starts only when scrolled into view, so it costs nothing above the fold.
   document.querySelectorAll('video[data-motion-video]').forEach(function (v) {
-    if (reduceMotion) { v.removeAttribute('autoplay'); v.pause(); }
+    v.removeAttribute('autoplay');
+    if (reduceMotion) { v.pause(); return; }
+    var play = function () { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
+    if (!('IntersectionObserver' in window)) { play(); return; }
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) play(); else v.pause(); });
+    }, { rootMargin: '100px 0px' }).observe(v);
   });
 
   /* ---- Experiences: filter chips, picker, compare table, details dialog */
@@ -482,54 +489,59 @@
       dialog.addEventListener('close', function () { if (lastTrigger) lastTrigger.focus(); });
     }
 
-    // "Which experience suits me?" picker. Rules use the site's own minimums:
-    // hands-on -> class (min 6); standing -> canapés at 20+, else grazing;
-    // shared -> banquet at 12+, else private dining; seated -> private dining,
-    // with the degustation as runner-up.
-    var picker = document.querySelector('[data-picker]');
-    if (picker) {
-      var result = picker.querySelector('[data-picker-result]');
-      var INFO = {
-        'private-dining': { name: 'Private Dining', price: 'from $95 per person', why: 'A restaurant-quality meal in your home or venue, seated and served.', min: 6, minText: 'Minimum 6 guests (or equivalent minimum charge).' },
-        'degustation': { name: '5 Course Degustation', price: 'from $130 per person', why: 'Five refined courses for a milestone or a special night.', min: 6 },
-        'cooking-classes': { name: 'Private Cooking Class', price: 'from $110 per person', why: 'Cook, learn and eat together, with every ingredient included.', min: 6, minText: 'Classes have a minimum of 6 guests.' },
-        'party-packs': { name: 'Banquets', price: '$110 per person', why: 'A relaxed shared feast served to the centre of the table.', min: 12, minText: 'Banquets are for 12 or more guests.' },
-        'canapes': { name: 'Canapés', price: '$6–8 per canapé', why: 'Chef-made canapés that keep guests mingling.', min: 20, minText: 'Canapés have a minimum of 20 guests.' },
-        'grazing-boards': { name: 'Grazing Boards', price: 'from $28 per person', why: 'Styled boards for a relaxed, graze-as-you-go event.', min: 1 }
-      };
-      var choose = function (style, guests) {
-        if (style === 'hands-on') return ['cooking-classes', 'private-dining'];
-        if (style === 'standing') return guests >= 20 ? ['canapes', 'grazing-boards'] : ['grazing-boards', 'canapes'];
-        if (style === 'shared') return guests >= 12 ? ['party-packs', 'grazing-boards'] : ['private-dining', 'grazing-boards'];
-        return ['private-dining', 'degustation'];
-      };
-      // Lowest head count in each guest bucket (up to 6 / 7–11 / 12–19 / 20+).
-      var FLOOR = { 6: 1, 10: 7, 15: 12, 25: 20 };
-      var render = function (e) {
-        var v = function (n) { var c = picker.querySelector('input[name="' + n + '"]:checked'); return c ? c.value : ''; };
-        var occasion = v('occasion'), guests = +v('guests'), style = v('style');
-        if (occasion === 'learn' && e && e.target.name === 'occasion') {
-          var hands = picker.querySelector('input[name="style"][value="hands-on"]');
-          hands.checked = true; style = 'hands-on';
-        }
-        if (!guests || !style) { result.hidden = true; return; }
-        var picks = choose(style, guests);
-        cards.forEach(function (c) { c.classList.toggle('is-recommended', c.id === picks[0]); });
-        var extra = occasion === 'wedding' ? '<a class="text-link" href="weddings.html">Wedding catering options</a>'
-          : occasion === 'work' ? '<a class="text-link" href="corporate-events.html">Corporate event options</a>' : '';
-        result.innerHTML = picks.map(function (id, i) {
-          var info = INFO[id];
-          var img = (document.querySelector('#' + id + ' img') || {}).getAttribute ? document.querySelector('#' + id + ' img').getAttribute('src') : '';
-          var note = FLOOR[guests] < info.min && info.minText ? '<p class="pick-note">' + info.minText + '</p>' : '';
-          var href = 'book.html?exp=' + id + '&guests=' + guests + '&src=experiences-picker' + (occasion ? '&occasion=' + encodeURIComponent(picker.querySelector('input[name="occasion"]:checked').nextElementSibling.textContent) : '');
-          return '<div class="pick' + (i ? ' pick--alt' : '') + '"><img src="' + img + '" alt=""><div><span class="label">' + (i ? 'Also consider' : 'Best match') + '</span><h3>' + info.name + '</h3><p>' + info.why + ' ' + info.price + '.</p>' + note + '</div>' +
-            '<div class="actions">' + (i ? '' : '<a class="btn" href="' + href + '" data-cta="exp-picker-' + id + '">Check your date</a>') + '<a class="text-link" href="#' + id + '">See ' + info.name + '</a>' + (i ? '' : extra) + '</div></div>';
-        }).join('');
-        result.hidden = false;
-      };
-      picker.addEventListener('change', render);
-      picker.addEventListener('submit', function (e) { e.preventDefault(); });
-    }
+  }
+
+  /* ---- "Which experience suits me?" picker (Experiences + homepage) --- */
+  // "Which experience suits me?" picker. Rules use the site's own minimums:
+  // hands-on -> class (min 6); standing -> canapés at 20+, else grazing;
+  // shared -> banquet at 12+, else private dining; seated -> private dining,
+  // with the degustation as runner-up.
+  var picker = document.querySelector('[data-picker]');
+  if (picker) {
+    var result = picker.querySelector('[data-picker-result]');
+    var pickCards = document.querySelectorAll('.exp-card');
+    var pickSrc = picker.getAttribute('data-picker-src') || 'experiences-picker';
+    var pickBase = picker.getAttribute('data-picker-base') || '';
+    var INFO = {
+      'private-dining': { img: 'assets/images/exp-private-dining-480.webp', name: 'Private Dining', price: 'from $95 per person', why: 'A restaurant-quality meal in your home or venue, seated and served.', min: 6, minText: 'Minimum 6 guests (or equivalent minimum charge).' },
+      'degustation': { img: 'assets/images/exp-degustation-480.webp', name: '5 Course Degustation', price: 'from $130 per person', why: 'Five refined courses for a milestone or a special night.', min: 6 },
+      'cooking-classes': { img: 'assets/images/exp-cooking-classes-480.webp', name: 'Private Cooking Class', price: 'from $110 per person', why: 'Cook, learn and eat together, with every ingredient included.', min: 6, minText: 'Classes have a minimum of 6 guests.' },
+      'party-packs': { img: 'assets/images/exp-banquets-480.webp', name: 'Banquets', price: '$110 per person', why: 'A relaxed shared feast served to the centre of the table.', min: 12, minText: 'Banquets are for 12 or more guests.' },
+      'canapes': { img: 'assets/images/exp-canapes-480.webp', name: 'Canapés', price: '$6–8 per canapé', why: 'Chef-made canapés that keep guests mingling.', min: 20, minText: 'Canapés have a minimum of 20 guests.' },
+      'grazing-boards': { img: 'assets/images/exp-grazing-boards-480.webp', name: 'Grazing Boards', price: 'from $28 per person', why: 'Styled boards for a relaxed, graze-as-you-go event.', min: 1 }
+    };
+    var choose = function (style, guests) {
+      if (style === 'hands-on') return ['cooking-classes', 'private-dining'];
+      if (style === 'standing') return guests >= 20 ? ['canapes', 'grazing-boards'] : ['grazing-boards', 'canapes'];
+      if (style === 'shared') return guests >= 12 ? ['party-packs', 'grazing-boards'] : ['private-dining', 'grazing-boards'];
+      return ['private-dining', 'degustation'];
+    };
+    // Lowest head count in each guest bucket (up to 6 / 7–11 / 12–19 / 20+).
+    var FLOOR = { 6: 1, 10: 7, 15: 12, 25: 20 };
+    var render = function (e) {
+      var v = function (n) { var c = picker.querySelector('input[name="' + n + '"]:checked'); return c ? c.value : ''; };
+      var occasion = v('occasion'), guests = +v('guests'), style = v('style');
+      if (occasion === 'learn' && e && e.target.name === 'occasion') {
+        var hands = picker.querySelector('input[name="style"][value="hands-on"]');
+        hands.checked = true; style = 'hands-on';
+      }
+      if (!guests || !style) { result.hidden = true; return; }
+      var picks = choose(style, guests);
+      [].forEach.call(pickCards, function (c) { c.classList.toggle('is-recommended', c.id === picks[0]); });
+      var extra = occasion === 'wedding' ? '<a class="text-link" href="weddings.html">Wedding catering options</a>'
+        : occasion === 'work' ? '<a class="text-link" href="corporate-events.html">Corporate event options</a>' : '';
+      result.innerHTML = picks.map(function (id, i) {
+        var info = INFO[id];
+        var img = info.img;
+        var note = FLOOR[guests] < info.min && info.minText ? '<p class="pick-note">' + info.minText + '</p>' : '';
+        var href = 'book.html?exp=' + id + '&guests=' + guests + '&src=' + pickSrc + (occasion ? '&occasion=' + encodeURIComponent(picker.querySelector('input[name="occasion"]:checked').nextElementSibling.textContent) : '');
+        return '<div class="pick' + (i ? ' pick--alt' : '') + '"><img src="' + img + '" alt=""><div><span class="label">' + (i ? 'Also consider' : 'Best match') + '</span><h3>' + info.name + '</h3><p>' + info.why + ' ' + info.price + '.</p>' + note + '</div>' +
+          '<div class="actions">' + (i ? '' : '<a class="btn" href="' + href + '" data-cta="' + pickSrc + '-' + id + '">Check your date</a>') + '<a class="text-link" href="' + pickBase + '#' + id + '">See ' + info.name + '</a>' + (i ? '' : extra) + '</div></div>';
+      }).join('');
+      result.hidden = false;
+    };
+    picker.addEventListener('change', render);
+    picker.addEventListener('submit', function (e) { e.preventDefault(); });
   }
 
   /* ---- Menu: open a tab from the URL hash (menu.html#banquet) --------- */
@@ -924,15 +936,75 @@
   var video = document.querySelector('video[data-hls]');
   if (video) {
     var src = video.dataset.hls;
+    var setPoster = function () { if (video.dataset.poster && !video.poster) video.poster = video.dataset.poster; };
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      setPoster();
       video.src = src;
     } else {
-      var s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js';
-      s.onload = function () {
-        if (window.Hls && window.Hls.isSupported()) { var h = new window.Hls(); h.loadSource(src); h.attachMedia(video); }
+      // hls.js is ~400 KB: fetch it only when the video is about to be seen or played.
+      var hlsLoading = false;
+      var loadHls = function (playAfter) {
+        if (hlsLoading) return;
+        hlsLoading = true;
+        var s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js';
+        s.onload = function () {
+          if (window.Hls && window.Hls.isSupported()) {
+            var h = new window.Hls(); h.loadSource(src); h.attachMedia(video);
+            if (playAfter) h.on(window.Hls.Events.MANIFEST_PARSED, function () { var p = video.play(); if (p && p.catch) p.catch(function () {}); });
+          }
+        };
+        document.head.appendChild(s);
       };
-      document.head.appendChild(s);
+      video.addEventListener('play', function () { if (!window.Hls) loadHls(true); });
+      video.addEventListener('click', function () { setPoster(); loadHls(true); });
+      if ('IntersectionObserver' in window) {
+        var hlsIo = new IntersectionObserver(function (entries) {
+          if (entries.some(function (en) { return en.isIntersecting; })) { hlsIo.disconnect(); setPoster(); loadHls(false); }
+        }, { rootMargin: '200px 0px' });
+        hlsIo.observe(video);
+      } else {
+        setPoster();
+        loadHls(false);
+      }
     }
+  }
+
+  /* ---- Homepage "From the menu": add dishes to the Menu shortlist ------ */
+  var homeDishes = document.querySelectorAll('[data-home-dish]');
+  if (homeDishes.length) {
+    var HS_KEY = 'dinein-shortlist';
+    var HS_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+    var HS_TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+    var hsRead = function () { try { var v = JSON.parse(localStorage.getItem(HS_KEY)); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
+    var hsWrite = function (v) { try { localStorage.setItem(HS_KEY, JSON.stringify(v)); } catch (e) {} };
+    var hsNote = document.querySelector('[data-home-shortlist-note]');
+    var hsMemory = hsRead();   // keeps the page working when storage is blocked
+    var hsSync = function () {
+      var any = false;
+      [].forEach.call(homeDishes, function (card) {
+        var on = hsMemory.indexOf(card.dataset.homeDish) > -1, b = card.querySelector('.shortlist-add');
+        if (on) any = true;
+        b.setAttribute('aria-pressed', String(on));
+        b.innerHTML = (on ? HS_TICK : HS_PLUS) + '<span class="label">' + (on ? 'Shortlisted' : 'Shortlist') + '</span>';
+        card.classList.toggle('is-picked', on);
+      });
+      if (hsNote) hsNote.hidden = !any;
+    };
+    [].forEach.call(homeDishes, function (card) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'shortlist-add';
+      b.setAttribute('aria-label', 'Shortlist ' + card.dataset.homeName);
+      b.addEventListener('click', function () {
+        var id = card.dataset.homeDish, stored = hsRead();
+        if (stored.length || hsMemory.length === 0) hsMemory = stored;
+        var i = hsMemory.indexOf(id);
+        if (i > -1) hsMemory.splice(i, 1); else hsMemory.push(id);
+        hsWrite(hsMemory);
+        hsSync();
+      });
+      card.querySelector('.home-dish-actions').appendChild(b);
+    });
+    hsSync();
   }
 })();

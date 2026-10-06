@@ -6,6 +6,39 @@ The working copy of the [Dine In baseline](../dine-in-baseline/), where new UI c
 
 ## Changes from the baseline
 
+### Round 9: Homepage refresh
+
+The homepage is now the way into everything built in Rounds 4–8, and it is much lighter.
+
+| Part | What it does |
+| --- | --- |
+| **"What are you planning?"** | A two-question version of the Experiences picker (guests and style) after the intro. Both pages use the same code and the same rules, so results always match. It shows a best match and a runner-up; "Check your date" opens `book.html?exp=…&guests=…&src=home-picker`. |
+| **"From the menu"** | Four signature dishes: Brûlée Cheesecake, Kingfish Tartare, 12-Hour Slow-Cooked Beef Brisket and Truffle Mushroom Arancini. Each has **+ Shortlist** and a link to its menu tab. Picks go into the same shortlist as the Menu page, so they're waiting in its tray, and "View your shortlist" appears once something is added. |
+| **Proof band** | Gets a review quote slot. It stays hidden until `reviews-data.js` has reviews. |
+| **Gift section** | The eGift card's 325 KB photo is replaced by the Round 6 CSS gift card. |
+
+**Speed pass** (Playwright, local server, page load and then a full scroll):
+
+| | Desktop before → after | Phone before → after |
+| --- | --- | --- |
+| Downloaded before scrolling | 1,716 KB → **658 KB** | 1,205 KB → **471 KB** |
+| Downloaded after a full scroll | 2,523 KB → **1,363 KB** | 2,442 KB → **1,272 KB** |
+| Largest image on screen painted (LCP) | 652 ms → 388 ms | 368 ms → 360 ms |
+| Layout shift (CLS) | 0.001 → **0** | 0.088 → **0** |
+
+- **Featured video:**
+  - `hls.min.js` (404 KB) now loads only when the video is within 200 px of the screen, or when someone clicks it. Before, it loaded on every visit.
+  - The poster also waits until then.
+  - The looping "How it works" clip no longer autoplays below the fold. It starts when it scrolls into view, and never with reduced motion.
+- **Responsive WebP:**
+  - 480 px and 800 px versions of the six experience images, the degustation voucher, the reviews photo and the video poster, plus 480 px occasion images.
+  - Award logos resized to 372 px WebP (from 500 px PNGs), and a 400 px header logo (16 KB, was 36 KB) on every page.
+  - All of them use `srcset`/`sizes` with width and height set, so nothing jumps as they load.
+  - The Experiences cards and details use the same files.
+- **Fonts:**
+  - One Google Fonts request instead of two.
+  - An "Inter Fallback" face (Arial resized to Inter's metrics) fixes the phone layout shift. Before, the hero text wrapped differently once Inter loaded, which pushed the buttons down.
+
 ### Round 8: FAQ & Contact polish
 
 **FAQ (`faq.html`).** All 18 answers are word for word as before. Before this round, every answer was invisible with JavaScript off, because the collapse style applied whether or not the script ran. That style now only applies when JavaScript is running.
