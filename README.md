@@ -30,6 +30,7 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Animated testimonial card stack-5.5](components/animated-testimonial-card-stack-5.5/) | Testimonial hero rebuilt from Jitter's "The Stack: Testimonial" template: the camera pulls back from a sunlit studio photo, a frosted card fills in word by word, squeezes and pops as the heart lights, and later testimonials stack on top. Pause, previous/next, swipe and reduced-motion support |
 | [Orbit](components/orbit/) | Feature showcase rebuilt from Jitter's "Orbit" template: seven cards fan out on the rim of a grey hub and the wheel swings about a point below the screen, one highlight at the front. Scrolling type, a turning glass coin and a glitching mark. Click, keys, drag or swipe to turn it, with Pause and reduced-motion support |
 | [Blur List](components/blur-list/) | Kinetic word list rebuilt from Jitter's "List" text template: twelve words fan out on a wheel pivoting off the left edge and tick past an arrow every 0.75s, crisp at the arrow and blurring with distance, with a nudge and a light motion blur on each tick. Click, keys, scroll, drag or swipe, with Pause and reduced-motion support |
+| [Hover gallery card](components/hover-gallery-card/) | daisyUI hover-gallery product card with pretty-wrapped text (no single word left on a line) and a full-width Buy Now button, spaced on an even 12px rhythm |
 
 ## Sites
 
