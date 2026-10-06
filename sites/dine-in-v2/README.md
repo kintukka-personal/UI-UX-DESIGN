@@ -6,6 +6,26 @@ The working copy of the [Dine In baseline](../dine-in-baseline/), where new UI c
 
 ## Changes from the baseline
 
+### Round 3: occasion landing pages
+
+Three pages written for the visitors who search for something specific, each usable as an ad or social-post destination. They share one template: hero with a page-specific H1, proof strip, priced packages, how it works, FAQ answers reused from `faq.html`, proof, and a closing CTA. Every CTA opens the booking form pre-filled and tagged with the page it came from.
+
+| Page | Built for | Conversion step |
+| --- | --- | --- |
+| `weddings.html` | "wedding catering Illawarra / South Coast / Southern Highlands" | **Request the wedding package**: opens the booking form with Wedding Packages ticked and the message filled in. The Google reviews widget sits on the page. |
+| `corporate-events.html` | "corporate catering / team building Wollongong, Sydney" | **Budget estimator** (banquet, canapés, grazing, class, client dinner), then "Check your date with these numbers". |
+| `cooking-classes.html` | "private cooking class Wollongong" | **Class estimator** (pasta, group, cake decorating, masterclass), plus a gift-card cross-sell. |
+
+- **Estimator:** guests × per-person price, using each package's minimum guest count. Waitress service is added for more than six guests at $135 for 2 hours plus $25 an hour, from the FAQ. Grazing uses the site's three price tiers. Every result is labelled indicative.
+- **Booking pre-fill parameters:** `exp`, `date`, `guests`, plus three new ones:
+  - `src`: the landing page, stored in a hidden `source` field.
+  - `occasion`: shown in the review summary.
+  - `package=1`: pre-fills the wedding package request.
+  - Example: `book.html?exp=party-packs&guests=20&src=corporate&occasion=Christmas%20party%20banquet`
+- **Ways in:** a "Planning something specific?" row on the homepage, an Occasions line in every footer, a pointer on the Experiences page, and links in two FAQ answers. The header nav is unchanged.
+- **SEO:** `Service` + `Offer`, `FAQPage` and `BreadcrumbList` JSON-LD on each page, plus `sitemap.xml` and `robots.txt`.
+- **Images:** the heroes are the 2500px originals from the live site, served as 1920px and 960px WebP (85–131 KB at 1920px).
+
 ### Round 2: the October 2026 website review
 
 The review pack (audit, Squarespace CSS, footer JS) was written as Squarespace code injection. This copy is plain HTML, so each finding is fixed in the source instead: real `<h1>`s, real `required` fields, real buttons, and no DOM patching at runtime. On top of the fixes, the site is rebuilt around one funnel: **interest → trust → choose → enquire**. The main goal is a booking enquiry, then a gift card sale, then a phone call.
@@ -68,7 +88,10 @@ Every new text colour pair passes WCAG AA:
 - **Reply time:** "usually within one business day" on the booking success screen. It's marked `<!-- CONFIRM WITH BROOKE -->` in `book.html`.
 - **Required fields:** name, mobile and email are now required, and Subject has been dropped (it's composed automatically from the answers).
 - **The "Check your date" wording** used on CTAs across the site.
-- **Open Graph and JSON-LD URLs** need to be absolute (`https://dine-in.com.au/...`) on the real site.
+- **Open Graph and JSON-LD URLs** need to be absolute (`https://dine-in.com.au/...`) on the real site. `sitemap.xml` already uses the live domain.
+- **Landing-page packages and "from" prices** as worded on the three new pages, including the wedding package contents (marked `<!-- CONFIRM WITH BROOKE -->` in `weddings.html`).
+- **Estimator assumptions:** 3 hours of waitress service by default, and one waitress for any group size (marked in the estimator markup).
+- **"Quotes and invoices provided"** on the corporate page.
 
 ## Run it
 
@@ -92,6 +115,7 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | `cart.html` | `/cart` | Cart (stored in the browser, see below) |
 | `testimonials.html` | `/testimonials` | Reviews & Press: awards and media, plus the live Google reviews widget |
 | `contact.html` | `/contact` | Email, phone, hours, greyscale map |
+| `weddings.html`, `corporate-events.html`, `cooking-classes.html` | new | Occasion landing pages with packages, estimators and pre-filled booking links |
 | `book.html` | `/book` | Three-step booking enquiry with pre-fill, summary and success screen |
 | `privacy-policy.html`, `terms-and-conditions.html`, `cancellation-policy.html` | same | Policy pages linked from the footer |
 

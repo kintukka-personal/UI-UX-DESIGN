@@ -165,6 +165,12 @@
       if (/^\d{4}-\d{2}-\d{2}$/.test(params.get('date') || '')) dateEl.value = params.get('date');
     }
     if (+params.get('guests') > 0) booking.querySelector('#guests').value = Math.round(+params.get('guests'));
+    // Landing-page attribution: ?src=weddings&occasion=Wedding&package=1
+    var srcEl = booking.querySelector('#source'), occEl = booking.querySelector('#occasion');
+    if (srcEl && params.get('src')) srcEl.value = params.get('src').slice(0, 40);
+    if (occEl && params.get('occasion')) occEl.value = params.get('occasion').slice(0, 80);
+    var msg = booking.querySelector('#message');
+    if (msg && params.get('package') === '1' && !msg.value) msg.value = 'Please send me the wedding package.';
     var flexible = booking.querySelector('#flexible');
     if (flexible) flexible.addEventListener('change', function () { dateEl.disabled = flexible.checked; });
 
@@ -222,6 +228,7 @@
       var d = dateEl && dateEl.value ? new Date(dateEl.value + 'T00:00').toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' }) : '';
       if (flexible && flexible.checked) d = d ? d + ' (flexible)' : 'Flexible';
       var rows = [['Experience', chosen().join(', ')], ['Date', d || 'Not set yet'], ['Guests', booking.querySelector('#guests').value], ['Location', booking.querySelector('#location').value]];
+      if (occEl && occEl.value) rows.unshift(['Occasion', occEl.value]);
       booking.querySelector('[data-summary]').innerHTML = rows.map(function (r) {
         var dd = document.createElement('dd'); dd.textContent = r[1];
         return '<dt>' + r[0] + '</dt>' + dd.outerHTML;
@@ -243,6 +250,54 @@
       done.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
     });
   }
+
+  /* ---- Landing-page budget estimator --------------------------------- */
+  /* Options carry data-price ("110", "6-8" or "grazing"), data-unit ("pp" or
+     "canape"), data-min (minimum guests) and data-waitress. Waitress service
+     applies above six guests: $135 for the first 2 hours, then $25 an hour. */
+  var money = function (n) { return '$' + Math.round(n).toLocaleString('en-AU'); };
+  document.querySelectorAll('[data-estimator]').forEach(function (form) {
+    var pkg = form.querySelector('[name="pkg"]'), guests = form.querySelector('[name="guests"]');
+    var each = form.querySelector('[name="each"]'), hours = form.querySelector('[name="hours"]');
+    var out = { total: form.querySelector('[data-total]'), lines: form.querySelector('[data-lines]'), warn: form.querySelector('[data-warn]') };
+    var cta = form.querySelector('[data-estimate-cta]');
+    function grazingRate(g) { return g <= 4 ? 35 : g <= 10 ? 30 : 28; }
+    function calc() {
+      var o = pkg.options[pkg.selectedIndex];
+      var min = +o.dataset.min || 1, unit = o.dataset.unit, waitress = o.dataset.waitress === 'true';
+      var g = Math.max(1, Math.round(+guests.value || 0)), billed = Math.max(g, min);
+      form.querySelector('[data-canapes]').hidden = unit !== 'canape';
+      var lo, hi, lines = [], warn = '';
+      if (o.dataset.price === 'grazing') {
+        lo = hi = billed * grazingRate(billed);
+        lines.push(billed + ' guests × ' + money(grazingRate(billed)) + ' grazing = ' + money(lo));
+      } else {
+        var r = o.dataset.price.split('-').map(Number), a = r[0], b = r[1] || r[0];
+        var per = unit === 'canape' ? Math.max(6, Math.round(+each.value || 6)) : 1;
+        lo = billed * per * a; hi = billed * per * b;
+        lines.push(billed + ' guests' + (unit === 'canape' ? ' × ' + per + ' canapés' : '') + ' × ' + (a === b ? money(a) : money(a) + '–' + money(b)) + ' = ' + (lo === hi ? money(lo) : money(lo) + '–' + money(hi)));
+      }
+      var needsStaff = waitress && billed > 6;
+      form.querySelector('[data-hours]').hidden = !needsStaff;
+      if (needsStaff) {
+        var h = Math.max(2, Math.round(+hours.value || 2)), staff = 135 + (h - 2) * 25;
+        lo += staff; hi += staff;
+        lines.push('Waitress service, ' + h + ' hours = ' + money(staff));
+      }
+      if (g < min) warn = 'Minimum ' + min + ' guests, so this is priced for ' + min + '.';
+      out.total.textContent = lo === hi ? money(lo) : money(lo) + '–' + money(hi);
+      out.lines.textContent = lines.join('\n');
+      out.warn.textContent = warn;
+      var label = o.dataset.label.replace(/\s*\(.*\)$/, '');
+      cta.href = 'book.html?exp=' + encodeURIComponent(o.value) + '&guests=' + billed + '&src=' + encodeURIComponent(form.dataset.src) + '&occasion=' + encodeURIComponent(label);
+      return { lo: lo, hi: hi };
+    }
+    form.addEventListener('input', calc);
+    form.addEventListener('change', calc);
+    form.addEventListener('submit', function (e) { e.preventDefault(); });
+    form.calc = calc;
+    calc();
+  });
 
   /* ---- Sticky booking bar: appears once the visitor is past the top --- */
   var bar = document.querySelector('[data-sticky-bar]');
