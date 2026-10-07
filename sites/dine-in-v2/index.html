@@ -17,8 +17,7 @@
 <link rel="icon" href="assets/images/favicon.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@200&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@200;300;400;500;600;700&display=swap">
 <link rel="stylesheet" href="assets/css/site.css">
 <link rel="stylesheet" href="assets/css/chef-card.css">
 <script type="application/ld+json">
@@ -31,7 +30,7 @@
 <a class="skip-link" href="#page">Skip to Content</a>
 <header class="site-header">
   <div class="header-inner">
-    <a class="header-logo" href="index.html"><img src="assets/images/logo.webp" width="750" height="582" alt="Dine In"></a>
+    <a class="header-logo" href="index.html"><img src="assets/images/logo-400.webp" srcset="assets/images/logo-400.webp 400w, assets/images/logo.webp 750w" sizes="200px" width="750" height="582" alt="Dine In"></a>
     <nav class="header-nav" aria-label="Main">
       <ul><li><a href="index.html" aria-current="page">Home</a></li><li><a href="menu.html">Menu</a></li><li><a href="experiences.html">Our Experiences</a></li><li><a href="faq.html">FAQ</a></li><li><a href="shop.html">Shop</a></li><li><a href="testimonials.html">Reviews &amp; Press</a></li><li><a href="contact.html">Contact Us</a></li><li><a class="nav-cta" href="book.html" data-cta="nav-book">Book Now</a></li></ul>
     </nav>
@@ -55,7 +54,7 @@
     <span class="eyebrow">Award-winning private chef</span>
     <h1>Private chef &amp; catering, brought to your table</h1>
     <p class="hero-sub">Chef Brooke Silk turns your home or venue into a restaurant for one night, with an original menu, full service and a spotless kitchen when she leaves.</p>
-    <ul class="hero-area" aria-label="Service area"><li>Wollongong</li><li>Illawarra</li><li>South Coast</li><li>Highlands</li><li>Greater Sydney</li></ul>
+    <ul class="hero-area" aria-label="Service area"><li><a href="wollongong.html" data-cta="hero-area-wollongong">Wollongong</a></li><li><a href="wollongong.html" data-cta="hero-area-illawarra">Illawarra</a></li><li><a href="south-coast.html" data-cta="hero-area-south-coast">South Coast</a></li><li><a href="southern-highlands.html" data-cta="hero-area-highlands">Highlands</a></li><li><a href="sydney.html" data-cta="hero-area-sydney">Greater Sydney</a></li></ul>
     <div class="hero-actions">
       <a class="btn" href="book.html" data-cta="hero-book">Check your date</a>
       <a class="btn btn--ghost" href="experiences.html" data-cta="hero-experiences">Explore experiences</a>
@@ -78,10 +77,26 @@
   <p class="lead-cta">Brooke is available for hire. <a class="text-link" href="book.html" data-cta="lead-book">Check your date</a></p>
 </section>
 
+<section class="picker home-picker" aria-labelledby="home-picker-title">
+  <div class="picker-inner">
+    <div class="picker-head">
+      <span class="eyebrow">Find your experience</span>
+      <h2 id="home-picker-title">What are you planning?</h2>
+      <p>Two quick questions and we'll point you to the best fit.</p>
+      <p class="home-picker-all"><a class="text-link" href="experiences.html" data-cta="home-picker-all">See all six experiences</a></p>
+    </div>
+    <form class="picker-form" data-picker data-picker-src="home-picker" data-picker-base="experiences.html" novalidate>
+      <fieldset><legend>1. How many guests?</legend><div class="chip-row"><label class="chip"><input type="radio" name="guests" value="6"><span>Up to 6</span></label><label class="chip"><input type="radio" name="guests" value="10"><span>7–11</span></label><label class="chip"><input type="radio" name="guests" value="15"><span>12–19</span></label><label class="chip"><input type="radio" name="guests" value="25"><span>20+</span></label></div></fieldset>
+      <fieldset><legend>2. What style of food?</legend><div class="chip-row"><label class="chip"><input type="radio" name="style" value="seated"><span>Seated &amp; served</span></label><label class="chip"><input type="radio" name="style" value="shared"><span>Shared feast</span></label><label class="chip"><input type="radio" name="style" value="standing"><span>Standing &amp; mingling</span></label><label class="chip"><input type="radio" name="style" value="hands-on"><span>Hands-on</span></label></div></fieldset>
+      <div class="picker-result" aria-live="polite" data-picker-result hidden></div>
+    </form>
+  </div>
+</section>
+
 <section class="how" id="how-it-works">
   <div class="how-grid">
     <div class="how-media">
-      <video autoplay muted loop playsinline preload="metadata" poster="assets/images/how-it-works-poster.jpg" aria-hidden="true" tabindex="-1" data-motion-video>
+      <video muted loop playsinline preload="none" poster="assets/images/how-it-works-poster.jpg" aria-hidden="true" tabindex="-1" data-motion-video>
         <source src="assets/images/how-it-works.webm" type="video/webm">
         <source src="assets/images/how-it-works.mp4" type="video/mp4">
       </video>
@@ -110,7 +125,7 @@
   </div>
   <div class="teaser-grid">
     <article class="teaser-card">
-      <div class="img"><img src="assets/images/exp-private-dining.jpg" width="1200" height="800" alt="Guests at a long table on a terrace, with Chef Brooke serving" loading="lazy"></div>
+      <div class="img"><img src="assets/images/exp-private-dining-800.webp" srcset="assets/images/exp-private-dining-480.webp 480w, assets/images/exp-private-dining-800.webp 800w" sizes="(max-width: 767px) 92vw, (max-width: 1023px) 46vw, 400px" width="800" height="533" alt="Guests at a long table on a terrace, with Chef Brooke serving" loading="lazy" decoding="async"></div>
       <div class="body">
         <span class="badge">Most popular</span>
         <h3>Private dining</h3>
@@ -120,7 +135,7 @@
       </div>
     </article>
     <article class="teaser-card">
-      <div class="img"><img src="assets/images/exp-cooking-classes.jpg" width="1200" height="800" alt="Chef Brooke plating dishes during a private cooking class" loading="lazy"></div>
+      <div class="img"><img src="assets/images/exp-cooking-classes-800.webp" srcset="assets/images/exp-cooking-classes-480.webp 480w, assets/images/exp-cooking-classes-800.webp 800w" sizes="(max-width: 767px) 92vw, (max-width: 1023px) 46vw, 400px" width="800" height="533" alt="Chef Brooke plating dishes during a private cooking class" loading="lazy" decoding="async"></div>
       <div class="body">
         <h3>Cooking classes</h3>
         <p class="price">from <strong>$110</strong> per person</p>
@@ -129,7 +144,7 @@
       </div>
     </article>
     <article class="teaser-card">
-      <div class="img"><img src="assets/images/exp-grazing-boards.jpg" width="1260" height="750" alt="A grazing board of cured meats, cheeses, olives and fruit" loading="lazy"></div>
+      <div class="img"><img src="assets/images/exp-grazing-boards-800.webp" srcset="assets/images/exp-grazing-boards-480.webp 480w, assets/images/exp-grazing-boards-800.webp 800w" sizes="(max-width: 767px) 92vw, (max-width: 1023px) 46vw, 400px" width="800" height="533" alt="A grazing board of cured meats, cheeses, olives and fruit" loading="lazy" decoding="async"></div>
       <div class="body">
         <h3>Grazing &amp; canapés</h3>
         <p class="price">from <strong>$28</strong> per person</p>
@@ -144,14 +159,24 @@
 <section class="occasions" aria-label="Plan by occasion">
   <p class="occasions-label">Planning something specific?</p>
   <div class="occasions-grid">
-    <a class="occasion" href="weddings.html" data-cta="home-occasion-weddings"><img src="assets/images/lp-weddings-960.webp" alt="" loading="lazy"><span><strong>Weddings</strong><em>Canapés to degustation, Top 3 caterer 2026</em></span></a>
-    <a class="occasion" href="corporate-events.html" data-cta="home-occasion-corporate"><img src="assets/images/lp-corporate-960.webp" alt="" loading="lazy"><span><strong>Corporate events</strong><em>Team building, Christmas parties, client dinners</em></span></a>
-    <a class="occasion" href="cooking-classes.html" data-cta="home-occasion-classes"><img src="assets/images/lp-cooking-960.webp" alt="" loading="lazy"><span><strong>Cooking classes</strong><em>Pasta, cake decorating, masterclasses</em></span></a>
+    <a class="occasion" href="weddings.html" data-cta="home-occasion-weddings"><img src="assets/images/lp-weddings-960.webp" srcset="assets/images/lp-weddings-480.webp 480w, assets/images/lp-weddings-960.webp 960w" sizes="(max-width: 767px) 92vw, 400px" width="960" height="640" alt="" loading="lazy" decoding="async"><span><strong>Weddings</strong><em>Canapés to degustation, Top 3 caterer 2026</em></span></a>
+    <a class="occasion" href="corporate-events.html" data-cta="home-occasion-corporate"><img src="assets/images/lp-corporate-960.webp" srcset="assets/images/lp-corporate-480.webp 480w, assets/images/lp-corporate-960.webp 960w" sizes="(max-width: 767px) 92vw, 400px" width="960" height="640" alt="" loading="lazy" decoding="async"><span><strong>Corporate events</strong><em>Team building, Christmas parties, client dinners</em></span></a>
+    <a class="occasion" href="cooking-classes.html" data-cta="home-occasion-classes"><img src="assets/images/lp-cooking-960.webp" srcset="assets/images/lp-cooking-480.webp 480w, assets/images/lp-cooking-960.webp 960w" sizes="(max-width: 767px) 92vw, 400px" width="960" height="640" alt="" loading="lazy" decoding="async"><span><strong>Cooking classes</strong><em>Pasta, cake decorating, masterclasses</em></span></a>
   </div>
 </section>
 
+<section class="home-menu" aria-labelledby="home-menu-title">
+  <div class="section-head">
+    <span class="eyebrow">From the menu</span>
+    <h2 id="home-menu-title">A taste of what Brooke cooks</h2>
+    <p>Tap <b>+</b> to shortlist a dish. Your picks wait for you on the menu page, ready to send with your enquiry.</p>
+  </div>
+  <ul class="home-dishes"><li class="home-dish" data-home-dish="spring:brûlée-cheesecake" data-home-name="Brûlée Cheesecake"><span class="home-dish-menu">Private Dining (spring menu)</span><p class="home-dish-name">Brûlée Cheesecake<span class="badge badge--award">3rd in the world</span></p><p class="home-dish-desc">Strawberry compote, Chantilly cream and burnt caramel sauce.</p><div class="home-dish-actions"><a class="text-link" href="menu.html#spring" data-cta="home-dish-spring">See the menu</a></div></li><li class="home-dish" data-home-dish="spring:kingfish-tartare" data-home-name="Kingfish Tartare"><span class="home-dish-menu">Private Dining (spring menu)</span><p class="home-dish-name">Kingfish Tartare</p><p class="home-dish-desc">Avocado, lime, chives, olive oil.</p><div class="home-dish-actions"><a class="text-link" href="menu.html#spring" data-cta="home-dish-spring">See the menu</a></div></li><li class="home-dish" data-home-dish="banquet:12-hour-slow-cooked-beef-brisket" data-home-name="12-Hour Slow-Cooked Beef Brisket"><span class="home-dish-menu">Banquet</span><p class="home-dish-name">12-Hour Slow-Cooked Beef Brisket</p><p class="home-dish-desc">Tender beef brisket, rich red wine jus or fresh chimichurri.</p><div class="home-dish-actions"><a class="text-link" href="menu.html#banquet" data-cta="home-dish-banquet">See the menu</a></div></li><li class="home-dish" data-home-dish="canapes:truffle-mushroom-arancini" data-home-name="Truffle Mushroom Arancini"><span class="home-dish-menu">Canapés</span><p class="home-dish-name">Truffle Mushroom Arancini<abbr class="badge badge--v" title="Vegetarian">V</abbr></p><p class="home-dish-desc">Parmesan snow &amp; basil aioli.</p><div class="home-dish-actions"><a class="text-link" href="menu.html#canapes" data-cta="home-dish-canapes">See the menu</a></div></li></ul>
+  <p class="home-menu-foot"><span class="home-shortlist-note" data-home-shortlist-note role="status" hidden>Added to your shortlist · <a class="text-link" href="menu.html" data-cta="home-shortlist-view">View your shortlist</a></span><a class="btn btn--secondary" href="menu.html" data-cta="home-menu-all">See all six menus</a></p>
+</section>
+
 <section class="proof" aria-labelledby="proof-title">
-  <div class="proof-media"><img src="assets/images/read-our-reviews.webp" width="1500" height="1000" alt="Charred red cabbage with roasted shallots and chives on a white plate" loading="lazy"></div>
+  <div class="proof-media"><img src="assets/images/read-our-reviews-800.webp" srcset="assets/images/read-our-reviews-480.webp 480w, assets/images/read-our-reviews-800.webp 800w, assets/images/read-our-reviews.webp 1500w" sizes="(max-width: 1023px) 100vw, 50vw" width="1500" height="1000" alt="Charred red cabbage with roasted shallots and chives on a white plate" loading="lazy" decoding="async"></div>
   <div class="proof-body">
     <h2 id="proof-title" class="sr-only">What guests say</h2>
     <figure>
@@ -160,6 +185,7 @@
       <figcaption><strong>Sami Lukis</strong>, Nine Travel</figcaption>
     </figure>
     <div class="proof-score"><b>5.0</b><span>average from 60 Google reviews</span></div>
+    <aside class="review-slot" data-any data-review-slot hidden></aside>
     <div class="proof-actions">
       <a class="btn" href="book.html" data-cta="proof-book">Check your date</a>
       <a class="btn btn--ghost" href="testimonials.html" data-cta="proof-reviews">Read the reviews</a>
@@ -249,10 +275,10 @@
 
 <section class="featured">
   <h2>As Featured In</h2>
-  <div class="featured-logos"><a class="" href="https://10play.com.au/destination-dessert/episodes/season-3/episode-5/tpv221222eioxz" target="_blank" rel="noopener"><img src="assets/images/logo-network-10.webp" alt="Channel 10 TV episode of Destination Desserts featuring Dine In and Chef Brooke Silk" loading="lazy"></a><a class="" href="https://thebusinessawards.com.au/65888/dine-in-1" target="_blank" rel="noopener"><img src="assets/images/logo-business-award.png" alt="Dine In finalist for the Illawarra Local Business Awards." loading="lazy"></a><a class="" href="https://fhweek.com.au/australias-chef-of-the-year" target="_blank" rel="noopener"><img src="assets/images/logo-chef-of-the-year-2026.png" alt="Chef Brooke Silk from the Illawarra named finalist in Australian Professional Chef of the Year 2026, celebrating her recognition as one of Australia’s leading professional chefs." loading="lazy"></a><span class=""><img src="assets/images/logo-top3-wedding-2026.png" alt="Dine In by Brooke Silk named Top 3 Wedding Caterer in the Illawarra and Southern Highlands at the 2026 Wedding Industry Awards." loading="lazy"></span><a class="" href="https://worldfoodchampionships.com/talent/profile/our-competitors/8492/brooke-silk" target="_blank" rel="noopener"><img src="assets/images/logo-wfc-australia.webp" alt="Official World Food Championship page showcasing Chef Brooke Silk" loading="lazy"></a><a class="wide" href="https://www.capturethechef.com/" target="_blank" rel="noopener"><img src="assets/images/logo-capture-the-chef.png" alt="Capture the Chef" loading="lazy"></a></div>
+  <div class="featured-logos"><a class="" href="https://10play.com.au/destination-dessert/episodes/season-3/episode-5/tpv221222eioxz" target="_blank" rel="noopener"><img src="assets/images/logo-network-10-sm.webp" width="372" height="372" decoding="async" alt="Channel 10 TV episode of Destination Desserts featuring Dine In and Chef Brooke Silk" loading="lazy"></a><a class="" href="https://thebusinessawards.com.au/65888/dine-in-1" target="_blank" rel="noopener"><img src="assets/images/logo-business-award-sm.webp" width="372" height="372" decoding="async" alt="Dine In finalist for the Illawarra Local Business Awards." loading="lazy"></a><a class="" href="https://fhweek.com.au/australias-chef-of-the-year" target="_blank" rel="noopener"><img src="assets/images/logo-chef-of-the-year-2026-sm.webp" width="372" height="372" decoding="async" alt="Chef Brooke Silk from the Illawarra named finalist in Australian Professional Chef of the Year 2026, celebrating her recognition as one of Australia’s leading professional chefs." loading="lazy"></a><span class=""><img src="assets/images/logo-top3-wedding-2026-sm.webp" width="372" height="372" decoding="async" alt="Dine In by Brooke Silk named Top 3 Wedding Caterer in the Illawarra and Southern Highlands at the 2026 Wedding Industry Awards." loading="lazy"></span><a class="" href="https://worldfoodchampionships.com/talent/profile/our-competitors/8492/brooke-silk" target="_blank" rel="noopener"><img src="assets/images/logo-wfc-australia-sm.webp" width="372" height="372" decoding="async" alt="Official World Food Championship page showcasing Chef Brooke Silk" loading="lazy"></a><a class="wide" href="https://www.capturethechef.com/" target="_blank" rel="noopener"><img src="assets/images/logo-capture-the-chef-sm.webp" width="424" height="160" decoding="async" alt="Capture the Chef" loading="lazy"></a></div>
   <div class="featured-video">
     <!-- Streams from the live site's video CDN (Squarespace). Swap for a local MP4 when self-hosting. -->
-    <video controls playsinline preload="none" poster="assets/images/video-poster.jpg"
+    <video controls playsinline preload="none" data-poster="assets/images/video-poster-800.webp"
       data-hls="https://video.squarespace-cdn.com/content/v1/5f22acf33d4d050bcfd97f9f/77ef816d-c90c-4f8a-becd-1d1c4c0a3758/playlist.m3u8"></video>
   </div>
   <p class="featured-more"><a class="text-link" href="testimonials.html" data-cta="featured-press">See all press &amp; reviews</a> <span aria-hidden="true" style="color:var(--gold);margin:0 10px">·</span> <a class="text-link" href="book.html" data-cta="featured-book">Book Brooke for your event</a></p>
@@ -266,11 +292,11 @@
   </div>
   <div class="gift-grid">
     <a class="gift-card" href="shop/egift-card.html?src=home" data-cta="gift-card">
-      <img class="focus-right" src="assets/images/shop-egift-card.webp" alt="Dine In gift card: Here's a gift!" loading="lazy">
+      <div class="home-gift-art" aria-hidden="true"><div class="gift-card-art"><img class="gift-card-logo" src="assets/images/logo-400.webp" width="400" height="310" alt="" loading="lazy" decoding="async"><p class="gift-card-headline">Here’s a gift!</p><p class="gift-card-amount">from A$50</p><p class="gift-card-foot">Redeemable for any Dine In experience</p></div></div>
       <div class="body"><h3>eGift Card</h3><p class="price">from <strong>A$50</strong></p><p>Delivered by email, in values from $50 to $200.</p><span class="go">Choose a value</span></div>
     </a>
     <a class="gift-card" href="shop/degustation-voucher.html" data-cta="gift-voucher">
-      <img src="assets/images/shop-degustation-voucher.webp" alt="A five course Dine In degustation, plated" loading="lazy">
+      <img src="assets/images/shop-degustation-voucher-800.webp" srcset="assets/images/shop-degustation-voucher-480.webp 480w, assets/images/shop-degustation-voucher-800.webp 800w" sizes="(max-width: 767px) 92vw, 360px" width="800" height="533" decoding="async" alt="A five course Dine In degustation, plated" loading="lazy">
       <div class="body"><h3>5-course Degustation voucher</h3><p class="price"><strong>A$130</strong> per person</p><p>Our most popular dining experience, for groups of six or more.</p><span class="go">Gift a degustation</span></div>
     </a>
   </div>
@@ -315,6 +341,7 @@
   </div>
   <div class="footer-social"><a href="https://www.instagram.com/dineinbybrookesilk/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg></a><a href="https://www.facebook.com/DineInbyBrookesilk" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.4 21v-7.6h2.6l.4-3h-3V8.5c0-.9.3-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4V10.4H7.7v3h2.6V21h3.1z"/></svg></a><a href="mailto:dineinbybrooke@gmail.com" aria-label="Email dineinbybrooke@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="1"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg></a></div>
   <nav class="footer-occasions" aria-label="Occasions"><a href="weddings.html">Weddings</a><a href="corporate-events.html">Corporate events</a><a href="cooking-classes.html">Cooking classes</a><a href="shop/egift-card.html?src=footer">Gift cards</a></nav>
+  <nav class="footer-areas" aria-label="Areas we cover"><a href="wollongong.html">Wollongong</a><a href="south-coast.html">South Coast</a><a href="southern-highlands.html">Southern Highlands</a><a href="sydney.html">Sydney</a></nav>
   <div class="footer-policies">
     <p><a href="terms-and-conditions.html">Terms &amp; Conditions</a></p>
     <p><a href="cancellation-policy.html">Cancellations &amp; Refunds</a></p>
@@ -332,6 +359,7 @@
   <a class="call" href="tel:+61432804952" data-cta="mobile-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
   <a class="book" href="book.html" data-cta="mobile-book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Check your date</a>
 </nav>
+<script src="assets/js/reviews-data.js"></script>
 <script src="assets/js/site.js"></script>
 <script src="assets/js/chef-card.js"></script>
 </body>

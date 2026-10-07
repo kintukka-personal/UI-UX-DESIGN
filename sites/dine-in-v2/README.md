@@ -6,6 +6,65 @@ The working copy of the [Dine In baseline](../dine-in-baseline/), where new UI c
 
 ## Changes from the baseline
 
+### Round 10: Local area pages
+
+Four pages people can find by searching a place. To avoid near-duplicate "doorway" pages, every page is built only from real, area-specific facts already on the site:
+
+| Page | What makes it different |
+| --- | --- |
+| `wollongong.html` · Wollongong & the Illawarra | Brooke's base is in Figtree. Local press: Illawarra Mercury, Region Illawarra, ABC Illawarra radio, and the Illawarra Local Business Award. Ideas: Private Dining, cooking classes, Banquets. |
+| `south-coast.html` · NSW South Coast | The Nine Travel holiday-rental article and its quote. Ideas: "Holiday house dinners" with Private Dining, Grazing and Canapés. |
+| `southern-highlands.html` · Southern Highlands | Top 3 Wedding Caterer in the Illawarra & Southern Highlands (2026). Ideas: Canapés, Degustation, Banquets, with a link to the wedding packages. |
+| `sydney.html` · Greater Sydney | The NSW Business Awards finalist listing. Ideas: team cooking classes, Banquets, Canapés, with a link to the corporate estimator. |
+
+**On every area page:**
+- **Travel fees,** word for word from the Terms: free within 30 minutes of Figtree, $50 for 30–60 minutes, $100 for 60–90 minutes, a custom quote beyond 90 minutes, plus the overnight-stay note.
+- **"Check your drive time from Figtree":** a plain GET form that opens Google Maps directions in a new tab, so it works without JavaScript. It needs no API key and stores nothing. The pages never claim which suburb falls in which band.
+- **Other sections:** the three-step "How it works", three FAQ answers quoted word for word, and a review slot for reviews tagged with that area's `location` (hidden until there are any).
+- **JSON-LD:** `Service` with a named `areaServed`, `FAQPage` and `BreadcrumbList`. There's no made-up per-area address.
+
+**Links in:**
+- an **Areas** line in every footer
+- the homepage hero area chips
+- the Contact page's "Where Brooke cooks" chips
+- the FAQ "Where do we cater?" related links
+- `sitemap.xml`
+
+**Rule for any future area pages:** only add one when there's something true and specific to say about that place, such as a venue Brooke has cooked at, local press or a local review. Swapping the town name in a copy of an existing page gets it treated as a doorway page.
+
+### Round 9: Homepage refresh
+
+The homepage is now the way into everything built in Rounds 4–8, and it is much lighter.
+
+| Part | What it does |
+| --- | --- |
+| **"What are you planning?"** | A two-question version of the Experiences picker (guests and style) after the intro. Both pages use the same code and the same rules, so results always match. It shows a best match and a runner-up; "Check your date" opens `book.html?exp=…&guests=…&src=home-picker`. |
+| **"From the menu"** | Four signature dishes: Brûlée Cheesecake, Kingfish Tartare, 12-Hour Slow-Cooked Beef Brisket and Truffle Mushroom Arancini. Each has **+ Shortlist** and a link to its menu tab. Picks go into the same shortlist as the Menu page, so they're waiting in its tray, and "View your shortlist" appears once something is added. |
+| **Proof band** | Gets a review quote slot. It stays hidden until `reviews-data.js` has reviews. |
+| **Gift section** | The eGift card's 325 KB photo is replaced by the Round 6 CSS gift card. |
+
+**Speed pass** (Playwright, local server, page load and then a full scroll):
+
+| | Desktop before → after | Phone before → after |
+| --- | --- | --- |
+| Downloaded before scrolling | 1,716 KB → **658 KB** | 1,205 KB → **471 KB** |
+| Downloaded after a full scroll | 2,523 KB → **1,363 KB** | 2,442 KB → **1,272 KB** |
+| Largest image on screen painted (LCP) | 652 ms → 388 ms | 368 ms → 360 ms |
+| Layout shift (CLS) | 0.001 → **0** | 0.088 → **0** |
+
+- **Featured video:**
+  - `hls.min.js` (404 KB) now loads only when the video is within 200 px of the screen, or when someone clicks it. Before, it loaded on every visit.
+  - The poster also waits until then.
+  - The looping "How it works" clip no longer autoplays below the fold. It starts when it scrolls into view, and never with reduced motion.
+- **Responsive WebP:**
+  - 480 px and 800 px versions of the six experience images, the degustation voucher, the reviews photo and the video poster, plus 480 px occasion images.
+  - Award logos resized to 372 px WebP (from 500 px PNGs), and a 400 px header logo (16 KB, was 36 KB) on every page.
+  - All of them use `srcset`/`sizes` with width and height set, so nothing jumps as they load.
+  - The Experiences cards and details use the same files.
+- **Fonts:**
+  - One Google Fonts request instead of two.
+  - An "Inter Fallback" face (Arial resized to Inter's metrics) fixes the phone layout shift. Before, the hero text wrapped differently once Inter loaded, which pushed the buttons down.
+
 ### Round 8: FAQ & Contact polish
 
 **FAQ (`faq.html`).** All 18 answers are word for word as before. Before this round, every answer was invisible with JavaScript off, because the collapse style applied whether or not the script ran. That style now only applies when JavaScript is running.
@@ -230,6 +289,10 @@ Every new text colour pair passes WCAG AA:
 - **Gift card delivery:** whether the live store emails the card to the buyer or the recipient, and whether a send date and message are supported. The test page collects them but makes no delivery promise. Also confirm the 200-character message limit and the five suggested messages.
 - **Reviews:** Brooke's Google review links (`googleUrl`, `leaveReviewUrl`), which reviews to feature, and each guest's OK to be quoted. Until then the curated blocks and the review quotes across the site stay hidden.
 - **Contact form:** the quick-question topics, and whether she wants a real form inbox at launch. Today the form opens the visitor's email app, so nothing is sent without their email client. A form service such as Formspree or Netlify Forms would make it send directly.
+- **Area pages:**
+  - the "Ideas for…" picks on each area page
+  - any favourite venues or towns she'd like named, which only she can supply
+  - a Highlands or Sydney photo if she has one. The pages reuse existing food and event photos.
 - **Plant-based dishes** carry no vegan or gluten-free labels. Only the five dishes the site marks (V) are badged. If Brooke wants dietary labels, she needs to supply them per dish.
 
 ## Run it
@@ -252,6 +315,7 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | `shop.html` | `/shop` | Chilli Jam, Degustation voucher, eGift Card |
 | `shop/*.html` | `/shop/p/*` | Product pages with gallery, quantity, value picker and Add To Cart |
 | `cart.html` | `/cart` | Cart (stored in the browser, see below) |
+| `wollongong.html` · `south-coast.html` · `southern-highlands.html` · `sydney.html` | `/wollongong` etc. | Area pages: local press, travel fees from the Terms, drive-time check, ideas, FAQ |
 | `testimonials.html` | `/testimonials` | Reviews & Press: score, curated guest stories and occasion filter (from `assets/js/reviews-data.js`), Nine pull quote, awards and media wall, live Google reviews widget |
 | `contact.html` | `/contact` | Four ways to get in touch, live hours status, quick-question form (opens email), service area, map |
 | `weddings.html`, `corporate-events.html`, `cooking-classes.html` | new | Occasion landing pages with packages, estimators and pre-filled booking links |
