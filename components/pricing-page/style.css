@@ -255,12 +255,13 @@ main {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 32px 48px;
   max-width: 1160px;
   margin: 0 auto;
 }
 
-.ui-pricing__intro { max-width: 640px; }
+.ui-pricing__intro { min-width: 0; }
 
 .ui-eyebrow {
   display: inline-flex;
@@ -306,58 +307,6 @@ main {
 }
 
 .ui-pricing__line { display: block; }
-
-/* Rotating format name, in the simulation gradient (blue to violet both
-   clear 3:1 as large text on white; cyan would not) */
-.ui-rotator {
-  position: relative;
-  display: inline-grid;
-  vertical-align: bottom;
-  height: 1.12em;
-  overflow: hidden;
-  transition: width var(--ui-m-slow) var(--ui-ease-move);
-}
-
-.ui-rotator__word {
-  grid-area: 1 / 1;
-  justify-self: start;
-  white-space: nowrap;
-  line-height: 1.12;
-}
-
-.ui-rotator__char {
-  display: inline-block;
-  background: var(--ss-gradient-simulation);
-  background-size: 280% 100%;
-  background-position: var(--bgx, 0%) 0;
-  -webkit-background-clip: text;
-          background-clip: text;
-  color: transparent;
-  opacity: 0;
-  transform: translate3d(0, 0.6em, 0);
-  transition:
-    transform var(--ui-m-slow) var(--ui-ease-enter) calc(var(--i) * 30ms),
-    opacity var(--ui-m-base) var(--ui-ease-enter) calc(var(--i) * 30ms);
-}
-
-.ui-rotator__word.is-active .ui-rotator__char {
-  opacity: 1;
-  transform: none;
-}
-
-.ui-rotator__word.is-leaving .ui-rotator__char {
-  opacity: 0;
-  transform: translate3d(0, -0.6em, 0);
-}
-
-/* Before the script splits the words into letters */
-.ui-rotator__word:not(.is-split) {
-  background: var(--ss-gradient-simulation);
-  -webkit-background-clip: text;
-          background-clip: text;
-  color: transparent;
-}
-.ui-rotator__word:not(.is-split):not(.is-active) { visibility: hidden; }
 
 .ui-pricing__lede {
   max-width: 520px;

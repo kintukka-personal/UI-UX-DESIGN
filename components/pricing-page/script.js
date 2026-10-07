@@ -3,7 +3,6 @@
    - Billing toggle with a sliding thumb; prices roll like an odometer
    - Team seat stepper (5 included, extra seats added to the price)
    - Pointer spotlight across the cards
-   - Rotating MP4 / HTML / SCORM in the headline
    - FAQ accordion: opening one answer closes the other
    Prices live in the data-* attributes on each .ui-plan in index.html.
    ========================================================================== */
@@ -325,48 +324,6 @@
       };
       addonToggle.addEventListener("change", updateInquiry);
       updateInquiry();
-    }
-  }
-
-  /* ------------------------------------------------------------------------
-     Headline rotator: MP4 / HTML / SCORM
-     ------------------------------------------------------------------------ */
-  var rotator = document.querySelector("[data-ui-rotator]");
-  if (rotator) {
-    var words = Array.prototype.slice.call(rotator.querySelectorAll(".ui-rotator__word"));
-    words.forEach(function (word) {
-      var text = word.textContent;
-      word.textContent = "";
-      text.split("").forEach(function (ch, i) {
-        var span = document.createElement("span");
-        span.className = "ui-rotator__char";
-        span.style.setProperty("--i", i);
-        span.style.setProperty("--bgx", (i / Math.max(1, text.length - 1)) * 100 + "%");
-        span.textContent = ch;
-        word.appendChild(span);
-      });
-      word.classList.add("is-split");
-    });
-
-    var index = 0;
-    var fit = function () { rotator.style.width = words[index].offsetWidth + "px"; };
-    fit();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
-    window.addEventListener("resize", fit);
-
-    if (!reduceMotion.matches) {
-      setInterval(function () {
-        if (document.hidden) return;
-        var prev = words[index];
-        index = (index + 1) % words.length;
-        var next = words[index];
-        prev.classList.remove("is-active");
-        prev.classList.add("is-leaving");
-        next.classList.remove("is-leaving");
-        next.classList.add("is-active");
-        fit();
-        setTimeout(function () { prev.classList.remove("is-leaving"); }, 700);
-      }, 2600);
     }
   }
 
