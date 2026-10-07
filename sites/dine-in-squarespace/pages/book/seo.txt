@@ -1,0 +1,11 @@
+Page: Book Now
+URL slug: /book
+
+SEO title:
+Book Private Chef & Catering | Wollongong & South Coast — Dine In
+
+SEO description:
+Book Now. Secure your spot at Dine In by Brooke Silk. Select from private dining, grazing boards, party packs, cooking classes, catering and canapés. 
+
+Social sharing image (Page settings > Social image):
+https://images.squarespace-cdn.com/content/v1/5f22acf33d4d050bcfd97f9f/1612344757053-J4ZVUQNESBEZJSRYF5E1/Brooke-184.jpg?format=1500w

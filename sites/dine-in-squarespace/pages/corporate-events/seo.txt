@@ -1,0 +1,11 @@
+Page: Corporate events
+URL slug: /corporate-events
+
+SEO title:
+Corporate Catering & Team Building Wollongong, Illawarra & Sydney — Dine In
+
+SEO description:
+Corporate catering by award-winning Chef Brooke Silk: team-building cooking classes, Christmas party banquets, canapés, grazing and client dinners across Wollongong, the Illawarra and Sydney.
+
+Social sharing image (Page settings > Social image):
+https://images.squarespace-cdn.com/content/v1/5f22acf33d4d050bcfd97f9f/74bcbe0a-7c90-447c-a88c-0a7902e3a38f/DSC03973.jpg?format=1500w

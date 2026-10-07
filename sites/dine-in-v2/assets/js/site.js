@@ -1,6 +1,7 @@
 /* Dine In — site behaviour (test rebuild). No dependencies. */
 (function () {
   'use strict';
+  var FORMS = window.DINE_IN_FORMS || {};
 
   /* ---- Mobile menu ---------------------------------------------------- */
   var burger = document.querySelector('.burger');
@@ -352,14 +353,51 @@
       e.preventDefault();
       // Without the stepper (e.g. JS on but CSS failed) validate every step
       for (var i = 0; i < steps.length; i++) { if (!validStep(steps[i])) { show(i); return; } }
-      booking.querySelector('#subject').value = chosen().join(', ') + ' for ' + booking.querySelector('#guests').value + ' guests';
+      var subject = chosen().join(', ') + ' for ' + booking.querySelector('#guests').value + ' guests';
+      booking.querySelector('#subject').value = subject;
+      booking.querySelector('#mail-subject').value = 'Booking enquiry: ' + subject;
       var done = booking.nextElementSibling;
       var name = booking.querySelector('#fname').value.trim();
-      done.querySelector('[data-name]').textContent = name ? ', ' + name : '';
-      booking.classList.add('is-sent');
-      done.focus();
-      done.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      var showDone = function () {
+        done.querySelector('[data-name]').textContent = name ? ', ' + name : '';
+        booking.classList.add('is-sent');
+        done.focus();
+        done.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      };
+      if (booking.querySelector('[name="_gotcha"]').value) { showDone(); return; }
+      var status = booking.querySelector('[data-send-status]');
+      if (!FORMS.booking) {
+        var val = function (id) { var el = booking.querySelector(id); return el ? el.value.trim() : ''; };
+        var lines = [['Experience', chosen().join(', ')], ['Date', val('#date') || 'Not set yet'], ['Flexible date', booking.querySelector('#flexible').checked ? 'Yes' : ''],
+          ['Guests', val('#guests')], ['Location', val('#location')], ['Occasion', val('#occasion')], ['Name', name + ' ' + val('#lname')],
+          ['Mobile', val('#phone')], ['Email', val('#email')], ['Message', val('#message')], ['Source', val('#source')]];
+        var body = lines.filter(function (l) { return l[1]; }).map(function (l) { return l[0] + ': ' + l[1]; }).join('\n');
+        booking.dataset.mailto = 'mailto:dineinbybrooke@gmail.com?subject=' + encodeURIComponent('Booking enquiry: ' + subject) + '&body=' + encodeURIComponent(body);
+        sendStatus(status, 'Your email app has opened with your enquiry ready to send. Press send there, or call Brooke on 0432 804 952.', false);
+        window.location.href = booking.dataset.mailto;
+        return;
+      }
+      postForm(booking, FORMS.booking, status, showDone);
     });
+  }
+
+  /* ---- Sending forms (Formspree endpoints in assets/js/forms-config.js) */
+  function sendStatus(el, text, isError) {
+    el.textContent = text;
+    el.classList.toggle('is-error', !!isError);
+    el.hidden = !text;
+  }
+  function postForm(form, url, status, onSent) {
+    var btn = form.querySelector('button[type="submit"]'), label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Sending…';
+    sendStatus(status, '', false);
+    var reset = function () { btn.disabled = false; btn.textContent = label; };
+    fetch(url, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); reset(); onSent(); })
+      .catch(function () {
+        reset();
+        sendStatus(status, 'Sorry, that didn’t send. Please try again, or email dineinbybrooke@gmail.com or call 0432 804 952. Your answers are still here.', true);
+      });
   }
 
   /* ---- Landing-page budget estimator --------------------------------- */
@@ -927,11 +965,27 @@
         if (!good && !firstBad) firstBad = f;
       });
       if (firstBad) { firstBad.focus(); return; }
+      askForm.querySelector('#ask-subject').value = 'Website question: ' + askTopic.value;
+      var askSent = askForm.nextElementSibling;
+      var askDone = function () {
+        askSent.querySelector('[data-ask-sent-name]').textContent = ', ' + askVal('#ask-name').split(/\s+/)[0];
+        askSent.querySelector('[data-ask-sent-email]').textContent = askVal('#ask-email');
+        askForm.hidden = true;
+        askSent.hidden = false;
+        askSent.focus();
+      };
+      if (askForm.querySelector('[name="_gotcha"]').value) { askDone(); return; }
+      if (FORMS.ask) { postForm(askForm, FORMS.ask, askForm.querySelector('[data-send-status]'), askDone); return; }
       var url = 'mailto:dineinbybrooke@gmail.com?subject=' + encodeURIComponent('Website question: ' + askTopic.value) +
         '&body=' + encodeURIComponent(askVal('#ask-message') + '\n\n' + askVal('#ask-name') + '\n' + askVal('#ask-email'));
       askForm.dataset.mailto = url;
       window.location.href = url;
     });
+    // With a form endpoint set, the button sends directly instead of opening email
+    if (FORMS.ask) {
+      askForm.querySelector('[data-ask-send]').textContent = 'Send question';
+      askForm.querySelector('[data-ask-hint]').textContent = 'Your question goes straight to Brooke, and she replies to the email above.';
+    }
   }
 
   /* ---- Area pages: "Check your drive time" opens Google Maps directions */

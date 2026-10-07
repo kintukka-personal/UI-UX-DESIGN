@@ -108,9 +108,12 @@
           <button type="button" data-goto="1">Edit details</button>
         </div>
         <input type="hidden" name="subject" id="subject">
+        <input type="hidden" name="_subject" id="mail-subject">
+        <div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label></div>
         <input type="hidden" name="source" id="source">
         <input type="hidden" name="occasion" id="occasion">
         <div class="step-nav"><button class="btn-back" type="button" data-back>← Back</button><span class="spacer"></span><button class="btn" type="submit" data-cta="book-submit">Send my enquiry</button></div>
+        <p class="send-status" data-send-status role="status" hidden></p>
         <div class="reassure"><span>No payment now</span><span>10% booking fee only once you confirm</span><span>Dietaries catered for at no extra cost</span></div>
         <p class="text-small form-note">By submitting, you agree to Dine In using your details to respond to your enquiry and manage your booking, as outlined in our <a href="privacy-policy.html">Privacy Policy</a>.</p>
       </fieldset>
@@ -129,7 +132,6 @@
         <img src="assets/images/shop-egift-card.webp" alt="" loading="lazy">
         <div><strong>Know someone who'd love this?</strong><br><a class="text-link" href="shop/egift-card.html?src=book-success" data-cta="success-gift">Send a Dine In gift card</a></div>
       </div>
-      <p class="text-small" style="margin-top:22px;color:var(--muted)">(Test version: nothing was sent.)</p>
     </div>
   </div>
 </section>
@@ -161,6 +163,7 @@
   <a class="call" href="tel:+61432804952" data-cta="mobile-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
   <a class="book" href="book.html" data-cta="mobile-book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Check your date</a>
 </nav>
+<script src="assets/js/forms-config.js"></script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>

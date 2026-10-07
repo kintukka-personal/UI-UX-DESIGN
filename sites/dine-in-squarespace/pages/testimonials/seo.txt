@@ -1,0 +1,11 @@
+Page: Reviews & Press
+URL slug: /testimonials
+
+SEO title:
+Reviews & Press — Dine In
+
+SEO description:
+Dine In reviews and press: awards, media features and Google reviews for Chef Brooke Silk.
+
+Social sharing image (Page settings > Social image):
+https://images.squarespace-cdn.com/content/v1/5f22acf33d4d050bcfd97f9f/1612344757053-J4ZVUQNESBEZJSRYF5E1/Brooke-184.jpg?format=1500w

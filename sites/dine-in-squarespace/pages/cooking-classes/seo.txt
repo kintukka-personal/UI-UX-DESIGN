@@ -1,0 +1,11 @@
+Page: Cooking classes
+URL slug: /cooking-classes
+
+SEO title:
+Private Cooking Classes Wollongong, South Coast & Sydney — Dine In
+
+SEO description:
+Hands-on private cooking classes in your home with World Food Championships finalist Chef Brooke Silk: pasta making, cake decorating, group classes and seasonal masterclasses. From $110 per person.
+
+Social sharing image (Page settings > Social image):
+https://images.squarespace-cdn.com/content/v1/5f22acf33d4d050bcfd97f9f/468f18aa-626b-49c1-953e-026e74b7f19a/DSC03669.jpg?format=1500w
