@@ -30,7 +30,7 @@ The SimStudio pricing page, with three plans (Solo, Team and Enterprise), a Mont
 
 | Part | Behaviour |
 | --- | --- |
-| Headline | "Capture it once. / We Build it for you. / Then, Publish it however you need." Three sentences at the Display size, one per line, with the three steps capitalised in the blue-to-violet gradient |
+| Headline | "Capture it once. / We Build it for you. / Then, Publish it however you need." Three sentences at the Display size, one per line, with the three steps capitalised in the blue-to-violet gradient. At kickoff a beam of cyan light sweeps through Capture, then Build, then Publish, once each, with a soft glow as it passes |
 | Billing toggle | Real radio buttons with a sliding navy thumb. The "Save 17%" chip on Yearly is worked out from the prices |
 | Prices | Digits roll like an odometer, rightmost first. Yearly shows "Billed yearly as $X" and a "Save $X/yr" chip |
 | Solo | 1 seat |

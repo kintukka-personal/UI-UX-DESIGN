@@ -29,6 +29,12 @@
   inherits: false;
 }
 
+@property --ui-beam {
+  syntax: "<percentage>";
+  initial-value: -50%;
+  inherits: false;
+}
+
 :root {
   /* ---- brand palette ---- */
   --ss-navy: #011d4a;
@@ -314,11 +320,46 @@ main {
 /* The three steps, in the simulation gradient (blue and violet both clear
    3:1 as large text on Surface) */
 .ui-pricing__verb {
+  --beam-core: color-mix(in srgb, var(--ss-cyan) 30%, var(--ss-white));
   font-style: normal;
-  background: var(--ss-gradient-simulation);
+  /* A band of cyan light sits off to the left, over the brand gradient.
+     At kickoff it sweeps through each verb once, one after the other. */
+  background:
+    linear-gradient(105deg,
+      transparent calc(var(--ui-beam) - 22%),
+      var(--ss-cyan) calc(var(--ui-beam) - 7%),
+      var(--beam-core) var(--ui-beam),
+      var(--ss-cyan) calc(var(--ui-beam) + 7%),
+      transparent calc(var(--ui-beam) + 22%)),
+    var(--ss-gradient-simulation);
   -webkit-background-clip: text;
           background-clip: text;
   color: transparent;
+}
+
+/* Starts once its line has revealed: Capture, then Build, then Publish */
+.ui-pricing__verb { --beam-delay: 520ms; }
+.ui-pricing__line:nth-child(2) .ui-pricing__verb { --beam-delay: 980ms; }
+.ui-pricing__line:nth-child(3) .ui-pricing__verb { --beam-delay: 1440ms; }
+
+html:not(.js) .ui-pricing__verb,
+.js .ui-pricing__line.is-in .ui-pricing__verb {
+  animation:
+    ui-beam 760ms var(--ui-ease-move) var(--beam-delay) both,
+    ui-beam-glow 760ms var(--ui-ease-move) var(--beam-delay) both;
+}
+
+@keyframes ui-beam {
+  from { --ui-beam: -50%; }
+  to   { --ui-beam: 150%; }
+}
+
+/* A soft cyan glow that swells as the beam passes through */
+@keyframes ui-beam-glow {
+  /* Starts and ends as a transparent cyan shadow, so the glow fades in
+     cyan rather than through grey */
+  0%, 100% { filter: drop-shadow(0 0 0 color-mix(in srgb, var(--ss-cyan) 0%, transparent)); }
+  45% { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--ss-cyan) 55%, transparent)); }
 }
 
 .ui-pricing__lede {
