@@ -683,11 +683,13 @@
   var REV_OCC = { dinner: 'Dinner party', celebration: 'Celebration', wedding: 'Wedding', corporate: 'Work event', 'class': 'Cooking class', catering: 'Catering & events' };
   var REV_EXP = { 'private-dining': 'Private Dining', 'grazing-boards': 'Grazing Boards', 'cooking-classes': 'Private Cooking Class', 'party-packs': 'Banquets', canapes: 'Canapés', degustation: '5 Course Degustation' };
   var REV_PAGE = { wedding: 'weddings.html', corporate: 'corporate-events.html', 'class': 'cooking-classes.html' };
+  var REV_LOC = { wollongong: 1, 'south-coast': 1, 'southern-highlands': 1, sydney: 1 };
   var revData = window.DINE_IN_REVIEWS && typeof window.DINE_IN_REVIEWS === 'object' ? window.DINE_IN_REVIEWS : {};
   var isHttps = function (u) { return typeof u === 'string' && /^https:\/\/[^\s"'<>]+$/.test(u); };
   var revReviews = (Array.isArray(revData.reviews) ? revData.reviews : []).filter(function (r) {
     return r && typeof r.text === 'string' && r.text.trim() && typeof r.name === 'string' && r.name.trim() &&
-      (!r.occasion || REV_OCC.hasOwnProperty(r.occasion)) && (!r.experience || REV_EXP.hasOwnProperty(r.experience));
+      (!r.occasion || REV_OCC.hasOwnProperty(r.occasion)) && (!r.experience || REV_EXP.hasOwnProperty(r.experience)) &&
+      (!r.location || REV_LOC.hasOwnProperty(r.location));
   });
   var siteJs = document.querySelector('script[src$="assets/js/site.js"]');
   var revBase = siteJs ? siteJs.getAttribute('src').replace(/assets\/js\/site\.js$/, '') : '';
@@ -788,10 +790,10 @@
 
   // Review quotes on Experiences, Menu, gift and landing pages
   document.querySelectorAll('[data-review-slot]').forEach(function (slot) {
-    var exp = slot.dataset.experience, occ = slot.dataset.occasion;
+    var exp = slot.dataset.experience, occ = slot.dataset.occasion, loc = slot.dataset.location;
     var pool = revReviews.filter(function (r) {
       if (slot.hasAttribute('data-any')) return true;
-      return (exp && r.experience === exp) || (occ && r.occasion === occ);
+      return (exp && r.experience === exp) || (occ && r.occasion === occ) || (loc && r.location === loc);
     }).sort(function (a, b) { return (b.featured === true) - (a.featured === true); });
     if (!pool.length) return;
     var r = pool[0];
@@ -931,6 +933,20 @@
       window.location.href = url;
     });
   }
+
+  /* ---- Area pages: "Check your drive time" opens Google Maps directions */
+  // The form is a plain GET to Google Maps (works without JS); JS only stops
+  // an empty submit and shows the inline error.
+  document.querySelectorAll('[data-drive-check]').forEach(function (f) {
+    var input = f.querySelector('input[name="destination"]');
+    f.addEventListener('submit', function (e) {
+      var empty = !input.value.trim();
+      f.classList.toggle('invalid', empty);
+      input.setAttribute('aria-invalid', String(empty));
+      if (empty) { e.preventDefault(); input.focus(); }
+    });
+    input.addEventListener('input', function () { if (input.value.trim()) { f.classList.remove('invalid'); input.removeAttribute('aria-invalid'); } });
+  });
 
   /* ---- Featured video (HLS stream from the live site's video CDN) ----- */
   var video = document.querySelector('video[data-hls]');

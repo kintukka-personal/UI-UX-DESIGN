@@ -11,12 +11,14 @@
  *        occasion:   dinner | celebration | wedding | corporate | class | catering
  *        experience: private-dining | grazing-boards | cooking-classes |
  *                    party-packs | canapes | degustation
+ *      location (optional, shows the review on that area page):
+ *                  wollongong | south-coast | southern-highlands | sydney
  *   4. Set featured: true on up to three to show them as large stories.
  *   5. url (optional): the review's link on Google, starting with https://
  *
  * Example entry (copy, then replace every value with the real review):
  *   { name: 'First L.', date: '2026-03', rating: 5, occasion: 'celebration',
- *     experience: 'private-dining', featured: true,
+ *     experience: 'private-dining', location: 'wollongong', featured: true,
  *     text: 'The review text, exactly as written on Google.', url: '' },
  */
 window.DINE_IN_REVIEWS = {
