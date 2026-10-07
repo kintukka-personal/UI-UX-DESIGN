@@ -32,7 +32,7 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Blur List](components/blur-list/) | Kinetic word list rebuilt from Jitter's "List" text template: twelve words fan out on a wheel pivoting off the left edge and tick past an arrow every 0.75s, crisp at the arrow and blurring with distance, with a nudge and a light motion blur on each tick. Click, keys, scroll, drag or swipe, with Pause and reduced-motion support |
 | [Hover gallery card](components/hover-gallery-card/) | daisyUI hover-gallery product card with pretty-wrapped text (no single word left on a line) and a full-width Buy Now button, spaced on an even 12px rhythm |
 | [Hover 3D card](components/hover-3d-card/) | daisyUI `hover-3d` credit card: a black "Bank of Latveria" card that tilts toward the pointer with a moving glare, over a faint scalloped pattern |
-| [Pricing page](components/pricing-page/) | Solo, Team and Enterprise plans on a dark aurora backdrop: a springy Monthly/Yearly toggle, odometer prices, a Team seat stepper, a "Custom" Enterprise card with an optional AI agent add-on, and a FAQ where only one answer is open at a time |
+| [Pricing page](components/pricing-page/) | The SimStudio pricing page, on the brand guidelines: Solo, Team and Enterprise plans with a Monthly/Yearly toggle, odometer prices, a Team seat stepper on a navy featured card, a "Custom" Enterprise card with an optional AI agent add-on, and a FAQ where only one answer is open at a time |
 
 ## Sites
 

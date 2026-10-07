@@ -3,24 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Plans &amp; Pricing</title>
-<meta name="description" content="Solo, Team and Enterprise plans. Every plan exports to MP4, HTML and SCORM.">
+<title>SimStudio pricing</title>
+<meta name="description" content="SimStudio plans for one author, a team or a whole organisation. Every plan exports to MP4, HTML and SCORM.">
+<link rel="icon" type="image/png" sizes="32x32" href="images/simstudio-symbol-32.png">
 <script>document.documentElement.classList.add("js");</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="ui-pricing-page">
 
-<!-- Backdrop: drifting light, a fading grid and film grain -->
+<!-- Backdrop: soft brand light and a fading grid -->
 <div class="ui-bg" aria-hidden="true">
-  <span class="ui-bg__blob ui-bg__blob--iris"></span>
-  <span class="ui-bg__blob ui-bg__blob--rose"></span>
-  <span class="ui-bg__blob ui-bg__blob--amber"></span>
+  <span class="ui-bg__blob ui-bg__blob--blue"></span>
+  <span class="ui-bg__blob ui-bg__blob--cyan"></span>
+  <span class="ui-bg__blob ui-bg__blob--violet"></span>
   <span class="ui-bg__grid"></span>
 </div>
-<div class="ui-grain" aria-hidden="true"></div>
+
+<header class="ui-top">
+  <a class="ui-top__logo" href="#">
+    <img src="images/simstudio-lockup-primary.png" width="180" height="44" alt="SimStudio">
+  </a>
+</header>
 
 <main>
   <!-- ================================================================
@@ -28,28 +31,26 @@
        ================================================================ -->
   <section class="ui-pricing" id="pricing" aria-labelledby="pricing-title" data-ui-pricing>
     <header class="ui-pricing__head">
-      <p class="ui-eyebrow" data-reveal><span class="ui-eyebrow__dot" aria-hidden="true"></span>Plans &amp; pricing</p>
+      <div class="ui-pricing__intro">
+        <p class="ui-eyebrow" data-reveal><span class="ui-eyebrow__dot" aria-hidden="true"></span>Plans and pricing</p>
 
-      <h1 class="ui-pricing__title" id="pricing-title">
-        <span class="ui-pricing__line" data-reveal style="--delay: 80ms">Create once.</span>
-        <span class="ui-pricing__line" data-reveal style="--delay: 160ms">Ship it as&nbsp;<span class="ui-rotator" data-ui-rotator aria-hidden="true"><span class="ui-rotator__word is-active">MP4</span><span class="ui-rotator__word">HTML</span><span class="ui-rotator__word">SCORM</span></span><span class="ui-sr">MP4, HTML or SCORM</span>.</span>
-      </h1>
+        <h1 class="ui-pricing__title" id="pricing-title">
+          <span class="ui-pricing__line" data-reveal style="--delay: 60ms">Build it once.</span>
+          <span class="ui-pricing__line" data-reveal style="--delay: 120ms">Publish it as&nbsp;<span class="ui-rotator" data-ui-rotator aria-hidden="true"><span class="ui-rotator__word is-active">MP4</span><span class="ui-rotator__word">HTML</span><span class="ui-rotator__word">SCORM</span></span><span class="ui-sr">MP4, HTML or SCORM</span>.</span>
+        </h1>
 
-      <p class="ui-pricing__lede" data-reveal style="--delay: 240ms">Every plan exports to MP4, HTML and SCORM. Choose the seats you need and grow into the rest.</p>
+        <p class="ui-pricing__lede" data-reveal style="--delay: 180ms">Create guided simulations and interactive learning without writing code. Every plan exports to MP4, HTML and&nbsp;SCORM.</p>
+      </div>
 
-      <div class="ui-billing-wrap" data-reveal style="--delay: 320ms">
+      <div class="ui-billing-wrap" data-reveal style="--delay: 240ms">
         <fieldset class="ui-billing" data-ui-billing>
           <legend class="ui-sr">Billing period</legend>
           <input class="ui-billing__input" type="radio" name="billing" id="billing-monthly" value="monthly" checked>
           <label class="ui-billing__option" for="billing-monthly">Monthly</label>
           <input class="ui-billing__input" type="radio" name="billing" id="billing-yearly" value="yearly">
-          <label class="ui-billing__option" for="billing-yearly">Yearly</label>
+          <label class="ui-billing__option" for="billing-yearly">Yearly <span class="ui-billing__save" data-ui-save>Save <span data-bind="save-percent">17%</span></span></label>
           <span class="ui-billing__thumb" aria-hidden="true"></span>
         </fieldset>
-        <p class="ui-billing__save" data-ui-save>
-          <svg class="ui-billing__arrow" viewBox="0 0 48 28" aria-hidden="true"><path d="M46 22C34 26 18 24 9 12" /><path d="M6 19 8.5 10.5 17 12" /></svg>
-          <span>Save <b data-bind="save-percent">17%</b> yearly</span>
-        </p>
       </div>
     </header>
 
@@ -62,7 +63,7 @@
             <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.9-3.6 3.7-5.6 7.2-5.6s6.3 2 7.2 5.6"/></svg>
           </span>
           <h2 class="ui-plan__name">Solo</h2>
-          <p class="ui-plan__tagline">For one creator building and exporting on their own.</p>
+          <p class="ui-plan__tagline">For one author building and publishing on their&nbsp;own.</p>
         </header>
 
         <div class="ui-plan__price">
@@ -113,7 +114,7 @@
             <svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3"/><circle cx="5.6" cy="10" r="2.2"/><circle cx="18.4" cy="10" r="2.2"/><path d="M7.4 19.5c.7-3 2.4-4.6 4.6-4.6s3.9 1.6 4.6 4.6M2.2 18.5c.4-2 1.6-3.2 3.4-3.2M21.8 18.5c-.4-2-1.6-3.2-3.4-3.2"/></svg>
           </span>
           <h2 class="ui-plan__name">Team</h2>
-          <p class="ui-plan__tagline">For teams that build together. Five seats to start, more when you need them.</p>
+          <p class="ui-plan__tagline">For learning teams that build together. Five seats to start, more when you need&nbsp;them.</p>
         </header>
 
         <div class="ui-plan__price">
@@ -165,7 +166,7 @@
           </li>
           <li class="ui-feature">
             <span class="ui-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3"/><path d="M3.5 19c.7-3.2 2.8-5 5.5-5s4.8 1.8 5.5 5M17 8v6M14 11h6"/></svg></span>
-            <span><strong>Add seats any time</strong><small>Grow past five as your team does</small></span>
+            <span><strong>Add seats any time</strong><small>Grow past five as your team&nbsp;does</small></span>
           </li>
         </ul>
       </article>
@@ -177,13 +178,13 @@
             <svg viewBox="0 0 24 24"><path d="M4 20V6.5L11 3v17M11 20V9l9 3.5V20M2.5 20h19M7 8.5v.01M7 12v.01M7 15.5v.01M14.5 14v.01M17 15v.01M14.5 17.5v.01M17 18v.01"/></svg>
           </span>
           <h2 class="ui-plan__name">Enterprise</h2>
-          <p class="ui-plan__tagline">For organisations that need unlimited seats and a plan shaped around them.</p>
+          <p class="ui-plan__tagline">For organisations that need unlimited seats and a plan built around&nbsp;them.</p>
         </header>
 
         <div class="ui-plan__price">
           <span class="ui-plan__custom">Custom</span>
         </div>
-        <p class="ui-plan__billing"><span>Priced to your organisation</span></p>
+        <p class="ui-plan__billing"><span>Priced for your organisation</span></p>
 
         <div class="ui-plan__seats">
           <div class="ui-seats ui-seats--infinite" aria-hidden="true">
@@ -221,7 +222,7 @@
             <span class="ui-addon__tag">Optional add-on</span>
           </div>
           <p class="ui-addon__title">AI agent integration</p>
-          <p class="ui-addon__text">Bring AI agents into your workflow. Priced separately on top of your plan.</p>
+          <p class="ui-addon__text">Bring AI agents into your authoring workflow. Priced separately from your&nbsp;plan.</p>
           <label class="ui-switch">
             <input class="ui-switch__input" type="checkbox" role="switch" data-addon-toggle>
             <span class="ui-switch__track" aria-hidden="true"><span class="ui-switch__thumb"></span></span>
@@ -250,7 +251,7 @@
           </button>
         </h3>
         <div class="ui-faq__panel" id="faq-1" role="region" aria-labelledby="faq-1-btn">
-          <div class="ui-faq__inner"><p>Solo is built for one person. If two or more of you are creating together, Team gives you five seats to start and lets you add more as you grow. If you need unlimited seats, or want AI agents in your workflow, talk to us about Enterprise.</p></div>
+          <div class="ui-faq__inner"><p>Solo is built for one author. If two or more of you build together, Team gives you five seats to start and more as you grow. For unlimited seats or AI agents in your workflow, talk to us about&nbsp;Enterprise.</p></div>
         </div>
       </div>
 
@@ -263,7 +264,7 @@
           </button>
         </h3>
         <div class="ui-faq__panel" id="faq-2" role="region" aria-labelledby="faq-2-btn">
-          <div class="ui-faq__inner"><p>Team includes five seats. Add more whenever you need them for <span data-bind="seat-monthly">$19</span> a seat per month, or <span data-bind="seat-yearly">$16</span> a seat per month on yearly billing.</p></div>
+          <div class="ui-faq__inner"><p>Team includes five seats. Add more when you need them for <span data-bind="seat-monthly">$19</span> a seat per month, or <span data-bind="seat-yearly">$16</span> a seat per month on yearly&nbsp;billing.</p></div>
         </div>
       </div>
 
@@ -276,7 +277,7 @@
           </button>
         </h3>
         <div class="ui-faq__panel" id="faq-3" role="region" aria-labelledby="faq-3-btn">
-          <div class="ui-faq__inner"><p>All of them, on every plan. Export to MP4 for video, HTML for the web and SCORM for your learning management system. No format is held back for a higher tier.</p></div>
+          <div class="ui-faq__inner"><p>All three, on every plan. Export to MP4 for video, HTML for the web and SCORM for your learning management system. No format is held back for a higher&nbsp;tier.</p></div>
         </div>
       </div>
 
@@ -289,7 +290,7 @@
           </button>
         </h3>
         <div class="ui-faq__panel" id="faq-4" role="region" aria-labelledby="faq-4-btn">
-          <div class="ui-faq__inner"><p>Monthly plans are billed each month. Yearly plans are billed once a year up front and work out about <span data-bind="save-percent">17%</span> cheaper. You get the same features either way.</p></div>
+          <div class="ui-faq__inner"><p>Monthly plans are billed each month. Yearly plans are billed once a year up front and cost about <span data-bind="save-percent">17%</span> less. The features are the same either&nbsp;way.</p></div>
         </div>
       </div>
 
@@ -302,7 +303,7 @@
           </button>
         </h3>
         <div class="ui-faq__panel" id="faq-5" role="region" aria-labelledby="faq-5-btn">
-          <div class="ui-faq__inner"><p>Enterprise pricing depends on your organisation and how you'll use it. Send us an inquiry and we'll put together a quote for unlimited seats, plus the AI agent integration if you want it.</p></div>
+          <div class="ui-faq__inner"><p>Enterprise pricing depends on your organisation and how you'll use SimStudio. Send us an inquiry and we'll put together a quote for unlimited seats, plus the AI agent integration if you want&nbsp;it.</p></div>
         </div>
       </div>
 
@@ -315,7 +316,7 @@
           </button>
         </h3>
         <div class="ui-faq__panel" id="faq-6" role="region" aria-labelledby="faq-6-btn">
-          <div class="ui-faq__inner"><p>It's an optional add-on for Enterprise that brings AI agents into your workflow. It's priced separately from your plan. Switch it on in the Enterprise card and we'll include it in your quote.</p></div>
+          <div class="ui-faq__inner"><p>It's an optional Enterprise add-on that brings AI agents into your authoring workflow. It's priced separately from your plan. Switch it on in the Enterprise card and we'll include it in your&nbsp;quote.</p></div>
         </div>
       </div>
 
@@ -328,7 +329,7 @@
           </button>
         </h3>
         <div class="ui-faq__panel" id="faq-7" role="region" aria-labelledby="faq-7-btn">
-          <div class="ui-faq__inner"><p>Yes. Move from Solo to Team when someone joins you, add Team seats as you grow, or get in touch about Enterprise when you outgrow Team.</p></div>
+          <div class="ui-faq__inner"><p>Yes. Move from Solo to Team when someone joins you, add Team seats as you grow, or get in touch about Enterprise when you outgrow&nbsp;Team.</p></div>
         </div>
       </div>
 
@@ -341,7 +342,7 @@
           </button>
         </h3>
         <div class="ui-faq__panel" id="faq-8" role="region" aria-labelledby="faq-8-btn">
-          <div class="ui-faq__inner"><p>Solo and Team are paid by credit or debit card. Enterprise can also be paid by invoice.</p></div>
+          <div class="ui-faq__inner"><p>Solo and Team are paid by credit or debit card. Enterprise can also be paid by&nbsp;invoice.</p></div>
         </div>
       </div>
     </div>

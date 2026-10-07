@@ -46,6 +46,12 @@
       }
       var col = document.createElement("span");
       col.className = "ui-roll__col";
+      // An invisible copy of the digit sets the column's width, so a
+      // proportional font keeps its natural spacing.
+      var size = document.createElement("span");
+      size.className = "ui-roll__size";
+      size.textContent = startDigit;
+      col.appendChild(size);
       var strip = document.createElement("span");
       strip.className = "ui-roll__strip";
       for (var d = 0; d <= 9; d++) {
@@ -83,8 +89,9 @@
       var strips = el.querySelectorAll(".ui-roll__strip");
       var digits = str.replace(/\D/g, "");
       strips.forEach(function (strip, i) {
+        strip.previousSibling.textContent = digits[i];
         // The rightmost digit moves first, like a real odometer.
-        strip.style.setProperty("--stagger", (strips.length - 1 - i) * 55 + "ms");
+        strip.style.setProperty("--stagger", (strips.length - 1 - i) * 40 + "ms");
         strip.style.setProperty("--d", digits[i]);
       });
 
