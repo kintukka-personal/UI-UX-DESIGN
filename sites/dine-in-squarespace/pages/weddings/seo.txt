@@ -1,0 +1,11 @@
+Page: Weddings
+URL slug: /weddings
+
+SEO title:
+Wedding Catering Illawarra, South Coast & Southern Highlands — Dine In
+
+SEO description:
+Award-winning wedding catering by Chef Brooke Silk: canapés, grazing, shared banquets and plated degustation across the Illawarra, South Coast, Southern Highlands and Sydney. Request the wedding package.
+
+Social sharing image (Page settings > Social image):
+https://images.squarespace-cdn.com/content/v1/5f22acf33d4d050bcfd97f9f/fd436258-208e-460a-a51f-f79a856fce23/DSC04430.jpg?format=1500w

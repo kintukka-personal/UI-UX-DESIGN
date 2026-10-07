@@ -67,9 +67,16 @@
         <p class="ask-book-note" data-ask-book hidden>Checking a date? The <a class="text-link" href="book.html?src=contact" data-ask-book-link>booking form</a> gets Brooke everything she needs in one go.</p>
       </div>
       <div class="field"><label class="field-title" for="ask-message">Message<span class="req" aria-hidden="true">*</span></label><textarea id="ask-message" name="message" required rows="5" maxlength="1500" aria-describedby="ask-message-err"></textarea><p class="error" id="ask-message-err">Please add your question.</p></div>
-      <button class="btn" type="submit" data-cta="contact-ask-send">Open email to send</button>
-      <p class="field-hint ask-hint">This opens your email app with your question ready to send to dineinbybrooke@gmail.com.</p>
+      <input type="hidden" name="_subject" id="ask-subject">
+      <div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn" type="submit" data-cta="contact-ask-send" data-ask-send>Open email to send</button>
+      <p class="field-hint ask-hint" data-ask-hint>This opens your email app with your question ready to send to dineinbybrooke@gmail.com.</p>
+      <p class="send-status" data-send-status role="status" hidden></p>
     </form>
+    <div class="ask-sent" data-ask-sent tabindex="-1" hidden>
+      <h3>Thanks<span data-ask-sent-name></span>, your question is with Brooke.</h3>
+      <p>She'll reply to <b data-ask-sent-email></b>. For anything urgent, call <a href="tel:+61432804952">0432 804 952</a>.</p>
+    </div>
   </div>
 
   <aside class="contact-side">
@@ -129,6 +136,7 @@
   <a class="call" href="tel:+61432804952" data-cta="mobile-call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call</a>
   <a class="book" href="book.html" data-cta="mobile-book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Check your date</a>
 </nav>
+<script src="assets/js/forms-config.js"></script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>

@@ -1,0 +1,11 @@
+Page: Menu
+URL slug: /menu
+
+SEO title:
+Menu — Dine In
+
+SEO description:
+Explore the Dine In menu: A fusion of classic and contemporary flavours, from enticing entrées to rich desserts, delivered directly to you in South Coast and Wollongong
+
+Social sharing image (Page settings > Social image):
+https://images.squarespace-cdn.com/content/v1/5f22acf33d4d050bcfd97f9f/1612344757053-J4ZVUQNESBEZJSRYF5E1/Brooke-184.jpg?format=1500w

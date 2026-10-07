@@ -1598,3 +1598,13 @@ body:has(.shortlist:not([hidden])) .site-footer { padding-bottom: 120px; }
   .travel-table th, .travel-table td { padding: 12px 14px; }
   .drive-row .btn { width: 100%; }
 }
+
+/* ===== FORMS THAT SEND (Round 11) ===== */
+.hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.send-status { margin: 14px 0 0; padding: 12px 14px; border-radius: var(--radius); background: var(--sage); color: var(--ink); font-size: 15px; }
+.send-status.is-error { background: #fdf0ef; color: var(--error); border: 1px solid currentColor; }
+.ask-sent { padding: 22px; border-radius: var(--radius); background: var(--sage); }
+.ask-sent h3 { margin: 0 0 8px; }
+.ask-sent p { margin: 0; }
+.ask-sent:focus { outline: 2px solid var(--gold); outline-offset: 3px; }
+button[type="submit"]:disabled { opacity: .7; cursor: progress; }

@@ -6,6 +6,32 @@ The working copy of the [Dine In baseline](../dine-in-baseline/), where new UI c
 
 ## Changes from the baseline
 
+### Round 11: Go-live prep (back into Squarespace)
+
+The site goes live inside Brooke's existing Squarespace site, so the shop, cart, gift cards, domain, header and footer all stay where they are. Everything needed is in **[`../dine-in-squarespace`](../dine-in-squarespace/)**:
+- a paste kit generated from this folder by `build.py`
+- **[GO-LIVE.md](../dine-in-squarespace/GO-LIVE.md)**, the step-by-step launch and rollback checklist
+
+**Forms that really send.** The booking enquiry and the contact "Ask Brooke" form now post to [Formspree](https://formspree.io).
+- **Setup:** the endpoints go in the new `assets/js/forms-config.js` (Netlify Forms can't run inside Squarespace).
+- **While sending:** the button reads "Sending…".
+- **If sending fails:** an inline message gives Brooke's phone and email, and every answer stays filled in.
+- **On success:**
+  - Booking shows the existing confirmation screen. The "Test version: nothing was sent" line is gone.
+  - Contact shows "Thanks, Sam, your question is with Brooke".
+- **With no endpoint set:** both forms open the visitor's email app with everything written out (the booking email lists every answer), instead of showing a success screen for something that wasn't sent.
+- **Extras:** both forms carry a hidden `_gotcha` honeypot and an email subject (`Booking enquiry: Private Dining for 8 guests`, `Website question: Gift cards`).
+
+**The kit, in short:**
+- One Code Block per page, plus Header and Footer code injection and a per-page header with the JSON-LD.
+- Squarespace addresses everywhere (`/menu`, `/book?exp=…`, `/shop/p/egift-card`).
+- Brooke's own Squarespace CDN images, matched by pixel fingerprint: 59 of 63.
+- CSS scoped to `.dinein` blocks.
+- **Checked in a Squarespace simulator built from the live pages:**
+  - every element computes the same styles as here, on all 14 pages at desktop and phone width
+  - Squarespace's own shop and policy pages are untouched
+  - 273 behaviour checks pass
+
 ### Round 10: Local area pages
 
 Four pages people can find by searching a place. To avoid near-duplicate "doorway" pages, every page is built only from real, area-specific facts already on the site:
@@ -278,7 +304,7 @@ Every new text colour pair passes WCAG AA:
 - **Reply time:** "usually within one business day" on the booking success screen. It's marked `<!-- CONFIRM WITH BROOKE -->` in `book.html`.
 - **Required fields:** name, mobile and email are now required, and Subject has been dropped (it's composed automatically from the answers).
 - **The "Check your date" wording** used on CTAs across the site.
-- **Open Graph and JSON-LD URLs** need to be absolute (`https://dine-in.com.au/...`) on the real site. `sitemap.xml` already uses the live domain.
+- **Open Graph and JSON-LD URLs:** done in the Squarespace kit. JSON-LD uses live addresses, and Squarespace sets the social image from each page's SEO settings.
 - **Landing-page packages and "from" prices** as worded on the three new pages, including the wedding package contents (marked `<!-- CONFIRM WITH BROOKE -->` in `weddings.html`).
 - **Estimator assumptions:** 3 hours of waitress service by default, and one waitress for any group size (marked in the estimator markup).
 - **"Quotes and invoices provided"** on the corporate page.
@@ -288,7 +314,10 @@ Every new text colour pair passes WCAG AA:
   - The Sides tab isn't tied to one experience, so its buttons offer Private Dining or Banquets.
 - **Gift card delivery:** whether the live store emails the card to the buyer or the recipient, and whether a send date and message are supported. The test page collects them but makes no delivery promise. Also confirm the 200-character message limit and the five suggested messages.
 - **Reviews:** Brooke's Google review links (`googleUrl`, `leaveReviewUrl`), which reviews to feature, and each guest's OK to be quoted. Until then the curated blocks and the review quotes across the site stay hidden.
-- **Contact form:** the quick-question topics, and whether she wants a real form inbox at launch. Today the form opens the visitor's email app, so nothing is sent without their email client. A form service such as Formspree or Netlify Forms would make it send directly.
+- **Contact form:** the quick-question topics.
+- **Formspree:** Brooke creates the two form inboxes (Booking enquiry, Website question) with dineinbybrooke@gmail.com and confirms them. The endpoints go in `forms-config.js` and the kit's Footer injection. The free plan covers 50 submissions a month.
+- **Voucher address:** the degustation voucher's live product URL is `/shop/p/test`. GO-LIVE renames it to `/shop/p/degustation-voucher` and adds a redirect from the old one.
+- **eGift Card page:** the native Squarespace product page replaces this copy's custom gift flow. Paste the validity, transfer and redeem copy from the kit's `shop/egift-card-description.txt` into the product description.
 - **Area pages:**
   - the "Ideas for…" picks on each area page
   - any favourite venues or towns she'd like named, which only she can supply
@@ -317,7 +346,7 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | `cart.html` | `/cart` | Cart (stored in the browser, see below) |
 | `wollongong.html` · `south-coast.html` · `southern-highlands.html` · `sydney.html` | `/wollongong` etc. | Area pages: local press, travel fees from the Terms, drive-time check, ideas, FAQ |
 | `testimonials.html` | `/testimonials` | Reviews & Press: score, curated guest stories and occasion filter (from `assets/js/reviews-data.js`), Nine pull quote, awards and media wall, live Google reviews widget |
-| `contact.html` | `/contact` | Four ways to get in touch, live hours status, quick-question form (opens email), service area, map |
+| `contact.html` | `/contact` | Four ways to get in touch, live hours status, quick-question form (sends via Formspree), service area, map |
 | `weddings.html`, `corporate-events.html`, `cooking-classes.html` | new | Occasion landing pages with packages, estimators and pre-filled booking links |
 | `book.html` | `/book` | Three-step booking enquiry with pre-fill, summary and success screen |
 | `privacy-policy.html`, `terms-and-conditions.html`, `cancellation-policy.html` | same | Policy pages linked from the footer |
@@ -327,7 +356,8 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | Path | What it is |
 | --- | --- |
 | `assets/css/site.css` | All styles. Colour, font and spacing tokens sit at the top in `:root` |
-| `assets/js/site.js` | Mobile menu, FAQ accordions, menu tabs, product gallery, cart, form validation, video |
+| `assets/js/site.js` | Mobile menu, FAQ accordions, menu tabs, product gallery, cart, form validation and sending, video |
+| `assets/js/forms-config.js` | The Formspree endpoints for the booking and contact forms |
 | `assets/images/` | Every image from the live site, downloaded locally |
 
 The header and footer are repeated in each page, so a nav change needs making in every file. The Experiences cards, details and comparison table are static HTML in `experiences.html`. A price change means editing the card, its details section, the table row and the JSON-LD, plus the picker's one-line summary in `assets/js/site.js`.
