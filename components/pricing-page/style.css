@@ -302,11 +302,24 @@ main {
 /* Display: Poppins ExtraBold 48px / 1.05, set normally */
 .ui-pricing__title {
   margin: 0;
-  font: 800 clamp(36px, 5vw, 48px)/1.05 var(--ui-display);
+  font: 800 clamp(32px, 5vw, 48px)/1.05 var(--ui-display);
   color: var(--ui-fg);
 }
 
-.ui-pricing__line { display: block; }
+.ui-pricing__line {
+  display: block;
+  text-wrap: balance;
+}
+
+/* The three steps, in the simulation gradient (blue and violet both clear
+   3:1 as large text on Surface) */
+.ui-pricing__verb {
+  font-style: normal;
+  background: var(--ss-gradient-simulation);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+}
 
 .ui-pricing__lede {
   max-width: 520px;
