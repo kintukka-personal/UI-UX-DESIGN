@@ -995,9 +995,13 @@ html:not(.js) .steps-progress, html:not(.js) .step-nav [data-next], html:not(.js
 .lp-crumbs a { color: var(--ivory); display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 0 4px; }
 
 .package-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); max-width: 1320px; }
-.package-card .facts { list-style: none; padding: 0; margin: 4px 0 6px; display: grid; gap: 6px; font-size: 14.5px; color: var(--ink-soft); }
-.package-card .facts li { padding-left: 22px; position: relative; }
-.package-card .facts li::before { content: ""; position: absolute; left: 2px; top: .55em; width: 10px; height: 6px; border-left: 2px solid var(--gold-text); border-bottom: 2px solid var(--gold-text); transform: rotate(-45deg); }
+.teaser-card .facts { list-style: none; padding: 0; margin: 4px 0 6px; display: grid; gap: 6px; font-size: 14.5px; color: var(--ink-soft); }
+/* Cards in a row stretch to the same height; pinning the facts list to the bottom
+   keeps the guest line the same distance above the Enquire button on every card. */
+.teaser-card .body > .facts { margin-top: auto; margin-bottom: 0; padding-top: 14px; }
+.teaser-card .body > .facts + .actions { margin-top: 0; padding-top: 18px; }
+.teaser-card .facts li { padding-left: 22px; position: relative; }
+.teaser-card .facts li::before { content: ""; position: absolute; left: 2px; top: .55em; width: 10px; height: 6px; border-left: 2px solid var(--gold-text); border-bottom: 2px solid var(--gold-text); transform: rotate(-45deg); }
 .package-card .actions { justify-content: flex-start; }
 .package-card--note { background: var(--paper); border: 1.5px dashed var(--line); box-shadow: none; }
 
@@ -1556,10 +1560,14 @@ body:has(.shortlist:not([hidden])) .site-footer { padding-bottom: 120px; }
 .area-chips a:hover { background: var(--ivory); }
 
 .area-travel { padding: 90px var(--gutter); background: var(--sage); }
-.area-travel-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+.area-travel-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); grid-template-areas: "head head" "fees check"; gap: 22px 48px; align-items: start; }
+.area-travel-head { grid-area: head; max-width: 680px; }
+.area-travel-head p { margin-bottom: 0; }
+.area-travel-fees { grid-area: fees; }
+.area-travel .drive-check { grid-area: check; }
 .area-travel h2 { margin: 6px 0 12px; }
 .area-travel p { color: var(--ink-soft); }
-.travel-table { width: 100%; border-collapse: collapse; margin: 22px 0 14px; background: #fff; border-radius: 8px; overflow: hidden; font-size: 16px; }
+.travel-table { width: 100%; border-collapse: collapse; margin: 0 0 14px; background: #fff; border-radius: 8px; overflow: hidden; font-size: 16px; }
 .travel-table th, .travel-table td { text-align: left; padding: 14px 18px; border-bottom: 1px solid var(--line); }
 .travel-table thead th { background: var(--green); color: var(--ivory); font: 600 12.5px var(--font-body); letter-spacing: .08em; text-transform: uppercase; }
 .travel-table tbody tr:last-child td { border-bottom: 0; }
@@ -1583,7 +1591,7 @@ body:has(.shortlist:not([hidden])) .site-footer { padding-bottom: 120px; }
 .area-press .review-slot { max-width: 820px; margin: 30px auto 0; text-align: left; }
 
 @media (max-width: 1023px) {
-  .area-travel-inner { grid-template-columns: 1fr; gap: 28px; }
+  .area-travel-inner { grid-template-columns: 1fr; grid-template-areas: "head" "fees" "check"; gap: 24px; }
 }
 @media (max-width: 767px) {
   .area-travel { padding: 64px var(--gutter); }
