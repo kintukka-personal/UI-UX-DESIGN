@@ -29,6 +29,12 @@
   inherits: false;
 }
 
+@property --ui-beam {
+  syntax: "<percentage>";
+  initial-value: -50%;
+  inherits: false;
+}
+
 :root {
   /* ---- brand palette ---- */
   --ss-navy: #011d4a;
@@ -302,11 +308,62 @@ main {
 /* Display: Poppins ExtraBold 48px / 1.05, set normally */
 .ui-pricing__title {
   margin: 0;
-  font: 800 clamp(36px, 5vw, 48px)/1.05 var(--ui-display);
+  font: 800 clamp(32px, 5vw, 48px)/1.05 var(--ui-display);
   color: var(--ui-fg);
 }
 
-.ui-pricing__line { display: block; }
+.ui-pricing__line {
+  display: block;
+  text-wrap: balance;
+}
+
+/* The three steps take the logo's three colours, top slab to bottom:
+   Capture in Electric Blue (5.37:1 on Surface), Build in Cyan (2.4:1,
+   under the guidelines' 3:1 for large text, chosen to match the mark),
+   Publish in Violet (6.46:1) */
+.ui-pricing__verb {
+  --verb: var(--ss-blue);
+  --beam-core: color-mix(in srgb, var(--ss-cyan) 30%, var(--ss-white));
+  font-style: normal;
+  /* A band of cyan light sits off to the left, over the brand gradient.
+     At kickoff it sweeps through each verb once, one after the other. */
+  background:
+    linear-gradient(105deg,
+      transparent calc(var(--ui-beam) - 22%),
+      var(--ss-cyan) calc(var(--ui-beam) - 7%),
+      var(--beam-core) var(--ui-beam),
+      var(--ss-cyan) calc(var(--ui-beam) + 7%),
+      transparent calc(var(--ui-beam) + 22%)),
+    linear-gradient(var(--verb), var(--verb));
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+}
+
+/* Starts once its line has revealed: Capture, then Build, then Publish */
+.ui-pricing__verb { --beam-delay: 520ms; }
+.ui-pricing__line:nth-child(2) .ui-pricing__verb { --verb: var(--ss-cyan); --beam-delay: 980ms; }
+.ui-pricing__line:nth-child(3) .ui-pricing__verb { --verb: var(--ss-violet); --beam-delay: 1440ms; }
+
+html:not(.js) .ui-pricing__verb,
+.js .ui-pricing__line.is-in .ui-pricing__verb {
+  animation:
+    ui-beam 760ms var(--ui-ease-move) var(--beam-delay) both,
+    ui-beam-glow 760ms var(--ui-ease-move) var(--beam-delay) both;
+}
+
+@keyframes ui-beam {
+  from { --ui-beam: -50%; }
+  to   { --ui-beam: 150%; }
+}
+
+/* A soft cyan glow that swells as the beam passes through */
+@keyframes ui-beam-glow {
+  /* Starts and ends as a transparent cyan shadow, so the glow fades in
+     cyan rather than through grey */
+  0%, 100% { filter: drop-shadow(0 0 0 color-mix(in srgb, var(--ss-cyan) 0%, transparent)); }
+  45% { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--ss-cyan) 55%, transparent)); }
+}
 
 .ui-pricing__lede {
   max-width: 520px;
