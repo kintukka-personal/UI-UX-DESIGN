@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Now Playing ad</title>
+  <meta name="description" content="A music-led video ad template: hard cuts on the beat under a now-playing overlay, then a logo sign-off. Swap the song, the scenes and the brand from one config.">
+  <meta name="theme-color" content="#0b0a09">
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Bodoni+Moda:opsz,wght@6..96,500&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="ui-npad-skip" href="#ui-npad-about">Skip the ad</a>
+
+  <main>
+    <section class="ui-npad" id="ui-npad" aria-labelledby="ui-npad-title" data-format="auto">
+      <h1 class="ui-npad-sr" id="ui-npad-title">AVIA: a 10-second restaurant ad set to White Keys by Dominic Fike</h1>
+      <p class="ui-npad-sr" id="ui-npad-desc"></p>
+
+      <div class="ui-npad__viewport">
+        <!-- The ad frame. Scenes are created from the config below. -->
+        <div class="ui-npad__ad" id="ui-npad-ad" tabindex="-1" aria-describedby="ui-npad-desc">
+          <div class="ui-npad__scenes" aria-hidden="true"></div>
+
+          <!-- Now-playing overlay. Every control works: it drives the ad. -->
+          <div class="ui-npad__player" role="group" aria-label="Now playing">
+            <p class="ui-npad__title" data-bind="title">White Keys</p>
+            <p class="ui-npad__artist" data-bind="artist">Dominic Fike</p>
+
+            <button class="ui-npad__btn ui-npad__btn--save" type="button" aria-pressed="false" data-action="save" aria-label="Save White Keys">
+              <svg class="ui-npad__icon ui-npad__icon--plus" viewBox="0 0 25 25" aria-hidden="true">
+                <g class="ui-npad__plus-off"><circle cx="12.5" cy="12.5" r="11.4" fill="none" stroke="currentColor" stroke-width="2.1"/><path d="M12.5 6.6v11.8M6.6 12.5h11.8" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></g>
+                <path class="ui-npad__plus-on" fill-rule="evenodd" d="M12.5 0a12.5 12.5 0 1 1 0 25a12.5 12.5 0 1 1 0-25ZM18.4 8.3l-1.4-1.4l-6.6 6.6l-2.7-2.7l-1.4 1.4l4.1 4.1Z"/>
+              </svg>
+            </button>
+
+            <div class="ui-npad__track">
+              <input class="ui-npad__seek" type="range" min="0" max="10.08" step="0.04" value="0" aria-label="Seek" data-action="seek">
+              <span class="ui-npad__rail" aria-hidden="true"><span class="ui-npad__fill"></span><span class="ui-npad__knob"></span></span>
+            </div>
+            <span class="ui-npad__time ui-npad__time--elapsed" aria-hidden="true">0:00</span>
+            <span class="ui-npad__time ui-npad__time--remain" aria-hidden="true">-2:23</span>
+
+            <button class="ui-npad__btn ui-npad__btn--shuffle" type="button" aria-pressed="false" data-action="shuffle" aria-label="Shuffle scenes">
+              <svg class="ui-npad__icon ui-npad__icon--shuffle" viewBox="0 0 20 17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 3.6h2.6c2.1 0 3.2 1.1 4.4 3.1l2.1 3.6c1.2 2 2.3 3.1 4.4 3.1h3.5"/>
+                <path d="M1 13.4h2.6c2.1 0 3.2-1.1 4.4-3.1l2.1-3.6c1.2-2 2.3-3.1 4.4-3.1h3.5"/>
+                <path d="M16.1 1.1l2.5 2.5l-2.5 2.5M16.1 10.9l2.5 2.5l-2.5 2.5"/>
+              </svg>
+            </button>
+            <button class="ui-npad__btn ui-npad__btn--prev" type="button" data-action="prev" aria-label="Previous scene">
+              <svg class="ui-npad__icon ui-npad__icon--skip" viewBox="0 0 18 21" aria-hidden="true"><rect x="0" y="0" width="3.6" height="21" rx="0.9"/><path d="M17 1.3v18.4c0 .8-.9 1.3-1.6.8L4.6 11.3a1 1 0 0 1 0-1.6L15.4.5c.7-.5 1.6 0 1.6.8Z"/></svg>
+            </button>
+            <button class="ui-npad__btn ui-npad__btn--play" type="button" data-action="toggle" aria-label="Pause ad">
+              <svg class="ui-npad__icon ui-npad__icon--play" viewBox="-29 -29 58 58" aria-hidden="true">
+                <path class="ui-npad__glyph-pause" fill-rule="evenodd" d="M0-29a29 29 0 1 1 0 58a29 29 0 1 1 0-58ZM-8.4-10.5h4.9v21h-4.9ZM3.5-10.5h4.9v21h-4.9Z"/>
+                <path class="ui-npad__glyph-play" fill-rule="evenodd" d="M0-29a29 29 0 1 1 0 58a29 29 0 1 1 0-58ZM-5.5-10.6v21.2c0 .9 1 1.4 1.7.9l15.2-9.8c.7-.4.7-1.4 0-1.8L-3.8-11.5c-.7-.5-1.7 0-1.7.9Z"/>
+              </svg>
+            </button>
+            <button class="ui-npad__btn ui-npad__btn--next" type="button" data-action="next" aria-label="Next scene">
+              <svg class="ui-npad__icon ui-npad__icon--skip ui-npad__icon--flip" viewBox="0 0 18 21" aria-hidden="true"><rect x="0" y="0" width="3.6" height="21" rx="0.9"/><path d="M17 1.3v18.4c0 .8-.9 1.3-1.6.8L4.6 11.3a1 1 0 0 1 0-1.6L15.4.5c.7-.5 1.6 0 1.6.8Z"/></svg>
+            </button>
+            <button class="ui-npad__btn ui-npad__btn--repeat" type="button" aria-pressed="false" data-action="repeat" aria-label="Loop the ad">
+              <svg class="ui-npad__icon ui-npad__icon--repeat" viewBox="0 0 19 17" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6.2 13.1H4.4a3.4 3.4 0 0 1-3.4-3.4V4.4A3.4 3.4 0 0 1 4.4 1h10.2A3.4 3.4 0 0 1 18 4.4v5.3a3.4 3.4 0 0 1-3.4 3.4H9.2"/>
+                <path d="M11.4 10.6l-2.5 2.5l2.5 2.5"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Sign-off -->
+          <div class="ui-npad__logo" role="img" aria-label="AVIA">
+            <img class="ui-npad__logo-img" src="images/avia-logo.svg" alt="" width="132" height="62">
+            <span class="ui-npad__logo-text" hidden></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accessible ad controls (WCAG 2.2.2), always available -->
+      <div class="ui-npad__bar" role="toolbar" aria-label="Ad controls">
+        <button class="ui-npad__tool" type="button" data-action="toggle" aria-label="Pause ad">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="ui-npad__tool-pause" d="M7 5h3.4v14H7zM13.6 5H17v14h-3.4z"/><path class="ui-npad__tool-play" d="M8 5.5v13c0 .8.9 1.3 1.6.8l10-6.5a1 1 0 0 0 0-1.6l-10-6.5c-.7-.5-1.6 0-1.6.8Z"/></svg>
+        </button>
+        <button class="ui-npad__tool" type="button" data-action="replay" aria-label="Replay ad from the start">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></svg>
+        </button>
+        <button class="ui-npad__tool" type="button" data-action="sound" aria-pressed="false" aria-label="Sound off. Turn sound on" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5Z" fill="currentColor"/><path class="ui-npad__tool-on" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/><path class="ui-npad__tool-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+        </button>
+        <span class="ui-npad__clock" aria-hidden="true">0.0s</span>
+        <span class="ui-npad__spacer"></span>
+        <label class="ui-npad__select">
+          <span class="ui-npad-sr">Ad format</span>
+          <select data-action="format">
+            <option value="auto">Auto</option>
+            <option value="landscape">Landscape 3:2</option>
+            <option value="square">Square 1:1</option>
+            <option value="portrait">Story 9:16</option>
+          </select>
+        </label>
+        <button class="ui-npad__tool ui-npad__tool--text" type="button" data-action="customise" aria-haspopup="dialog">Customise</button>
+      </div>
+      <p class="ui-npad-sr" role="status" aria-live="polite" id="ui-npad-status"></p>
+    </section>
+
+    <section class="ui-npad-about" id="ui-npad-about" tabindex="-1" aria-labelledby="ui-npad-about-title">
+      <h2 id="ui-npad-about-title">Make it yours</h2>
+      <p>Every part of the ad comes from one config block in <code>index.html</code>: the song, the cut times, each scene's clip, and the logo. Use <strong>Customise</strong> to try your own music and footage in the browser, then copy the config it writes.</p>
+      <ol>
+        <li><strong>Music:</strong> add an audio file, then set the song title, the artist and the length shown on the player.</li>
+        <li><strong>Scenes:</strong> drop in a video clip or a still for each shot. Cuts can follow fixed times, or snap to the song's beats.</li>
+        <li><strong>Brand:</strong> replace the logo SVG, or type a wordmark.</li>
+      </ol>
+    </section>
+  </main>
+
+  <!-- Template editor -->
+  <dialog class="ui-npad-editor" id="ui-npad-editor" aria-labelledby="ui-npad-editor-title">
+    <form method="dialog" class="ui-npad-editor__form">
+      <header class="ui-npad-editor__head">
+        <h2 id="ui-npad-editor-title">Customise the ad</h2>
+        <button class="ui-npad-editor__close" type="submit" value="close" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </header>
+
+      <fieldset>
+        <legend>Song</legend>
+        <div class="ui-npad-editor__grid">
+          <label>Title <input name="title" type="text" autocomplete="off"></label>
+          <label>Artist <input name="artist" type="text" autocomplete="off"></label>
+          <label>Song length (m:ss) <input name="songLength" type="text" inputmode="numeric" pattern="\d{1,2}:\d{2}" autocomplete="off"></label>
+          <label>Song time at ad start (s) <input name="start" type="number" step="0.01"></label>
+        </div>
+        <label class="ui-npad-editor__file">Audio file <input name="audio" type="file" accept="audio/*"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Timing</legend>
+        <div class="ui-npad-editor__grid">
+          <label>Ad length (s) <input name="duration" type="number" step="0.01" min="1"></label>
+          <label>Player in (s) <input name="playerIn" type="number" step="0.01" min="0"></label>
+          <label>Player out (s) <input name="playerOut" type="number" step="0.01" min="0"></label>
+          <label>Logo in (s) <input name="logoIn" type="number" step="0.01" min="0"></label>
+          <label>Tempo (BPM) <input name="bpm" type="number" step="0.1" min="40" max="240"></label>
+          <label>Beats per cut <input name="beats" type="number" step="1" min="1" max="16"></label>
+          <label>First beat at (s) <input name="beatOffset" type="number" step="0.01"></label>
+        </div>
+        <button class="ui-npad-editor__action" type="button" data-editor="snap">Snap cuts to the beat</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>Scenes</legend>
+        <p class="ui-npad-editor__hint">Each row is one shot: when it cuts in, and the clip or still it shows.</p>
+        <ol class="ui-npad-editor__scenes"></ol>
+        <button class="ui-npad-editor__action" type="button" data-editor="add-scene">Add a scene</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>Brand</legend>
+        <div class="ui-npad-editor__grid">
+          <label>Brand name (read by screen readers) <input name="brand" type="text" autocomplete="off"></label>
+          <label>Wordmark text (replaces the logo image) <input name="wordmark" type="text" autocomplete="off"></label>
+        </div>
+        <label class="ui-npad-editor__file">Logo image (SVG or PNG) <input name="logo" type="file" accept="image/*"></label>
+      </fieldset>
+
+      <footer class="ui-npad-editor__foot">
+        <button class="ui-npad-editor__action" type="button" data-editor="reset">Restore the original</button>
+        <span class="ui-npad__spacer"></span>
+        <button class="ui-npad-editor__action ui-npad-editor__action--primary" type="button" data-editor="copy">Copy config</button>
+      </footer>
+      <p class="ui-npad-sr" role="status" aria-live="polite" data-editor="status"></p>
+    </form>
+  </dialog>
+
+  <!--
+    THE TEMPLATE. Edit this block to make a new ad.
+    Times are in seconds on the ad's clock.
+    scenes[].at   when the shot cuts in (scenes run until the next one's "at")
+    scenes[].src  a video (mp4/webm) or a still (jpg/png/webp)
+    scenes[].in   where in the clip to start (seconds, optional)
+    scenes[].focus  the object-position kept in view when the frame is cropped (square and story formats)
+    track.start   the song's playhead at ad time 0 (negative = the counter starts after a delay)
+    track.length  the song length the player counts down from, in seconds
+    track.audio   optional audio file; it plays in sync once the viewer turns sound on
+  -->
+  <script type="application/json" id="ui-npad-config">
+  {
+    "duration": 10.08,
+    "loop": false,
+    "bpm": 164.4,
+    "beats": 2,
+    "beatOffset": 1.36,
+    "player": { "in": 0.88, "out": 8.6 },
+    "logo": { "in": 9.04, "src": "images/avia-logo.svg", "label": "AVIA", "text": "" },
+    "track": { "title": "White Keys", "artist": "Dominic Fike", "length": 144, "start": -0.4, "audio": "" },
+    "scenes": [
+      { "at": 0,    "src": "scenes/01-shaker.mp4",    "webm": "scenes/01-shaker.webm", "poster": "scenes/01-shaker.webp",    "focus": "18% 50%", "alt": "A shaker pours a red cocktail over ice" },
+      { "at": 0.48, "src": "scenes/02-garnish.mp4",   "webm": "scenes/02-garnish.webm", "poster": "scenes/02-garnish.webp",   "focus": "20% 50%", "alt": "A grapefruit wedge slides into the glass" },
+      { "at": 1.36, "src": "scenes/03-crudo.mp4",     "webm": "scenes/03-crudo.webm", "poster": "scenes/03-crudo.webp",     "focus": "22% 50%", "alt": "A plate of crudo is set on a walnut table" },
+      { "at": 2.16, "src": "scenes/04-stove.mp4",     "webm": "scenes/04-stove.webm", "poster": "scenes/04-stove.webp",     "focus": "22% 50%", "alt": "Golden potatoes are tipped from a pan on the stove" },
+      { "at": 2.8,  "src": "scenes/05-duck.mp4",      "webm": "scenes/05-duck.webm", "poster": "scenes/05-duck.webp",      "focus": "22% 50%", "alt": "Sliced duck with cherries is served" },
+      { "at": 3.56, "src": "scenes/06-highball.mp4",  "webm": "scenes/06-highball.webm", "poster": "scenes/06-highball.webp",  "focus": "27% 50%", "alt": "A highball is stirred on the bar" },
+      { "at": 4.28, "src": "scenes/07-wine.mp4",      "webm": "scenes/07-wine.webm", "poster": "scenes/07-wine.webp",      "focus": "25% 50%", "alt": "A glass of white and a glass of red on the bar" },
+      { "at": 5.04, "src": "scenes/08-bartender.mp4", "webm": "scenes/08-bartender.webm", "poster": "scenes/08-bartender.webp", "focus": "18% 50%", "alt": "A bartender strains a martini" },
+      { "at": 5.8,  "src": "scenes/09-terrace.mp4",   "webm": "scenes/09-terrace.webm", "poster": "scenes/09-terrace.webp",   "focus": "35% 50%", "alt": "Friends laugh over spritzes on the terrace" },
+      { "at": 6.44, "src": "scenes/10-ragu.mp4",      "webm": "scenes/10-ragu.webm", "poster": "scenes/10-ragu.webp",      "focus": "28% 50%", "alt": "A plate of ragu is set down" },
+      { "at": 7.2,  "src": "scenes/11-pasta.mp4",     "webm": "scenes/11-pasta.webm", "poster": "scenes/11-pasta.webp",     "focus": "16% 50%", "alt": "Fresh pasta extrudes from a bronze die" }
+    ]
+  }
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

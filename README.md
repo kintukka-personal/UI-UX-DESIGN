@@ -33,6 +33,7 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Hover gallery card](components/hover-gallery-card/) | daisyUI hover-gallery product card with pretty-wrapped text (no single word left on a line) and a full-width Buy Now button, spaced on an even 12px rhythm |
 | [Hover 3D card](components/hover-3d-card/) | daisyUI `hover-3d` credit card: a black "Bank of Latveria" card that tilts toward the pointer with a moving glare, over a faint scalloped pattern |
 | [Pricing page](components/pricing-page/) | The SimStudio pricing page, on the brand guidelines: Solo, Team and Enterprise plans with a Monthly/Yearly toggle, odometer prices, a Team seat stepper on a navy featured card, a "Custom" Enterprise card with an optional AI agent add-on, and a FAQ where only one answer is open at a time |
+| [Now Playing ad](components/now-playing-ad/) | Music-led video ad template rebuilt from Jitter's free restaurant ad: eleven beat-cut shots under a working now-playing overlay, then the AVIA logo. The player really controls the ad (play, scene skip, scrub, shuffle, repeat, save). Scenes, song, cut times and logo come from one JSON config, and a Customise dialog tries your own music and clips and copies the config. Landscape, square and story layouts, with pause and reduced-motion support |
 
 ## Sites
 
