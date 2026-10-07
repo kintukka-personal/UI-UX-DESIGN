@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plans &amp; Pricing</title>
+<meta name="description" content="Solo, Team and Enterprise plans. Every plan exports to MP4, HTML and SCORM.">
+<script>document.documentElement.classList.add("js");</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="ui-pricing-page">
+
+<!-- Backdrop: drifting light, a fading grid and film grain -->
+<div class="ui-bg" aria-hidden="true">
+  <span class="ui-bg__blob ui-bg__blob--iris"></span>
+  <span class="ui-bg__blob ui-bg__blob--rose"></span>
+  <span class="ui-bg__blob ui-bg__blob--amber"></span>
+  <span class="ui-bg__grid"></span>
+</div>
+<div class="ui-grain" aria-hidden="true"></div>
+
+<main>
+  <!-- ================================================================
+       Pricing
+       ================================================================ -->
+  <section class="ui-pricing" id="pricing" aria-labelledby="pricing-title" data-ui-pricing>
+    <header class="ui-pricing__head">
+      <p class="ui-eyebrow" data-reveal><span class="ui-eyebrow__dot" aria-hidden="true"></span>Plans &amp; pricing</p>
+
+      <h1 class="ui-pricing__title" id="pricing-title">
+        <span class="ui-pricing__line" data-reveal style="--delay: 80ms">Create once.</span>
+        <span class="ui-pricing__line" data-reveal style="--delay: 160ms">Ship it as&nbsp;<span class="ui-rotator" data-ui-rotator aria-hidden="true"><span class="ui-rotator__word is-active">MP4</span><span class="ui-rotator__word">HTML</span><span class="ui-rotator__word">SCORM</span></span><span class="ui-sr">MP4, HTML or SCORM</span>.</span>
+      </h1>
+
+      <p class="ui-pricing__lede" data-reveal style="--delay: 240ms">Every plan exports to MP4, HTML and SCORM. Choose the seats you need and grow into the rest.</p>
+
+      <div class="ui-billing-wrap" data-reveal style="--delay: 320ms">
+        <fieldset class="ui-billing" data-ui-billing>
+          <legend class="ui-sr">Billing period</legend>
+          <input class="ui-billing__input" type="radio" name="billing" id="billing-monthly" value="monthly" checked>
+          <label class="ui-billing__option" for="billing-monthly">Monthly</label>
+          <input class="ui-billing__input" type="radio" name="billing" id="billing-yearly" value="yearly">
+          <label class="ui-billing__option" for="billing-yearly">Yearly</label>
+          <span class="ui-billing__thumb" aria-hidden="true"></span>
+        </fieldset>
+        <p class="ui-billing__save" data-ui-save>
+          <svg class="ui-billing__arrow" viewBox="0 0 48 28" aria-hidden="true"><path d="M46 22C34 26 18 24 9 12" /><path d="M6 19 8.5 10.5 17 12" /></svg>
+          <span>Save <b data-bind="save-percent">17%</b> yearly</span>
+        </p>
+      </div>
+    </header>
+
+    <div class="ui-plans" data-ui-plans>
+
+      <!-- ---------------- Solo ---------------- -->
+      <article class="ui-plan" data-plan="solo" data-monthly="29" data-yearly="24" data-reveal style="--delay: 380ms">
+        <header class="ui-plan__head">
+          <span class="ui-plan__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.9-3.6 3.7-5.6 7.2-5.6s6.3 2 7.2 5.6"/></svg>
+          </span>
+          <h2 class="ui-plan__name">Solo</h2>
+          <p class="ui-plan__tagline">For one creator building and exporting on their own.</p>
+        </header>
+
+        <div class="ui-plan__price">
+          <span class="ui-plan__currency" aria-hidden="true">$</span>
+          <span class="ui-plan__amount" data-price aria-hidden="true">29</span>
+          <span class="ui-plan__per" aria-hidden="true">/ month</span>
+          <span class="ui-sr" data-price-sr aria-live="polite">$29 per month</span>
+        </div>
+        <p class="ui-plan__billing">
+          <span data-billing-note>Billed monthly</span>
+          <span class="ui-plan__saving" data-saving></span>
+        </p>
+
+        <div class="ui-plan__seats">
+          <div class="ui-seats" aria-hidden="true"><span class="ui-seats__dot is-on"></span></div>
+          <p class="ui-plan__seat-label"><strong>1 seat</strong></p>
+        </div>
+
+        <a class="ui-btn ui-btn--glass" href="#">
+          <span>Get started</span>
+          <svg class="ui-btn__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+
+        <p class="ui-plan__includes">Includes</p>
+        <ul class="ui-plan__features">
+          <li class="ui-feature">
+            <span class="ui-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9.5 4.5 2.5-4.5 2.5z"/></svg></span>
+            <span><strong>Export to MP4</strong><small>Video that plays anywhere</small></span>
+          </li>
+          <li class="ui-feature">
+            <span class="ui-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 6l-3 12"/></svg></span>
+            <span><strong>Export to HTML</strong><small>Responsive, web-ready output</small></span>
+          </li>
+          <li class="ui-feature">
+            <span class="ui-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/></svg></span>
+            <span><strong>Export to SCORM</strong><small>Drops straight into your LMS</small></span>
+          </li>
+        </ul>
+      </article>
+
+      <!-- ---------------- Team (featured) ---------------- -->
+      <article class="ui-plan ui-plan--featured" data-plan="team" data-monthly="99" data-yearly="82" data-seats-included="5" data-seat-monthly="19" data-seat-yearly="16" data-reveal style="--delay: 460ms">
+        <span class="ui-plan__ring" aria-hidden="true"></span>
+        <span class="ui-plan__badge">Most popular</span>
+
+        <header class="ui-plan__head">
+          <span class="ui-plan__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="3"/><circle cx="5.6" cy="10" r="2.2"/><circle cx="18.4" cy="10" r="2.2"/><path d="M7.4 19.5c.7-3 2.4-4.6 4.6-4.6s3.9 1.6 4.6 4.6M2.2 18.5c.4-2 1.6-3.2 3.4-3.2M21.8 18.5c-.4-2-1.6-3.2-3.4-3.2"/></svg>
+          </span>
+          <h2 class="ui-plan__name">Team</h2>
+          <p class="ui-plan__tagline">For teams that build together. Five seats to start, more when you need them.</p>
+        </header>
+
+        <div class="ui-plan__price">
+          <span class="ui-plan__currency" aria-hidden="true">$</span>
+          <span class="ui-plan__amount" data-price aria-hidden="true">99</span>
+          <span class="ui-plan__per" aria-hidden="true">/ month</span>
+          <span class="ui-sr" data-price-sr aria-live="polite">$99 per month</span>
+        </div>
+        <p class="ui-plan__billing">
+          <span data-billing-note>Billed monthly</span>
+          <span class="ui-plan__saving" data-saving></span>
+        </p>
+
+        <div class="ui-plan__seats">
+          <div class="ui-seats" data-seat-dots aria-hidden="true"></div>
+          <div class="ui-plan__seat-row">
+            <p class="ui-plan__seat-label"><strong><span data-seat-count>5</span> seats</strong><small><span data-bind="included">5</span> included, then <span data-bind="seat-price">$19</span>/seat</small></p>
+            <div class="ui-stepper" data-ui-stepper>
+              <button class="ui-stepper__btn" type="button" data-step="-1" aria-label="Remove a seat">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9"/></svg>
+              </button>
+              <output class="ui-stepper__value" data-seat-output aria-live="polite" aria-label="Seats">5</output>
+              <button class="ui-stepper__btn" type="button" data-step="1" aria-label="Add a seat">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8h9M8 3.5v9"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <a class="ui-btn ui-btn--primary" href="#">
+          <span class="ui-btn__shine" aria-hidden="true"></span>
+          <span data-team-cta>Start with 5 seats</span>
+          <svg class="ui-btn__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+
+        <p class="ui-plan__includes">Includes</p>
+        <ul class="ui-plan__features">
+          <li class="ui-feature">
+            <span class="ui-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9.5 4.5 2.5-4.5 2.5z"/></svg></span>
+            <span><strong>Export to MP4</strong><small>Video that plays anywhere</small></span>
+          </li>
+          <li class="ui-feature">
+            <span class="ui-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 6l-3 12"/></svg></span>
+            <span><strong>Export to HTML</strong><small>Responsive, web-ready output</small></span>
+          </li>
+          <li class="ui-feature">
+            <span class="ui-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/></svg></span>
+            <span><strong>Export to SCORM</strong><small>Drops straight into your LMS</small></span>
+          </li>
+          <li class="ui-feature">
+            <span class="ui-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3"/><path d="M3.5 19c.7-3.2 2.8-5 5.5-5s4.8 1.8 5.5 5M17 8v6M14 11h6"/></svg></span>
+            <span><strong>Add seats any time</strong><small>Grow past five as your team does</small></span>
+          </li>
+        </ul>
+      </article>
+
+      <!-- ---------------- Enterprise ---------------- -->
+      <article class="ui-plan ui-plan--enterprise" data-plan="enterprise" data-reveal style="--delay: 540ms">
+        <header class="ui-plan__head">
+          <span class="ui-plan__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 20V6.5L11 3v17M11 20V9l9 3.5V20M2.5 20h19M7 8.5v.01M7 12v.01M7 15.5v.01M14.5 14v.01M17 15v.01M14.5 17.5v.01M17 18v.01"/></svg>
+          </span>
+          <h2 class="ui-plan__name">Enterprise</h2>
+          <p class="ui-plan__tagline">For organisations that need unlimited seats and a plan shaped around them.</p>
+        </header>
+
+        <div class="ui-plan__price">
+          <span class="ui-plan__custom">Custom</span>
+        </div>
+        <p class="ui-plan__billing"><span>Priced to your organisation</span></p>
+
+        <div class="ui-plan__seats">
+          <div class="ui-seats ui-seats--infinite" aria-hidden="true">
+            <svg class="ui-infinity" viewBox="0 0 64 28"><path class="ui-infinity__base" d="M32 14c-5-7-9.5-10-15-10a10 10 0 0 0 0 20c5.5 0 10-3 15-10s9.5-10 15-10a10 10 0 0 1 0 20c-5.5 0-10-3-15-10z"/><path class="ui-infinity__trace" pathLength="100" d="M32 14c-5-7-9.5-10-15-10a10 10 0 0 0 0 20c5.5 0 10-3 15-10s9.5-10 15-10a10 10 0 0 1 0 20c-5.5 0-10-3-15-10z"/></svg>
+          </div>
+          <p class="ui-plan__seat-label"><strong>Unlimited seats</strong></p>
+        </div>
+
+        <a class="ui-btn ui-btn--outline" href="mailto:sales@example.com?subject=Enterprise%20pricing%20inquiry" data-inquire>
+          <span>Inquire for pricing</span>
+          <svg class="ui-btn__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+
+        <p class="ui-plan__includes">Includes</p>
+        <ul class="ui-plan__features">
+          <li class="ui-feature">
+            <span class="ui-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9.5 4.5 2.5-4.5 2.5z"/></svg></span>
+            <span><strong>Export to MP4</strong><small>Video that plays anywhere</small></span>
+          </li>
+          <li class="ui-feature">
+            <span class="ui-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 6l-3 12"/></svg></span>
+            <span><strong>Export to HTML</strong><small>Responsive, web-ready output</small></span>
+          </li>
+          <li class="ui-feature">
+            <span class="ui-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/></svg></span>
+            <span><strong>Export to SCORM</strong><small>Drops straight into your LMS</small></span>
+          </li>
+        </ul>
+
+        <div class="ui-addon" data-ui-addon>
+          <div class="ui-addon__head">
+            <span class="ui-addon__spark" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 2.5c.6 4.6 2.9 6.9 7.5 7.5-4.6.6-6.9 2.9-7.5 7.5-.6-4.6-2.9-6.9-7.5-7.5 4.6-.6 6.9-2.9 7.5-7.5zM19 15.5c.3 2 1.2 2.9 3 3.2-1.8.3-2.7 1.2-3 3.2-.3-2-1.2-2.9-3-3.2 1.8-.3 2.7-1.2 3-3.2z"/></svg>
+            </span>
+            <span class="ui-addon__tag">Optional add-on</span>
+          </div>
+          <p class="ui-addon__title">AI agent integration</p>
+          <p class="ui-addon__text">Bring AI agents into your workflow. Priced separately on top of your plan.</p>
+          <label class="ui-switch">
+            <input class="ui-switch__input" type="checkbox" role="switch" data-addon-toggle>
+            <span class="ui-switch__track" aria-hidden="true"><span class="ui-switch__thumb"></span></span>
+            <span class="ui-switch__label">Include in my inquiry</span>
+          </label>
+        </div>
+      </article>
+    </div>
+
+    <p class="ui-pricing__note" data-reveal>Prices shown exclude tax.</p>
+  </section>
+
+  <!-- ================================================================
+       FAQ: only one answer is open at a time
+       ================================================================ -->
+  <section class="ui-faq" id="faq" aria-labelledby="faq-title">
+    <h2 class="ui-faq__title" id="faq-title" data-reveal>Frequently asked <em>questions</em></h2>
+
+    <div class="ui-faq__list" data-ui-accordion>
+      <div class="ui-faq__item is-open" data-reveal>
+        <h3 class="ui-faq__q">
+          <button class="ui-faq__trigger" type="button" id="faq-1-btn" aria-expanded="true" aria-controls="faq-1">
+            <span class="ui-faq__index" aria-hidden="true">01</span>
+            <span class="ui-faq__text">Which plan is right for me?</span>
+            <span class="ui-faq__chev" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg></span>
+          </button>
+        </h3>
+        <div class="ui-faq__panel" id="faq-1" role="region" aria-labelledby="faq-1-btn">
+          <div class="ui-faq__inner"><p>Solo is built for one person. If two or more of you are creating together, Team gives you five seats to start and lets you add more as you grow. If you need unlimited seats, or want AI agents in your workflow, talk to us about Enterprise.</p></div>
+        </div>
+      </div>
+
+      <div class="ui-faq__item" data-reveal>
+        <h3 class="ui-faq__q">
+          <button class="ui-faq__trigger" type="button" id="faq-2-btn" aria-expanded="false" aria-controls="faq-2">
+            <span class="ui-faq__index" aria-hidden="true">02</span>
+            <span class="ui-faq__text">How do seats work on the Team plan?</span>
+            <span class="ui-faq__chev" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg></span>
+          </button>
+        </h3>
+        <div class="ui-faq__panel" id="faq-2" role="region" aria-labelledby="faq-2-btn">
+          <div class="ui-faq__inner"><p>Team includes five seats. Add more whenever you need them for <span data-bind="seat-monthly">$19</span> a seat per month, or <span data-bind="seat-yearly">$16</span> a seat per month on yearly billing.</p></div>
+        </div>
+      </div>
+
+      <div class="ui-faq__item" data-reveal>
+        <h3 class="ui-faq__q">
+          <button class="ui-faq__trigger" type="button" id="faq-3-btn" aria-expanded="false" aria-controls="faq-3">
+            <span class="ui-faq__index" aria-hidden="true">03</span>
+            <span class="ui-faq__text">Which export formats are included?</span>
+            <span class="ui-faq__chev" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg></span>
+          </button>
+        </h3>
+        <div class="ui-faq__panel" id="faq-3" role="region" aria-labelledby="faq-3-btn">
+          <div class="ui-faq__inner"><p>All of them, on every plan. Export to MP4 for video, HTML for the web and SCORM for your learning management system. No format is held back for a higher tier.</p></div>
+        </div>
+      </div>
+
+      <div class="ui-faq__item" data-reveal>
+        <h3 class="ui-faq__q">
+          <button class="ui-faq__trigger" type="button" id="faq-4-btn" aria-expanded="false" aria-controls="faq-4">
+            <span class="ui-faq__index" aria-hidden="true">04</span>
+            <span class="ui-faq__text">What's the difference between monthly and yearly billing?</span>
+            <span class="ui-faq__chev" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg></span>
+          </button>
+        </h3>
+        <div class="ui-faq__panel" id="faq-4" role="region" aria-labelledby="faq-4-btn">
+          <div class="ui-faq__inner"><p>Monthly plans are billed each month. Yearly plans are billed once a year up front and work out about <span data-bind="save-percent">17%</span> cheaper. You get the same features either way.</p></div>
+        </div>
+      </div>
+
+      <div class="ui-faq__item" data-reveal>
+        <h3 class="ui-faq__q">
+          <button class="ui-faq__trigger" type="button" id="faq-5-btn" aria-expanded="false" aria-controls="faq-5">
+            <span class="ui-faq__index" aria-hidden="true">05</span>
+            <span class="ui-faq__text">How is Enterprise priced?</span>
+            <span class="ui-faq__chev" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg></span>
+          </button>
+        </h3>
+        <div class="ui-faq__panel" id="faq-5" role="region" aria-labelledby="faq-5-btn">
+          <div class="ui-faq__inner"><p>Enterprise pricing depends on your organisation and how you'll use it. Send us an inquiry and we'll put together a quote for unlimited seats, plus the AI agent integration if you want it.</p></div>
+        </div>
+      </div>
+
+      <div class="ui-faq__item" data-reveal>
+        <h3 class="ui-faq__q">
+          <button class="ui-faq__trigger" type="button" id="faq-6-btn" aria-expanded="false" aria-controls="faq-6">
+            <span class="ui-faq__index" aria-hidden="true">06</span>
+            <span class="ui-faq__text">What is the AI agent integration?</span>
+            <span class="ui-faq__chev" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg></span>
+          </button>
+        </h3>
+        <div class="ui-faq__panel" id="faq-6" role="region" aria-labelledby="faq-6-btn">
+          <div class="ui-faq__inner"><p>It's an optional add-on for Enterprise that brings AI agents into your workflow. It's priced separately from your plan. Switch it on in the Enterprise card and we'll include it in your quote.</p></div>
+        </div>
+      </div>
+
+      <div class="ui-faq__item" data-reveal>
+        <h3 class="ui-faq__q">
+          <button class="ui-faq__trigger" type="button" id="faq-7-btn" aria-expanded="false" aria-controls="faq-7">
+            <span class="ui-faq__index" aria-hidden="true">07</span>
+            <span class="ui-faq__text">Can I change plans later?</span>
+            <span class="ui-faq__chev" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg></span>
+          </button>
+        </h3>
+        <div class="ui-faq__panel" id="faq-7" role="region" aria-labelledby="faq-7-btn">
+          <div class="ui-faq__inner"><p>Yes. Move from Solo to Team when someone joins you, add Team seats as you grow, or get in touch about Enterprise when you outgrow Team.</p></div>
+        </div>
+      </div>
+
+      <div class="ui-faq__item" data-reveal>
+        <h3 class="ui-faq__q">
+          <button class="ui-faq__trigger" type="button" id="faq-8-btn" aria-expanded="false" aria-controls="faq-8">
+            <span class="ui-faq__index" aria-hidden="true">08</span>
+            <span class="ui-faq__text">What payment methods do you accept?</span>
+            <span class="ui-faq__chev" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="m4 6 4 4 4-4"/></svg></span>
+          </button>
+        </h3>
+        <div class="ui-faq__panel" id="faq-8" role="region" aria-labelledby="faq-8-btn">
+          <div class="ui-faq__inner"><p>Solo and Team are paid by credit or debit card. Enterprise can also be paid by invoice.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="ui-faq__more" data-reveal>Still have a question? <a href="mailto:sales@example.com">Talk to us<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
