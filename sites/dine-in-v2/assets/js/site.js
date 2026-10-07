@@ -3,19 +3,6 @@
   'use strict';
   var FORMS = window.DINE_IN_FORMS || {};
 
-  /* ---- Mobile menu ---------------------------------------------------- */
-  var burger = document.querySelector('.burger');
-  if (burger) {
-    burger.addEventListener('click', function () {
-      var open = document.body.classList.toggle('menu-open');
-      burger.setAttribute('aria-expanded', open);
-      burger.setAttribute('aria-label', open ? 'Close Menu' : 'Open Menu');
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && document.body.classList.contains('menu-open')) burger.click();
-    });
-  }
-
   /* ---- Scroll reveal (the "Read Our Reviews" poster) ------------------ */
   var reveals = document.querySelectorAll('.reveal');
   if (reveals.length && 'IntersectionObserver' in window) {
@@ -447,21 +434,6 @@
     form.calc = calc;
     calc();
   });
-
-  /* ---- Sticky booking bar: appears once the visitor is past the top --- */
-  var bar = document.querySelector('[data-sticky-bar]');
-  if (bar && !document.querySelector('[data-booking]')) {
-    var hero = document.querySelector('.hero, .site-header');
-    var ticking = false;
-    var onScroll = function () {
-      var show = window.scrollY > (hero ? hero.offsetTop + hero.offsetHeight : 400);
-      bar.classList.toggle('is-visible', show);
-      if (show) bar.removeAttribute('inert'); else bar.setAttribute('inert', '');
-      ticking = false;
-    };
-    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
-    onScroll();
-  }
 
   /* ---- Decorative looping video: honour reduced motion ---------------- */
   // It starts only when scrolled into view, so it costs nothing above the fold.
@@ -913,6 +885,8 @@
       faqBtnOf(li).focus({ preventScroll: true });
     };
     faqTools.hidden = false;
+    var faqStartQ = (new URLSearchParams(location.search).get('q') || '').slice(0, 80);
+    if (faqStartQ && !location.hash) faqQ.value = faqStartQ;
     faqApply();
     faqFromHash();
     window.addEventListener('hashchange', faqFromHash);
@@ -1077,4 +1051,148 @@
     });
     hsSync();
   }
+
+  /* ---- Header: the large logo shrinks into the bar on the first scroll --- */
+  // From components/fullpage-slideshow: .is-compact once the page leaves the very top.
+  var fpHeader = document.querySelector('[data-ui-fp-header]');
+  if (fpHeader) {
+    var hdrTick = false;
+    var hdrSync = function () { fpHeader.classList.toggle('is-compact', window.scrollY > 4); hdrTick = false; };
+    window.addEventListener('scroll', function () { if (!hdrTick) { hdrTick = true; requestAnimationFrame(hdrSync); } }, { passive: true });
+    hdrSync();
+  }
+
+  /* ---- Menu drawer: Close, a click outside or Escape shut it ----------- */
+  var fpMenu = document.querySelector('[data-ui-fp-menu]');
+  if (fpMenu) {
+    var fmPanel = fpMenu.querySelector('.ui-fp-menu__panel');
+    var fmToggles = document.querySelectorAll('[data-ui-fp-menu-toggle]');
+    var fmLast = null;
+    fmPanel.inert = true;
+    var fmIsOpen = function () { return fpMenu.classList.contains('is-open'); };
+    var fmOpen = function (trigger) {
+      fmLast = trigger || null;
+      fpMenu.classList.add('is-open');
+      fmPanel.inert = false;
+      fmToggles.forEach(function (t) { t.setAttribute('aria-expanded', 'true'); });
+      var first = fmPanel.querySelector('a, button');
+      if (first) first.focus({ preventScroll: true });
+    };
+    var fmShut = function () {
+      if (!fmIsOpen()) return;
+      fpMenu.classList.remove('is-open');
+      fmPanel.inert = true;
+      fmToggles.forEach(function (t) { t.setAttribute('aria-expanded', 'false'); });
+      if (fmLast && document.body.contains(fmLast)) fmLast.focus({ preventScroll: true });
+    };
+    fmToggles.forEach(function (t) { t.addEventListener('click', function () { if (fmIsOpen()) fmShut(); else fmOpen(t); }); });
+    fpMenu.querySelector('.ui-fp-menu__scrim').addEventListener('click', fmShut);
+    fmPanel.querySelectorAll('[data-ui-fp-menu-close]').forEach(function (b) { b.addEventListener('click', fmShut); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && fmIsOpen()) { e.preventDefault(); fmShut(); } });
+  }
+
+  /* ---- Search takeover with instant results ----------------------------- */
+  // Open/close from components/header-search. Results come from
+  // assets/js/search-index.js (pages, experiences, menu dishes, FAQ), loaded
+  // the first time Search opens. Without JS the form goes to the FAQ (?q=).
+  document.querySelectorAll('[data-ui-hsearch]').forEach(function (root) {
+    var trigger = root.querySelector('.ui-hsearch__trigger');
+    var layer = root.querySelector('.ui-hsearch__layer');
+    var input = root.querySelector('.ui-hsearch__input');
+    var form = root.querySelector('[data-site-search]');
+    var results = root.querySelector('[data-site-search-results]');
+    var quick = root.querySelector('[data-site-search-quick]');
+    var status = root.querySelector('.ui-hsearch__status');
+    var KINDS = [['Page', 'Pages'], ['Experience', 'Experiences'], ['Dish', 'On the menus'], ['FAQ', 'Questions']];
+    var WEIGHT = { Page: 3, Experience: 2, Dish: 0, FAQ: 1 };
+    var srchNorm = function (t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); };
+    var srchIndex = null, srchFirst = null;
+    var srchHref = function (u) { return /^(\/|https?:|#)/.test(u) ? u : revBase + u; };
+    var srchLoad = function () {
+      if (window.DINE_IN_SEARCH || document.querySelector('script[data-search-index]')) return;
+      var sc = document.createElement('script');
+      sc.src = revBase + 'assets/js/search-index.js'; sc.async = true; sc.setAttribute('data-search-index', '');
+      sc.onload = srchRun;
+      document.head.appendChild(sc);
+    };
+    var srchMark = function (text, words) {
+      var html = esc(text);
+      words.forEach(function (w) {
+        if (w.length < 2) return;
+        var i = srchNorm(text).indexOf(w);
+        if (i > -1) {
+          var raw = text.slice(i, i + w.length);
+          html = html.replace(esc(raw), '<mark>' + esc(raw) + '</mark>');
+        }
+      });
+      return html;
+    };
+    var srchRun = function () {
+      var raw = input.value.trim(), words = srchNorm(raw).split(/\s+/).filter(Boolean);
+      srchFirst = null;
+      if (!words.length) { results.hidden = true; results.textContent = ''; quick.hidden = false; status.textContent = ''; return; }
+      quick.hidden = true; results.hidden = false;
+      if (!window.DINE_IN_SEARCH) { status.textContent = 'Searching…'; srchLoad(); return; }
+      if (!srchIndex) srchIndex = window.DINE_IN_SEARCH.map(function (e) { return { e: e, t: srchNorm(e.t), all: srchNorm(e.t + ' ' + e.d + ' ' + e.x) }; });
+      var hits = [];
+      srchIndex.forEach(function (r, n) {
+        var score = WEIGHT[r.e.k] || 0;
+        for (var i = 0; i < words.length; i++) {
+          var w = words[i];
+          if (r.all.indexOf(w) < 0) return;
+          score += r.t.indexOf(w) === 0 ? 8 : (' ' + r.t).indexOf(' ' + w) > -1 ? 6 : r.t.indexOf(w) > -1 ? 4 : 1;
+        }
+        hits.push({ r: r, s: score, n: n });
+      });
+      hits.sort(function (a, b) { return b.s - a.s || a.n - b.n; });
+      hits = hits.slice(0, 8);
+      status.textContent = hits.length ? hits.length + (hits.length === 1 ? ' result' : ' results') + ' for “' + raw + '”' : 'No results for “' + raw + '”';
+      if (!hits.length) {
+        results.innerHTML = '<p class="ui-hsearch__empty">Try a dish, an occasion or a question, or <a class="text-link" href="' + esc(srchHref('contact.html#ask')) + '">ask Brooke directly</a>.</p>';
+        return;
+      }
+      var html = '';
+      KINDS.forEach(function (k) {
+        var group = hits.filter(function (h) { return h.r.e.k === k[0]; });
+        if (!group.length) return;
+        html += '<div><h3>' + k[1] + '</h3><ul>' + group.map(function (h) {
+          return '<li><a href="' + esc(srchHref(h.r.e.u)) + '"><b>' + srchMark(h.r.e.t, words) + '</b><span>' + esc(h.r.e.d) + '</span></a></li>';
+        }).join('') + '</ul></div>';
+      });
+      results.innerHTML = html;
+      // Enter opens the best match, which is the first one listed
+      var best = hits[0], links = results.querySelectorAll('a');
+      for (var i = 0; i < links.length; i++) if (links[i].getAttribute('href') === srchHref(best.r.e.u) && links[i].textContent.indexOf(best.r.e.t) === 0) { srchFirst = links[i]; break; }
+      if (srchFirst) srchFirst.classList.add('is-first');
+    };
+    input.addEventListener('input', srchRun);
+    form.addEventListener('submit', function (e) {
+      if (srchFirst) { e.preventDefault(); window.location.href = srchFirst.href; }
+    });
+    // Links into the same page (the FAQ, a menu tab) close the takeover
+    results.addEventListener('click', function (e) { if (e.target.closest('a')) shut(false); });
+
+    layer.inert = true;
+    var isOpen = function () { return root.classList.contains('is-open'); };
+    var open = function () {
+      root.classList.add('is-open');
+      layer.inert = false;
+      trigger.setAttribute('aria-expanded', 'true');
+      input.focus({ preventScroll: true });
+      srchLoad();
+    };
+    var shut = function (returnFocus) {
+      if (!isOpen()) return;
+      root.classList.remove('is-open');
+      layer.inert = true;
+      trigger.setAttribute('aria-expanded', 'false');
+      if (returnFocus) trigger.focus({ preventScroll: true });
+    };
+    trigger.addEventListener('click', function () { if (isOpen()) shut(true); else open(); });
+    root.querySelector('.ui-hsearch__close').addEventListener('click', function () { shut(true); });
+    root.querySelector('.ui-hsearch__scrim').addEventListener('click', function () { shut(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && isOpen()) { e.preventDefault(); shut(true); } });
+    document.addEventListener('pointerdown', function (e) { if (isOpen() && !layer.contains(e.target) && !trigger.contains(e.target)) shut(false); });
+    layer.addEventListener('focusout', function (e) { if (isOpen() && e.relatedTarget && !layer.contains(e.relatedTarget) && e.relatedTarget !== trigger) shut(false); });
+  });
 })();

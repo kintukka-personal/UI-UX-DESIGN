@@ -2,11 +2,11 @@
 
 This kit puts the v2 rebuild (`../dine-in-v2`) into Brooke's existing Squarespace 7.1 site. Squarespace keeps:
 
-- the domain, header, navigation and footer
+- the domain and the footer
 - the shop, cart, gift cards, orders and customers
 - the sitemap and robots file
 
-Each Dine In page goes in as one Code Block. The design and the behaviour go in through Code Injection.
+Each Dine In page goes in as one Code Block. The design and the behaviour go in through Code Injection. So does the Dine In header: the large logo that shrinks into a slim bar on scroll, with Menu, Search, Contact us, the social links, the cart and "Check your date". It replaces Squarespace's own header on every page, the shop included.
 
 **Every live address stays the same** (`/menu`, `/faq`, `/book`, …). The only redirect is for the voucher, whose product address is renamed from `/shop/p/test`.
 
@@ -50,7 +50,7 @@ Never move the domain to the copy: orders, customers and gift card balances live
    ```
    Until they are filled in, both forms open the visitor's email app with everything written out. No enquiry is ever lost and no fake "sent" screen ever shows.
 2. Paste the header file into **Header** and the footer file into **Footer**. Save.
-3. Nothing changes on the live pages yet. The CSS only touches elements inside a `.dinein` block, and the scripts only act on Dine In markup.
+3. **The new header goes live on every page at this point.** Squarespace's header is hidden and the Dine In header takes its place, menu and search included, even on pages you haven't rebuilt yet. Nothing else on the live pages changes: the rest of the CSS only touches elements inside a `.dinein` block, and the scripts only act on Dine In markup. This is why rehearsing on the copy first is worth it.
 
 ## 3. Build each page next to the live one
 
@@ -94,7 +94,7 @@ For each replaced page, one at a time:
 
 1. Old page ⚙ → change its slug to `…-old` (e.g. `/menu-old`), then disable it.
 2. New page ⚙ → change `/menu-new` to `/menu` and remove the password.
-3. Drag the new page into the old one's place in the navigation, and the old one into Not Linked.
+3. Move the old page into Not Linked. The visitors' menu now comes from the Dine In header, so the order in Squarespace's Pages panel no longer shows on the site.
 
 The homepage: set the new home page as the homepage (⚙ → Set as Homepage), then disable the old one.
 
@@ -117,7 +117,8 @@ To switch them on:
 
 On a phone and on a computer:
 
-- [ ] Every page in the table opens at its old address, with no "-new" or "-old" left in the navigation
+- [ ] Every page in the table opens at its old address
+- [ ] The header: the logo shrinks into the bar when you scroll and grows back at the top. Menu opens the drawer, and Search finds "brisket" (a dish), "cancel" (an answer) and "wedding" (a page)
 - [ ] Booking: send a real test enquiry from `/book?exp=private-dining&guests=8`. It arrives in Gmail from Formspree, with your email as the reply-to
 - [ ] Contact: send a test question. You get the "Thanks, … your question is with Brooke" screen and the email
 - [ ] Menu: add two dishes, open "Check your date", and the dishes are in the message box
@@ -134,10 +135,12 @@ Then:
 
 ## Rollback
 
-Any page, any time: swap the slugs back (`/menu` ↔ `/menu-old`) and re-enable the old page. To take everything back out, empty the Header and Footer code injection. The old pages never relied on it.
+Any page, any time: swap the slugs back (`/menu` ↔ `/menu-old`) and re-enable the old page. To take everything back out, empty the Header and Footer code injection: Squarespace's own header comes back by itself. The old pages never relied on the injection.
 
 ## Afterwards
 
 - **Reviews:** curated quotes go in `window.DINE_IN_REVIEWS` in the Footer code injection. The format is described in the comment there. Until reviews are added, the review blocks stay hidden.
+- **Changing the menu or header links:** they live in the kit now, not in Squarespace's Pages panel. Edit the header in v2, run `python3 build.py`, and repaste the Footer injection.
+- **Search** finds pages, experiences, menu dishes and FAQ answers. After changing a menu or an answer, run `python3 ../dine-in-v2/tools/build_search_index.py` before `build.py`.
 - **Changing a page:** edit v2, run `python3 build.py`, and repaste the page's `code-block.html`. A CSS or JS change means repasting the header or footer injection. Keep your Formspree endpoints and reviews when you do, or put them in `../dine-in-v2/assets/js/forms-config.js` and `reviews-data.js` first, so the build carries them.
 - **The "Confirm with Brooke" list** in `../dine-in-v2/README.md` still applies.

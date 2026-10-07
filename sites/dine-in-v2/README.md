@@ -6,6 +6,30 @@ The working copy of the [Dine In baseline](../dine-in-baseline/), where new UI c
 
 ## Changes from the baseline
 
+### Round 12: Shrinking-logo header and instant search
+
+The header is rebuilt from two components in this repo, in Dine In green and gold:
+- [`fullpage-slideshow`](../../components/fullpage-slideshow/) provides the shrinking logo and the menu drawer.
+- [`header-search`](../../components/header-search/) provides the Search takeover.
+
+It's a lot shorter. At 1440 px wide the header is 156 px at the top of the page, against 349 px for Squarespace's header on the live site and 249 px for the previous v2 header. On a phone it's 92 px, down from 196 px.
+
+- **Shrinking logo:**
+  - The large logo sits in the header at the top of the page. On the first scroll it shrinks into a 76 px bar (60 px on phones), and it grows back when you return to the top.
+  - It's a transform, so nothing on the page moves.
+  - A spacer the height of the large header keeps every page clear of it, and anchors, the FAQ deep links and the menu's sticky tabs all stop below the bar.
+  - The logo file is mostly transparent margin, so the header crops to the artwork.
+- **Layout:** Menu and Search on the left, the logo in the centre, and Contact us, Instagram, Facebook, Email, Cart and a gold **Check your date** on the right.
+  - The social icons move into the drawer below 1180 px, and "Contact us" goes below 900 px.
+  - On phones the header keeps Menu, Search, the logo and Cart. The bottom Call / Check your date bar stays.
+- **The desktop sticky booking bar is gone.** The header now stays on screen and carries the booking button.
+- **Menu drawer:** it slides in from the left with the main pages, then the occasions and area pages, the social links and Brooke's number. The page you're on is marked. Close, Escape or a click outside shuts it, and focus goes back to the Menu button.
+- **Search:**
+  - Before you type, quick links show: Plan, Occasions and Help.
+  - As you type, results appear grouped as Pages, Experiences, On the menus and Questions, up to 8 at a time, accent-insensitive ("brulee" finds Brûlée Cheesecake). The count is announced to screen readers.
+  - Enter opens the top result. With JavaScript off, the form opens the FAQ with your words already filtering it, because the FAQ now reads `?q=`.
+- **Index:** `assets/js/search-index.js` holds 21 pages, 6 experiences, 94 dishes and 18 answers (23 KB). It's built from the pages by `tools/build_search_index.py` and loads the first time Search opens. **Run the script again after editing a menu, an FAQ answer, an experience or a page title.**
+
 ### Round 11: Go-live prep (back into Squarespace)
 
 The site goes live inside Brooke's existing Squarespace site, so the shop, cart, gift cards, domain, header and footer all stay where they are. Everything needed is in **[`../dine-in-squarespace`](../dine-in-squarespace/)**:
@@ -176,7 +200,7 @@ The menu now leads into a booking instead of ending the visit. Every dish, descr
 | Part | What it does |
 | --- | --- |
 | **Head** | Adds "Dietaries catered for at no extra cost" (from the booking page) and a 3-step "Pick a menu → shortlist → send to Brooke" guide. |
-| **Tabs** | Each tab shows a starting price, e.g. "Banquet $110 pp". The tab bar sticks under the sticky bar while you scroll; on phones it sticks to the top and swipes sideways. Clicking a tab updates the URL hash, so the address bar is always a shareable link. |
+| **Tabs** | Each tab shows a starting price, e.g. "Banquet $110 pp". The tab bar sticks under the header bar while you scroll; on phones it swipes sideways. Clicking a tab updates the URL hash, so the address bar is always a shareable link. |
 | **Menu facts** | Each menu opens with how it's served, the price, the guest minimum and how choosing works. All of it comes from the Experiences cards and the menu itself. It ends with **Enquire with this menu** (`book.html?exp=…&src=menu&menu=<slug>`). |
 | **Dish cards** | Two columns on desktop. The five (V) dishes get a V badge (with a legend), and the cheesecake gets a gold "3rd in the world" badge. Options that sat in the price field (grazing, the banquet pasta) now read as one line. |
 | **Shortlist** | A **+ Shortlist** button on all 94 dishes. A tray (bottom right on desktop, a collapsible sheet above the Call / Book bar on phones) groups the picks by menu. Sections with a rule show a count, e.g. "1 of 2 shortlisted"; it guides but never blocks. **Send my shortlist to Brooke** opens the booking form with the matching experiences ticked and the message filled in, e.g. "Dishes I'd love: Banquet: Pulled Pork Shoulder; Canapés: Mini Pavlovas". The shortlist is kept in `localStorage`, and the page still works if storage is blocked. |
@@ -356,7 +380,8 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | Path | What it is |
 | --- | --- |
 | `assets/css/site.css` | All styles. Colour, font and spacing tokens sit at the top in `:root` |
-| `assets/js/site.js` | Mobile menu, FAQ accordions, menu tabs, product gallery, cart, form validation and sending, video |
+| `assets/js/site.js` | Header (shrinking logo, menu drawer, search), FAQ accordions, menu tabs, product gallery, cart, form validation and sending, video |
+| `assets/js/search-index.js` | What Search looks through. Generated by `tools/build_search_index.py` |
 | `assets/js/forms-config.js` | The Formspree endpoints for the booking and contact forms |
 | `assets/images/` | Every image from the live site, downloaded locally |
 

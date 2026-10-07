@@ -20,7 +20,8 @@ python3 build.py      # needs Python 3 + Pillow
   - Squarespace's Menu Block styles `.menu-item-title` with `!important`, so the kit renames that class to `dinein-menu-item-title`. It is the only Squarespace `!important` rule, across all 37 stylesheets the live site loads, that reaches v2's markup.
   - The CSS ships in the Header injection as a `<style>`. That keeps it away from the Custom CSS editor's LESS compiler and its size limit.
 - **Fonts:** Squarespace already loads Brooke's Adobe Fonts kit (Kepler Std), so the kit drops v2's Crimson Pro fallback and the size compensation that went with it.
-- **JS:** `reviews-data.js`, `forms-config.js`, `site.js` and `chef-card.js` in one Footer injection. A small adapter keeps the first block clear of Squarespace's header, because the adapter CSS removes the section padding Squarespace uses for that.
+- **Header:** the Dine In header (shrinking logo, menu drawer, instant search) replaces Squarespace's on every page. The Header injection hides `#header`, and the Footer injection carries the header, a spacer that keeps every page clear of it, the drawer and the phone Call / Check your date bar. A small adapter moves them to the top of `<body>` for keyboard order and marks the current page.
+- **JS:** `reviews-data.js`, `forms-config.js`, `search-index.js`, `site.js` and `chef-card.js` in one Footer injection.
 - **Structured data:** each page's JSON-LD goes in its own Page Header injection, with live addresses (`https://dine-in.com.au/menu`).
 
 ## How it was checked
@@ -35,7 +36,8 @@ The checks run in a Squarespace simulator: the live site's real 7.1 pages (theme
   - the home picker and dish shortlist carry over to the menu
   - menu tabs and hash links, the Experiences details dialog, FAQ deep links and search
   - the booking prefill and stepper, and Formspree sends for the booking and contact forms
-  - the estimator, the drive-time check, card alignment, the sticky and phone bars, the footer links, and no script errors
+  - the estimator, the drive-time check, card alignment, the header and phone bars, the footer links, and no script errors
+- **Header (156 checks in the simulator):** large at the top, compact on scroll and back, content never under it, no layout shift, the right items at each width, the drawer (Escape, outside click, focus), and search results for dishes, answers and pages.
 
 ## Speed: live site today vs the kit
 
