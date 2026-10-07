@@ -233,7 +233,7 @@ window.DINE_IN_SEARCH = [{"k":"Page","t":"Home","d":"Dine In by Chef Brooke Silk
 {"k":"Dish","t":"Dips","d":"Grazing · Hummus · Olive Tapenade","u":"/menu#grazing","x":""},
 {"k":"Dish","t":"Olives & Pickles","d":"Grazing · Mixed Olives · Pickled Onions","u":"/menu#grazing","x":""},
 {"k":"Dish","t":"Extras","d":"Grazing · Dark Chocolate · Artisanal Jellies","u":"/menu#grazing","x":""},
-{"k":"FAQ","t":"About Chef Brooke Silk","d":"From her early days cooking alongside her grandmother to becoming the World Dessert Champion of Australia, Chef Brooke Silk's culinary journey is as…","u":"/faq#about-chef-brooke-silk","x":""},
+{"k":"FAQ","t":"About Chef Brooke Silk","d":"From her early days cooking alongside her grandmother to becoming a 3× consecutive World Dessert Champion of Australia, Chef Brooke Silk's culinary…","u":"/faq#about-chef-brooke-silk","x":""},
 {"k":"FAQ","t":"How Does It Work?","d":"Chef Brooke Silk transforms your home or venue into an exclusive dining area, crafting a unique menu from local, seasonal produce tailored just for…","u":"/faq#how-does-it-work","x":""},
 {"k":"FAQ","t":"Where Do We Cater?","d":"We service the Illawarra, South Coast, Highlands, and Greater Sydney. Dine In brings gourmet experiences to your doorstep, ensuring an unforgettable…","u":"/faq#where-do-we-cater","x":""},
 {"k":"FAQ","t":"What to Expect on the Day","d":"On your special day, expect seamless culinary service from start to finish. Chef Brooke and her team will arrive beforehand to set up, prepare the…","u":"/faq#what-to-expect-on-the-day","x":""},
@@ -1344,6 +1344,18 @@ root.querySelector('.ui-hsearch__scrim').addEventListener('click', function () {
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && isOpen()) { e.preventDefault(); shut(true); } });
 document.addEventListener('pointerdown', function (e) { if (isOpen() && !layer.contains(e.target) && !trigger.contains(e.target)) shut(false); });
 layer.addEventListener('focusout', function (e) { if (isOpen() && e.relatedTarget && !layer.contains(e.relatedTarget) && e.relatedTarget !== trigger) shut(false); });
+});
+document.querySelectorAll('[data-awards-marquee]').forEach(function (track) {
+var list = track.querySelector('.awards-marquee__list');
+var n = list.children.length;
+if (!n) return;
+var copy = list.cloneNode(true);
+copy.setAttribute('aria-hidden', 'true');
+copy.inert = true;
+copy.querySelectorAll('[id]').forEach(function (el) { el.removeAttribute('id'); });
+track.appendChild(copy);
+track.style.setProperty('--marquee-duration', (n * 6) + 's');   // same pace however many awards
+track.classList.add('is-running');
 });
 })();
 /* ---- chef-card.js ---- */

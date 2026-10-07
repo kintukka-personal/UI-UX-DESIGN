@@ -1195,4 +1195,18 @@
     document.addEventListener('pointerdown', function (e) { if (isOpen() && !layer.contains(e.target) && !trigger.contains(e.target)) shut(false); });
     layer.addEventListener('focusout', function (e) { if (isOpen() && e.relatedTarget && !layer.contains(e.relatedTarget) && e.relatedTarget !== trigger) shut(false); });
   });
+
+  /* ---- Awards marquee: one row that loops; copy an <li> to add an award --- */
+  document.querySelectorAll('[data-awards-marquee]').forEach(function (track) {
+    var list = track.querySelector('.awards-marquee__list');
+    var n = list.children.length;
+    if (!n) return;
+    var copy = list.cloneNode(true);
+    copy.setAttribute('aria-hidden', 'true');
+    copy.inert = true;
+    copy.querySelectorAll('[id]').forEach(function (el) { el.removeAttribute('id'); });
+    track.appendChild(copy);
+    track.style.setProperty('--marquee-duration', (n * 6) + 's');   // same pace however many awards
+    track.classList.add('is-running');
+  });
 })();
