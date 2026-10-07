@@ -121,7 +121,7 @@ window.DINE_IN_SEARCH = [{"k":"Page","t":"Home","d":"Dine In by Chef Brooke Silk
 {"k":"Dish","t":"Dips","d":"Grazing · Hummus · Olive Tapenade","u":"menu.html#grazing","x":""},
 {"k":"Dish","t":"Olives & Pickles","d":"Grazing · Mixed Olives · Pickled Onions","u":"menu.html#grazing","x":""},
 {"k":"Dish","t":"Extras","d":"Grazing · Dark Chocolate · Artisanal Jellies","u":"menu.html#grazing","x":""},
-{"k":"FAQ","t":"About Chef Brooke Silk","d":"From her early days cooking alongside her grandmother to becoming the World Dessert Champion of Australia, Chef Brooke Silk's culinary journey is as…","u":"faq.html#about-chef-brooke-silk","x":""},
+{"k":"FAQ","t":"About Chef Brooke Silk","d":"From her early days cooking alongside her grandmother to becoming a 3× consecutive World Dessert Champion of Australia, Chef Brooke Silk's culinary…","u":"faq.html#about-chef-brooke-silk","x":""},
 {"k":"FAQ","t":"How Does It Work?","d":"Chef Brooke Silk transforms your home or venue into an exclusive dining area, crafting a unique menu from local, seasonal produce tailored just for…","u":"faq.html#how-does-it-work","x":""},
 {"k":"FAQ","t":"Where Do We Cater?","d":"We service the Illawarra, South Coast, Highlands, and Greater Sydney. Dine In brings gourmet experiences to your doorstep, ensuring an unforgettable…","u":"faq.html#where-do-we-cater","x":""},
 {"k":"FAQ","t":"What to Expect on the Day","d":"On your special day, expect seamless culinary service from start to finish. Chef Brooke and her team will arrive beforehand to set up, prepare the…","u":"faq.html#what-to-expect-on-the-day","x":""},

@@ -6,6 +6,24 @@ The working copy of the [Dine In baseline](../dine-in-baseline/), where new UI c
 
 ## Changes from the baseline
 
+### Round 13: Meet Chef Brooke Silk, with an awards marquee
+
+- **Copy:** the homepage panel's first two paragraphs carry the new wording: "18+ years of culinary experience under her apron… the Australian and World Food Championships stages" and "a 3× consecutive World Dessert Champion of Australia". The third paragraph ("With 18 years under her apron…") is gone. The FAQ's "About Chef Brooke Silk" answer and its Google structured data say "3× consecutive" too.
+- **Awards marquee:** "Awards & recognition" replaces the single Top 3 Wedding Caterer line. It's one row of award cards that loops on its own, in the spirit of Magic UI's Marquee but in plain HTML/CSS/JS so it also runs inside a Squarespace Code Block. It holds seven awards:
+  - 3× Australian Champion, Dessert (World Food Championships 2023–2025)
+  - 3rd in the world, Dessert (Indianapolis 2024)
+  - Finalist, Australian Professional Chef of the Year 2026
+  - Top 3 Wedding Caterer, Illawarra & Southern Highlands 2026
+  - 2× Best Sole Operator
+  - Illawarra Local Business Awards winner
+  - NSW Business Awards finalist
+- **How it behaves:**
+  - Hover or keyboard focus pauses it, and the edges fade.
+  - With reduced motion it stands still and scrolls sideways by hand.
+  - Without JavaScript it's a static row you can scroll.
+  - Screen readers hear the list once, because the copy used for the loop is hidden from them.
+- **Adding an award:** copy one `<li class="award-chip">` in `index.html`, then change the badge, the title and the detail line. The loop takes care of itself and the speed stays at 6 seconds per award, however many there are.
+
 ### Round 12: Shrinking-logo header and instant search
 
 The header is rebuilt from two components in this repo, in Dine In green and gold:
