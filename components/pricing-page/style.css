@@ -317,9 +317,12 @@ main {
   text-wrap: balance;
 }
 
-/* The three steps, in the simulation gradient (blue and violet both clear
-   3:1 as large text on Surface) */
+/* The three steps take the logo's three colours, top slab to bottom:
+   Capture in Electric Blue (5.37:1 on Surface), Build in Cyan (2.4:1,
+   under the guidelines' 3:1 for large text, chosen to match the mark),
+   Publish in Violet (6.46:1) */
 .ui-pricing__verb {
+  --verb: var(--ss-blue);
   --beam-core: color-mix(in srgb, var(--ss-cyan) 30%, var(--ss-white));
   font-style: normal;
   /* A band of cyan light sits off to the left, over the brand gradient.
@@ -331,7 +334,7 @@ main {
       var(--beam-core) var(--ui-beam),
       var(--ss-cyan) calc(var(--ui-beam) + 7%),
       transparent calc(var(--ui-beam) + 22%)),
-    var(--ss-gradient-simulation);
+    linear-gradient(var(--verb), var(--verb));
   -webkit-background-clip: text;
           background-clip: text;
   color: transparent;
@@ -339,8 +342,8 @@ main {
 
 /* Starts once its line has revealed: Capture, then Build, then Publish */
 .ui-pricing__verb { --beam-delay: 520ms; }
-.ui-pricing__line:nth-child(2) .ui-pricing__verb { --beam-delay: 980ms; }
-.ui-pricing__line:nth-child(3) .ui-pricing__verb { --beam-delay: 1440ms; }
+.ui-pricing__line:nth-child(2) .ui-pricing__verb { --verb: var(--ss-cyan); --beam-delay: 980ms; }
+.ui-pricing__line:nth-child(3) .ui-pricing__verb { --verb: var(--ss-violet); --beam-delay: 1440ms; }
 
 html:not(.js) .ui-pricing__verb,
 .js .ui-pricing__line.is-in .ui-pricing__verb {

@@ -16,8 +16,8 @@ The SimStudio pricing page, with three plans (Solo, Team and Enterprise), a Mont
 | Navy for dark surfaces | The featured Team card is navy and uses the dark palette. Accent text on it is cyan, never blue |
 | Primary action: Electric Blue, white text, Deep Blue on hover | The Team button. Solo and Enterprise use the secondary button: transparent with a 3:1 edge |
 | Orange is scarce: focus, active controls, key accents | Used only for the two-tone focus ring (2px orange inside, 1px navy or white outside) |
-| Cyan is never text on light | Cyan only fills things: the "Save" and "Most popular" chips (navy text, 6.51:1) and added seats |
-| Two approved gradients, sparingly | Blue to violet for Capture, Build and Publish in the headline, "Custom" and "questions". Blue to cyan for the Team icon and seats |
+| Cyan is never text on light | Cyan fills the "Save" and "Most popular" chips (navy text, 6.51:1) and added seats. **Deviation:** "Build" in the headline is cyan, to match the middle slab of the logo. It is 2.4:1 on Surface, under the 3:1 the guidelines ask of large text |
+| Two approved gradients, sparingly | Blue to violet for "Custom" and "questions". Blue to cyan for the Team icon and seats |
 | Violet: advanced features | The AI agent integration add-on |
 | Type scale | Display 48px, page heading 32px, section heading 24px in Poppins. Body 16px, labels 14px, captions 12px in Inter. Display is set with normal tracking |
 | Corners 6 / 10 / 16 / 999px | Chips / buttons and controls / cards / pills |
@@ -30,7 +30,7 @@ The SimStudio pricing page, with three plans (Solo, Team and Enterprise), a Mont
 
 | Part | Behaviour |
 | --- | --- |
-| Headline | "Capture it once. / We Build it for you. / Then, Publish it however you need." Three sentences at the Display size, one per line, with the three steps capitalised in the blue-to-violet gradient. At kickoff a beam of cyan light sweeps through Capture, then Build, then Publish, once each, with a soft glow as it passes |
+| Headline | "Capture it once. / We Build it for you. / Then, Publish it however you need." Three sentences at the Display size, one per line, with the three steps capitalised in the logo's three colours, top to bottom: Capture in Electric Blue, Build in Cyan, Publish in Violet. At kickoff a beam of cyan light sweeps through Capture, then Build, then Publish, once each, with a soft glow as it passes |
 | Billing toggle | Real radio buttons with a sliding navy thumb. The "Save 17%" chip on Yearly is worked out from the prices |
 | Prices | Digits roll like an odometer, rightmost first. Yearly shows "Billed yearly as $X" and a "Save $X/yr" chip |
 | Solo | 1 seat |
