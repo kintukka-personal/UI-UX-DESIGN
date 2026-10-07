@@ -324,6 +324,13 @@ main {
 .ui-pricing__verb {
   --verb: var(--ss-blue);
   --beam-core: color-mix(in srgb, var(--ss-cyan) 30%, var(--ss-white));
+  /* A tight navy edge and a soft lift, cast from the letter shapes so the
+     colour inside stays clean (text-shadow would show through the
+     transparent fill). Helps the cyan Build read on Surface. */
+  --verb-shadow:
+    drop-shadow(0 1px 0 color-mix(in srgb, var(--ss-navy) 45%, transparent))
+    drop-shadow(0 3px 8px color-mix(in srgb, var(--ss-navy) 22%, transparent));
+  filter: var(--verb-shadow);
   font-style: normal;
   /* A band of cyan light sits off to the left, over the brand gradient.
      At kickoff it sweeps through each verb once, one after the other. */
@@ -361,8 +368,9 @@ html:not(.js) .ui-pricing__verb,
 @keyframes ui-beam-glow {
   /* Starts and ends as a transparent cyan shadow, so the glow fades in
      cyan rather than through grey */
-  0%, 100% { filter: drop-shadow(0 0 0 color-mix(in srgb, var(--ss-cyan) 0%, transparent)); }
-  45% { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--ss-cyan) 55%, transparent)); }
+  /* The letter shadow stays underneath throughout */
+  0%, 100% { filter: var(--verb-shadow) drop-shadow(0 0 0 color-mix(in srgb, var(--ss-cyan) 0%, transparent)); }
+  45% { filter: var(--verb-shadow) drop-shadow(0 0 14px color-mix(in srgb, var(--ss-cyan) 55%, transparent)); }
 }
 
 .ui-pricing__lede {
