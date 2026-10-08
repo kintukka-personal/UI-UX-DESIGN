@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Council</title>
+<meta name="description" content="A council of AI agents: persona orbs on a slowly turning ring of glass cards, each in its own colourway, with a side panel to configure each member and convene them on a motion.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="ui-council" id="council">
+
+  <!-- The ring -->
+  <section class="ui-council__stage" aria-label="Council chamber">
+    <header class="ui-council__head">
+      <p class="ui-council__eyebrow">In session</p>
+      <h1 class="ui-council__title">The Council</h1>
+    </header>
+
+    <div class="ui-council__scene" data-scene>
+      <div class="ui-council__ring" data-ring></div>
+    </div>
+
+    <div class="ui-council__floor" aria-live="polite" data-floor>
+      <span class="ui-council__floor-dot" data-floor-dot></span>
+      <p class="ui-council__floor-text">
+        <strong data-floor-name>The council is in session.</strong>
+        <span data-floor-line>Pick a member to tune them, or put a motion to the floor.</span>
+      </p>
+    </div>
+
+    <div class="ui-council__stage-tools">
+      <button class="ui-council__chip" type="button" data-spin aria-pressed="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+        <span data-spin-label>Pause rotation</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- The side panel -->
+  <aside class="ui-council__panel" aria-label="Council controls">
+
+    <section class="ui-council__section">
+      <label class="ui-council__label" for="ui-council-motion">Motion</label>
+      <div class="ui-council__motion">
+        <input class="ui-council__input" id="ui-council-motion" type="text" value="Ship the redesign this Friday" autocomplete="off" data-motion>
+        <button class="ui-council__btn ui-council__btn--primary" type="button" data-convene>Convene</button>
+      </div>
+      <div class="ui-council__vote" data-vote hidden>
+        <p class="ui-council__vote-result" data-vote-result></p>
+        <ul class="ui-council__vote-list" data-vote-list></ul>
+      </div>
+    </section>
+
+    <section class="ui-council__section">
+      <div class="ui-council__row">
+        <h2 class="ui-council__label">Members <span class="ui-council__count" data-count></span></h2>
+        <button class="ui-council__link" type="button" data-add>+ Add agent</button>
+      </div>
+      <ul class="ui-council__roster" data-roster></ul>
+    </section>
+
+    <section class="ui-council__section ui-council__detail" data-detail aria-label="Selected member">
+      <div class="ui-council__detail-head">
+        <span class="ui-council__swatch ui-council__swatch--lg" data-d-swatch></span>
+        <div class="ui-council__detail-names">
+          <input class="ui-council__name" type="text" aria-label="Name" maxlength="18" data-d-name>
+          <input class="ui-council__role" type="text" aria-label="Role" maxlength="24" data-d-role>
+        </div>
+      </div>
+
+      <div class="ui-council__field">
+        <span class="ui-council__label" id="ui-council-state-label">State</span>
+        <div class="ui-council__states" role="group" aria-labelledby="ui-council-state-label" data-d-states></div>
+      </div>
+
+      <div class="ui-council__field">
+        <span class="ui-council__label" id="ui-council-tint-label">Colourway</span>
+        <div class="ui-council__tints" role="radiogroup" aria-labelledby="ui-council-tint-label" data-d-tints></div>
+      </div>
+
+      <div class="ui-council__field">
+        <label class="ui-council__label" for="ui-council-engine">Engine</label>
+        <select class="ui-council__input" id="ui-council-engine" data-d-engine></select>
+      </div>
+
+      <div class="ui-council__field">
+        <label class="ui-council__label" for="ui-council-brief">Brief</label>
+        <textarea class="ui-council__input ui-council__brief" id="ui-council-brief" rows="4" data-d-brief></textarea>
+      </div>
+
+      <div class="ui-council__field ui-council__field--split">
+        <label class="ui-council__label" for="ui-council-lean">
+          Lean <output data-d-lean-out></output>
+        </label>
+        <input class="ui-council__range" id="ui-council-lean" type="range" min="-100" max="100" step="5" data-d-lean>
+        <div class="ui-council__scale"><span>Sceptical</span><span>Supportive</span></div>
+      </div>
+
+      <div class="ui-council__field ui-council__field--split">
+        <label class="ui-council__label" for="ui-council-weight">
+          Vote weight <output data-d-weight-out></output>
+        </label>
+        <input class="ui-council__range" id="ui-council-weight" type="range" min="1" max="5" step="1" data-d-weight>
+      </div>
+
+      <div class="ui-council__row ui-council__row--end">
+        <button class="ui-council__link" type="button" data-reset>Reset council</button>
+        <button class="ui-council__link ui-council__link--danger" type="button" data-remove>Remove from council</button>
+      </div>
+    </section>
+
+  </aside>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

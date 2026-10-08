@@ -37,6 +37,7 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Bento grid](components/bento-grid/) | Magic UI's Bento Grid demo in React + Tailwind: four feature cards with animated backgrounds (a file marquee that pauses on hover, an animated notification list, an integrations beam and a calendar) in a 1–2 / 2–1 layout |
 | [Rotating cards](components/rotating-cards/) | A ring of ten rainbow-tinted glass cards turning slowly in 3D, tipped back so you look down on it. Pure CSS, from Uiverse.io by ilkhoeri |
 | [Persona](components/persona/) | AI Elements' Persona demo in React + Tailwind: an animated `halo` AI avatar with five tooltip buttons that switch it between Idle, Listening, Thinking, Speaking and Asleep |
+| [AI Council](components/ai-council/) | A council of AI agents on one screen: halo persona orbs in their own colourways on the Rotating cards ring, a side panel to tune each member's brief, engine, lean and vote weight, a Convene demo that ends in a weighted vote, and a `window.Council` API to plug real agents in |
 
 ## Sites
 
