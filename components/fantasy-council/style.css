@@ -1,0 +1,865 @@
+/* AI Council: persona orbs on the Rotating cards ring, with a side panel
+   to configure each member. Ring geometry after Uiverse.io's rotating
+   cards by ilkhoeri. */
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #0e0f12;
+  color: #ececf1;
+  font: 14px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ui-council {
+  --bg: #0e0f12;
+  --panel: #15161b;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --muted: #9b9caa;
+  --faint: #6c6d7a;
+  --accent: 142, 249, 252;
+  --card-w: 150px;
+  --card-h: 204px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  height: 100%;
+  min-height: 560px;
+}
+
+/* Zero specificity, so component classes always win */
+:where(.ui-council) :where(button, input, select, textarea) {
+  font: inherit;
+  color: inherit;
+}
+
+/* ---------- Stage ---------- */
+
+.ui-council__stage {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 38% at 50% 74%, rgba(var(--accent), 0.16), transparent 70%),
+    radial-gradient(90% 60% at 50% 0%, #17181f, transparent 70%),
+    var(--bg);
+  transition: background 0.6s;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ui-council__head {
+  position: absolute;
+  top: 24px;
+  left: 28px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.ui-council__eyebrow {
+  margin: 0 0 2px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(var(--accent));
+  transition: color 0.6s;
+}
+
+.ui-council__eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 10px currentColor;
+  vertical-align: 1px;
+}
+
+.ui-council__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* The scene is scaled down as one piece on narrow stages (see script.js) */
+.ui-council__scene {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 0;
+  height: 0;
+  transform: scale(var(--scale, 1));
+  perspective: 1100px;
+  cursor: grab;
+}
+
+.ui-council__stage.is-dragging .ui-council__scene {
+  cursor: grabbing;
+}
+
+.ui-council__ring {
+  position: absolute;
+  left: calc(var(--card-w) / -2);
+  top: calc(var(--card-h) / -2);
+  width: var(--card-w);
+  height: var(--card-h);
+  transform-style: preserve-3d;
+  transform: rotateX(-12deg) rotateY(var(--angle, 0deg));
+}
+
+/* ---------- Cards ---------- */
+
+.ui-council__card {
+  --facing: 1;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 10px 12px;
+  border: 2px solid rgba(var(--tint), 0.9);
+  border-radius: 14px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle,
+      rgba(var(--tint), 0.08) 0%,
+      rgba(var(--tint), 0.32) 80%,
+      rgba(var(--tint), 0.55) 100%
+    ),
+    rgba(14, 15, 18, 0.55);
+  transform: rotateY(calc(var(--step) * var(--index))) translateZ(var(--radius));
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ui-council__card:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+.ui-council__card.is-selected {
+  border-color: rgb(var(--tint));
+  box-shadow: 0 0 28px rgba(var(--tint), 0.55), inset 0 0 18px rgba(var(--tint), 0.35);
+}
+
+.ui-council__card canvas {
+  display: block;
+  width: 120px;
+  height: 120px;
+  flex: none;
+  pointer-events: none;
+}
+
+.ui-council__card-text {
+  margin-top: 6px;
+  text-align: center;
+  opacity: clamp(0, calc((var(--facing) - 0.15) * 1.6), 1);
+  pointer-events: none;
+}
+
+.ui-council__card-name {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #fff;
+}
+
+.ui-council__card-role {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(var(--tint), 0.95);
+}
+
+.ui-council__card-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.ui-council__card-state::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgb(var(--tint));
+}
+
+.ui-council__card[data-state="asleep"] .ui-council__card-state::before {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ---------- Floor caption ---------- */
+
+.ui-council__floor {
+  position: absolute;
+  left: 50%;
+  bottom: 64px;
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: min(560px, calc(100% - 48px));
+  transform: translateX(-50%);
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(21, 22, 27, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-sizing: border-box;
+}
+
+.ui-council__floor-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: rgb(var(--floor, 155, 156, 170));
+  box-shadow: 0 0 12px rgba(var(--floor, 155, 156, 170), 0.8);
+}
+
+.ui-council__floor-text {
+  margin: 0;
+  min-height: 2.9em;
+  color: var(--muted);
+}
+
+.ui-council__floor-text strong {
+  display: block;
+  color: #fff;
+  font-weight: 600;
+}
+
+.ui-council__stage-tools {
+  position: absolute;
+  left: 20px;
+  bottom: 18px;
+  z-index: 3;
+}
+
+.ui-council__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(21, 22, 27, 0.7);
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.ui-council__chip:hover {
+  color: #fff;
+}
+
+.ui-council__chip svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Panel ---------- */
+
+.ui-council__panel {
+  overflow-y: auto;
+  border-left: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.ui-council__section {
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.ui-council__section:last-child {
+  border-bottom: 0;
+}
+
+.ui-council__label {
+  display: block;
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.ui-council__label output {
+  float: right;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.ui-council__count {
+  margin-left: 4px;
+  color: var(--muted);
+}
+
+.ui-council__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ui-council__row .ui-council__label {
+  margin: 0;
+}
+
+.ui-council__row--end {
+  margin-top: 18px;
+}
+
+.ui-council__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: #0f1014;
+  outline: none;
+}
+
+.ui-council__input:focus,
+.ui-council__name:focus,
+.ui-council__role:focus {
+  border-color: rgba(var(--accent), 0.7);
+  box-shadow: 0 0 0 3px rgba(var(--accent), 0.15);
+}
+
+select.ui-council__input {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 32px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239b9caa' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 10px center / 16px no-repeat,
+    #0f1014;
+}
+
+.ui-council__brief {
+  resize: vertical;
+  min-height: 84px;
+  line-height: 1.45;
+}
+
+.ui-council__motion {
+  display: flex;
+  gap: 8px;
+}
+
+.ui-council__btn {
+  flex: none;
+  padding: 9px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: transparent;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ui-council__btn--primary {
+  border-color: transparent;
+  background: rgb(var(--accent));
+  color: #0e0f12;
+  transition: background 0.4s;
+}
+
+.ui-council__btn--primary:hover {
+  filter: brightness(1.08);
+}
+
+.ui-council__btn--primary[aria-pressed="true"] {
+  background: #fff;
+}
+
+.ui-council__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.ui-council__link:hover {
+  color: #fff;
+}
+
+.ui-council__link:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.ui-council__link--danger:hover {
+  color: #ff8e8e;
+}
+
+/* Roster */
+
+.ui-council__roster {
+  display: grid;
+  gap: 2px;
+  margin: 12px -8px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-council__member {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ui-council__member:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.ui-council__member[aria-current="true"] {
+  background: rgba(var(--tint), 0.1);
+  box-shadow: inset 0 0 0 1px rgba(var(--tint), 0.35);
+}
+
+.ui-council__member-name {
+  display: block;
+  font-weight: 600;
+}
+
+.ui-council__member-role {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ui-council__swatch {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgb(var(--tint));
+  box-shadow: 0 0 10px rgba(var(--tint), 0.6);
+}
+
+.ui-council__swatch--lg {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  background: radial-gradient(circle, rgba(var(--tint), 0.15) 30%, rgba(var(--tint), 0.9) 100%);
+  border: 2px solid rgb(var(--tint));
+  box-sizing: border-box;
+}
+
+.ui-council__badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.ui-council__badge[data-state="speaking"] {
+  background: rgba(var(--tint), 0.2);
+  color: rgb(var(--tint));
+}
+
+.ui-council__badge[data-state="thinking"],
+.ui-council__badge[data-state="listening"] {
+  color: #d8d9e2;
+}
+
+/* Detail */
+
+.ui-council__detail-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.ui-council__detail-names {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+}
+
+.ui-council__name,
+.ui-council__role {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 -6px;
+  padding: 2px 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  outline: none;
+}
+
+.ui-council__name {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.ui-council__role {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(var(--tint));
+}
+
+.ui-council__name:hover,
+.ui-council__role:hover {
+  border-color: var(--line);
+}
+
+.ui-council__field {
+  margin-top: 16px;
+}
+
+.ui-council__states {
+  display: inline-flex;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  overflow: visible;
+}
+
+.ui-council__state {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 34px;
+  border: 0;
+  border-left: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.ui-council__state:first-child {
+  border-left: 0;
+  border-radius: 9px 0 0 9px;
+}
+
+.ui-council__state:last-child {
+  border-radius: 0 9px 9px 0;
+}
+
+.ui-council__state:hover {
+  color: #fff;
+}
+
+.ui-council__state[aria-pressed="true"] {
+  background: rgb(var(--tint));
+  color: #0e0f12;
+}
+
+.ui-council__state svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Tooltip, like the persona demo's */
+.ui-council__state::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #ececf1;
+  color: #0e0f12;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.15s, transform 0.15s;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ui-council__state:hover::after,
+.ui-council__state:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.ui-council__tints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ui-council__tint {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 2px solid rgb(var(--t));
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--t), 0.2) 20%, rgba(var(--t), 0.9) 100%);
+  cursor: pointer;
+}
+
+.ui-council__tint[aria-checked="true"] {
+  box-shadow: 0 0 0 2px var(--panel), 0 0 0 4px rgb(var(--t));
+}
+
+.ui-council__range {
+  width: 100%;
+  margin: 0;
+  accent-color: rgb(var(--tint));
+}
+
+.ui-council__scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+/* Vote */
+
+.ui-council__vote {
+  margin-top: 14px;
+}
+
+.ui-council__vote-result {
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.ui-council__vote-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-council__vote-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px 3px 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ui-council__vote-list li[data-vote="aye"] {
+  color: #fff;
+  border-color: rgba(var(--tint), 0.5);
+}
+
+/* ---------- Narrow screens: panel under the ring ---------- */
+
+@media (max-width: 900px) {
+  .ui-council {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    height: auto;
+  }
+
+  .ui-council__stage {
+    height: 68vh;
+    min-height: 460px;
+  }
+
+  .ui-council__panel {
+    overflow: visible;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .ui-council__head {
+    top: 16px;
+    left: 16px;
+  }
+
+  .ui-council__floor {
+    bottom: 58px;
+    width: calc(100% - 32px);
+  }
+
+  .ui-council__stage-tools {
+    left: 16px;
+    bottom: 14px;
+  }
+
+  .ui-council__section {
+    padding: 18px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-council__stage,
+  .ui-council__eyebrow,
+  .ui-council__btn--primary {
+    transition: none;
+  }
+}
+
+/* ---------- Draft Council additions ---------- */
+
+.ui-council__label--gap {
+  margin-top: 18px;
+}
+
+.ui-council__note {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.ui-council__section > .ui-council__note {
+  margin-top: 8px;
+}
+
+.ui-council__scoring {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+
+.ui-council__scoring div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-council__scoring dt {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.ui-council__scoring dd {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ui-council__scoring dd[data-sign="-"] {
+  color: #ff9d9d;
+}
+
+.ui-council__skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.ui-council__skill {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 4px 3px 10px;
+  border: 1px solid rgba(var(--tint), 0.45);
+  border-radius: 999px;
+  background: rgba(var(--tint), 0.1);
+  font: 500 12px/1.4 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.ui-council__skill button {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ui-council__skill button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.ui-council__sources,
+.ui-council__pack-text {
+  font: 12px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  resize: vertical;
+}
+
+.ui-council__pack {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.ui-council__pack summary {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.ui-council__pack .ui-council__input {
+  margin-top: 10px;
+}
+
+.ui-council__pack .ui-council__btn {
+  margin-top: 8px;
+}
+
+.ui-council__card-skills {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
+}
