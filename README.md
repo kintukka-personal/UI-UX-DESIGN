@@ -36,6 +36,7 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Now Playing ad](components/now-playing-ad/) | Music-led video ad template rebuilt from Jitter's free restaurant ad: eleven beat-cut shots under a working now-playing overlay, then the AVIA logo. The player really controls the ad (play, scene skip, scrub, shuffle, repeat, save). Scenes, song, cut times and logo come from one JSON config, and a Customise dialog tries your own music and clips and copies the config. Landscape, square and story layouts, with pause and reduced-motion support |
 | [Bento grid](components/bento-grid/) | Magic UI's Bento Grid demo in React + Tailwind: four feature cards with animated backgrounds (a file marquee that pauses on hover, an animated notification list, an integrations beam and a calendar) in a 1–2 / 2–1 layout |
 | [Rotating cards](components/rotating-cards/) | A ring of ten rainbow-tinted glass cards turning slowly in 3D, tipped back so you look down on it. Pure CSS, from Uiverse.io by ilkhoeri |
+| [Persona](components/persona/) | AI Elements' Persona demo in React + Tailwind: an animated `halo` AI avatar with five tooltip buttons that switch it between Idle, Listening, Thinking, Speaking and Asleep |
 
 ## Sites
 
