@@ -8,7 +8,7 @@
   var root = document.getElementById("council");
   if (!root) return;
 
-  var STORE_KEY = "ui-draft-council:v1";
+  var STORE_KEY = "ui-draft-council:v2";
   var MAX_MEMBERS = 10;
   var MIN_MEMBERS = 3;
   var SPIN_SPEED = 9; // degrees a second: one turn in 40s
@@ -23,10 +23,12 @@
   // The repo every member reads from
   var DATA_REPO = { name: "Kintukka2/NBA-FANTASY", url: "https://github.com/Kintukka2/NBA-FANTASY" };
 
-  // ESPN's default points-league scoring. Change it to match your league.
+  // GONG league 423671879 custom scoring (NBA-FANTASY docs/scoring.md).
+  // OREB is scored on top of REB, so an offensive board is worth 2.
   var SCORING = [
     ["PTS", 1], ["3PM", 1], ["FGM", 2], ["FGA", -1], ["FTM", 1], ["FTA", -1],
-    ["REB", 1], ["AST", 2], ["STL", 4], ["BLK", 4], ["TOV", -2]
+    ["REB", 1], ["OREB", 1], ["AST", 2], ["STL", 4], ["BLK", 4], ["TO", -2],
+    ["DD", 3], ["TD", 6]
   ];
 
   // Skills a member can use, as they are named in Claude Code
@@ -69,48 +71,50 @@
     asleep:    { amp: 0.8, spd: 0.25, breathe: 0.05, alpha: 0.35, arcs: 0, inR: 0, outR: 0, sleep: 1, glow: 6 }
   };
 
+  // Mirrors NBA-FANTASY council/members.json: the same personas, skills,
+  // sources and vote weights the real agents run with.
   var PRESETS = [
-    { id: "coach", name: "Coach", role: "Draft strategist", tint: PALETTE[0], lean: 20, weight: 3,
+    { id: "coach", name: "Coach", role: "Draft strategist (chair)", tint: PALETTE[0], lean: 20, weight: 3,
       skills: ["analysis-planning", "stakeholder-requirements-gathering", "insight-synthesis", "executive-summary-generator"],
-      sources: ["league/settings.yaml", "analysis/"],
-      brief: "Chair the room. Frame each pick against our league settings and draft slot, call on the members who matter for it, then make the call and say why in two sentences." },
+      sources: ["docs/league-rules.md", "docs/scoring.md", "data/raw/league_settings.csv", "data/processed/players_scored.csv"],
+      brief: "Chair the room. Frame every question against our slot (8 of 8, the turn: we pick back-to-back, then wait 15 picks), the 10-starter / 3-bench roster, the max-4 G rule and roughly 7 adds a week. Treat each turn as a pair decision. Weigh what the other members would say, then vote for the option that wins the draft, not the one that wins the argument." },
     { id: "archivist", name: "Archivist", role: "Data steward", tint: PALETTE[9], lean: 0, weight: 1,
       skills: ["programmatic-eda", "data-quality-audit", "schema-mapper", "metric-reconciliation", "data-catalog-entry", "context-packager"],
-      sources: ["data/raw/", "data/clean/", "docs/data-dictionary.md"],
-      brief: "Nobody uses a number until you have checked it. Profile every new file, reconcile ESPN against other sources, keep the data dictionary current, and hand each member a clean context pack." },
+      sources: ["docs/data-dictionary.md", "docs/methodology.md", "data/raw/", "data/processed/verification.csv", "data/processed/players_scored.csv"],
+      brief: "Nobody uses a number until you have checked it. Trace every figure in the question to its column and file, apply the known traps in docs/data-dictionary.md (ADP is standard-scoring, A_GP first, P_FPTS_AVG understates bigs and is stale on injuries), and vote against any option that rests on a THIN or NO_SAMPLE line or on prose that disagrees with the CSV." },
     { id: "cipher", name: "Cipher", role: "Projections", tint: PALETTE[8], lean: 10, weight: 3,
       skills: ["data:statistical-analysis", "time-series-analysis", "semantic-model-builder", "methodology-explainer"],
-      sources: ["data/clean/game_logs/", "league/settings.yaml", "analysis/projections.csv"],
-      brief: "Project ESPN fantasy points per game and per season for every draftable player. Define the scoring formula once, weight recent seasons more, and give a range, not a single number." },
+      sources: ["data/processed/players_scored.csv", "data/raw/actuals_2026.csv", "data/raw/projections_2027.csv", "docs/scoring.md", "scripts/league_scoring.py"],
+      brief: "Own the fantasy-points number. Lead with FP_ACT_PG (2026 actuals, league-scored, bonuses amortised), inform with FP_PROJ_PG_CORE plus PROJ_BLIND_SPOT_PG, and always give a range, not a point. Import scripts/league_scoring.py for any new calculation — never re-derive the formula from prose." },
     { id: "ledger", name: "Ledger", role: "Value & ADP", tint: PALETTE[4], lean: 40, weight: 2,
       skills: ["segmentation-analysis", "impact-quantification", "data:analyze"],
-      sources: ["analysis/projections.csv", "data/clean/adp/", "analysis/tiers.csv"],
-      brief: "Turn projections into value. Work out points over a replacement-level player at each position, build tiers, and flag players going well before or after their value in ESPN's ADP." },
+      sources: ["data/processed/players_scored.csv", "docs/offseason-impact.md", "docs/scoring.md"],
+      brief: "Turn points into value at our picks. ADP is market consensus built for standard scoring, never a valuation: find the gap between where a player goes (ADP) and what he scores here (FP_ACT_PG). Size points over replacement for our next turn, and prefer the player who will not be there at our next pair of picks." },
     { id: "medic", name: "Medic", role: "Availability", tint: PALETTE[2], lean: -40, weight: 2,
       skills: ["cohort-analysis", "root-cause-investigation", "deep-research"],
-      sources: ["data/clean/injuries/", "data/clean/game_logs/"],
-      brief: "Points only count if they play. Estimate games played from injury history, age and rest patterns, and check the latest injury news before every pick." },
+      sources: ["docs/offseason-impact.md", "data/processed/players_scored.csv", "docs/data-dictionary.md"],
+      brief: "Points only count if they play. Read the draft-night injury board (docs/offseason-impact.md §1), the Injury, A_GP and P_GP columns, and trap 3 in the data dictionary (ESPN projects Ingram for 67 games while listing him OUT). Discount every option by its expected games missed, and never spend a top-10 pick on a player out into the new year." },
     { id: "scout", name: "Scout", role: "Role & opportunity", tint: PALETTE[5], lean: 30, weight: 2,
       skills: ["deep-research", "research", "ab-test-analysis", "data:explore-data"],
-      sources: ["data/clean/depth_charts/", "data/clean/transactions/", "data/clean/game_logs/"],
-      brief: "Track minutes, usage and role. Who changed teams, who lost a teammate, which rookies get real minutes? Compare games with and without a teammate to size each change." },
-    { id: "tempo", name: "Tempo", role: "Schedule", tint: PALETTE[1], lean: 0, weight: 1,
+      sources: ["docs/offseason-impact.md", "data/processed/players_scored.csv"],
+      brief: "Track minutes, usage and role. Use docs/offseason-impact.md §2-§6 to decide whether last season's number still describes this season's situation: capped minutes that grew, role collapses, players who changed teams, rookies with real minutes. Never invent an answer for anything listed as unresolved in §7 — say it is unresolved." },
+    { id: "tempo", name: "Tempo", role: "Roster & schedule", tint: PALETTE[1], lean: 0, weight: 1,
       skills: ["data:write-query", "query-validation", "visualization-builder"],
-      sources: ["data/clean/schedule/", "league/settings.yaml"],
-      brief: "Count games, not just points. Rank teams by games per fantasy week, back-to-backs and games in the fantasy playoff weeks, and use that to break ties between similar players." },
+      sources: ["docs/league-rules.md", "docs/scoring.md", "data/raw/league_settings.csv", "data/processed/players_scored.csv"],
+      brief: "Make the roster legal and the weeks full. Check position eligibility (Pos), the 10 starting slots, the max-4 G rule, the 3-deep bench, the weekly acquisition limit and the fantasy playoff weeks in docs/league-rules.md. Break ties between similar players on roster fit and on what can be replaced from waivers." },
     { id: "vex", name: "Vex", role: "Sceptic", tint: PALETTE[6], lean: -60, weight: 2,
       skills: ["grilling", "analysis-assumptions-log", "analysis-qa-checklist", "peer-review-template"],
-      sources: ["analysis/", "docs/assumptions.md"],
-      brief: "Attack every pick. Ask what the projection assumes, log each assumption, and describe how this pick busts." },
+      sources: ["docs/offseason-impact.md", "docs/data-dictionary.md", "docs/methodology.md", "data/processed/players_scored.csv"],
+      brief: "Attack every option. Name the assumption each one rests on and how it busts: thin samples, one-season spikes, unresolved §7 situations, projections that ignore OREB/DD/TD, prose that the CSV contradicts (the CSV wins). Vote for the option that survives the attack best, not the one that sounds best." },
     { id: "quill", name: "Quill", role: "Scribe", tint: PALETTE[7], lean: 0, weight: 1,
       skills: ["xlsx", "dataviz", "dashboard-specification", "data:build-dashboard", "data-narrative-builder"],
-      sources: ["analysis/", "board/draft_board.xlsx"],
-      brief: "Keep the board. Maintain the ranked cheat sheet with tiers, mark players as they go, and write up each pick with the reasons behind it." }
+      sources: ["docs/", "data/processed/players_scored.csv", "council/sessions/"],
+      brief: "Keep the record. Read earlier council sessions in council/sessions/ so the council stays consistent with what it has already decided (players already taken, picks already made). Vote for the option that best fits the plan the council has been executing, and say plainly if this question contradicts an earlier verdict." }
   ];
 
   // Lines for the Convene demo, by role. {m} is the motion.
   var LINES = {
-    "draft strategist": ["On \u201c{m}\u201d: at our slot I want a safe floor first and upside second. Let's hear the numbers.",
+    "draft strategist (chair)": ["On \u201c{m}\u201d: at our slot I want a safe floor first and upside second. Let's hear the numbers.",
                          "The top tier is three deep. Plan for the player we want to be gone."],
     "data steward": ["Before we argue: last season's game logs check out, but two ADP rows don't match ESPN's player names. They're flagged.",
                      "Every number on the board traces back to a file in the repo. Ask me for the source."],
@@ -122,7 +126,7 @@
                    "The injury history says the risk is real. This early, I'd want the safer floor."],
     "role & opportunity": ["His minutes went up after the offseason moves, and the with-and-without splits show a real jump in usage.",
                            "That rotation is crowded. I'd wait on him."],
-    schedule: ["One of these teams has four-game weeks in both fantasy playoff weeks. That's our tiebreaker.",
+    "roster & schedule": ["One of these teams has four-game weeks in both fantasy playoff weeks. That's our tiebreaker.",
                "Back-to-backs matter more for veterans who rest. Factor that in."],
     sceptic: ["This projection assumes 75 games. What happens at 55?",
               "We're anchoring on one good season. One season isn't a trend."],
@@ -160,6 +164,8 @@
     spinLabel: root.querySelector("[data-spin-label]"),
     motion: root.querySelector("[data-motion]"),
     convene: root.querySelector("[data-convene]"),
+    load: root.querySelector("[data-load]"),
+    loadFile: root.querySelector("[data-load-file]"),
     vote: root.querySelector("[data-vote]"),
     voteResult: root.querySelector("[data-vote-result]"),
     voteList: root.querySelector("[data-vote-list]"),
@@ -834,6 +840,100 @@
     emit("vote", { motion: motion, ayes: ayes, nays: nays, carried: carried });
   }
 
+  /* ---------- Replay a real session from NBA-FANTASY council/sessions/ ---------- */
+
+  // A session file is what the /council skill writes: the question, its
+  // rounds of ballots, and the verdict counted by council/tally.py. Replay
+  // plays every ballot on the ring (thinking, then the rationale spoken),
+  // then shows the real tally.
+  function replay(data) {
+    if (session) adjourn();
+    if (!data || !Array.isArray(data.rounds) || !data.rounds.length) {
+      floor(null, "That file is not a council session.");
+      return;
+    }
+    var token = { cancelled: false, timers: [] };
+    session = token;
+    el.convene.textContent = "Adjourn";
+    el.convene.setAttribute("aria-pressed", "true");
+    el.vote.hidden = true;
+    el.motion.value = data.question || "";
+
+    agents.forEach(function (a) { if (a.state !== "asleep") setState(a.id, "listening"); });
+    floor(null, "Replaying: “" + (data.question || "the question") + "”");
+
+    var run = data.rounds.reduce(function (p, rnd) {
+      return p.then(function () {
+        floor(null, roundTitle(rnd) + (rnd.options && rnd.options.length ? ": " + rnd.options.join(" / ") : ""));
+        return wait(1400, token).then(function () {
+          return (rnd.ballots || []).reduce(function (q, b) {
+            return q.then(function () {
+              var agent = byId(b.member);
+              if (!agent) return;
+              select(agent.id, { silent: true });
+              setState(agent.id, "thinking");
+              floor(agent, "…");
+              return wait(700, token).then(function () {
+                setState(agent.id, "speaking");
+                return typeLine(agent, "→ " + b.vote + ". " + (b.rationale || ""), token);
+              }).then(function () {
+                setState(agent.id, "listening");
+              });
+            });
+          }, Promise.resolve());
+        }).then(function () {
+          if (rnd.result) showResult(data, rnd);
+          return wait(1600, token);
+        });
+      });
+    }, Promise.resolve());
+
+    run.then(function () {
+      var last = data.rounds[data.rounds.length - 1];
+      showResult(data, last);
+      var v = data.verdict;
+      if (v) floor(null, "The council's answer: " + v.answer + " (" + Math.round((v.share || 0) * 100) + "% of the vote weight, " + (v.majority ? "majority" : "plurality") + ").");
+      emit("vote", { motion: data.question, verdict: v || null, session: data });
+    }).catch(function () { /* adjourned */ }).then(function () {
+      if (session === token) endSession();
+    });
+  }
+
+  function roundTitle(rnd) {
+    var n = String(rnd.name || "round");
+    return n.charAt(0).toUpperCase() + n.slice(1) + " round";
+  }
+
+  function showResult(data, rnd) {
+    var r = rnd.result;
+    if (!r) return;
+    var winner = (data.verdict && rnd === data.rounds[data.rounds.length - 1]) ? data.verdict.answer : r.winner;
+    el.voteList.innerHTML = "";
+    (rnd.ballots || []).forEach(function (b) {
+      var a = byId(b.member);
+      var li = document.createElement("li");
+      li.style.setProperty("--tint", a ? a.tint : "255, 255, 255");
+      li.dataset.vote = b.vote === winner ? "aye" : "nay";
+      li.title = b.rationale || "";
+      li.innerHTML = '<span class="ui-council__swatch"></span>';
+      li.appendChild(document.createTextNode((a ? a.name : b.member) + " → " + b.vote));
+      el.voteList.appendChild(li);
+    });
+    var parts = (r.standings || []).map(function (s) { return s.option + " " + s.weight; });
+    el.voteResult.textContent = (r.needs_runoff ? roundTitle(rnd) + ", no majority: " : "The council says " + winner + ": ") + parts.join(" · ");
+    el.vote.hidden = false;
+  }
+
+  function loadSessionFile(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try { replay(JSON.parse(reader.result)); }
+      catch (e) { floor(null, "Couldn't read that file as JSON."); }
+    };
+    reader.readAsText(file);
+  }
+
   function adjourn() {
     if (!session) return;
     session.cancelled = true;
@@ -925,6 +1025,21 @@
   });
 
   el.convene.addEventListener("click", convene);
+
+  if (el.load && el.loadFile) {
+    el.load.addEventListener("click", function () { el.loadFile.click(); });
+    el.loadFile.addEventListener("change", function () {
+      loadSessionFile(el.loadFile.files[0]);
+      el.loadFile.value = "";
+    });
+  }
+  root.addEventListener("dragover", function (e) { e.preventDefault(); });
+  root.addEventListener("drop", function (e) {
+    var f = e.dataTransfer && e.dataTransfer.files[0];
+    if (!f || !/json$/i.test(f.type || f.name)) return;
+    e.preventDefault();
+    loadSessionFile(f);
+  });
   el.motion.addEventListener("keydown", function (e) {
     if (e.key === "Enter" && !session) convene();
   });
@@ -1033,6 +1148,13 @@
   syncSpin();
   requestAnimationFrame(frame);
 
+  // ?session=<url of a council/sessions/*.json file> replays it on load
+  var sessionUrl = new URLSearchParams(location.search).get("session");
+  if (sessionUrl && window.fetch) {
+    fetch(sessionUrl).then(function (r) { return r.json(); }).then(replay)
+      .catch(function () { floor(null, "Couldn't load that session."); });
+  }
+
   /* ---------- Public API: plug real agents in here ---------- */
 
   window.Council = {
@@ -1047,6 +1169,7 @@
     update: update,
     say: say,
     convene: convene,
+    replay: replay,
     adjourn: adjourn,
     on: function (type, fn) {
       (listeners[type] = listeners[type] || []).push(fn);

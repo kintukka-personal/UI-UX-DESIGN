@@ -36,35 +36,49 @@ Some skills in the pack don't fit a draft and are left out: `funnel-analysis` an
 
 In this Claude Code environment the pack's skills are named with an `anthropic-skills:` prefix, for example `anthropic-skills:programmatic-eda`. The panel shows the short names.
 
-## Suggested layout for the data repo
+## Connected to NBA-FANTASY
 
-The NBA-FANTASY repo only has a README so far. The personas expect this layout. Change their sources in the panel, or in `PRESETS` in `script.js`, if you organise it differently.
+The personas are wired to the real repo. `PRESETS` in `script.js` mirrors
+[`council/members.json`](https://github.com/Kintukka2/NBA-FANTASY/blob/main/council/members.json),
+which is the single source of truth for every member's role, skills,
+sources and vote weight. Every member reviews two folders, `docs/` and `data/`:
+
+| Persona | Starts from |
+| --- | --- |
+| Coach | `docs/league-rules.md`, `docs/scoring.md`, `data/raw/league_settings.csv` |
+| Archivist | `docs/data-dictionary.md`, `docs/methodology.md`, `data/raw/`, `data/processed/verification.csv` |
+| Cipher | `data/processed/players_scored.csv`, `data/raw/actuals_2026.csv`, `data/raw/projections_2027.csv` |
+| Ledger | `data/processed/players_scored.csv` (ADP against league-scored points), `docs/offseason-impact.md` |
+| Medic | `docs/offseason-impact.md` §1 injury board, `Injury`, `A_GP`, `P_GP` |
+| Scout | `docs/offseason-impact.md` §2–§7 |
+| Tempo | `docs/league-rules.md` roster, waivers and playoffs (renamed **Roster & schedule**: the repo has no schedule file) |
+| Vex | the known traps in every doc, §7 unresolved, Appendix A |
+| Quill | `council/sessions/`, the council's own record |
+
+### Asking the council
+
+Real deliberation runs in Claude Code, inside NBA-FANTASY:
 
 ```
-league/settings.yaml           teams, roster slots, draft slot, scoring
-data/raw/                      downloads, untouched
-data/clean/
-  game_logs/                   one row per player per game
-  adp/                         ESPN average draft position
-  injuries/                    injury history
-  depth_charts/                rotations and starters
-  transactions/                trades, signings, rookies
-  schedule/                    the season schedule
-docs/data-dictionary.md        what every column means (Archivist)
-docs/assumptions.md            the assumption log (Vex)
-analysis/                      projections.csv, tiers.csv, availability.csv …
-board/draft_board.xlsx         the cheat sheet (Quill)
+/council Clingan or Sengun with pick 24?
 ```
 
-## Scoring
+Nine subagents (`.claude/agents/council-*.md`) research the two folders in
+parallel and each returns a ballot: vote, confidence, rationale, evidence.
+A question can be **yes/no**, a **selection** between named options, or an
+open **suggestion**, where the proposals are pooled and everyone votes again.
+`council/tally.py` counts by vote weight. If no option has a majority, the
+top two go to a runoff, and the highest-voted answer is the verdict. See
+`council/PROTOCOL.md` in that repo.
 
-The panel shows ESPN's default points-league scoring. Every persona pack includes it:
+### Replaying a session on the ring
 
-| PTS | 3PM | FGM | FGA | FTM | FTA | REB | AST | STL | BLK | TOV |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| +1 | +1 | +2 | −1 | +1 | −1 | +1 | +2 | +4 | +4 | −2 |
-
-Leagues can change these weights, so check yours under ESPN's league settings and edit `SCORING` in `script.js` to match.
+Each session is saved as JSON in NBA-FANTASY `council/sessions/`. Press
+**Replay a session…** (or drop the file on the page, or open
+`index.html?session=<url-to-the-json>`). Each member thinks, swings to the
+front and speaks its real vote and rationale, round by round. The panel then
+shows the real tally and the verdict. `Council.replay(session)` does the same
+from code.
 
 ## What's on screen
 
@@ -87,6 +101,7 @@ Everything from [AI Council](../ai-council/) works the same way: the ring, the f
 | `Council.scoring` | The scoring weights, as `[stat, points]` pairs |
 | `Council.skills` | The skills catalogue |
 | `Council.get(id)` | Now includes `skills` and `sources` |
+| `Council.replay(session)` | Plays a saved NBA-FANTASY council session on the ring and shows its real tally |
 
 A real run sends each member's `Council.pack(id)` as its instructions, with the draft question as the prompt. It sets the member to `thinking` while the request runs, `speaking` while the answer streams into `Council.say(id, text)`, then back to `listening`.
 
