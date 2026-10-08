@@ -68,7 +68,7 @@ Leagues can change these weights, so check yours under ESPN's league settings an
 
 ## What's on screen
 
-Everything from [AI Council](../ai-council/) works the same way: the ring, the five orb states, drag and keyboard, Convene, the weighted vote, adding and removing members, and saving edits in the browser. This version adds:
+Everything from [AI Council](../ai-council/) works the same way: the ring, the five orb states, the speaking card rising and glowing, drag and keyboard, Convene, the weighted vote, adding and removing members, and saving edits in the browser. This version adds:
 
 - **Draft question** replaces Motion. The default is "Take a big man with our first pick". The scripted lines talk about tiers, ADP, games played and four-point steals and blocks. They don't name or rate real players.
 - **Data repo** links to NBA-FANTASY. **Scoring** shows the ESPN weights.

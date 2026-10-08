@@ -20,7 +20,7 @@ Plain HTML, CSS and vanilla JS, with no dependencies. Classes are prefixed `ui-c
   | Asleep | Dims, shrinks a little, and lets a few z's drift up |
 
   No two orbs move alike: each member gets its own lobe count, speed, line weight and phase, worked out from its id.
-- **The floor.** A caption under the ring shows who has the floor and what they are saying.
+- **The floor.** A caption under the ring shows who has the floor and what they are saying. While a member is speaking, their card rises 26px out of the ring, grows 5% and glows brighter in its own colour, with a slow pulse. It settles back into the ring when they finish.
 - **The panel.**
   - **Motion** and **Convene**: put a question to the council.
   - **Members**: the roster, with each member's live state. **+ Add agent** goes up to 10 members.
@@ -89,4 +89,4 @@ The panel is 380px wide on the right. Below 900px it moves under the ring. The r
 - The floor caption is a polite live region, so screen readers hear who has the floor.
 - The state buttons have labels and `aria-pressed`, and the colourways are a radio group you can move through with the arrow keys.
 - **Pause rotation** stops the ring. Esc lets it turn again after you have selected a member.
-- With **reduced motion** turned on, the ring stays still and jumps straight to the selected card, and the orbs hold still while still showing each state.
+- With **reduced motion** turned on, the ring stays still and jumps straight to the selected card, and the orbs hold still while still showing each state. The speaking card still rises and glows, but without the spring or the pulse.
