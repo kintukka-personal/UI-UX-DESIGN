@@ -1,6 +1,6 @@
 # Draft Council
 
-The [AI Council](../ai-council/) set up as a draft companion for an ESPN fantasy basketball points league. Nine personas sit on the ring. Each has a **role**, the **skills** it uses and the **data** it reads, and all of them point at one data repo: [Kintukka2/NBA-FANTASY](https://github.com/Kintukka2/NBA-FANTASY).
+The [AI Council](../ai-council/) set up as a draft companion for an ESPN fantasy basketball points league. Nine voting personas and one non-voting researcher, Wire, sit on the ring. Each has a **role**, the **skills** it uses and the **data** it reads, and all of them point at one data repo: [Kintukka2/NBA-FANTASY](https://github.com/Kintukka2/NBA-FANTASY).
 
 Plain HTML, CSS and vanilla JS, with no dependencies. It is built on the same classes and orb renderer as AI Council (`ui-council`).
 
@@ -10,29 +10,34 @@ Plain HTML, CSS and vanilla JS, with no dependencies. It is built on the same cl
 
 Every persona follows the same framework: **name, role, skills to use, and the paths it reads in the data repo.**
 
-| Persona | Role | What they do in the draft | Skills | Reads from the repo |
-| --- | --- | --- | --- | --- |
-| **Coach** | Draft strategist (chair) | Frames each pick against the league settings and draft slot, calls on the right members, then makes the call | `analysis-planning`, `stakeholder-requirements-gathering`, `insight-synthesis`, `executive-summary-generator` | `league/settings.yaml`, `analysis/` |
-| **Archivist** | Data steward | Checks every file before anyone uses it, reconciles ESPN against other sources, keeps the data dictionary, hands out context packs | `programmatic-eda`, `data-quality-audit`, `schema-mapper`, `metric-reconciliation`, `data-catalog-entry`, `context-packager` | `data/raw/`, `data/clean/`, `docs/data-dictionary.md` |
-| **Cipher** | Projections | Projects ESPN fantasy points per game and per season, as a range | `data:statistical-analysis`, `time-series-analysis`, `semantic-model-builder`, `methodology-explainer` | `data/clean/game_logs/`, `league/settings.yaml`, `analysis/projections.csv` |
-| **Ledger** | Value & ADP | Points over replacement by position, tiers, and players going too early or too late against ESPN's ADP | `segmentation-analysis`, `impact-quantification`, `data:analyze` | `analysis/projections.csv`, `data/clean/adp/`, `analysis/tiers.csv` |
-| **Medic** | Availability | Expected games played from injury history, age and rest patterns, plus current injury news | `cohort-analysis`, `root-cause-investigation`, `deep-research` | `data/clean/injuries/`, `data/clean/game_logs/` |
-| **Scout** | Role & opportunity | Minutes, usage, team changes and rookies. Uses with/without-teammate splits to size each change | `deep-research`, `research`, `ab-test-analysis`, `data:explore-data` | `data/clean/depth_charts/`, `data/clean/transactions/`, `data/clean/game_logs/` |
-| **Tempo** | Schedule | Games per fantasy week, back-to-backs and the fantasy playoff weeks, as a tiebreaker | `data:write-query`, `query-validation`, `visualization-builder` | `data/clean/schedule/`, `league/settings.yaml` |
-| **Vex** | Sceptic | Challenges every pick, logs the assumptions behind it, and describes how it busts | `grilling`, `analysis-assumptions-log`, `analysis-qa-checklist`, `peer-review-template` | `analysis/`, `docs/assumptions.md` |
-| **Quill** | Scribe | Keeps the ranked cheat sheet and live draft board, and writes up each pick with its reasons | `xlsx`, `dataviz`, `dashboard-specification`, `data:build-dashboard`, `data-narrative-builder` | `analysis/`, `board/draft_board.xlsx` |
+| Persona | Role | Votes | What they do | Skills |
+| --- | --- | ---: | --- | --- |
+| **Coach** | Draft strategist (chair) | 2 | Frames each pick against the league settings and our slot (6 of 8), then makes the call. Breaks ties as chair | `analysis-planning`, `insight-synthesis`, `executive-summary-generator`, `data:analyze` |
+| **Archivist** | Data steward | 2 | Checks every number against its column and file before anyone uses it, and flags thin samples | `programmatic-eda`, `data-quality-audit`, `schema-mapper`, `metric-reconciliation`, `data-catalog-entry`, `context-packager` |
+| **Cipher** | Projections | 2 | Owns the league-scored fantasy-points number, always as a range | `data:statistical-analysis`, `time-series-analysis`, `semantic-model-builder`, `methodology-explainer` |
+| **Ledger** | Value & ADP | 2 | Finds the gap between ADP (standard scoring) and what a player scores here, at our next turn | `segmentation-analysis`, `impact-quantification`, `data:analyze` |
+| **Medic** | Availability | 2 | Discounts every option by expected games missed, from the injury board and games played | `cohort-analysis`, `root-cause-investigation`, `time-series-analysis`, `research` |
+| **Scout** | Role & opportunity | 2 | Minutes, usage, team changes and rookies: does last season's number still fit this season's role? | `research`, `data:explore-data`, `segmentation-analysis`, `impact-quantification` |
+| **Tempo** | Roster & schedule | 2 | Position eligibility, the max-4 G rule, bench depth, weekly adds and the fantasy playoff weeks | `data:write-query`, `query-validation`, `domain-modeling` |
+| **Vex** | Sceptic | 2 | Attacks every option, logs the assumption behind it, and describes how it busts | `grilling`, `analysis-assumptions-log`, `analysis-qa-checklist`, `peer-review-template` |
+| **Quill** | Scribe | 2 | Keeps the council consistent with its earlier verdicts in council/sessions/ | `data-narrative-builder`, `analysis-documentation`, `analysis-retrospective`, `insight-synthesis` |
+| **Wire** | Researcher (non-voting) | 0 | Before every meeting, searches the web for the latest news on the players in the question and writes a sourced briefing to `docs/research/`. Speaks first, never votes | tools: `WebSearch`, `WebFetch` |
+
+Voting is flat: every member has 2 votes (18 in total, so a majority is 10). Wire has 0.
 
 ### Why these skills
 
-Most of the skills come from the data-analytics skills pack, the same 31 skills as the `data-analytics-skills-main.zip` uploaded to the NBA-FANTASY repo. The rest are the `data:` plugin skills (`data:analyze`, `data:statistical-analysis` and others), plus `xlsx`, `dataviz`, `deep-research`, `research` and `grilling`. A few are repurposed for basketball:
+Most of the skills come from the data-analytics skills pack, the same 31 skills as the `data-analytics-skills-main.zip` uploaded to the NBA-FANTASY repo. The rest are the `data:` plugin skills (`data:analyze`, `data:statistical-analysis` and others), plus `research` and `grilling`. Every skill on a preset is one the member can actually apply to a ballot. A few are repurposed for basketball:
 
-- `ab-test-analysis` lets Scout compare a player's output with and without a teammate on the floor, which is a split test like any other.
 - `cohort-analysis` lets Medic compare games played across groups of similar players, such as age bands or players coming back from the same injury.
-- `segmentation-analysis` builds Ledger's tiers. Players in a tier are close enough in value to swap.
+- `time-series-analysis` lets Medic read a player's games-played trend across seasons, not just last season.
+- `segmentation-analysis` builds Ledger's tiers, and lets Scout group players by role change (minutes up, minutes down, new team).
+- `domain-modeling` lets Tempo model the roster rules (slots, the guard cap, bench, adds) once and check every option against them.
 - `semantic-model-builder` lets Cipher define the fantasy points formula once, so every member uses the same one.
 - `metric-reconciliation` catches ESPN numbers that disagree with other sources before they reach the board.
+- `analysis-documentation` and `analysis-retrospective` let Quill write each verdict up and check it against how the pick turned out.
 
-Some skills in the pack don't fit a draft and are left out: `funnel-analysis` and the SaaS metrics in `business-metrics-calculator`. You can still add any skill to any persona from the panel.
+Skills that don't change a ballot are left off the presets: output tools (`xlsx`, `dataviz`, dashboards), `ab-test-analysis`, `funnel-analysis` and the SaaS metrics in `business-metrics-calculator`. You can still add any skill to any persona from the panel.
 
 In this Claude Code environment the pack's skills are named with an `anthropic-skills:` prefix, for example `anthropic-skills:programmatic-eda`. The panel shows the short names.
 
@@ -54,6 +59,7 @@ sources and vote weight. Every member reviews two folders, `docs/` and `data/`:
 | Tempo | `docs/league-rules.md` roster, waivers and playoffs (renamed **Roster & schedule**: the repo has no schedule file) |
 | Vex | the known traps in every doc, §7 unresolved, Appendix A |
 | Quill | `council/sessions/`, the council's own record |
+| Wire | the web, last 14 days first; writes `docs/research/<YYYYMMDD-HHMM>-<slug>.md`, which every member reads first |
 
 ### Asking the council
 
@@ -63,11 +69,12 @@ Real deliberation runs in Claude Code, inside NBA-FANTASY:
 /council Clingan or Sengun with pick 24?
 ```
 
-Nine subagents (`.claude/agents/council-*.md`) research the two folders in
-parallel and each returns a ballot: vote, confidence, rationale, evidence.
+First Wire (`council-researcher`) searches the web and writes a sourced
+briefing to `docs/research/`. Then nine subagents (`.claude/agents/council-*.md`)
+research the two folders, briefing first, in parallel, and each returns a ballot: vote, confidence, rationale, evidence.
 A question can be **yes/no**, a **selection** between named options, or an
 open **suggestion**, where the proposals are pooled and everyone votes again.
-`council/tally.py` counts by vote weight. If no option has a majority, the
+`council/tally.py` counts the votes (2 per member). If no option has a majority, the
 top two go to a runoff, and the highest-voted answer is the verdict. See
 `council/PROTOCOL.md` in that repo.
 
@@ -75,7 +82,8 @@ top two go to a runoff, and the highest-voted answer is the verdict. See
 
 Each session is saved as JSON in NBA-FANTASY `council/sessions/`. Press
 **Replay a session…** (or drop the file on the page, or open
-`index.html?session=<url-to-the-json>`). Each member thinks, swings to the
+`index.html?session=<url-to-the-json>`). Wire reads out the session's
+research briefing first. Then each member thinks, swings to the
 front and speaks its real vote and rationale, round by round. The panel then
 shows the real tally and the verdict. `Council.replay(session)` does the same
 from code.
