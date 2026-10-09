@@ -25,8 +25,7 @@ body {
   --accent: 142, 249, 252;
   --card-w: 150px;
   --card-h: 204px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px;
+  position: relative;
   height: 100%;
   min-height: 560px;
 }
@@ -41,6 +40,7 @@ body {
 
 .ui-council__stage {
   position: relative;
+  height: 100%;
   overflow: hidden;
   background:
     radial-gradient(60% 38% at 50% 74%, rgba(var(--accent), 0.16), transparent 70%),
@@ -92,7 +92,7 @@ body {
 .ui-council__scene {
   position: absolute;
   left: 50%;
-  top: 44%;
+  top: 43%;
   width: 0;
   height: 0;
   transform: scale(var(--scale, 1));
@@ -246,16 +246,10 @@ body {
 /* ---------- Floor caption ---------- */
 
 .ui-council__floor {
-  position: absolute;
-  left: 50%;
-  bottom: 64px;
-  z-index: 3;
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  width: min(560px, calc(100% - 48px));
-  transform: translateX(-50%);
-  padding: 14px 16px;
+  padding: 12px 16px;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: rgba(21, 22, 27, 0.72);
@@ -286,47 +280,7 @@ body {
   font-weight: 600;
 }
 
-.ui-council__stage-tools {
-  position: absolute;
-  left: 20px;
-  bottom: 18px;
-  z-index: 3;
-}
-
-.ui-council__chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 12px;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  background: rgba(21, 22, 27, 0.7);
-  font-size: 12px;
-  color: var(--muted);
-  cursor: pointer;
-}
-
-.ui-council__chip:hover {
-  color: #fff;
-}
-
-.ui-council__chip svg {
-  width: 14px;
-  height: 14px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
 /* ---------- Panel ---------- */
-
-.ui-council__panel {
-  overflow-y: auto;
-  border-left: 1px solid var(--line);
-  background: var(--panel);
-}
 
 .ui-council__section {
   padding: 20px 22px;
@@ -406,11 +360,6 @@ select.ui-council__input {
   line-height: 1.45;
 }
 
-.ui-council__motion {
-  display: flex;
-  gap: 8px;
-}
-
 .ui-council__btn {
   flex: none;
   padding: 9px 14px;
@@ -419,21 +368,6 @@ select.ui-council__input {
   background: transparent;
   font-weight: 600;
   cursor: pointer;
-}
-
-.ui-council__btn--primary {
-  border-color: transparent;
-  background: rgb(var(--accent));
-  color: #0e0f12;
-  transition: background 0.4s;
-}
-
-.ui-council__btn--primary:hover {
-  filter: brightness(1.08);
-}
-
-.ui-council__btn--primary[aria-pressed="true"] {
-  background: #fff;
 }
 
 .ui-council__link {
@@ -697,7 +631,12 @@ select.ui-council__input {
 /* Vote */
 
 .ui-council__vote {
-  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(21, 22, 27, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .ui-council__vote-result {
@@ -730,39 +669,12 @@ select.ui-council__input {
   border-color: rgba(var(--tint), 0.5);
 }
 
-/* ---------- Narrow screens: panel under the ring ---------- */
+/* ---------- Narrow screens ---------- */
 
-@media (max-width: 900px) {
-  .ui-council {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    height: auto;
-  }
-
-  .ui-council__stage {
-    height: 68vh;
-    min-height: 460px;
-  }
-
-  .ui-council__panel {
-    overflow: visible;
-    border-left: 0;
-    border-top: 1px solid var(--line);
-  }
-
+@media (max-width: 640px) {
   .ui-council__head {
     top: 16px;
     left: 16px;
-  }
-
-  .ui-council__floor {
-    bottom: 58px;
-    width: calc(100% - 32px);
-  }
-
-  .ui-council__stage-tools {
-    left: 16px;
-    bottom: 14px;
   }
 
   .ui-council__section {
@@ -781,7 +693,7 @@ select.ui-council__input {
 
   .ui-council__stage,
   .ui-council__eyebrow,
-  .ui-council__btn--primary {
+  .ui-council__send {
     transition: none;
   }
 }
@@ -910,4 +822,370 @@ select.ui-council__input {
   margin-top: 2px;
   font-size: 10px;
   color: rgba(255, 255, 255, 0.55);
+}
+
+/* ---------- Minimal layout: icons top right, the floor at the bottom ---------- */
+
+.ui-council__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.ui-council__tools {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 4;
+  display: flex;
+  gap: 8px;
+}
+
+.ui-council__icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: rgba(21, 22, 27, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.ui-council__icon:hover,
+.ui-council__icon[aria-expanded="true"] {
+  color: #fff;
+  border-color: rgba(var(--accent), 0.5);
+}
+
+.ui-council__icon:focus-visible,
+.ui-council__send:focus-visible,
+.ui-council__sessions button:focus-visible {
+  outline: 2px solid rgba(var(--accent), 0.8);
+  outline-offset: 2px;
+}
+
+.ui-council__icon svg,
+.ui-council__send svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ui-council__icon--flat {
+  width: 34px;
+  height: 34px;
+  border-color: transparent;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.ui-council__icon--flat:hover {
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Pause shows while the ring turns, play while it is still */
+.ui-council__icon[data-spin] .is-off,
+.ui-council__icon[data-spin][aria-pressed="false"] .is-on {
+  display: none;
+}
+
+.ui-council__icon[data-spin][aria-pressed="false"] .is-off {
+  display: block;
+}
+
+/* Tooltip under the icon (above it in the question box) */
+.ui-council__icon[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #ececf1;
+  color: #0e0f12;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s;
+  pointer-events: none;
+}
+
+.ui-council__chat .ui-council__icon[data-tip]::after {
+  top: auto;
+  right: auto;
+  bottom: calc(100% + 8px);
+  left: 0;
+  transform: translateY(4px);
+}
+
+.ui-council__icon[data-tip]:hover::after,
+.ui-council__icon[data-tip]:focus-visible::after {
+  opacity: 1;
+  transform: none;
+}
+
+.ui-council__icon[aria-expanded="true"]::after {
+  opacity: 0 !important;
+}
+
+/* The dock: the vote, the speaker's line and the question box */
+.ui-council__dock {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  z-index: 3;
+  display: grid;
+  gap: 8px;
+  width: min(620px, calc(100% - 40px));
+  transform: translateX(-50%);
+}
+
+.ui-council__floor {
+  border-radius: 18px 18px 18px 6px;
+}
+
+.ui-council__chat {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 5px 5px 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(21, 22, 27, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ui-council__chat:focus-within {
+  border-color: rgba(var(--accent), 0.55);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(var(--accent), 0.12);
+}
+
+.ui-council__chat .ui-council__icon--flat {
+  border-radius: 50%;
+}
+
+.ui-council__chat-input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 6px;
+  border: 0;
+  background: transparent;
+  font-size: 15px;
+  outline: none;
+}
+
+.ui-council__chat-input::placeholder {
+  color: var(--faint);
+}
+
+.ui-council__send {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(var(--accent));
+  color: #0e0f12;
+  cursor: pointer;
+  transition: background 0.4s, filter 0.15s;
+}
+
+.ui-council__send:hover {
+  filter: brightness(1.08);
+}
+
+.ui-council__send .is-stop,
+.ui-council__send[aria-pressed="true"] .is-send {
+  display: none;
+}
+
+.ui-council__send[aria-pressed="true"] {
+  background: #fff;
+}
+
+.ui-council__send[aria-pressed="true"] .is-stop {
+  display: block;
+  fill: currentColor;
+}
+
+/* Previous sessions */
+.ui-council__history {
+  padding: 14px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  background: rgba(21, 22, 27, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+}
+
+.ui-council__history[hidden],
+.ui-council__vote[hidden] {
+  display: none;
+}
+
+.ui-council__history-title {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.ui-council__history .ui-council__row {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.ui-council__sessions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ui-council__sessions .ui-council__note {
+  margin: 0;
+}
+
+.ui-council__sessions button {
+  padding: 5px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 12px;
+  color: #e9ecf2;
+  cursor: pointer;
+}
+
+.ui-council__sessions button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Popups */
+.ui-council__modal {
+  width: min(460px, calc(100vw - 24px));
+  max-height: min(86vh, 860px);
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 18px;
+  background: var(--panel);
+  color: #ececf1;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+}
+
+.ui-council__modal[open] {
+  display: flex;
+  flex-direction: column;
+  animation: ui-council-pop 0.18s ease-out;
+}
+
+.ui-council__modal--wide {
+  width: min(860px, calc(100vw - 24px));
+}
+
+.ui-council__modal::backdrop {
+  background: rgba(6, 7, 9, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+@keyframes ui-council-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+.ui-council__modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 12px 12px 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.ui-council__modal-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.ui-council__modal-body {
+  overflow-y: auto;
+}
+
+.ui-council__members {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  align-items: start;
+}
+
+.ui-council__members > .ui-council__section {
+  border-bottom: 0;
+}
+
+.ui-council__members > .ui-council__section:first-child {
+  position: sticky;
+  top: 0;
+  border-right: 1px solid var(--line);
+}
+
+@media (max-width: 640px) {
+  .ui-council__head {
+    max-width: calc(100% - 180px);
+  }
+
+  .ui-council__tools {
+    top: 14px;
+    right: 12px;
+  }
+
+  .ui-council__dock {
+    bottom: 12px;
+    width: calc(100% - 24px);
+  }
+
+  .ui-council__members {
+    grid-template-columns: 1fr;
+  }
+
+  .ui-council__members > .ui-council__section:first-child {
+    position: static;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-council__modal[open] {
+    animation: none;
+  }
 }

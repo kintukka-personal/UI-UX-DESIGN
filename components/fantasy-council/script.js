@@ -8,8 +8,8 @@
   var root = document.getElementById("council");
   if (!root) return;
 
-  var STORE_KEY = "ui-draft-council:v2";
-  var MAX_MEMBERS = 10;
+  var STORE_KEY = "ui-draft-council:v4";
+  var MAX_MEMBERS = 12;
   var MIN_MEMBERS = 3;
   var SPIN_SPEED = 9; // degrees a second: one turn in 40s
 
@@ -40,7 +40,7 @@
     "data:statistical-analysis", "time-series-analysis", "cohort-analysis",
     "segmentation-analysis", "root-cause-investigation", "ab-test-analysis",
     "impact-quantification", "data:analyze", "data:explore-data", "data:write-query",
-    "deep-research", "research", "grilling", "analysis-qa-checklist", "peer-review-template",
+    "research", "domain-modeling", "grilling", "analysis-qa-checklist", "peer-review-template",
     "insight-synthesis", "executive-summary-generator", "data-narrative-builder",
     "methodology-explainer", "technical-to-business-translator", "visualization-builder",
     "dashboard-specification", "dataviz", "data:build-dashboard", "xlsx", "analysis-retrospective"
@@ -72,17 +72,19 @@
   };
 
   // Mirrors NBA-FANTASY council/members.json: the same personas, skills,
-  // sources and vote weights the real agents run with.
+  // sources and vote weights the real agents run with. Every member votes 2
+  // except Coach, the chair, with 3 (19 in all, so no vote can tie); Wire,
+  // the researcher, has weight 0: it speaks first, never votes.
   var PRESETS = [
     { id: "coach", name: "Coach", role: "Draft strategist (chair)", tint: PALETTE[0], lean: 20, weight: 3,
-      skills: ["analysis-planning", "stakeholder-requirements-gathering", "insight-synthesis", "executive-summary-generator"],
+      skills: ["analysis-planning", "insight-synthesis", "executive-summary-generator", "data:analyze"],
       sources: ["docs/league-rules.md", "docs/scoring.md", "data/raw/league_settings.csv", "data/processed/players_scored.csv"],
-      brief: "Chair the room. Frame every question against our slot (8 of 8, the turn: we pick back-to-back, then wait 15 picks), the 10-starter / 3-bench roster, the max-4 G rule and roughly 7 adds a week. Treat each turn as a pair decision. Weigh what the other members would say, then vote for the option that wins the draft, not the one that wins the argument." },
-    { id: "archivist", name: "Archivist", role: "Data steward", tint: PALETTE[9], lean: 0, weight: 1,
+      brief: "Chair the room. Frame every question against our slot (6 of 8: four picks between the two picks of each pair, then a ten-pick wait), the 10-starter / 3-bench roster, the max-4 G rule and roughly 7 adds a week. At each pick, ask who will not survive to our next one. Weigh what the other members would say, then vote for the option that wins the draft, not the one that wins the argument." },
+    { id: "archivist", name: "Archivist", role: "Data steward", tint: PALETTE[9], lean: 0, weight: 2,
       skills: ["programmatic-eda", "data-quality-audit", "schema-mapper", "metric-reconciliation", "data-catalog-entry", "context-packager"],
       sources: ["docs/data-dictionary.md", "docs/methodology.md", "data/raw/", "data/processed/verification.csv", "data/processed/players_scored.csv"],
       brief: "Nobody uses a number until you have checked it. Trace every figure in the question to its column and file, apply the known traps in docs/data-dictionary.md (ADP is standard-scoring, A_GP first, P_FPTS_AVG understates bigs and is stale on injuries), and vote against any option that rests on a THIN or NO_SAMPLE line or on prose that disagrees with the CSV." },
-    { id: "cipher", name: "Cipher", role: "Projections", tint: PALETTE[8], lean: 10, weight: 3,
+    { id: "cipher", name: "Cipher", role: "Projections", tint: PALETTE[8], lean: 10, weight: 2,
       skills: ["data:statistical-analysis", "time-series-analysis", "semantic-model-builder", "methodology-explainer"],
       sources: ["data/processed/players_scored.csv", "data/raw/actuals_2026.csv", "data/raw/projections_2027.csv", "docs/scoring.md", "scripts/league_scoring.py"],
       brief: "Own the fantasy-points number. Lead with FP_ACT_PG (2026 actuals, league-scored, bonuses amortised), inform with FP_PROJ_PG_CORE plus PROJ_BLIND_SPOT_PG, and always give a range, not a point. Import scripts/league_scoring.py for any new calculation — never re-derive the formula from prose." },
@@ -91,25 +93,29 @@
       sources: ["data/processed/players_scored.csv", "docs/offseason-impact.md", "docs/scoring.md"],
       brief: "Turn points into value at our picks. ADP is market consensus built for standard scoring, never a valuation: find the gap between where a player goes (ADP) and what he scores here (FP_ACT_PG). Size points over replacement for our next turn, and prefer the player who will not be there at our next pair of picks." },
     { id: "medic", name: "Medic", role: "Availability", tint: PALETTE[2], lean: -40, weight: 2,
-      skills: ["cohort-analysis", "root-cause-investigation", "deep-research"],
+      skills: ["cohort-analysis", "root-cause-investigation", "time-series-analysis", "research"],
       sources: ["docs/offseason-impact.md", "data/processed/players_scored.csv", "docs/data-dictionary.md"],
       brief: "Points only count if they play. Read the draft-night injury board (docs/offseason-impact.md §1), the Injury, A_GP and P_GP columns, and trap 3 in the data dictionary (ESPN projects Ingram for 67 games while listing him OUT). Discount every option by its expected games missed, and never spend a top-10 pick on a player out into the new year." },
     { id: "scout", name: "Scout", role: "Role & opportunity", tint: PALETTE[5], lean: 30, weight: 2,
-      skills: ["deep-research", "research", "ab-test-analysis", "data:explore-data"],
+      skills: ["research", "data:explore-data", "segmentation-analysis", "impact-quantification"],
       sources: ["docs/offseason-impact.md", "data/processed/players_scored.csv"],
       brief: "Track minutes, usage and role. Use docs/offseason-impact.md §2-§6 to decide whether last season's number still describes this season's situation: capped minutes that grew, role collapses, players who changed teams, rookies with real minutes. Never invent an answer for anything listed as unresolved in §7 — say it is unresolved." },
-    { id: "tempo", name: "Tempo", role: "Roster & schedule", tint: PALETTE[1], lean: 0, weight: 1,
-      skills: ["data:write-query", "query-validation", "visualization-builder"],
+    { id: "tempo", name: "Tempo", role: "Roster & schedule", tint: PALETTE[1], lean: 0, weight: 2,
+      skills: ["data:write-query", "query-validation", "domain-modeling"],
       sources: ["docs/league-rules.md", "docs/scoring.md", "data/raw/league_settings.csv", "data/processed/players_scored.csv"],
       brief: "Make the roster legal and the weeks full. Check position eligibility (Pos), the 10 starting slots, the max-4 G rule, the 3-deep bench, the weekly acquisition limit and the fantasy playoff weeks in docs/league-rules.md. Break ties between similar players on roster fit and on what can be replaced from waivers." },
     { id: "vex", name: "Vex", role: "Sceptic", tint: PALETTE[6], lean: -60, weight: 2,
       skills: ["grilling", "analysis-assumptions-log", "analysis-qa-checklist", "peer-review-template"],
       sources: ["docs/offseason-impact.md", "docs/data-dictionary.md", "docs/methodology.md", "data/processed/players_scored.csv"],
       brief: "Attack every option. Name the assumption each one rests on and how it busts: thin samples, one-season spikes, unresolved §7 situations, projections that ignore OREB/DD/TD, prose that the CSV contradicts (the CSV wins). Vote for the option that survives the attack best, not the one that sounds best." },
-    { id: "quill", name: "Quill", role: "Scribe", tint: PALETTE[7], lean: 0, weight: 1,
-      skills: ["xlsx", "dataviz", "dashboard-specification", "data:build-dashboard", "data-narrative-builder"],
+    { id: "quill", name: "Quill", role: "Scribe", tint: PALETTE[7], lean: 0, weight: 2,
+      skills: ["data-narrative-builder", "analysis-documentation", "analysis-retrospective", "insight-synthesis"],
       sources: ["docs/", "data/processed/players_scored.csv", "council/sessions/"],
-      brief: "Keep the record. Read earlier council sessions in council/sessions/ so the council stays consistent with what it has already decided (players already taken, picks already made). Vote for the option that best fits the plan the council has been executing, and say plainly if this question contradicts an earlier verdict." }
+      brief: "Keep the record. Read earlier council sessions in council/sessions/ so the council stays consistent with what it has already decided (players already taken, picks already made). Vote for the option that best fits the plan the council has been executing, and say plainly if this question contradicts an earlier verdict." },
+    { id: "researcher", name: "Wire", role: "Researcher (non-voting)", tint: PALETTE[3], lean: 0, weight: 0,
+      skills: ["WebSearch", "WebFetch"],
+      sources: ["the web (last 14 days first)", "writes docs/research/<YYYYMMDD-HHMM>-<slug>.md"],
+      brief: "Before every council meeting, search the internet for the latest NBA news on the players and teams the question touches: injuries and return timelines, starting lineups and minutes, trades, signings, extensions, suspensions and coach quotes. Write every finding, with its source URL and publish date, to one new markdown briefing in docs/research/. Report facts only. You do not vote and you do not recommend picks." }
   ];
 
   // Lines for the Convene demo, by role. {m} is the motion.
@@ -132,6 +138,8 @@
               "We're anchoring on one good season. One season isn't a trend."],
     scribe: ["Logged. The board is updated and the tier break is marked.",
              "I'll write this pick up with the reasons, so we can check them at midseason."],
+    "researcher (non-voting)": ["Briefing's filed in docs/research/. Every line has a source and a date. I don't vote.",
+                                "Fresh from the wire: two injury updates and a lineup change since the docs were written. Check the briefing."],
     member: ["I've heard enough to make up my mind.",
              "My brief points one way, but I'll listen to the room."]
   };
@@ -192,7 +200,15 @@
     dWeight: root.querySelector("[data-d-weight]"),
     dWeightOut: root.querySelector("[data-d-weight-out]"),
     reset: root.querySelector("[data-reset]"),
-    remove: root.querySelector("[data-remove]")
+    remove: root.querySelector("[data-remove]"),
+    chat: root.querySelector("[data-chat]"),
+    history: root.querySelector("[data-history]"),
+    historyToggle: root.querySelector("[data-history-toggle]"),
+    sessionList: root.querySelector("[data-session-list]"),
+    dialogs: {
+      members: root.querySelector('[data-dialog="members"]'),
+      league: root.querySelector('[data-dialog="league"]')
+    }
   };
 
   /* ---------- Helpers ---------- */
@@ -469,7 +485,9 @@
         "</span>";
       card.addEventListener("click", function () {
         if (drag && drag.moved) return;
+        var again = selectedId === agent.id && held;
         select(agent.id);
+        if (again && !session) openDialog("members");
       });
       el.ring.appendChild(card);
       cards[agent.id] = card;
@@ -633,7 +651,8 @@
       SCORING.map(function (r) { return r[0] + " " + (r[1] > 0 ? "+" : "") + r[1]; }).join(", "),
       "",
       "## In the council",
-      "Lean: " + (agent.lean > 0 ? "+" : "") + agent.lean + " (\u2212100 sceptical to +100 supportive). Vote weight: " + agent.weight + "."
+      "Lean: " + (agent.lean > 0 ? "+" : "") + agent.lean + " (\u2212100 sceptical to +100 supportive). " +
+        (agent.weight > 0 ? "Vote weight: " + agent.weight + "." : "Non-voting: briefs the council, casts no ballot.")
     ].join("\n");
   }
 
@@ -740,7 +759,7 @@
     if (!agent) {
       el.floor.style.removeProperty("--floor");
       el.floorName.textContent = "The draft room is open.";
-      el.floorLine.textContent = line || "Pick a member to see their skills and data, or put a draft question to the floor.";
+      el.floorLine.textContent = line || "Tap a card to bring it forward, tap it again to edit. Or ask the council below.";
       return;
     }
     el.floor.style.setProperty("--floor", agent.tint);
@@ -757,6 +776,7 @@
     var on = spinning && !held;
     el.spin.setAttribute("aria-pressed", on ? "true" : "false");
     el.spinLabel.textContent = on ? "Pause rotation" : "Resume rotation";
+    el.spin.dataset.tip = el.spinLabel.textContent;
   }
 
   /* ---------- Convene: a scripted demo of a deliberation ---------- */
@@ -766,12 +786,14 @@
     var motion = (el.motion.value || "").trim() || "the question";
     var token = { cancelled: false, timers: [] };
     session = token;
-    el.convene.textContent = "Adjourn";
-    el.convene.setAttribute("aria-pressed", "true");
+    setConvening(true);
     el.vote.hidden = true;
 
     var present = agents.filter(function (a) { return a.state !== "asleep"; });
-    var order = present.slice().sort(function (a, b) { return b.weight - a.weight; });
+    // Non-voters (Wire) brief the room first; then members, heaviest vote first
+    var order = present.slice().sort(function (a, b) {
+      return (a.weight > 0) - (b.weight > 0) || b.weight - a.weight;
+    });
     present.forEach(function (a) { setState(a.id, "listening"); });
     floor(null, "The floor is open on “" + motion + "”.");
     emit("convene", { motion: motion, order: order.map(function (a) { return a.id; }) });
@@ -796,7 +818,7 @@
     }, Promise.resolve());
 
     run.then(function () {
-      tally(motion, present.filter(function (a) { return byId(a.id); }));
+      tally(motion, present.filter(function (a) { return byId(a.id) && a.weight > 0; }));
     }).catch(function () { /* adjourned */ }).then(function () {
       if (session === token) endSession();
     });
@@ -854,13 +876,29 @@
     }
     var token = { cancelled: false, timers: [] };
     session = token;
-    el.convene.textContent = "Adjourn";
-    el.convene.setAttribute("aria-pressed", "true");
+    setConvening(true);
     el.vote.hidden = true;
     el.motion.value = data.question || "";
 
     agents.forEach(function (a) { if (a.state !== "asleep") setState(a.id, "listening"); });
     floor(null, "Replaying: “" + (data.question || "the question") + "”");
+
+    var wire = agents.filter(function (a) { return a.weight === 0 && a.state !== "asleep"; })[0];
+    var briefing = Promise.resolve();
+    if (wire) {
+      briefing = wait(900, token).then(function () {
+        select(wire.id, { silent: true });
+        setState(wire.id, "thinking");
+        floor(wire, "\u2026");
+        return wait(700, token);
+      }).then(function () {
+        setState(wire.id, "speaking");
+        return typeLine(wire, data.research ? "Research briefing: " + data.research + ". Read it before you vote."
+                                            : "No research briefing on file for this session.", token);
+      }).then(function () {
+        setState(wire.id, "listening");
+      });
+    }
 
     var run = data.rounds.reduce(function (p, rnd) {
       return p.then(function () {
@@ -886,7 +924,7 @@
           return wait(1600, token);
         });
       });
-    }, Promise.resolve());
+    }, briefing);
 
     run.then(function () {
       var last = data.rounds[data.rounds.length - 1];
@@ -942,10 +980,14 @@
     floor(null, "Adjourned.");
   }
 
+  function setConvening(on) {
+    el.convene.setAttribute("aria-pressed", on ? "true" : "false");
+    el.convene.setAttribute("aria-label", on ? "Adjourn" : "Convene");
+  }
+
   function endSession() {
     session = null;
-    el.convene.textContent = "Convene";
-    el.convene.setAttribute("aria-pressed", "false");
+    setConvening(false);
     agents.forEach(function (a) {
       if (a.state !== "asleep") setState(a.id, "idle");
     });
@@ -1024,10 +1066,81 @@
     syncSpin();
   });
 
-  el.convene.addEventListener("click", convene);
+  el.chat.addEventListener("submit", function (e) {
+    e.preventDefault();
+    closeHistory();
+    convene();
+  });
+
+  /* Popups: Members and League open from the icons, top right */
+
+  function openDialog(name) {
+    var d = el.dialogs[name];
+    if (!d || d.open) return;
+    closeHistory();
+    if (name === "members") paintAll();
+    if (d.showModal) d.showModal();
+    else d.setAttribute("open", "");
+  }
+
+  function closeDialog(d) {
+    if (d.close) d.close();
+    else d.removeAttribute("open");
+  }
+
+  Array.prototype.forEach.call(root.querySelectorAll("[data-open]"), function (b) {
+    b.addEventListener("click", function () { openDialog(b.dataset.open); });
+  });
+  Object.keys(el.dialogs).forEach(function (name) {
+    var d = el.dialogs[name];
+    d.querySelector("[data-close]").addEventListener("click", function () { closeDialog(d); });
+    // A click on the backdrop (outside the box) closes it
+    d.addEventListener("click", function (e) {
+      if (e.target !== d) return;
+      var r = d.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) closeDialog(d);
+    });
+  });
+
+  /* Previous sessions: a small popover above the question box */
+
+  function closeHistory() {
+    el.history.hidden = true;
+    el.historyToggle.setAttribute("aria-expanded", "false");
+  }
+
+  function paintHistory() {
+    if (!el.sessionList.querySelector("[data-session]") && !el.sessionList.querySelector(".ui-council__note")) {
+      var p = document.createElement("p");
+      p.className = "ui-council__note";
+      p.textContent = "No sessions linked here yet. Replay one from a file, drop a session JSON on the page, or open this page with ?session=<url>.";
+      el.sessionList.appendChild(p);
+    }
+  }
+
+  el.historyToggle.addEventListener("click", function () {
+    var open = el.history.hidden;
+    el.history.hidden = !open;
+    el.historyToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) paintHistory();
+  });
+  document.addEventListener("click", function (e) {
+    if (!el.history.hidden && !el.history.contains(e.target) && !el.historyToggle.contains(e.target)) closeHistory();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !el.history.hidden) { closeHistory(); el.historyToggle.focus(); }
+  });
+  // Session buttons, e.g. <button data-session="sessions/pick-6.json">, replay that file
+  el.sessionList.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-session]");
+    if (!b || !window.fetch) return;
+    closeHistory();
+    fetch(b.dataset.session).then(function (r) { return r.json(); }).then(replay)
+      .catch(function () { floor(null, "Couldn't load that session."); });
+  });
 
   if (el.load && el.loadFile) {
-    el.load.addEventListener("click", function () { el.loadFile.click(); });
+    el.load.addEventListener("click", function () { closeHistory(); el.loadFile.click(); });
     el.loadFile.addEventListener("change", function () {
       loadSessionFile(el.loadFile.files[0]);
       el.loadFile.value = "";
@@ -1039,9 +1152,6 @@
     if (!f || !/json$/i.test(f.type || f.name)) return;
     e.preventDefault();
     loadSessionFile(f);
-  });
-  el.motion.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && !session) convene();
   });
 
   el.add.addEventListener("click", addAgent);
