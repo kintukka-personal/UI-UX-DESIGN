@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Booking Story Ad</title>
+<meta name="description" content="A 33-second kinetic-type travel ad rebuilt from a free Jitter template: limited, costly, generic hotels, then a search, a calendar, a stay and a confirmed booking. Plus the booking UI it shows, working.">
+<meta name="theme-color" content="#fd575e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Montserrat:wght@500;600&display=swap">
+<!-- The "wait" cloud and the kanji backdrops need only a handful of glyphs, so those families are subset with text= -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500&family=Noto+Sans+KR:wght@400&family=Noto+Sans+SC:wght@400&family=Noto+Sans+Arabic:wght@500&family=Noto+Serif:ital,wght@0,700;1,700&text=%E5%BE%85%E3%81%A3%E3%81%A6%E4%BA%AC%E9%83%BD%EA%B8%B0%EB%8B%A4%EB%A6%AC%E7%AD%89%D8%A7%D9%86%D8%AA%D8%B8%D8%B1waitch%E1%BB%9D.%E2%80%A6&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="ui-bsa-page">
+
+<a class="ui-bsa-skip" href="#book">Skip the ad</a>
+
+<main>
+  <!-- ================================================================ The ad -->
+  <section class="ui-bsa" data-ui-bsa aria-labelledby="ui-bsa-title" aria-describedby="ui-bsa-summary">
+    <h1 id="ui-bsa-title" class="ui-bsa__sr">tomaru: “That’s every hotel.” A 33-second animated ad</h1>
+    <p id="ui-bsa-summary" class="ui-bsa__sr">Hotels are limited, costly and generic; tomaru changed that. The ad walks through searching for Kyoto, picking dates and guests, choosing a stay, sending a request and getting it confirmed. A full transcript follows the ad.</p>
+
+    <div class="ui-bsa__frame" data-frame>
+      <!-- Everything inside the canvas is a picture of the story; the transcript
+           below carries the same words for assistive tech. -->
+      <div class="ui-bsa__canvas" data-canvas aria-hidden="true">
+
+        <!-- 01 · Limited / Costly / Generic / That's every hotel. (0.00 – 3.96) -->
+        <div class="ui-bsa__scene" data-scene="words">
+          <div class="ui-bsa__screen">
+            <span class="ui-bsa__word ui-bsa__word--xl" data-k="w-limited">Limited</span>
+            <span class="ui-bsa__word ui-bsa__word--xl" data-k="w-costly">Costly</span>
+            <span class="ui-bsa__word ui-bsa__word--xl" data-k="w-generic">Generic</span>
+            <span class="ui-bsa__word ui-bsa__word--md" data-k="w-thats">That’s</span>
+            <span class="ui-bsa__word ui-bsa__word--md" data-k="w-every">every</span>
+            <span class="ui-bsa__word ui-bsa__word--md" data-k="w-hotel">hotel.</span>
+            <i class="ui-bsa__ball" data-k="ball"></i>
+          </div>
+        </div>
+
+        <!-- 02 · the circle reveal: [mark] tomaru changed that (3.96 – 6.28) -->
+        <div class="ui-bsa__scene" data-scene="brand">
+          <div class="ui-bsa__screen">
+            <span class="ui-bsa__word ui-bsa__word--md" data-k="b-old">That’s every hotel.</span>
+            <i class="ui-bsa__disc" data-k="b-disc"></i>
+            <span class="ui-bsa__brandline" data-k="b-line">
+              <span class="ui-bsa__mark" data-k="b-mark"><svg viewBox="0 0 32 32" focusable="false"><use href="#ui-bsa-mark"/></svg></span>
+              <span class="ui-bsa__brandname" data-k="b-name" data-brand>tomaru</span>
+              <span data-k="b-changed">changed</span>
+              <span data-k="b-that">that</span>
+            </span>
+            <i class="ui-bsa__ball" data-k="ball"></i>
+          </div>
+        </div>
+
+        <!-- 03 · giant "simple" with the inverted split (6.28 – 7.00) -->
+        <div class="ui-bsa__scene" data-scene="giant">
+          <div class="ui-bsa__screen">
+            <div class="ui-bsa__split ui-bsa__split--top" data-k="g-top"><span class="ui-bsa__giant" data-k="g-word-top" data-letters>simple</span></div>
+            <div class="ui-bsa__split ui-bsa__split--bottom" data-k="g-bottom"><span class="ui-bsa__giant" data-k="g-word-bottom" data-letters>simple</span></div>
+          </div>
+        </div>
+
+        <!-- 04 · s i m p l e on teal, tracking tightens (7.00 – 7.76) -->
+        <div class="ui-bsa__scene" data-scene="simple">
+          <div class="ui-bsa__screen">
+            <span class="ui-bsa__simple" data-k="s-word">simple</span>
+            <i class="ui-bsa__ball" data-k="ball"></i>
+          </div>
+        </div>
+
+        <!-- 05 · letters scatter, a teal pill grows into the search bar (7.76 – 9.28) -->
+        <div class="ui-bsa__scene" data-scene="bar">
+          <div class="ui-bsa__screen">
+            <span class="ui-bsa__letter" data-k="l0">s</span>
+            <span class="ui-bsa__letter" data-k="l1">i</span>
+            <span class="ui-bsa__letter" data-k="l2">m</span>
+            <span class="ui-bsa__letter" data-k="l3">p</span>
+            <span class="ui-bsa__letter" data-k="l4">l</span>
+            <span class="ui-bsa__letter" data-k="l5">e</span>
+            <div class="ui-bsa__pill" data-k="bar">
+              <span class="ui-bsa__pill-fill" data-k="bar-fill"></span>
+              <span class="ui-bsa__pill-row" data-k="bar-row">
+                <span>Anywhere</span><i></i><span>Anytime</span><i></i><span>Add guests</span>
+              </span>
+            </div>
+            <span class="ui-bsa__go" data-k="go"><svg viewBox="0 0 16 16" focusable="false"><use href="#ui-bsa-glass"/></svg></span>
+            <i class="ui-bsa__ball" data-k="ball"></i>
+            <i class="ui-bsa__ball" data-k="ball2"></i>
+          </div>
+        </div>
+
+        <!-- 06 · the bar tilts over grey, the button jumps (9.28 – 10.00) -->
+        <div class="ui-bsa__scene" data-scene="tilt">
+          <div class="ui-bsa__screen">
+            <i class="ui-bsa__orb" data-k="orb-a"></i>
+            <i class="ui-bsa__orb" data-k="orb-b"></i>
+            <div class="ui-bsa__pill ui-bsa__pill--solid" data-k="bar">
+              <span class="ui-bsa__pill-row" data-k="bar-row">
+                <span>Anywhere</span><i></i><span>Anytime</span><i></i><span>Add guests</span>
+              </span>
+            </div>
+            <span class="ui-bsa__go" data-k="go"><svg viewBox="0 0 16 16" focusable="false" data-k="go-icon"><use href="#ui-bsa-glass"/></svg></span>
+          </div>
+        </div>
+
+        <!-- 07 · Dest·in·ation lands over the full search bar (10.00 – 10.70) -->
+        <div class="ui-bsa__scene" data-scene="dest">
+          <div class="ui-bsa__world" data-k="cam">
+            <span class="ui-bsa__dest" data-k="d0">Dest</span>
+            <span class="ui-bsa__dest" data-k="d1">in</span>
+            <span class="ui-bsa__dest" data-k="d2">ation</span>
+            <div class="ui-bsa__search" data-k="search">
+              <span class="ui-bsa__field"><b>Where</b><small data-k="where-ph">Search destinations</small></span><i></i>
+              <span class="ui-bsa__field"><b>Check-in</b><small>Add dates</small></span><i></i>
+              <span class="ui-bsa__field"><b>Check-out</b><small>Add dates</small></span><i></i>
+              <span class="ui-bsa__field"><b>Who</b><small>Add guests</small></span>
+              <span class="ui-bsa__go ui-bsa__go--in" data-k="go-in"><svg viewBox="0 0 16 16" focusable="false"><use href="#ui-bsa-glass"/></svg></span>
+            </div>
+          </div>
+          <div class="ui-bsa__screen">
+            <i class="ui-bsa__ball" data-k="ball"></i>
+          </div>
+        </div>
+
+        <!-- 08 · the camera dives into "Where" and types the destination (10.70 – 12.20) -->
+        <div class="ui-bsa__scene" data-scene="where">
+          <div class="ui-bsa__world" data-k="cam">
+            <div class="ui-bsa__search ui-bsa__search--active" data-k="search">
+              <span class="ui-bsa__field ui-bsa__field--on"><b>Where</b><small data-k="where-val">Search destinations</small></span><i></i>
+              <span class="ui-bsa__field"><b>Check-in</b><small>Add dates</small></span><i></i>
+              <span class="ui-bsa__field"><b>Check-out</b><small>Add dates</small></span><i></i>
+              <span class="ui-bsa__field"><b>Who</b><small>Add guests</small></span>
+              <span class="ui-bsa__go ui-bsa__go--in"><svg viewBox="0 0 16 16" focusable="false"><use href="#ui-bsa-glass"/></svg></span>
+            </div>
+          </div>
+          <div class="ui-bsa__screen">
+            <i class="ui-bsa__wipe" data-k="wipe"></i>
+          </div>
+        </div>
+
+        <!-- 09 · giant "time" behind a receding teal block (12.20 – 12.60) -->
+        <div class="ui-bsa__scene" data-scene="bigtime">
+          <div class="ui-bsa__screen">
+            <i class="ui-bsa__wipe ui-bsa__wipe--left" data-k="wipe"></i>
+            <span class="ui-bsa__giant ui-bsa__giant--ink" data-k="t-giant">time</span>
+            <i class="ui-bsa__shard" data-k="t-shard"></i>
+          </div>
+        </div>
+
+        <!-- 10 · time loses its dot, the e flips (12.60 – 13.80) -->
+        <div class="ui-bsa__scene" data-scene="time">
+          <div class="ui-bsa__screen">
+            <i class="ui-bsa__wipe ui-bsa__wipe--left" data-k="wipe"></i>
+            <span class="ui-bsa__time" data-k="t-word"><span data-k="t-t">t</span><span class="ui-bsa__time-i" data-k="t-i">ı<i data-k="t-dot"></i></span><span data-k="t-m">m</span><span data-k="t-e">e</span></span>
+            <i class="ui-bsa__shard" data-k="t-shard"></i>
+            <i class="ui-bsa__ball ui-bsa__ball--ink" data-k="ball"></i>
+          </div>
+        </div>
+
+        <!-- 11 · the calendar: the ball lands on the 6th, rolls to the 10th, becomes "Who" (13.80 – 18.24) -->
+        <div class="ui-bsa__scene" data-scene="cal">
+          <div class="ui-bsa__world" data-k="cam">
+            <div class="ui-bsa__tabs" data-k="tabs"><span class="is-on">Dates</span><span>Months</span><span>Flexible</span></div>
+            <span class="ui-bsa__month" data-k="month" data-month>October 2025</span>
+            <i class="ui-bsa__band" data-k="band"></i>
+            <div class="ui-bsa__grid" data-k="grid"></div>
+            <i class="ui-bsa__sel" data-k="sel-a"><span data-k="sel-a-n">6</span></i>
+            <i class="ui-bsa__sel" data-k="sel-b"><span data-k="sel-b-n">10</span></i>
+            <div class="ui-bsa__who" data-k="who">
+              <span class="ui-bsa__field"><b>Who</b><small data-k="who-val">Add guests</small></span>
+              <span class="ui-bsa__cta" data-k="who-go"><svg viewBox="0 0 16 16" focusable="false"><use href="#ui-bsa-glass"/></svg><span data-k="who-go-label">Search</span></span>
+            </div>
+          </div>
+          <div class="ui-bsa__screen">
+            <i class="ui-bsa__ball ui-bsa__ball--ink" data-k="ball"></i>
+            <i class="ui-bsa__ball" data-k="ball2"></i>
+            <svg class="ui-bsa__cursor" data-k="cursor" viewBox="0 0 20 24" focusable="false"><use href="#ui-bsa-cursor"/></svg>
+          </div>
+        </div>
+
+        <!-- 12 · the wall of stays (18.24 – 20.32) -->
+        <div class="ui-bsa__scene" data-scene="wall">
+          <div class="ui-bsa__world" data-k="cam">
+            <div class="ui-bsa__tiles" data-k="tiles"></div>
+            <span class="ui-bsa__choose" data-k="choose"><span data-k="c0">Choose from</span> <span data-k="c1">countless designs</span></span>
+          </div>
+          <div class="ui-bsa__screen">
+            <i class="ui-bsa__ball" data-k="ball"></i>
+          </div>
+        </div>
+
+        <!-- 13 · the listing over a faint 京都 (20.32 – 24.30) -->
+        <div class="ui-bsa__scene" data-scene="listing">
+          <div class="ui-bsa__world" data-k="cam">
+            <span class="ui-bsa__kanji" data-k="kanji" lang="ja">都京都京都</span>
+            <div class="ui-bsa__shot ui-bsa__shot--hero" data-k="hero"></div>
+            <div class="ui-bsa__shot" data-k="side-a"></div>
+            <div class="ui-bsa__shot" data-k="side-b"></div>
+            <div class="ui-bsa__info" data-k="info">
+              <b data-listing-title>Room in Shimogyo Ward, Japan</b>
+              <small data-listing-facts>2 guests · 1 bedroom · 2 beds · 1 private bath</small>
+            </div>
+            <span class="ui-bsa__reserve" data-k="reserve"><span data-k="reserve-label">Reserve</span></span>
+          </div>
+          <div class="ui-bsa__screen">
+            <i class="ui-bsa__ball" data-k="ball"></i>
+            <i class="ui-bsa__ball" data-k="ball2"></i>
+            <svg class="ui-bsa__cursor" data-k="cursor" viewBox="0 0 20 24" focusable="false"><use href="#ui-bsa-cursor"/></svg>
+          </div>
+        </div>
+
+        <!-- 14 · Request sent (24.30 – 25.76) -->
+        <div class="ui-bsa__scene" data-scene="request">
+          <div class="ui-bsa__screen">
+            <div class="ui-bsa__note" data-k="note">
+              <b>Request sent</b>
+              <small>This is not a confirmed booking - at least not yet. You’ll get a response within<br>24 hours.</small>
+            </div>
+            <i class="ui-bsa__peek" data-k="peek"></i>
+            <i class="ui-bsa__ball" data-k="ball"></i>
+          </div>
+        </div>
+
+        <!-- 15 · "and you just wait…" in eleven languages (25.76 – 27.20) -->
+        <div class="ui-bsa__scene" data-scene="wait">
+          <div class="ui-bsa__screen">
+            <div class="ui-bsa__cloud" data-k="cloud">
+              <span class="ui-bsa__ghost" lang="ja">待</span>
+              <svg class="ui-bsa__braille" data-w="0" viewBox="0 0 130 34" focusable="false"><use href="#ui-bsa-braille"/></svg>
+              <span data-w="1" lang="fr">attendre</span>
+              <span data-w="2" lang="ko">기다리다</span>
+              <span data-w="3" lang="ja">待って</span>
+              <span data-w="4" class="ui-bsa__lead">and you just <em>wait…</em></span>
+              <span data-w="5" lang="pl">czekać</span>
+              <span data-w="6" lang="es">espera</span>
+              <span data-w="7" lang="zh">等待</span>
+              <span data-w="8" lang="sv">vänta</span>
+              <span data-w="9" lang="el-Latn">periméno</span>
+              <span data-w="10" lang="ar" dir="rtl">انتظر</span>
+              <span data-w="11" lang="vi">chờ</span>
+            </div>
+            <i class="ui-bsa__ball" data-k="ball"></i>
+          </div>
+        </div>
+
+        <!-- 16 · three dots (27.20 – 28.80) -->
+        <div class="ui-bsa__scene" data-scene="dots">
+          <div class="ui-bsa__screen">
+            <i class="ui-bsa__dot" data-k="dot0"></i>
+            <i class="ui-bsa__dot" data-k="dot1"></i>
+            <i class="ui-bsa__dot" data-k="dot2"></i>
+            <i class="ui-bsa__ball" data-k="ball"></i>
+            <i class="ui-bsa__ball" data-k="ball2"></i>
+            <i class="ui-bsa__tick" data-k="tick"></i>
+          </div>
+        </div>
+
+        <!-- 17 · Your reservation is confirmed (28.80 – 30.24) -->
+        <div class="ui-bsa__scene" data-scene="confirmed">
+          <div class="ui-bsa__screen">
+            <div class="ui-bsa__note ui-bsa__note--done" data-k="note">
+              <b>Your reservation is confirmed</b>
+              <small data-k="sub" data-going>You’re going to Japan.</small>
+            </div>
+            <i class="ui-bsa__ball" data-k="ball"></i>
+          </div>
+        </div>
+
+        <!-- 18 · the mark on coral (30.24 – 31.68) -->
+        <div class="ui-bsa__scene" data-scene="logo">
+          <div class="ui-bsa__screen">
+            <span class="ui-bsa__mark ui-bsa__mark--end" data-k="mark"><svg viewBox="0 0 32 32" focusable="false"><use href="#ui-bsa-mark"/></svg></span>
+          </div>
+        </div>
+
+        <!-- 19 · the end mark (31.68 – 33.12) -->
+        <div class="ui-bsa__scene" data-scene="end">
+          <div class="ui-bsa__screen">
+            <svg class="ui-bsa__barcode" data-k="barcode" viewBox="0 0 48 34" focusable="false"></svg>
+          </div>
+        </div>
+
+        <!-- The faint template credit is drawn as part of the picture; the page footer carries it at full contrast -->
+        <svg class="ui-bsa__legal" data-legal viewBox="0 0 300 16" focusable="false"><text x="150" y="12" text-anchor="middle">©2025 - tomaru - All Rights Reserved.</text></svg>
+      </div>
+
+      <!-- Shown when the ad has played to the end -->
+      <button class="ui-bsa__replay" type="button" data-replay hidden>
+        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4 3.8v4.6h4.6"/></svg>
+        <span>Replay</span>
+      </button>
+    </div>
+
+    <!-- Player controls. The ad runs longer than 5 seconds, so it can be paused (WCAG 2.2.2). -->
+    <div class="ui-bsa__bar" role="group" aria-label="Ad controls">
+      <button class="ui-bsa__btn" type="button" data-play aria-label="Pause the ad">
+        <svg class="ui-bsa__i-pause" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+        <svg class="ui-bsa__i-play" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg>
+      </button>
+      <div class="ui-bsa__track">
+        <div class="ui-bsa__ticks" data-ticks aria-hidden="true"></div>
+        <input class="ui-bsa__range" type="range" min="0" max="33.12" step="0.04" value="0" data-range aria-label="Ad position">
+      </div>
+      <span class="ui-bsa__clock" data-clock aria-hidden="true">0:00 / 0:33</span>
+      <a class="ui-bsa__btn ui-bsa__btn--text" href="#ui-bsa-transcript">Transcript</a>
+    </div>
+
+    <!-- Announces where the ad jumped to, only after the visitor moves it -->
+    <p class="ui-bsa__sr" aria-live="polite" data-live></p>
+  </section>
+
+  <!-- ================================================================ Transcript -->
+  <section class="ui-bsa-transcript" id="ui-bsa-transcript" aria-labelledby="ui-bsa-transcript-title">
+    <h2 id="ui-bsa-transcript-title">Transcript</h2>
+    <p>Each line is a beat of the ad. Select a time to jump there.</p>
+    <ol class="ui-bsa-transcript__list" data-transcript></ol>
+  </section>
+
+  <!-- ================================================================ The booking UI, working -->
+  <section class="bk" id="book" aria-labelledby="bk-title" tabindex="-1">
+    <div class="bk__head">
+      <p class="bk__eyebrow">The UI from the ad, for real</p>
+      <h2 id="bk-title">Find a stay in Kyoto</h2>
+    </div>
+
+    <form class="bk-search" role="search" aria-label="Find a stay" data-bk-form>
+      <div class="bk-search__seg bk-search__seg--where">
+        <label for="bk-where">Where</label>
+        <input id="bk-where" name="where" type="text" placeholder="Search destinations" autocomplete="off" list="bk-places" value="">
+        <datalist id="bk-places">
+          <option value="Kyoto, Japan"></option>
+          <option value="Tokyo, Japan"></option>
+          <option value="Osaka, Japan"></option>
+          <option value="Nara, Japan"></option>
+          <option value="Kanazawa, Japan"></option>
+        </datalist>
+      </div>
+      <div class="bk-search__seg">
+        <button type="button" class="bk-search__btn" data-open="dates" aria-haspopup="dialog" aria-expanded="false" aria-controls="bk-dates">
+          <span class="bk-search__label">Check-in</span>
+          <span class="bk-search__value" data-checkin>Add dates</span>
+        </button>
+      </div>
+      <div class="bk-search__seg">
+        <button type="button" class="bk-search__btn" data-open="dates" aria-haspopup="dialog" aria-expanded="false" aria-controls="bk-dates">
+          <span class="bk-search__label">Check-out</span>
+          <span class="bk-search__value" data-checkout>Add dates</span>
+        </button>
+      </div>
+      <div class="bk-search__seg bk-search__seg--who">
+        <button type="button" class="bk-search__btn" data-open="guests" aria-haspopup="dialog" aria-expanded="false" aria-controls="bk-guests">
+          <span class="bk-search__label">Who</span>
+          <span class="bk-search__value" data-guests-label>Add guests</span>
+        </button>
+        <button type="submit" class="bk-search__go">
+          <svg viewBox="0 0 16 16" focusable="false" aria-hidden="true"><use href="#ui-bsa-glass"/></svg>
+          <span>Search</span>
+        </button>
+      </div>
+
+      <!-- Dates popover -->
+      <div class="bk-pop bk-pop--dates" id="bk-dates" role="dialog" aria-modal="false" aria-labelledby="bk-dates-title" hidden>
+        <h3 id="bk-dates-title" class="ui-bsa__sr">Choose your dates</h3>
+        <div class="bk-tabs" role="tablist" aria-label="How to pick dates">
+          <button type="button" role="tab" id="bk-tab-dates" aria-controls="bk-panel-dates" aria-selected="true">Dates</button>
+          <button type="button" role="tab" id="bk-tab-months" aria-controls="bk-panel-months" aria-selected="false" tabindex="-1">Months</button>
+          <button type="button" role="tab" id="bk-tab-flex" aria-controls="bk-panel-flex" aria-selected="false" tabindex="-1">Flexible</button>
+        </div>
+        <div class="bk-panel" role="tabpanel" id="bk-panel-dates" aria-labelledby="bk-tab-dates">
+          <div class="bk-cal__head">
+            <button type="button" class="bk-icon" data-cal-prev aria-label="Previous month"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M10 3 5 8l5 5"/></svg></button>
+            <h4 class="bk-cal__title" data-cal-title aria-live="polite">October 2025</h4>
+            <button type="button" class="bk-icon" data-cal-next aria-label="Next month"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m6 3 5 5-5 5"/></svg></button>
+          </div>
+          <table class="bk-cal" role="grid" aria-labelledby="bk-dates-title" data-cal>
+            <thead><tr>
+              <th scope="col" abbr="Sunday">S</th><th scope="col" abbr="Monday">M</th><th scope="col" abbr="Tuesday">T</th><th scope="col" abbr="Wednesday">W</th><th scope="col" abbr="Thursday">T</th><th scope="col" abbr="Friday">F</th><th scope="col" abbr="Saturday">S</th>
+            </tr></thead>
+            <tbody data-cal-body></tbody>
+          </table>
+          <p class="bk-hint" data-cal-hint>Select a check-in date.</p>
+        </div>
+        <div class="bk-panel" role="tabpanel" id="bk-panel-months" aria-labelledby="bk-tab-months" hidden>
+          <label class="bk-field" for="bk-months">Stay for <output for="bk-months" data-months-out>1 month</output></label>
+          <input id="bk-months" type="range" min="1" max="12" value="1" data-months>
+        </div>
+        <div class="bk-panel" role="tabpanel" id="bk-panel-flex" aria-labelledby="bk-tab-flex" hidden>
+          <fieldset class="bk-chips">
+            <legend>How long would you like to stay?</legend>
+            <label><input type="radio" name="flex" value="Weekend" checked> <span>Weekend</span></label>
+            <label><input type="radio" name="flex" value="Week"> <span>Week</span></label>
+            <label><input type="radio" name="flex" value="Month"> <span>Month</span></label>
+          </fieldset>
+        </div>
+        <div class="bk-pop__foot">
+          <button type="button" class="bk-link" data-cal-clear>Clear dates</button>
+          <button type="button" class="bk-done" data-close>Done</button>
+        </div>
+      </div>
+
+      <!-- Guests popover -->
+      <div class="bk-pop bk-pop--guests" id="bk-guests" role="dialog" aria-modal="false" aria-labelledby="bk-guests-title" hidden>
+        <h3 id="bk-guests-title" class="ui-bsa__sr">Who’s coming?</h3>
+        <div class="bk-step" data-step="adults">
+          <div><b id="bk-adults-label">Adults</b><small>Ages 13 or above</small></div>
+          <div class="bk-step__ctl" role="group" aria-labelledby="bk-adults-label">
+            <button type="button" class="bk-icon" data-dec aria-label="Fewer adults"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h10"/></svg></button>
+            <output data-val aria-live="polite">0</output>
+            <button type="button" class="bk-icon" data-inc aria-label="More adults"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h10M8 3v10"/></svg></button>
+          </div>
+        </div>
+        <div class="bk-step" data-step="children">
+          <div><b id="bk-children-label">Children</b><small>Ages 2 – 12</small></div>
+          <div class="bk-step__ctl" role="group" aria-labelledby="bk-children-label">
+            <button type="button" class="bk-icon" data-dec aria-label="Fewer children"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h10"/></svg></button>
+            <output data-val aria-live="polite">0</output>
+            <button type="button" class="bk-icon" data-inc aria-label="More children"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h10M8 3v10"/></svg></button>
+          </div>
+        </div>
+        <div class="bk-pop__foot">
+          <span></span>
+          <button type="button" class="bk-done" data-close>Done</button>
+        </div>
+      </div>
+    </form>
+
+    <p class="bk-status" role="status" data-bk-status></p>
+
+    <div class="bk-results" data-bk-results hidden>
+      <h3 class="bk-results__title">Choose from countless designs</h3>
+      <ul class="bk-cards" data-bk-cards></ul>
+    </div>
+  </section>
+
+  <footer class="ui-bsa-foot">
+    <p>©2025 tomaru. All rights reserved. tomaru is a fictional brand made for this template.</p>
+    <details>
+      <summary>Photo credits</summary>
+      <ul data-credits></ul>
+    </details>
+  </footer>
+</main>
+
+<!-- Shared symbols -->
+<svg width="0" height="0" class="ui-bsa__defs" aria-hidden="true" focusable="false">
+  <!-- The tomaru mark: a doorway with the ball that travels through the ad -->
+  <symbol id="ui-bsa-mark" viewBox="0 0 32 32">
+    <path d="M8.4 27.2V15.6a7.6 7.6 0 0 1 15.2 0v11.6" fill="none" stroke="currentColor" stroke-width="2.9" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="16" cy="20.2" r="3.1" fill="currentColor"/>
+  </symbol>
+  <symbol id="ui-bsa-glass" viewBox="0 0 16 16">
+    <circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="2.2"/>
+    <path d="m10.4 10.4 3.4 3.4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="ui-bsa-cursor" viewBox="0 0 20 24">
+    <path d="M2 1.5v18.2l4.7-4.4 3.1 7 3.3-1.5-3.1-6.8h6.5z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>
+  </symbol>
+  <!-- "wait" in braille: w (2 4 5 6) a (1) i (2 4) t (2 3 4 5) -->
+  <symbol id="ui-bsa-braille" viewBox="0 0 130 34">
+    <g fill="currentColor">
+      <circle cx="8" cy="18" r="3.4"/><circle cx="20" cy="10" r="3.4"/><circle cx="20" cy="18" r="3.4"/><circle cx="20" cy="26" r="3.4"/>
+      <circle cx="42" cy="10" r="3.4"/>
+      <circle cx="76" cy="18" r="3.4"/><circle cx="88" cy="10" r="3.4"/>
+      <circle cx="110" cy="18" r="3.4"/><circle cx="110" cy="26" r="3.4"/><circle cx="122" cy="10" r="3.4"/><circle cx="122" cy="18" r="3.4"/>
+    </g>
+  </symbol>
+</svg>
+
+<script src="tracks.js"></script>
+<script src="script.js"></script>
+<script src="booking.js"></script>
+</body>
+</html>
