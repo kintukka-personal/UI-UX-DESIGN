@@ -12,7 +12,7 @@ Every persona follows the same framework: **name, role, skills to use, and the p
 
 | Persona | Role | Votes | What they do | Skills |
 | --- | --- | ---: | --- | --- |
-| **Coach** | Draft strategist (chair) | 2 | Frames each pick against the league settings and our slot (6 of 8), then makes the call. Breaks ties as chair | `analysis-planning`, `insight-synthesis`, `executive-summary-generator`, `data:analyze` |
+| **Coach** | Draft strategist (chair) | 3 | Frames each pick against the league settings and our slot (6 of 8), then makes the call. Breaks ties as chair | `analysis-planning`, `insight-synthesis`, `executive-summary-generator`, `data:analyze` |
 | **Archivist** | Data steward | 2 | Checks every number against its column and file before anyone uses it, and flags thin samples | `programmatic-eda`, `data-quality-audit`, `schema-mapper`, `metric-reconciliation`, `data-catalog-entry`, `context-packager` |
 | **Cipher** | Projections | 2 | Owns the league-scored fantasy-points number, always as a range | `data:statistical-analysis`, `time-series-analysis`, `semantic-model-builder`, `methodology-explainer` |
 | **Ledger** | Value & ADP | 2 | Finds the gap between ADP (standard scoring) and what a player scores here, at our next turn | `segmentation-analysis`, `impact-quantification`, `data:analyze` |
@@ -23,7 +23,7 @@ Every persona follows the same framework: **name, role, skills to use, and the p
 | **Quill** | Scribe | 2 | Keeps the council consistent with its earlier verdicts in council/sessions/ | `data-narrative-builder`, `analysis-documentation`, `analysis-retrospective`, `insight-synthesis` |
 | **Wire** | Researcher (non-voting) | 0 | Before every meeting, searches the web for the latest news on the players in the question and writes a sourced briefing to `docs/research/`. Speaks first, never votes | tools: `WebSearch`, `WebFetch` |
 
-Voting is flat: every member has 2 votes (18 in total, so a majority is 10). Wire has 0.
+Every member has 2 votes except Coach, the chair, with 3: 19 in total, so a majority is 10 and the closest result is 10 to 9. A yes/no vote can never tie. Wire has 0.
 
 ### Why these skills
 
@@ -74,7 +74,7 @@ briefing to `docs/research/`. Then nine subagents (`.claude/agents/council-*.md`
 research the two folders, briefing first, in parallel, and each returns a ballot: vote, confidence, rationale, evidence.
 A question can be **yes/no**, a **selection** between named options, or an
 open **suggestion**, where the proposals are pooled and everyone votes again.
-`council/tally.py` counts the votes (2 per member). If no option has a majority, the
+`council/tally.py` counts the votes (2 per member, 3 for Coach). If no option has a majority, the
 top two go to a runoff, and the highest-voted answer is the verdict. See
 `council/PROTOCOL.md` in that repo.
 
@@ -93,7 +93,7 @@ from code.
 Everything from [AI Council](../ai-council/) works the same way: the ring, the five orb states, the speaking card rising and glowing, drag and keyboard, Convene, the weighted vote, adding and removing members, and saving edits in the browser. This version adds:
 
 - **Draft question** replaces Motion. The default is "Take a big man with our first pick". The scripted lines talk about tiers, ADP, games played and four-point steals and blocks. They don't name or rate real players.
-- **Data repo** links to NBA-FANTASY. **Scoring** shows the ESPN weights.
+- **Data repo** links to NBA-FANTASY. **League rules** (name, format, teams, our slot, rounds, roster, max G, adds a week) and **Scoring** (points per stat; add or remove stats) are editable. Our snake picks update from the slot, and every persona pack carries the league as edited. Edits stay in this browser; **Reset to GONG** restores the league's real settings.
 - **Skills** for the selected member are listed as chips. Remove one with ×, or add one from the catalogue with **+ Add a skill**. Each card shows how many skills that member has.
 - **Reads from the repo** lists the member's paths, one per line.
 - **Persona pack** writes the member out as instructions: brief, skills, repo and paths, scoring, lean and vote weight. **Copy pack** copies it, ready to paste into an agent's instructions.
@@ -106,7 +106,8 @@ Everything from [AI Council](../ai-council/) works the same way: the ring, the f
 | --- | --- |
 | `Council.pack(id)` | The member's persona pack, as Markdown |
 | `Council.repo` | `{ name, url }` of the data repo |
-| `Council.scoring` | The scoring weights, as `[stat, points]` pairs |
+| `Council.scoring` | The scoring as edited, as `[stat, points]` pairs |
+| `Council.league()` / `Council.setLeague(patch)` / `Council.resetLeague()` | Read, change or reset the league rules and scoring. Changes fire a `league` event |
 | `Council.skills` | The skills catalogue |
 | `Council.get(id)` | Now includes `skills` and `sources` |
 | `Council.replay(session)` | Plays a saved NBA-FANTASY council session on the ring and shows its real tally |
