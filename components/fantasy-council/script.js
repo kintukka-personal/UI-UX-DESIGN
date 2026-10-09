@@ -8,7 +8,7 @@
   var root = document.getElementById("council");
   if (!root) return;
 
-  var STORE_KEY = "ui-draft-council:v3";
+  var STORE_KEY = "ui-draft-council:v4";
   var MAX_MEMBERS = 12;
   var MIN_MEMBERS = 3;
   var SPIN_SPEED = 9; // degrees a second: one turn in 40s
