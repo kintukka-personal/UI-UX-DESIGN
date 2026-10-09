@@ -200,7 +200,15 @@
     dWeight: root.querySelector("[data-d-weight]"),
     dWeightOut: root.querySelector("[data-d-weight-out]"),
     reset: root.querySelector("[data-reset]"),
-    remove: root.querySelector("[data-remove]")
+    remove: root.querySelector("[data-remove]"),
+    chat: root.querySelector("[data-chat]"),
+    history: root.querySelector("[data-history]"),
+    historyToggle: root.querySelector("[data-history-toggle]"),
+    sessionList: root.querySelector("[data-session-list]"),
+    dialogs: {
+      members: root.querySelector('[data-dialog="members"]'),
+      league: root.querySelector('[data-dialog="league"]')
+    }
   };
 
   /* ---------- Helpers ---------- */
@@ -477,7 +485,9 @@
         "</span>";
       card.addEventListener("click", function () {
         if (drag && drag.moved) return;
+        var again = selectedId === agent.id && held;
         select(agent.id);
+        if (again && !session) openDialog("members");
       });
       el.ring.appendChild(card);
       cards[agent.id] = card;
@@ -749,7 +759,7 @@
     if (!agent) {
       el.floor.style.removeProperty("--floor");
       el.floorName.textContent = "The draft room is open.";
-      el.floorLine.textContent = line || "Pick a member to see their skills and data, or put a draft question to the floor.";
+      el.floorLine.textContent = line || "Tap a card to bring it forward, tap it again to edit. Or ask the council below.";
       return;
     }
     el.floor.style.setProperty("--floor", agent.tint);
@@ -766,6 +776,7 @@
     var on = spinning && !held;
     el.spin.setAttribute("aria-pressed", on ? "true" : "false");
     el.spinLabel.textContent = on ? "Pause rotation" : "Resume rotation";
+    el.spin.dataset.tip = el.spinLabel.textContent;
   }
 
   /* ---------- Convene: a scripted demo of a deliberation ---------- */
@@ -775,8 +786,7 @@
     var motion = (el.motion.value || "").trim() || "the question";
     var token = { cancelled: false, timers: [] };
     session = token;
-    el.convene.textContent = "Adjourn";
-    el.convene.setAttribute("aria-pressed", "true");
+    setConvening(true);
     el.vote.hidden = true;
 
     var present = agents.filter(function (a) { return a.state !== "asleep"; });
@@ -866,8 +876,7 @@
     }
     var token = { cancelled: false, timers: [] };
     session = token;
-    el.convene.textContent = "Adjourn";
-    el.convene.setAttribute("aria-pressed", "true");
+    setConvening(true);
     el.vote.hidden = true;
     el.motion.value = data.question || "";
 
@@ -971,10 +980,14 @@
     floor(null, "Adjourned.");
   }
 
+  function setConvening(on) {
+    el.convene.setAttribute("aria-pressed", on ? "true" : "false");
+    el.convene.setAttribute("aria-label", on ? "Adjourn" : "Convene");
+  }
+
   function endSession() {
     session = null;
-    el.convene.textContent = "Convene";
-    el.convene.setAttribute("aria-pressed", "false");
+    setConvening(false);
     agents.forEach(function (a) {
       if (a.state !== "asleep") setState(a.id, "idle");
     });
@@ -1053,10 +1066,81 @@
     syncSpin();
   });
 
-  el.convene.addEventListener("click", convene);
+  el.chat.addEventListener("submit", function (e) {
+    e.preventDefault();
+    closeHistory();
+    convene();
+  });
+
+  /* Popups: Members and League open from the icons, top right */
+
+  function openDialog(name) {
+    var d = el.dialogs[name];
+    if (!d || d.open) return;
+    closeHistory();
+    if (name === "members") paintAll();
+    if (d.showModal) d.showModal();
+    else d.setAttribute("open", "");
+  }
+
+  function closeDialog(d) {
+    if (d.close) d.close();
+    else d.removeAttribute("open");
+  }
+
+  Array.prototype.forEach.call(root.querySelectorAll("[data-open]"), function (b) {
+    b.addEventListener("click", function () { openDialog(b.dataset.open); });
+  });
+  Object.keys(el.dialogs).forEach(function (name) {
+    var d = el.dialogs[name];
+    d.querySelector("[data-close]").addEventListener("click", function () { closeDialog(d); });
+    // A click on the backdrop (outside the box) closes it
+    d.addEventListener("click", function (e) {
+      if (e.target !== d) return;
+      var r = d.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) closeDialog(d);
+    });
+  });
+
+  /* Previous sessions: a small popover above the question box */
+
+  function closeHistory() {
+    el.history.hidden = true;
+    el.historyToggle.setAttribute("aria-expanded", "false");
+  }
+
+  function paintHistory() {
+    if (!el.sessionList.querySelector("[data-session]") && !el.sessionList.querySelector(".ui-council__note")) {
+      var p = document.createElement("p");
+      p.className = "ui-council__note";
+      p.textContent = "No sessions linked here yet. Replay one from a file, drop a session JSON on the page, or open this page with ?session=<url>.";
+      el.sessionList.appendChild(p);
+    }
+  }
+
+  el.historyToggle.addEventListener("click", function () {
+    var open = el.history.hidden;
+    el.history.hidden = !open;
+    el.historyToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) paintHistory();
+  });
+  document.addEventListener("click", function (e) {
+    if (!el.history.hidden && !el.history.contains(e.target) && !el.historyToggle.contains(e.target)) closeHistory();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !el.history.hidden) { closeHistory(); el.historyToggle.focus(); }
+  });
+  // Session buttons, e.g. <button data-session="sessions/pick-6.json">, replay that file
+  el.sessionList.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-session]");
+    if (!b || !window.fetch) return;
+    closeHistory();
+    fetch(b.dataset.session).then(function (r) { return r.json(); }).then(replay)
+      .catch(function () { floor(null, "Couldn't load that session."); });
+  });
 
   if (el.load && el.loadFile) {
-    el.load.addEventListener("click", function () { el.loadFile.click(); });
+    el.load.addEventListener("click", function () { closeHistory(); el.loadFile.click(); });
     el.loadFile.addEventListener("change", function () {
       loadSessionFile(el.loadFile.files[0]);
       el.loadFile.value = "";
@@ -1068,9 +1152,6 @@
     if (!f || !/json$/i.test(f.type || f.name)) return;
     e.preventDefault();
     loadSessionFile(f);
-  });
-  el.motion.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && !session) convene();
   });
 
   el.add.addEventListener("click", addAgent);

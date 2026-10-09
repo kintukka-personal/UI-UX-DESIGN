@@ -11,136 +11,168 @@
 
 <div class="ui-council" id="council">
 
-  <!-- The ring -->
+  <!-- The ring fills the screen -->
   <section class="ui-council__stage" aria-label="Council chamber">
     <header class="ui-council__head">
       <p class="ui-council__eyebrow">2026–27 · ESPN points league</p>
       <h1 class="ui-council__title">Draft Council</h1>
     </header>
 
+    <nav class="ui-council__tools" aria-label="Council tools">
+      <button class="ui-council__icon" type="button" data-spin aria-pressed="true" data-tip="Pause rotation">
+        <svg class="is-on" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><svg class="is-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>
+        <span class="ui-council__sr" data-spin-label>Pause rotation</span>
+      </button>
+      <button class="ui-council__icon" type="button" data-open="members" aria-haspopup="dialog" aria-label="Members" data-tip="Members">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </button>
+      <button class="ui-council__icon" type="button" data-open="league" aria-haspopup="dialog" aria-label="League" data-tip="League">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+      </button>
+    </nav>
+
     <div class="ui-council__scene" data-scene>
       <div class="ui-council__ring" data-ring></div>
     </div>
 
-    <div class="ui-council__floor" aria-live="polite" data-floor>
-      <span class="ui-council__floor-dot" data-floor-dot></span>
-      <p class="ui-council__floor-text">
-        <strong data-floor-name>The draft room is open.</strong>
-        <span data-floor-line>Pick a member to see their skills and data, or put a draft question to the floor.</span>
-      </p>
-    </div>
-
-    <div class="ui-council__stage-tools">
-      <button class="ui-council__chip" type="button" data-spin aria-pressed="true">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
-        <span data-spin-label>Pause rotation</span>
-      </button>
-    </div>
-  </section>
-
-  <!-- The side panel -->
-  <aside class="ui-council__panel" aria-label="Council controls">
-
-    <section class="ui-council__section">
-      <label class="ui-council__label" for="ui-council-motion">Draft question</label>
-      <div class="ui-council__motion">
-        <input class="ui-council__input" id="ui-council-motion" type="text" value="Take a big man with our first pick" autocomplete="off" data-motion>
-        <button class="ui-council__btn ui-council__btn--primary" type="button" data-convene>Convene</button>
-      </div>
+    <!-- The floor: who is speaking, the vote, and the question box -->
+    <div class="ui-council__dock">
       <div class="ui-council__vote" data-vote hidden>
         <p class="ui-council__vote-result" data-vote-result></p>
         <ul class="ui-council__vote-list" data-vote-list></ul>
       </div>
-      <div class="ui-council__row">
-        <p class="ui-council__note">Real verdicts come from <code>/council</code> in NBA-FANTASY.</p>
-        <button class="ui-council__link" type="button" data-load>Replay a session…</button>
-        <input type="file" accept="application/json,.json" data-load-file hidden>
-      </div>
-    </section>
 
-    <section class="ui-council__section">
-      <div class="ui-council__row">
-        <h2 class="ui-council__label">Data repo</h2>
-        <a class="ui-council__link" data-repo-link href="#" target="_blank" rel="noopener"></a>
+      <div class="ui-council__floor" aria-live="polite" data-floor>
+        <span class="ui-council__floor-dot" data-floor-dot></span>
+        <p class="ui-council__floor-text">
+          <strong data-floor-name>The draft room is open.</strong>
+          <span data-floor-line>Tap a card to bring it forward, tap it again to edit. Or ask the council below.</span>
+        </p>
       </div>
-      <p class="ui-council__note">Every member reads from this repo. Each one's sources are listed below.</p>
-      <h2 class="ui-council__label ui-council__label--gap">Scoring <span class="ui-council__count">GONG league</span></h2>
-      <dl class="ui-council__scoring" data-scoring></dl>
-    </section>
 
-    <section class="ui-council__section">
-      <div class="ui-council__row">
-        <h2 class="ui-council__label">Members <span class="ui-council__count" data-count></span></h2>
-        <button class="ui-council__link" type="button" data-add>+ Add agent</button>
-      </div>
-      <ul class="ui-council__roster" data-roster></ul>
-    </section>
-
-    <section class="ui-council__section ui-council__detail" data-detail aria-label="Selected member">
-      <div class="ui-council__detail-head">
-        <span class="ui-council__swatch ui-council__swatch--lg" data-d-swatch></span>
-        <div class="ui-council__detail-names">
-          <input class="ui-council__name" type="text" aria-label="Name" maxlength="18" data-d-name>
-          <input class="ui-council__role" type="text" aria-label="Role" maxlength="24" data-d-role>
+      <div class="ui-council__history" data-history hidden>
+        <p class="ui-council__history-title">Previous sessions</p>
+        <div class="ui-council__sessions" data-session-list></div>
+        <div class="ui-council__row">
+          <p class="ui-council__note">Real verdicts come from <code>/council</code> in NBA-FANTASY.</p>
+          <button class="ui-council__link" type="button" data-load>Replay from a file…</button>
+          <input type="file" accept="application/json,.json" data-load-file hidden>
         </div>
       </div>
 
-      <div class="ui-council__field">
-        <span class="ui-council__label" id="ui-council-state-label">State</span>
-        <div class="ui-council__states" role="group" aria-labelledby="ui-council-state-label" data-d-states></div>
-      </div>
+      <form class="ui-council__chat" data-chat>
+        <button class="ui-council__icon ui-council__icon--flat" type="button" data-history-toggle aria-expanded="false" aria-label="Previous sessions" data-tip="Previous sessions">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+        </button>
+        <label class="ui-council__sr" for="ui-council-motion">Draft question</label>
+        <input class="ui-council__chat-input" id="ui-council-motion" type="text" placeholder="Ask the council a draft question…" autocomplete="off" data-motion>
+        <button class="ui-council__send" type="submit" aria-label="Convene" aria-pressed="false" data-convene>
+          <svg class="is-send" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg><svg class="is-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        </button>
+      </form>
+    </div>
+  </section>
 
-      <div class="ui-council__field">
-        <span class="ui-council__label" id="ui-council-tint-label">Colourway</span>
-        <div class="ui-council__tints" role="radiogroup" aria-labelledby="ui-council-tint-label" data-d-tints></div>
-      </div>
+  <!-- Members: the roster and the selected member's settings -->
+  <dialog class="ui-council__modal ui-council__modal--wide" aria-labelledby="ui-council-members-title" data-dialog="members">
+    <header class="ui-council__modal-head">
+      <h2 class="ui-council__modal-title" id="ui-council-members-title">Members</h2>
+      <button class="ui-council__icon ui-council__icon--flat" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </header>
+    <div class="ui-council__modal-body ui-council__members">
+      <section class="ui-council__section">
+        <div class="ui-council__row">
+          <h3 class="ui-council__label">On the council <span class="ui-council__count" data-count></span></h3>
+          <button class="ui-council__link" type="button" data-add>+ Add agent</button>
+        </div>
+        <ul class="ui-council__roster" data-roster></ul>
+      </section>
+      <section class="ui-council__section ui-council__detail" data-detail aria-label="Selected member">
+        <div class="ui-council__detail-head">
+          <span class="ui-council__swatch ui-council__swatch--lg" data-d-swatch></span>
+          <div class="ui-council__detail-names">
+            <input class="ui-council__name" type="text" aria-label="Name" maxlength="18" data-d-name>
+            <input class="ui-council__role" type="text" aria-label="Role" maxlength="24" data-d-role>
+          </div>
+        </div>
 
-      <div class="ui-council__field">
-        <span class="ui-council__label" id="ui-council-skills-label">Skills <output data-d-skills-count></output></span>
-        <ul class="ui-council__skills" aria-labelledby="ui-council-skills-label" data-d-skills></ul>
-        <select class="ui-council__input ui-council__add-skill" id="ui-council-add-skill" aria-label="Add a skill" data-d-add-skill></select>
-      </div>
+        <div class="ui-council__field">
+          <span class="ui-council__label" id="ui-council-state-label">State</span>
+          <div class="ui-council__states" role="group" aria-labelledby="ui-council-state-label" data-d-states></div>
+        </div>
 
-      <div class="ui-council__field">
-        <label class="ui-council__label" for="ui-council-sources">Reads from the repo</label>
-        <textarea class="ui-council__input ui-council__sources" id="ui-council-sources" rows="3" spellcheck="false" data-d-sources></textarea>
-        <p class="ui-council__note">One path per line.</p>
-      </div>
+        <div class="ui-council__field">
+          <span class="ui-council__label" id="ui-council-tint-label">Colourway</span>
+          <div class="ui-council__tints" role="radiogroup" aria-labelledby="ui-council-tint-label" data-d-tints></div>
+        </div>
 
-      <div class="ui-council__field">
-        <label class="ui-council__label" for="ui-council-brief">Brief</label>
-        <textarea class="ui-council__input ui-council__brief" id="ui-council-brief" rows="4" data-d-brief></textarea>
-      </div>
+        <div class="ui-council__field">
+          <span class="ui-council__label" id="ui-council-skills-label">Skills <output data-d-skills-count></output></span>
+          <ul class="ui-council__skills" aria-labelledby="ui-council-skills-label" data-d-skills></ul>
+          <select class="ui-council__input ui-council__add-skill" id="ui-council-add-skill" aria-label="Add a skill" data-d-add-skill></select>
+        </div>
 
-      <div class="ui-council__field ui-council__field--split">
-        <label class="ui-council__label" for="ui-council-lean">
-          Lean <output data-d-lean-out></output>
-        </label>
-        <input class="ui-council__range" id="ui-council-lean" type="range" min="-100" max="100" step="5" data-d-lean>
-        <div class="ui-council__scale"><span>Sceptical</span><span>Supportive</span></div>
-      </div>
+        <div class="ui-council__field">
+          <label class="ui-council__label" for="ui-council-sources">Reads from the repo</label>
+          <textarea class="ui-council__input ui-council__sources" id="ui-council-sources" rows="3" spellcheck="false" data-d-sources></textarea>
+          <p class="ui-council__note">One path per line.</p>
+        </div>
 
-      <div class="ui-council__field ui-council__field--split">
-        <label class="ui-council__label" for="ui-council-weight">
-          Vote weight <output data-d-weight-out></output>
-        </label>
-        <input class="ui-council__range" id="ui-council-weight" type="range" min="0" max="5" step="1" data-d-weight>
-      </div>
+        <div class="ui-council__field">
+          <label class="ui-council__label" for="ui-council-brief">Brief</label>
+          <textarea class="ui-council__input ui-council__brief" id="ui-council-brief" rows="4" data-d-brief></textarea>
+        </div>
 
-      <details class="ui-council__pack">
-        <summary>Persona pack</summary>
-        <p class="ui-council__note">Everything this member needs, ready to paste in as their instructions.</p>
-        <textarea class="ui-council__input ui-council__pack-text" id="ui-council-pack" rows="10" readonly spellcheck="false" aria-label="Persona pack" data-d-pack></textarea>
-        <button class="ui-council__btn" type="button" data-d-copy>Copy pack</button>
-      </details>
+        <div class="ui-council__field ui-council__field--split">
+          <label class="ui-council__label" for="ui-council-lean">
+            Lean <output data-d-lean-out></output>
+          </label>
+          <input class="ui-council__range" id="ui-council-lean" type="range" min="-100" max="100" step="5" data-d-lean>
+          <div class="ui-council__scale"><span>Sceptical</span><span>Supportive</span></div>
+        </div>
 
-      <div class="ui-council__row ui-council__row--end">
-        <button class="ui-council__link" type="button" data-reset>Reset council</button>
-        <button class="ui-council__link ui-council__link--danger" type="button" data-remove>Remove from council</button>
-      </div>
-    </section>
+        <div class="ui-council__field ui-council__field--split">
+          <label class="ui-council__label" for="ui-council-weight">
+            Vote weight <output data-d-weight-out></output>
+          </label>
+          <input class="ui-council__range" id="ui-council-weight" type="range" min="0" max="5" step="1" data-d-weight>
+        </div>
 
-  </aside>
+        <details class="ui-council__pack">
+          <summary>Persona pack</summary>
+          <p class="ui-council__note">Everything this member needs, ready to paste in as their instructions.</p>
+          <textarea class="ui-council__input ui-council__pack-text" id="ui-council-pack" rows="10" readonly spellcheck="false" aria-label="Persona pack" data-d-pack></textarea>
+          <button class="ui-council__btn" type="button" data-d-copy>Copy pack</button>
+        </details>
+
+        <div class="ui-council__row ui-council__row--end">
+          <button class="ui-council__link" type="button" data-reset>Reset council</button>
+          <button class="ui-council__link ui-council__link--danger" type="button" data-remove>Remove from council</button>
+        </div>
+      </section>
+    </div>
+  </dialog>
+
+  <!-- League: the data repo and the scoring -->
+  <dialog class="ui-council__modal" aria-labelledby="ui-council-league-title" data-dialog="league">
+    <header class="ui-council__modal-head">
+      <h2 class="ui-council__modal-title" id="ui-council-league-title">League</h2>
+      <button class="ui-council__icon ui-council__icon--flat" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </header>
+    <div class="ui-council__modal-body">
+      <section class="ui-council__section">
+        <div class="ui-council__row">
+          <h3 class="ui-council__label">Data repo</h3>
+          <a class="ui-council__link" data-repo-link href="#" target="_blank" rel="noopener"></a>
+        </div>
+        <p class="ui-council__note">Every member reads from this repo. Each one's sources are in Members.</p>
+      </section>
+      <section class="ui-council__section">
+        <h3 class="ui-council__label">Scoring <span class="ui-council__count">GONG league</span></h3>
+        <dl class="ui-council__scoring" data-scoring></dl>
+      </section>
+    </div>
+  </dialog>
 </div>
 
 <script src="script.js"></script>

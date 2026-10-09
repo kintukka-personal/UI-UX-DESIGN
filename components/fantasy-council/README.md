@@ -4,7 +4,7 @@ The [AI Council](../ai-council/) set up as a draft companion for an ESPN fantasy
 
 Plain HTML, CSS and vanilla JS, with no dependencies. It is built on the same classes and orb renderer as AI Council (`ui-council`).
 
-![The Draft Council mid-session: Coach speaking at the front, the rest listening](preview.png)
+![The Draft Council mid-session: Coach thinking at the front, the question in the box at the bottom](preview.png)
 
 ## The personas
 
@@ -37,9 +37,9 @@ Most of the skills come from the data-analytics skills pack, the same 31 skills 
 - `metric-reconciliation` catches ESPN numbers that disagree with other sources before they reach the board.
 - `analysis-documentation` and `analysis-retrospective` let Quill write each verdict up and check it against how the pick turned out.
 
-Skills that don't change a ballot are left off the presets: output tools (`xlsx`, `dataviz`, dashboards), `ab-test-analysis`, `funnel-analysis` and the SaaS metrics in `business-metrics-calculator`. You can still add any skill to any persona from the panel.
+Skills that don't change a ballot are left off the presets: output tools (`xlsx`, `dataviz`, dashboards), `ab-test-analysis`, `funnel-analysis` and the SaaS metrics in `business-metrics-calculator`. You can still add any skill to any persona from the Members popup.
 
-In this Claude Code environment the pack's skills are named with an `anthropic-skills:` prefix, for example `anthropic-skills:programmatic-eda`. The panel shows the short names.
+In this Claude Code environment the pack's skills are named with an `anthropic-skills:` prefix, for example `anthropic-skills:programmatic-eda`. The popup shows the short names.
 
 ## Connected to NBA-FANTASY
 
@@ -80,19 +80,31 @@ top two go to a runoff, and the highest-voted answer is the verdict. See
 
 ### Replaying a session on the ring
 
-Each session is saved as JSON in NBA-FANTASY `council/sessions/`. Press
-**Replay a session…** (or drop the file on the page, or open
+Each session is saved as JSON in NBA-FANTASY `council/sessions/`. Press the
+**history** button at the left of the question box and pick a session, or
+choose **Replay from a file…** (or drop the file on the page, or open
 `index.html?session=<url-to-the-json>`). Wire reads out the session's
 research briefing first. Then each member thinks, swings to the
-front and speaks its real vote and rationale, round by round. The panel then
-shows the real tally and the verdict. `Council.replay(session)` does the same
+front and speaks its real vote and rationale, round by round. The real tally and the verdict then
+appear above the question box. `Council.replay(session)` does the same
 from code.
+
+To list sessions in the history popover, put buttons inside
+`[data-session-list]` in `index.html`, one per session:
+`<button type="button" data-session="sessions/pick-6.json">Pick 6</button>`.
 
 ## What's on screen
 
-Everything from [AI Council](../ai-council/) works the same way: the ring, the five orb states, the speaking card rising and glowing, drag and keyboard, Convene, the weighted vote, adding and removing members, and saving edits in the browser. This version adds:
+Everything from [AI Council](../ai-council/) works the same way: the ring, the five orb states, the speaking card rising and glowing, drag and keyboard, Convene, the weighted vote, adding and removing members, and saving edits in the browser. The screen is kept to the ring:
 
-- **Draft question** replaces Motion. The default is "Take a big man with our first pick". The scripted lines talk about tiers, ADP, games played and four-point steals and blocks. They don't name or rate real players.
+- **Top right:** pause or resume the rotation, **Members** (people icon) and **League** (trophy icon). Each opens a popup; Escape, × or a click outside closes it.
+- **Members** holds the roster and everything about the selected member: name, role, state, colourway, skills, sources, brief, lean, vote weight and the persona pack. Tapping the card at the front of the ring a second time opens it on that member.
+- **League** holds the data repo and the scoring.
+- **Bottom:** the speaker's line, the vote when there is one, and the question box. Type a question and press Enter or the send button to convene; the button turns into a stop button to adjourn. The **history** button on its left opens previous sessions.
+
+This version adds:
+
+- **Draft question** replaces Motion. The scripted lines talk about tiers, ADP, games played and four-point steals and blocks. They don't name or rate real players.
 - **Data repo** links to NBA-FANTASY. **Scoring** shows the ESPN weights.
 - **Skills** for the selected member are listed as chips. Remove one with ×, or add one from the catalogue with **+ Add a skill**. Each card shows how many skills that member has.
 - **Reads from the repo** lists the member's paths, one per line.
@@ -117,7 +129,7 @@ A real run sends each member's `Council.pack(id)` as its instructions, with the 
 
 | File | What it is |
 | --- | --- |
-| `index.html` | The stage, the floor caption and the side panel |
+| `index.html` | The stage, the icons, the dock (speaker's line, vote, question box, previous sessions) and the Members and League popups |
 | `style.css` | AI Council's styles, plus the scoring grid, skill chips and persona pack |
-| `script.js` | The personas, skills catalogue, scoring and data repo, on top of AI Council's ring, orbs, panel and API |
+| `script.js` | The personas, skills catalogue, scoring and data repo, on top of AI Council's ring, orbs and API, plus the popups and the question box |
 | `preview.png` | A still at 1440 × 900, mid-session |
