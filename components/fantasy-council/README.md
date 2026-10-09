@@ -93,7 +93,7 @@ from code.
 Everything from [AI Council](../ai-council/) works the same way: the ring, the five orb states, the speaking card rising and glowing, drag and keyboard, Convene, the weighted vote, adding and removing members, and saving edits in the browser. This version adds:
 
 - **Draft question** replaces Motion. The default is "Take a big man with our first pick". The scripted lines talk about tiers, ADP, games played and four-point steals and blocks. They don't name or rate real players.
-- **Data repo** links to NBA-FANTASY. **League rules** (name, format, teams, our slot, rounds, roster, max G, adds a week) and **Scoring** (points per stat; add or remove stats) are editable. Our snake picks update from the slot, and every persona pack carries the league as edited. Edits stay in this browser; **Reset to GONG** restores the league's real settings.
+- **Data repo** links to NBA-FANTASY. **Scoring** shows the ESPN weights.
 - **Skills** for the selected member are listed as chips. Remove one with ×, or add one from the catalogue with **+ Add a skill**. Each card shows how many skills that member has.
 - **Reads from the repo** lists the member's paths, one per line.
 - **Persona pack** writes the member out as instructions: brief, skills, repo and paths, scoring, lean and vote weight. **Copy pack** copies it, ready to paste into an agent's instructions.
@@ -106,8 +106,7 @@ Everything from [AI Council](../ai-council/) works the same way: the ring, the f
 | --- | --- |
 | `Council.pack(id)` | The member's persona pack, as Markdown |
 | `Council.repo` | `{ name, url }` of the data repo |
-| `Council.scoring` | The scoring as edited, as `[stat, points]` pairs |
-| `Council.league()` / `Council.setLeague(patch)` / `Council.resetLeague()` | Read, change or reset the league rules and scoring. Changes fire a `league` event |
+| `Council.scoring` | The scoring weights, as `[stat, points]` pairs |
 | `Council.skills` | The skills catalogue |
 | `Council.get(id)` | Now includes `skills` and `sources` |
 | `Council.replay(session)` | Plays a saved NBA-FANTASY council session on the ring and shows its real tally |

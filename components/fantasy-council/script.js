@@ -31,27 +31,6 @@
     ["DD", 3], ["TD", 6]
   ];
 
-  // The league as the panel edits it. Defaults are the GONG league
-  // (NBA-FANTASY docs/league-rules.md); edits are kept in this browser.
-  var LEAGUE_KEY = "ui-draft-council:league:v1";
-  var LEAGUE_DEFAULT = {
-    name: "GONG League", format: "H2H points, snake draft",
-    teams: 8, slot: 6, rounds: 13, starters: 10, bench: 3, ir: 1, maxG: 4, adds: 7,
-    scoring: SCORING
-  };
-  var LEAGUE_FIELDS = [
-    { key: "name", label: "League", text: true },
-    { key: "format", label: "Format", text: true },
-    { key: "teams", label: "Teams", min: 2, max: 30 },
-    { key: "slot", label: "Our slot", min: 1, max: 30 },
-    { key: "rounds", label: "Rounds", min: 1, max: 30 },
-    { key: "starters", label: "Starters", min: 1, max: 20 },
-    { key: "bench", label: "Bench", min: 0, max: 20 },
-    { key: "ir", label: "IR", min: 0, max: 10 },
-    { key: "maxG", label: "Max G", min: 0, max: 20 },
-    { key: "adds", label: "Adds / week", min: 0, max: 50 }
-  ];
-
   // Skills a member can use, as they are named in Claude Code
   var SKILLS = [
     "analysis-planning", "stakeholder-requirements-gathering", "context-packager",
@@ -169,7 +148,6 @@
 
   var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var agents = load() || PRESETS.map(clone);
-  var league = loadLeague() || copyLeague(LEAGUE_DEFAULT);
   var selectedId = agents[0].id;
   var angle = 0;          // ring rotation, degrees
   var target = null;      // angle the ring is easing to
@@ -216,12 +194,6 @@
     dCopy: root.querySelector("[data-d-copy]"),
     repoLink: root.querySelector("[data-repo-link]"),
     scoring: root.querySelector("[data-scoring]"),
-    league: root.querySelector("[data-league]"),
-    leagueName: root.querySelector("[data-league-name]"),
-    leaguePicks: root.querySelector("[data-league-picks]"),
-    leagueReset: root.querySelector("[data-league-reset]"),
-    addStat: root.querySelector("[data-add-stat]"),
-    eyebrow: root.querySelector(".ui-council__eyebrow"),
     dBrief: root.querySelector("[data-d-brief]"),
     dLean: root.querySelector("[data-d-lean]"),
     dLeanOut: root.querySelector("[data-d-lean-out]"),
@@ -294,37 +266,6 @@
         return c;
       })));
     } catch (e) { /* storage unavailable: fine */ }
-  }
-
-  function copyLeague(L) {
-    return JSON.parse(JSON.stringify(L));
-  }
-
-  function saveLeague() {
-    try { localStorage.setItem(LEAGUE_KEY, JSON.stringify(league)); } catch (e) { /* fine */ }
-  }
-
-  function loadLeague() {
-    try {
-      var raw = localStorage.getItem(LEAGUE_KEY);
-      if (!raw) return null;
-      var L = JSON.parse(raw);
-      if (!L || !Array.isArray(L.scoring)) return null;
-      // Fill any field added since the save
-      for (var k in LEAGUE_DEFAULT) if (!(k in L)) L[k] = copyLeague(LEAGUE_DEFAULT)[k];
-      return L;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  // Snake draft: odd rounds pick at the slot, even rounds mirror it
-  function ourPicks(L) {
-    var picks = [];
-    for (var r = 1; r <= L.rounds; r++) {
-      picks.push((r - 1) * L.teams + (r % 2 ? L.slot : L.teams + 1 - L.slot));
-    }
-    return picks;
   }
 
   function load() {
@@ -626,136 +567,11 @@
 
     el.repoLink.href = DATA_REPO.url;
     el.repoLink.textContent = DATA_REPO.name;
-    buildLeague();
-    buildScoring();
-    paintLeague();
-  }
-
-  /* ---------- League: settings and scoring, editable ---------- */
-
-  function buildLeague() {
-    el.league.innerHTML = "";
-    LEAGUE_FIELDS.forEach(function (f) {
-      var label = document.createElement("label");
-      label.className = "ui-council__lfield" + (f.text ? " ui-council__lfield--wide" : "");
-      var name = document.createElement("span");
-      name.textContent = f.label;
-      var input = document.createElement("input");
-      input.className = "ui-council__input";
-      input.dataset.leagueKey = f.key;
-      if (f.text) {
-        input.type = "text";
-        input.maxLength = 60;
-      } else {
-        input.type = "number";
-        input.min = f.min;
-        input.max = f.max;
-        input.step = 1;
-        input.inputMode = "numeric";
-      }
-      input.addEventListener("input", function () {
-        var v = input.value;
-        if (!f.text) {
-          v = parseInt(v, 10);
-          if (isNaN(v)) return;
-          v = Math.min(f.max, Math.max(f.min, v));
-        }
-        setLeague(f.key, v);
-      });
-      input.addEventListener("change", paintLeague); // show the clamped value
-      label.appendChild(name);
-      label.appendChild(input);
-      el.league.appendChild(label);
-    });
-  }
-
-  function buildScoring() {
-    el.scoring.innerHTML = "";
-    league.scoring.forEach(function (row, i) {
-      var cell = document.createElement("div");
-      var dt = document.createElement("dt");
-      dt.textContent = row[0];
-      var dd = document.createElement("dd");
-      dd.dataset.sign = row[1] < 0 ? "-" : "+";
-      var input = document.createElement("input");
-      input.className = "ui-council__pts";
-      input.type = "text";
-      input.inputMode = "decimal";
-      input.maxLength = 5;
-      input.value = signed(row[1]);
-      input.setAttribute("aria-label", row[0] + " points");
-      input.addEventListener("input", function () {
-        var v = parseFloat(input.value);
-        if (isNaN(v)) return;
-        league.scoring[i][1] = v;
-        dd.dataset.sign = v < 0 ? "-" : "+";
-        leagueChanged();
-      });
-      input.addEventListener("change", function () { input.value = signed(league.scoring[i][1]); });
-      dd.appendChild(input);
-      var x = document.createElement("button");
-      x.type = "button";
-      x.className = "ui-council__stat-x";
-      x.textContent = "\u00d7";
-      x.setAttribute("aria-label", "Remove " + row[0]);
-      x.addEventListener("click", function () {
-        league.scoring.splice(i, 1);
-        buildScoring();
-        leagueChanged();
-      });
-      cell.appendChild(dt);
-      cell.appendChild(dd);
-      cell.appendChild(x);
-      el.scoring.appendChild(cell);
-    });
-  }
-
-  function signed(v) {
-    return (v > 0 ? "+" : "") + v;
-  }
-
-  function paintLeague() {
-    Array.prototype.forEach.call(el.league.querySelectorAll("[data-league-key]"), function (input) {
-      if (document.activeElement !== input) input.value = league[input.dataset.leagueKey];
-    });
-    el.leagueName.textContent = league.name;
-    el.leaguePicks.textContent = "Our picks: " + ourPicks(league).join(", ");
-    el.eyebrow.textContent = "2026\u201327 \u00b7 " + (league.name || "Fantasy league");
-  }
-
-  function setLeague(key, value) {
-    league[key] = value;
-    if (league.slot > league.teams) league.slot = league.teams;
-    leagueChanged();
-  }
-
-  function leagueChanged() {
-    saveLeague();
-    paintLeague();
-    var agent = byId(selectedId);
-    if (agent) el.dPack.value = pack(agent);
-    emit("league", { league: copyLeague(league) });
-  }
-
-  function addStat(name, points) {
-    name = String(name || "").trim().toUpperCase().slice(0, 6);
-    if (!name || isNaN(points)) return false;
-    var row = league.scoring.filter(function (r) { return r[0] === name; })[0];
-    if (row) row[1] = points;
-    else league.scoring.push([name, points]);
-    buildScoring();
-    leagueChanged();
-    return true;
-  }
-
-  function resetLeague() {
-    league = copyLeague(LEAGUE_DEFAULT);
-    try { localStorage.removeItem(LEAGUE_KEY); } catch (e) { /* fine */ }
-    buildScoring();
-    paintLeague();
-    var agent = byId(selectedId);
-    if (agent) el.dPack.value = pack(agent);
-    emit("league", { league: copyLeague(league) });
+    el.scoring.innerHTML = SCORING.map(function (row) {
+      var sign = row[1] < 0 ? "-" : "+";
+      return "<div><dt>" + row[0] + '</dt><dd data-sign="' + sign + '">' +
+        (row[1] < 0 ? "\u2212" + -row[1] : "+" + row[1]) + "</dd></div>";
+    }).join("");
   }
 
   function paintDetail() {
@@ -821,14 +637,8 @@
       "Repo: " + DATA_REPO.url,
       agent.sources.map(function (src) { return "- " + src; }).join("\n") || "- (whole repo)",
       "",
-      "## League",
-      league.name + " \u2014 " + league.format + ", " + league.teams + " teams, " + league.rounds + " rounds",
-      "Our slot: " + league.slot + " (picks " + ourPicks(league).join(", ") + ")",
-      "Roster: " + league.starters + " starters, " + league.bench + " bench, " + league.ir + " IR; max " +
-        league.maxG + " G; about " + league.adds + " adds a week",
-      "",
-      "## Scoring (points per stat)",
-      league.scoring.map(function (r) { return r[0] + " " + (r[1] > 0 ? "+" : "") + r[1]; }).join(", "),
+      "## Scoring (ESPN points)",
+      SCORING.map(function (r) { return r[0] + " " + (r[1] > 0 ? "+" : "") + r[1]; }).join(", "),
       "",
       "## In the council",
       "Lean: " + (agent.lean > 0 ? "+" : "") + agent.lean + " (\u2212100 sceptical to +100 supportive). " +
@@ -1301,17 +1111,6 @@
   el.dLean.addEventListener("input", function () { update(selectedId, { lean: +el.dLean.value }); });
   el.dWeight.addEventListener("input", function () { update(selectedId, { weight: +el.dWeight.value }); });
 
-  el.leagueReset.addEventListener("click", resetLeague);
-  el.addStat.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var name = el.addStat.elements.stat;
-    var pts = el.addStat.elements.points;
-    if (addStat(name.value, parseFloat(pts.value))) {
-      name.value = "";
-      name.focus();
-    }
-  });
-
   el.dTints.addEventListener("keydown", function (e) {
     var dir = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
     if (!dir) return;
@@ -1392,18 +1191,7 @@
     get: function (id) { var a = byId(id); return a ? clone(a) : null; },
     pack: function (id) { var a = byId(id); return a ? pack(a) : null; },
     repo: DATA_REPO,
-    get scoring() { return league.scoring.map(function (r) { return r.slice(); }); },
-    league: function () { return copyLeague(league); },
-    setLeague: function (patch) {
-      for (var k in patch) {
-        if (k === "scoring" && Array.isArray(patch.scoring)) league.scoring = copyLeague(patch.scoring);
-        else if (k in LEAGUE_DEFAULT) league[k] = patch[k];
-      }
-      if (league.slot > league.teams) league.slot = league.teams;
-      buildScoring();
-      leagueChanged();
-    },
-    resetLeague: resetLeague,
+    scoring: SCORING.map(function (r) { return r.slice(); }),
     skills: SKILLS.slice(),
     select: function (id) { select(id); },
     setState: setState,
