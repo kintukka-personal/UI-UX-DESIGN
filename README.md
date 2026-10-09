@@ -39,6 +39,7 @@ Reusable UI components in plain HTML, CSS and vanilla JS, ready to drop into any
 | [Persona](components/persona/) | AI Elements' Persona demo in React + Tailwind: an animated `halo` AI avatar with five tooltip buttons that switch it between Idle, Listening, Thinking, Speaking and Asleep |
 | [AI Council](components/ai-council/) | A council of AI agents on one screen: halo persona orbs in their own colourways on the Rotating cards ring, a side panel to tune each member's brief, engine, lean and vote weight, a Convene demo that ends in a weighted vote, and a `window.Council` API to plug real agents in |
 | [Draft Council](components/fantasy-council/) | AI Council as an ESPN fantasy basketball draft companion: nine personas (strategist, data steward, projections, value, availability, scout, schedule, sceptic, scribe), each with its own skills and data paths in the NBA-FANTASY repo, ESPN points scoring, and a copyable persona pack per member |
+| [Booking story ad](components/booking-story-ad/) | A 33-second kinetic-type travel ad rebuilt from a free Jitter template, drawn live in HTML and CSS: a ball that was tracked frame by frame strikes *Limited, Costly, Generic*, swells into the brand circle, becomes the search button, rolls a date range out and turns into Reserve. It runs from search to stay to confirmation, for a fictional brand, tomaru. Pause, scrub, a transcript, a portrait layout and reduced-motion support, plus the booking UI it shows working underneath: a search bar, a keyboard date grid, a guest stepper, results and Reserve |
 
 ## Sites
 
